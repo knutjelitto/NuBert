@@ -2,11 +2,19 @@
 
 namespace NuBert
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var p = new Program();
+
+            p.AnyKey();
+        }
+
+        private void AnyKey()
+        {
+            Console.Write("any key ...");
+            Console.ReadKey(true);
         }
     }
 }
