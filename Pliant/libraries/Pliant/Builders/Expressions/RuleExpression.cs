@@ -1,5 +1,4 @@
-﻿using Pliant.Builders;
-using Pliant.Grammars;
+﻿using Pliant.Grammars;
 using System.Collections.Generic;
 
 namespace Pliant.Builders.Expressions
@@ -22,7 +21,10 @@ namespace Pliant.Builders.Expressions
         private void AddWithAnd(BaseExpression baseExpression)
         {
             if (Alterations.Count == 0)
+            {
                 Alterations.Add(new List<BaseExpression>());
+            }
+
             Alterations[Alterations.Count - 1].Add(baseExpression);
         }
 

@@ -7,9 +7,6 @@ namespace Pliant.Grammars
         public Optional(IReadOnlyList<ISymbol> items)
             : base(items) { }
 
-        public override SymbolType SymbolType
-        {
-            get { return SymbolType.Optional; }
-        }
+        public override SymbolType SymbolType => SymbolType.Optional;
     }
 }

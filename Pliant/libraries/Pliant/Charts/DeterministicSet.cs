@@ -9,22 +9,22 @@ namespace Pliant.Charts
         private readonly UniqueList<DeterministicState> _states;
         private readonly Dictionary<ISymbol, CachedDottedRuleSetTransition> _transitions;
 
-        public IReadOnlyList<DeterministicState> States { get { return _states; } }
+        public IReadOnlyList<DeterministicState> States => this._states;
 
-        public IReadOnlyDictionary<ISymbol, CachedDottedRuleSetTransition> CachedTransitions { get { return _transitions; } }
-        
+        public IReadOnlyDictionary<ISymbol, CachedDottedRuleSetTransition> CachedTransitions => this._transitions;
+
         public int Location { get; private set; }
 
         public DeterministicSet(int location)
         {
-            _states = new UniqueList<DeterministicState>();
-            _transitions = new Dictionary<ISymbol, CachedDottedRuleSetTransition>();
+            this._states = new UniqueList<DeterministicState>();
+            this._transitions = new Dictionary<ISymbol, CachedDottedRuleSetTransition>();
             Location = location;
         }
 
         internal bool Enqueue(DeterministicState frame)
         {
-            var hasEnqueued = _states.AddUnique(frame);
+            var hasEnqueued = this._states.AddUnique(frame);
             return hasEnqueued;
         }
 
@@ -35,15 +35,17 @@ namespace Pliant.Charts
 
         public CachedDottedRuleSetTransition FindCachedDottedRuleSetTransition(ISymbol searchSymbol)
         {
-            CachedDottedRuleSetTransition transition = null;
-            if (_transitions.TryGetValue(searchSymbol, out transition))
+            if (this._transitions.TryGetValue(searchSymbol, out var transition))
+            {
                 return transition;
+            }
+
             return null;
         }
 
         public void AddCachedTransition(CachedDottedRuleSetTransition cachedDottedRuleSetTransition)
         {
-            _transitions.Add(cachedDottedRuleSetTransition.Symbol, cachedDottedRuleSetTransition);
+            this._transitions.Add(cachedDottedRuleSetTransition.Symbol, cachedDottedRuleSetTransition);
         }
     }
 }

@@ -7,27 +7,27 @@ namespace Pliant.Automata
 {
     public class TableNfa
     {
-        private Dictionary<int, Dictionary<char, int>> _table;
-        private HashSet<int> _finalStates;
-        private Dictionary<int, UniqueList<int>> _nullTransitions;
+        private readonly Dictionary<int, Dictionary<char, int>> _table;
+        private readonly HashSet<int> _finalStates;
+        private readonly Dictionary<int, UniqueList<int>> _nullTransitions;
 
         public TableNfa(int start)
         {
             Start = start;
-            _table = new Dictionary<int, Dictionary<char, int>>();
-            _finalStates = new HashSet<int>();
-            _nullTransitions = new Dictionary<int, UniqueList<int>>();
+            this._table = new Dictionary<int, Dictionary<char, int>>();
+            this._finalStates = new HashSet<int>();
+            this._nullTransitions = new Dictionary<int, UniqueList<int>>();
         }
 
         public void AddTransition(int source, char character, int target)
         {
-            var sourceTransitions = _table.AddOrGetExisting(source);
+            var sourceTransitions = this._table.AddOrGetExisting(source);
             sourceTransitions[character] = target;
         }
 
         public void AddNullTransition(int source, int target)
         {
-            _nullTransitions
+            this._nullTransitions
                 .AddOrGetExisting(source)
                 .Add(target);
         }
@@ -37,14 +37,18 @@ namespace Pliant.Automata
         public void SetFinal(int state, bool isFinal)
         {
             if (isFinal)
-                _finalStates.Add(state);
+            {
+                this._finalStates.Add(state);
+            }
             else
-                _finalStates.Remove(state);
+            {
+                this._finalStates.Remove(state);
+            }
         }
 
         public bool IsFinal(int state)
         {
-            return _finalStates.Contains(state);
+            return this._finalStates.Contains(state);
         }
 
         public TableDfa ToDfa()
@@ -52,7 +56,7 @@ namespace Pliant.Automata
             var queuePool = SharedPools.Default<ProcessOnceQueue<Closure>>();
             var queue = queuePool.Allocate();
             queue.Clear();
-            var start = new Closure(Start, _nullTransitions, _finalStates);
+            var start = new Closure(Start, this._nullTransitions, this._finalStates);
 
             queue.Enqueue(
                 start);
@@ -69,17 +73,17 @@ namespace Pliant.Automata
                 var nfaClosureId = nfaClosure.GetHashCode();
                 tableDfa.SetFinal(nfaClosureId, nfaClosure.IsFinal);
 
-                for (int i = 0; i < nfaClosure.States.Length; i++)
+                for (var i = 0; i < nfaClosure.States.Length; i++)
                 {
                     var state = nfaClosure.States[i];
-                    Dictionary<char, int> characterTransitions = null;
-                    if (!_table.TryGetValue(state, out characterTransitions))
+                    if (!this._table.TryGetValue(state, out var characterTransitions))
+                    {
                         continue;
+                    }
 
                     foreach (var characterTransition in characterTransitions)
                     {
-                        SortedSet<int> targets = null;
-                        if (!transitions.TryGetValue(characterTransition.Key, out targets))
+                        if (!transitions.TryGetValue(characterTransition.Key, out var targets))
                         {
                             targets = SharedPools.Default<SortedSet<int>>().AllocateAndClear();
                             transitions.Add(characterTransition.Key, targets);
@@ -91,7 +95,7 @@ namespace Pliant.Automata
 
                 foreach (var targetSet in transitions)
                 {
-                    var closure = new Closure(targetSet.Value, _nullTransitions, _finalStates);
+                    var closure = new Closure(targetSet.Value, this._nullTransitions, this._finalStates);
                     closure = queue.EnqueueOrGetExisting(closure);
                     var closureId = closure.GetHashCode();
 
@@ -112,7 +116,7 @@ namespace Pliant.Automata
 
         private class Closure
         {
-            private SortedSet<int> _set;
+            private readonly SortedSet<int> _set;
 
             private readonly int _hashCode;
 
@@ -125,12 +129,15 @@ namespace Pliant.Automata
                 Dictionary<int, UniqueList<int>> nullTransitions,
                 HashSet<int> finalStates)
             {
-                _set = sources;
+                this._set = sources;
                 var queue = new ProcessOnceQueue<int>();
                 foreach (var item in sources)
+                {
                     queue.Enqueue(item);
+                }
+
                 CreateClosure(nullTransitions, finalStates, queue);
-                _hashCode = ComputeHashCode(States);
+                this._hashCode = ComputeHashCode(States);
             }
 
             public Closure(
@@ -138,11 +145,11 @@ namespace Pliant.Automata
                 Dictionary<int, UniqueList<int>> nullTransitions,
                 HashSet<int> finalStates)
             {
-                _set = new SortedSet<int>();
+                this._set = new SortedSet<int>();
                 var queue = new ProcessOnceQueue<int>();
                 queue.Enqueue(source);
                 CreateClosure(nullTransitions, finalStates, queue);
-                _hashCode = ComputeHashCode(States);
+                this._hashCode = ComputeHashCode(States);
             }
 
             private void CreateClosure(Dictionary<int, UniqueList<int>> nullTransitions, HashSet<int> finalStates, ProcessOnceQueue<int> queue)
@@ -150,24 +157,29 @@ namespace Pliant.Automata
                 while (queue.Count > 0)
                 {
                     var state = queue.Dequeue();
-                    _set.Add(state);
+                    this._set.Add(state);
                     if (finalStates.Contains(state))
+                    {
                         IsFinal = true;
+                    }
 
-                    UniqueList<int> targetStates = null;
-                    if (!nullTransitions.TryGetValue(state, out targetStates))
+                    if (!nullTransitions.TryGetValue(state, out var targetStates))
+                    {
                         continue;
+                    }
 
-                    for (int i = 0; i < targetStates.Count; i++)
+                    for (var i = 0; i < targetStates.Count; i++)
+                    {
                         queue.Enqueue(targetStates[i]);
+                    }
                 }
-                States = _set.ToArray();
+                States = this._set.ToArray();
             }
 
             private static int ComputeHashCode(int[] states)
             {
                 var hashCode = 0;
-                for (int i = 0; i < states.Length; i++)
+                for (var i = 0; i < states.Length; i++)
                 {
                     hashCode = HashCode.ComputeIncrementalHash(states[i].GetHashCode(), hashCode, i == 0);
                 }
@@ -176,22 +188,28 @@ namespace Pliant.Automata
 
             public override int GetHashCode()
             {
-                return _hashCode;
+                return this._hashCode;
             }
 
             public override bool Equals(object obj)
             {
-                if (((object)obj) == null)
+                if (obj == null)
+                {
                     return false;
+                }
 
                 var closure = obj as Closure;
-                if (((object)closure) == null)
+                if (closure == null)
+                {
                     return false;
+                }
 
-                for (int i = 0; i < States.Length; i++)
+                for (var i = 0; i < States.Length; i++)
                 {
                     if (!closure._set.Contains(States[i]))
+                    {
                         return false;
+                    }
                 }
                 return true;
             }

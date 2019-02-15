@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Pliant.Grammars
+﻿namespace Pliant.Grammars
 {
     public class FullyQualifiedName
     {
@@ -17,7 +15,7 @@ namespace Pliant.Grammars
             FullName = !string.IsNullOrWhiteSpace(@namespace)
                 ? $"{@namespace}.{name}"
                 : $"{name}";
-            _hashCode = ComputeHashCode(FullName);
+            this._hashCode = ComputeHashCode(FullName);
         }
 
         private static int ComputeHashCode(string fullName)
@@ -43,16 +41,22 @@ namespace Pliant.Grammars
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
+
             var otherFullyQualifiedName = obj as FullyQualifiedName;
             if (otherFullyQualifiedName == null)
+            {
                 return false;
+            }
+
             return otherFullyQualifiedName.FullName == FullName;
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 }

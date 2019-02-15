@@ -15,7 +15,9 @@ namespace Pliant.LexerRules
         {
             var states = new DfaState[3];
             for (var i = 0; i < states.Length; i++)
+            {
                 states[i] = new DfaState(i == 2);
+            }
 
             var quote = new CharacterTerminal('"');
             var notQuote = new NegationTerminal(quote);

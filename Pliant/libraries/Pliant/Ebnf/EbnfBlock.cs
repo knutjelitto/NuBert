@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.Ebnf
 {
@@ -13,21 +12,27 @@ namespace Pliant.Ebnf
 
         public EbnfRule Rule { get; private set; }
 
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfBlockRule; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfBlockRule;
 
         public EbnfBlockRule(EbnfRule rule)
         {
             Rule = rule;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var blockRule = obj as EbnfBlockRule;
-            if ((object)blockRule == null)
+            if (blockRule == null)
+            {
                 return false;
+            }
+
             return blockRule.NodeType == NodeType
                 && blockRule.Rule.Equals(Rule);
         }
@@ -41,7 +46,7 @@ namespace Pliant.Ebnf
                 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 
@@ -49,21 +54,27 @@ namespace Pliant.Ebnf
     {
         private readonly int _hashCode;
         public EbnfSetting Setting { get; private set; }
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfBlockSetting; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfBlockSetting;
 
         public EbnfBlockSetting(EbnfSetting setting)
         {
             Setting = setting;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var blockRule = obj as EbnfBlockSetting;
-            if ((object)blockRule == null)
+            if (blockRule == null)
+            {
                 return false;
+            }
+
             return blockRule.NodeType == NodeType
                 && blockRule.Setting.Equals(Setting);
         }
@@ -77,7 +88,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 
@@ -85,21 +96,27 @@ namespace Pliant.Ebnf
     {
         private readonly int _hashCode;
         public EbnfLexerRule LexerRule { get; private set; }
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfBlockLexerRule; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfBlockLexerRule;
 
         public EbnfBlockLexerRule(EbnfLexerRule lexerRule)
         {
             LexerRule = lexerRule;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var blockRule = obj as EbnfBlockLexerRule;
-            if ((object)blockRule == null)
+            if (blockRule == null)
+            {
                 return false;
+            }
+
             return blockRule.NodeType == NodeType
                 && blockRule.LexerRule.Equals(LexerRule);
         }
@@ -113,7 +130,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 }

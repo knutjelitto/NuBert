@@ -22,12 +22,9 @@ namespace Pliant.Builders
         {
         }
 
-        public override SymbolModelType ModelType
-        {
-            get { return SymbolModelType.NonTerminal; }
-        }
+        public override SymbolModelType ModelType => SymbolModelType.NonTerminal;
 
-        public override ISymbol Symbol { get { return NonTerminal; } }
+        public override ISymbol Symbol => NonTerminal;
 
         public INonTerminal NonTerminal { get; set; }
 
@@ -39,10 +36,16 @@ namespace Pliant.Builders
         public override bool Equals(object obj)
         {
             if (null == obj)
+            {
                 return false;
+            }
+
             var nonTerminalModel = obj as NonTerminalModel;
             if (null == nonTerminalModel)
+            {
                 return false;
+            }
+
             return NonTerminal.Equals(nonTerminalModel.NonTerminal);
         }
 

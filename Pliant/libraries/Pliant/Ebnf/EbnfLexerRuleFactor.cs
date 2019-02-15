@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.Ebnf
 {
@@ -9,7 +8,7 @@ namespace Pliant.Ebnf
 
     public class EbnfLexerRuleFactorLiteral : EbnfLexerRuleFactor
     {
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfLexerRuleFactorLiteral; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfLexerRuleFactorLiteral;
 
         public string Value { get; private set; }
 
@@ -18,7 +17,7 @@ namespace Pliant.Ebnf
         public EbnfLexerRuleFactorLiteral(string value)
         {
             Value = value;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         private int ComputeHashCode()
@@ -28,16 +27,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as EbnfLexerRuleFactorLiteral;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.NodeType == NodeType
                 && factor.Value.Equals(Value);
         }
@@ -45,7 +50,7 @@ namespace Pliant.Ebnf
 
     public class EbnfLexerRuleFactorRegex : EbnfLexerRuleFactor
     {
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfLexerRuleFactorRegex; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfLexerRuleFactorRegex;
         private readonly int _hashCode;
 
         public RegularExpressions.Regex Regex { get; private set; }
@@ -53,7 +58,7 @@ namespace Pliant.Ebnf
         public EbnfLexerRuleFactorRegex(RegularExpressions.Regex regex)
         {
             Regex = regex;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         int ComputeHashCode()
@@ -65,16 +70,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as EbnfFactorRegex;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.NodeType == NodeType
                 && factor.Regex.Equals(Regex);
         }

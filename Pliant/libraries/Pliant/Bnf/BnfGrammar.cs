@@ -1,7 +1,6 @@
 ﻿using Pliant.Automata;
 using Pliant.Grammars;
 using Pliant.Tokens;
-using System.Collections.Generic;
 
 namespace Pliant.Bnf
 {

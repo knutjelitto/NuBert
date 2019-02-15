@@ -1,6 +1,5 @@
 ﻿using Pliant.Diagnostics;
 using Pliant.Utilities;
-using System;
 
 namespace Pliant.Ebnf
 {
@@ -10,23 +9,28 @@ namespace Pliant.Ebnf
 
         public EbnfBlock Block { get; private set; }
 
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfDefinition; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfDefinition;
 
         public EbnfDefinition(EbnfBlock block)
         {
             Assert.IsNotNull(block, nameof(block));
             Block = block;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
         
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var ebnfDefinition = obj as EbnfDefinition;
-            if ((object)ebnfDefinition == null)
+            if (ebnfDefinition == null)
+            {
                 return false;
-                
+            }
+
             return ebnfDefinition.NodeType == NodeType 
                 && ebnfDefinition.Block.Equals(Block);
         }
@@ -40,7 +44,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 
@@ -50,24 +54,29 @@ namespace Pliant.Ebnf
 
         public EbnfDefinition Definition { get; private set; }
 
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfDefinitionConcatenation; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfDefinitionConcatenation;
 
         public EbnfDefinitionConcatenation(EbnfBlock block, EbnfDefinition definition)
             : base(block)
         {
             Assert.IsNotNull(definition, nameof(definition));
             Definition = definition;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var ebnfDefinitionConcatenation = obj as EbnfDefinitionConcatenation;
-            if ((object)ebnfDefinitionConcatenation == null)
+            if (ebnfDefinitionConcatenation == null)
+            {
                 return false;
-            
+            }
+
             return ebnfDefinitionConcatenation.NodeType == EbnfNodeType.EbnfDefinitionConcatenation
                 && ebnfDefinitionConcatenation.Block.Equals(Block)
                 && ebnfDefinitionConcatenation.Definition.Equals(Definition);
@@ -83,7 +92,7 @@ namespace Pliant.Ebnf
         
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Pliant.Forest
         {
             TransitionState = transitionState;
             ForestNode = forestNode;
-            _hashCode = ComputeHashCode(TransitionState, ForestNode);
+            this._hashCode = ComputeHashCode(TransitionState, ForestNode);
         }
 
         private static int ComputeHashCode(ITransitionState transitionState, IForestNode forestNode)
@@ -25,16 +25,22 @@ namespace Pliant.Forest
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var virtualForestNodePath = obj as VirtualForestNodePath;
-            if (((object)virtualForestNodePath) == null)
+            if (virtualForestNodePath == null)
+            {
                 return false;
+            }
+
             return TransitionState.Equals(virtualForestNodePath.TransitionState)
                 && ForestNode.Equals(virtualForestNodePath.ForestNode);
         }

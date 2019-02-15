@@ -4,18 +4,15 @@ namespace Pliant.Grammars
 {
     public class Grouping : IGrouping
     {
-        private List<ISymbol> _items;
+        private readonly List<ISymbol> _items;
 
-        public IReadOnlyList<ISymbol> Items { get { return _items; } }
+        public IReadOnlyList<ISymbol> Items => this._items;
 
         public Grouping(IReadOnlyList<ISymbol> items)
         {
-            _items = new List<ISymbol>(items);
+            this._items = new List<ISymbol>(items);
         }
 
-        public virtual SymbolType SymbolType
-        {
-            get { return SymbolType.Grouping; }
-        }
+        public virtual SymbolType SymbolType => SymbolType.Grouping;
     }
 }

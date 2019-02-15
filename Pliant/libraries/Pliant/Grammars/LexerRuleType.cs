@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Pliant.Grammars
+﻿namespace Pliant.Grammars
 {
     public class LexerRuleType
     {
@@ -10,7 +8,7 @@ namespace Pliant.Grammars
         public LexerRuleType(string id)
         {
             Id = id;
-            _hashCode = ComputeHashCode(id);
+            this._hashCode = ComputeHashCode(id);
         }
 
         private static int ComputeHashCode(string id)
@@ -20,20 +18,24 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
 
             var other = obj as LexerRuleType;
 
             if (((object)other) == null)
+            {
                 return false;
+            }
 
             return other.Id == Id;
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public static bool operator ==(LexerRuleType first, LexerRuleType second)

@@ -1,5 +1,4 @@
-﻿using System;
-using Pliant.Utilities;
+﻿using Pliant.Utilities;
 using System.Collections.Generic;
 
 namespace Pliant.Grammars
@@ -24,10 +23,16 @@ namespace Pliant.Grammars
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
+
             var terminal = obj as CharacterTerminal;
             if (terminal == null)
+            {
                 return false;
+            }
+
             return terminal.Character == Character;
         }
 
@@ -43,9 +48,12 @@ namespace Pliant.Grammars
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            if(_intervals == null)
-                _intervals = new[] { new Interval(Character, Character) };
-            return _intervals;
+            if(this._intervals == null)
+            {
+                this._intervals = new[] { new Interval(Character, Character) };
+            }
+
+            return this._intervals;
         }
     }
 }

@@ -13,8 +13,10 @@ namespace Pliant.LexerRules
         static NumberLexerRule()
         {
             var states = new DfaState[5];
-            for (int i = 0; i < states.Length; i++)            
-                states[i] = new DfaState(i==4 || i== 2);            
+            for (var i = 0; i < states.Length; i++)
+            {
+                states[i] = new DfaState(i==4 || i== 2);
+            }
 
             var zeroThroughNine = new RangeTerminal('0', '9');
 

@@ -14,7 +14,7 @@ namespace Pliant.Grammars
             : base(StringLiteralLexerRuleType, tokenType)
         {
             Literal = literal;
-            _hashCode = ComputeHashCode(literal, StringLiteralLexerRuleType, tokenType);
+            this._hashCode = ComputeHashCode(literal, StringLiteralLexerRuleType, tokenType);
         }
 
         public StringLiteralLexerRule(string literal)
@@ -28,18 +28,24 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var terminalLexerRule = obj as StringLiteralLexerRule;
-            if (((object)terminalLexerRule) == null)
+            if (terminalLexerRule == null)
+            {
                 return false;
+            }
+
             return LexerRuleType.Equals(terminalLexerRule.LexerRuleType)
                 && Literal.Equals(terminalLexerRule.Literal);
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         private static int ComputeHashCode(
@@ -56,7 +62,10 @@ namespace Pliant.Grammars
         public override bool CanApply(char c)
         {
             if (Literal.Length == 0)
+            {
                 return false;
+            }
+
             return Literal[0].Equals(c);
         }
     }

@@ -26,7 +26,7 @@ namespace Pliant.Grammars
 
             Production = production;
             Position = position;
-            _hashCode = ComputeHashCode(Production, Position);
+            this._hashCode = ComputeHashCode(Production, Position);
             PostDotSymbol = GetPostDotSymbol(position, production);
             PreDotSymbol = GetPreDotSymbol(position, production);
             IsComplete = IsCompleted(position, production);
@@ -39,16 +39,22 @@ namespace Pliant.Grammars
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var preComputedState = obj as DottedRule;
-            if (((object)preComputedState) == null)
+            if (preComputedState == null)
+            {
                 return false;
+            }
+
             return preComputedState.Production.Equals(Production)
                 && preComputedState.Position == Position;
         }
@@ -68,7 +74,9 @@ namespace Pliant.Grammars
             }
 
             if (Position == Production.RightHandSide.Count)
+            {
                 stringBuilder.Append(Dot);
+            }
 
             return stringBuilder.ToString();
         }
@@ -91,7 +99,10 @@ namespace Pliant.Grammars
         private static ISymbol GetPreDotSymbol(int position, IProduction production)
         {
             if (position == 0 || production.IsEmpty)
+            {
                 return null;
+            }
+
             return production.RightHandSide[position - 1];
         }
         
@@ -99,7 +110,10 @@ namespace Pliant.Grammars
         {
             var productionRighHandSide = production.RightHandSide;
             if (position >= productionRighHandSide.Count)
+            {
                 return null;
+            }
+
             return productionRighHandSide[position];
         }        
     }

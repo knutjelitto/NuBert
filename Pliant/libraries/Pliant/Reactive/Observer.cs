@@ -10,27 +10,33 @@ namespace Pliant
 
         public Observer(Action<T> onNext, Action<Exception> onError = null, Action onCompleted = null)
         {
-            _onNext = onNext;
-            _onError = onError;
-            _onCompleted = onCompleted;
+            this._onNext = onNext;
+            this._onError = onError;
+            this._onCompleted = onCompleted;
         }
 
         public void OnCompleted()
         {
-            if (_onCompleted != null)
-                _onCompleted();
+            if (this._onCompleted != null)
+            {
+                this._onCompleted();
+            }
         }
 
         public void OnError(Exception error)
         {
-            if (_onError != null)
-                _onError(error);
+            if (this._onError != null)
+            {
+                this._onError(error);
+            }
         }
 
         public void OnNext(T value)
         {
-            if (_onNext != null)
-                _onNext(value);
+            if (this._onNext != null)
+            {
+                this._onNext(value);
+            }
         }
     }
 }

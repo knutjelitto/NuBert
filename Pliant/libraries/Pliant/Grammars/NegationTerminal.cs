@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 using System.Collections.Generic;
 
 namespace Pliant.Grammars
@@ -15,7 +14,7 @@ namespace Pliant.Grammars
         public NegationTerminal(ITerminal innerTerminal)
         {
             InnerTerminal = innerTerminal;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         private static IReadOnlyList<Interval> CreateIntervals(ITerminal innerTerminal)
@@ -38,24 +37,31 @@ namespace Pliant.Grammars
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            if(_intervals == null)
-                _intervals = CreateIntervals(InnerTerminal);
-            return _intervals;
+            if(this._intervals == null)
+            {
+                this._intervals = CreateIntervals(InnerTerminal);
+            }
+
+            return this._intervals;
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
 
             var negationTerminal = obj as NegationTerminal;
-            if (((object)negationTerminal) == null)
+            if (negationTerminal == null)
+            {
                 return false;
+            }
 
             return negationTerminal.InnerTerminal.Equals(InnerTerminal);
         }

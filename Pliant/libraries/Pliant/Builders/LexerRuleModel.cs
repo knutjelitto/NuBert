@@ -11,15 +11,12 @@ namespace Pliant.Builders
             Value = value;
         }
 
-        public override ISymbol Symbol { get { return Value; } }
+        public override ISymbol Symbol => Value;
 
         public ILexerRule Value { get; set; }
 
-        public override SymbolModelType ModelType
-        {
-            get { return SymbolModelType.LexerRule; }
-        }
-        
+        public override SymbolModelType ModelType => SymbolModelType.LexerRule;
+
         public override int GetHashCode()
         {
             return Value.GetHashCode();
@@ -28,10 +25,16 @@ namespace Pliant.Builders
         public override bool Equals(object obj)
         {
             if (null == obj)
+            {
                 return false;
+            }
+
             var lexerRuleModel = obj as LexerRuleModel;
             if (null == lexerRuleModel)
+            {
                 return false;
+            }
+
             return Value.Equals(lexerRuleModel.Value);
         }
     }

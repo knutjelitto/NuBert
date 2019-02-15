@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
     public class Chart : IChart
     {
-        private List<EarleySet> _earleySets;
+        private readonly List<EarleySet> _earleySets;
         
-        public IReadOnlyList<IEarleySet> EarleySets { get { return _earleySets; } }
+        public IReadOnlyList<IEarleySet> EarleySets => this._earleySets;
 
         public Chart()
         {
-            _earleySets = new List<EarleySet>();
+            this._earleySets = new List<EarleySet>();
         }
 
         public bool Enqueue(int index, IState state)
@@ -21,10 +20,7 @@ namespace Pliant.Charts
             return earleySet.Enqueue(state);
         }
 
-        public int Count
-        {
-            get { return EarleySets.Count; }
-        }
+        public int Count => EarleySets.Count;
 
         public bool Contains(int index, StateType stateType, IDottedRule dottedRule, int origin)
         {
@@ -35,14 +31,14 @@ namespace Pliant.Charts
         private EarleySet GetEarleySet(int index)
         {
             EarleySet earleySet = null;
-            if (_earleySets.Count <= index)
+            if (this._earleySets.Count <= index)
             {
                 earleySet = new EarleySet(index);
-                _earleySets.Add(earleySet);
+                this._earleySets.Add(earleySet);
             }
             else
             {
-                earleySet = _earleySets[index];
+                earleySet = this._earleySets[index];
             }
 
             return earleySet;

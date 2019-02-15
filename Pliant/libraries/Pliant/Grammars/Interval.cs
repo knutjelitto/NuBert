@@ -27,10 +27,12 @@ namespace Pliant.Grammars
         public Interval(char min, char max)
         {
             if (min.CompareTo(max) > 0)
+            {
                 throw new Exception($"{min} should be less than {max}");
+            }
 
-            Min = min;
-            Max = max;
+            this.Min = min;
+            this.Max = max;
         }
         
         /// <summary>
@@ -40,10 +42,13 @@ namespace Pliant.Grammars
         /// <returns>if mins are not equal returns CompareTo value of each min. If they are equal returns CompareTo of each max.</returns>
         public int CompareTo(Interval other)
         {
-            var compareMin = Min.CompareTo(other.Min);
+            var compareMin = this.Min.CompareTo(other.Min);
             if (compareMin != 0)
+            {
                 return compareMin;
-            return Max.CompareTo(other.Max);
+            }
+
+            return this.Max.CompareTo(other.Max);
         }
 
         /// <summary>
@@ -53,7 +58,7 @@ namespace Pliant.Grammars
         /// <returns>true when the intervals overlap. false otherwise</returns>
         public bool Overlaps(Interval other)
         {
-            return Max.CompareTo(other.Min) >= 0 && Min.CompareTo(other.Max) <= 0;
+            return this.Max.CompareTo(other.Min) >= 0 && this.Min.CompareTo(other.Max) <= 0;
         }
 
         /// <summary>
@@ -65,14 +70,20 @@ namespace Pliant.Grammars
         {
             // if intervals overlap they touch
             if (Overlaps(other))
+            {
                 return true;
+            }
 
             // char.CompareTo returns the difference between integers
-            if (Min - other.Max == 1)
+            if (this.Min - other.Max == 1)
+            {
                 return true;
+            }
 
-            if (other.Min - Max == 1)
+            if (other.Min - this.Max == 1)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -155,18 +166,25 @@ namespace Pliant.Grammars
             return list;
         }
 
-        private static Interval[] EmptyList = { };
+        private static readonly Interval[] EmptyList = { };
 
         public static IReadOnlyList<Interval> Inverse(Interval interval)
         {
             if (interval.Min == char.MinValue && interval.Max == char.MaxValue)
+            {
                 return EmptyList;
-            
+            }
+
             var list = new List<Interval>();
             if (interval.Min != char.MinValue)
+            {
                 list.Add(new Interval(char.MinValue, (char)(interval.Min - 1)));
+            }
+
             if (interval.Max != char.MaxValue)
+            {
                 list.Add(new Interval((char)(interval.Max + 1), char.MaxValue));
+            }
 
             return list;
         }
@@ -205,7 +223,9 @@ namespace Pliant.Grammars
             }
 
             if (accumulator != null)
+            {
                 intervalList.Add(accumulator.Value);
+            }
 
             intervalPool.ClearAndFree(sortedIntervals);
 
@@ -214,7 +234,7 @@ namespace Pliant.Grammars
 
         public override string ToString()
         {
-            return $"'[{Min}', '{Max}']";
+            return $"'[{this.Min}', '{this.Max}']";
         }
     }
 }

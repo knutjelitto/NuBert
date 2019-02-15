@@ -12,8 +12,8 @@ namespace Pliant.Utilities
         
         internal ObjectPool(int size, ObjectPoolFactory factory)
         {
-            _factory = factory;
-            _queue = new Queue<T>(size);
+            this._factory = factory;
+            this._queue = new Queue<T>(size);
         }
 
         internal ObjectPool(ObjectPoolFactory factory)
@@ -23,21 +23,27 @@ namespace Pliant.Utilities
         
         internal T Allocate()
         {
-            if (_queue.Count == 0)
+            if (this._queue.Count == 0)
+            {
                 return CreateInstance();
-            return _queue.Dequeue();
+            }
+
+            return this._queue.Dequeue();
         }
 
         private T CreateInstance()
         {
-            return _factory();
+            return this._factory();
         }
 
         internal void Free(T value)
         {
             if (value == null)
+            {
                 throw new ArgumentNullException(nameof(value));
-            _queue.Enqueue(value);
+            }
+
+            this._queue.Enqueue(value);
         }        
     }
 }

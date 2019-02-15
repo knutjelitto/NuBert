@@ -4,24 +4,16 @@ namespace Pliant.Forest
 {
     public class TerminalForestNode : ForestNodeBase, ITerminalForestNode
     {
-        public char Capture { get; private set; }
-
         public TerminalForestNode(char capture, int origin, int location)
             : base(origin, location)
         {
             Capture = capture;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override ForestNodeType NodeType
-        {
-            get { return ForestNodeType.Terminal; }
-        }
+        public char Capture { get; }
 
-        public override string ToString()
-        {
-            return $"({(Capture == '\0' ? "null" : Capture.ToString())}, {Origin}, {Location})";
-        }
+        public override ForestNodeType NodeType => ForestNodeType.Terminal;
 
         public override void Accept(IForestNodeVisitor visitor)
         {
@@ -30,20 +22,22 @@ namespace Pliant.Forest
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
-            var terminalNode = obj as TerminalForestNode;
-            if (terminalNode == null)
-                return false;
-
-            return Location == terminalNode.Location
-                && NodeType == terminalNode.NodeType
-                && Origin == terminalNode.Origin
-                && Capture.Equals(terminalNode.Capture);
+            return obj is TerminalForestNode other && 
+                   Location == other.Location && 
+                   NodeType == other.NodeType && 
+                   Origin == other.Origin && 
+                   Capture.Equals(other.Capture);
         }
 
-        private readonly int _hashCode;
+        public override int GetHashCode()
+        {
+            return this._hashCode;
+        }
+
+        public override string ToString()
+        {
+            return $"({(Capture == '\0' ? "null" : Capture.ToString())}, {Origin}, {Location})";
+        }
 
         private int ComputeHashCode()
         {
@@ -54,9 +48,6 @@ namespace Pliant.Forest
                 Capture.GetHashCode());
         }
 
-        public override int GetHashCode()
-        {
-            return _hashCode;
-        }
+        private readonly int _hashCode;
     }
 }

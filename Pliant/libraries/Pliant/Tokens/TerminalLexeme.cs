@@ -1,15 +1,10 @@
-﻿using System;
-using Pliant.Grammars;
-using Pliant.Tokens;
+﻿using Pliant.Grammars;
 
 namespace Pliant.Tokens
 {
     public class TerminalLexeme : LexemeBase<ITerminalLexerRule>, ILexeme
     {
-        public ITerminal Terminal
-        {
-            get { return ConcreteLexerRule.Terminal; }
-        }
+        public ITerminal Terminal => ConcreteLexerRule.Terminal;
 
         string _stringCapture;
         char _capture;
@@ -20,24 +15,28 @@ namespace Pliant.Tokens
         {
             get
             {
-                if (!_isAccepted)
+                if (!this._isAccepted)
+                {
                     return string.Empty;
+                }
 
-                if (_captureRendered)
-                    return _stringCapture;
-                
-                _stringCapture = _capture.ToString();
-                _captureRendered = true;
+                if (this._captureRendered)
+                {
+                    return this._stringCapture;
+                }
 
-                return _stringCapture;
+                this._stringCapture = this._capture.ToString();
+                this._captureRendered = true;
+
+                return this._stringCapture;
             }
         }
 
         public TerminalLexeme(ITerminalLexerRule lexerRule, int position)
             : base(lexerRule, position)
         {
-            _captureRendered = false;
-            _isAccepted = false;
+            this._captureRendered = false;
+            this._isAccepted = false;
         }
 
         public TerminalLexeme(ITerminal terminal, TokenType tokenType, int position)
@@ -47,33 +46,37 @@ namespace Pliant.Tokens
 
         public override void Reset()
         {
-            _captureRendered = false;
-            _isAccepted = false;
+            this._captureRendered = false;
+            this._isAccepted = false;
         }
                 
         public override bool IsAccepted()
         {
-            return _isAccepted;
+            return this._isAccepted;
         }
 
         void SetAccepted(bool value)
         {
-            _isAccepted = value;
+            this._isAccepted = value;
         }
 
         void SetCapture(char value)
         {
-            _capture = value;
+            this._capture = value;
         }
 
         public override bool Scan(char c)
         {
             if (IsAccepted())
+            {
                 return false;
+            }
 
             if (!Terminal.IsMatch(c))
+            {
                 return false;
-            
+            }
+
             SetCapture(c);
             SetAccepted(true);
             return true;

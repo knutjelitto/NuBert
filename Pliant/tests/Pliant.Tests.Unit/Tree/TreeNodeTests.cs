@@ -25,15 +25,21 @@ namespace Pliant.Tests.Unit.Tree
             foreach (var child in treeNode.Children)
             {
                 childCount++;
-                Assert.AreEqual(TreeNodeType.Internal, child.NodeType);
-                var internalChild = child as IInternalTreeNode;
-                var grandChildCount = 0;
-                foreach (var grandChild in internalChild.Children)
+                if (child is IInternalTreeNode internalChild)
                 {
-                    grandChildCount++;
-                    Assert.AreEqual(TreeNodeType.Token, grandChild.NodeType);
+                    var grandChildCount = 0;
+                    foreach (var grandChild in internalChild.Children)
+                    {
+                        grandChildCount++;
+                        Assert.IsInstanceOfType(grandChild, typeof(ITokenTreeNode));
+                    }
+
+                    Assert.AreEqual(1, grandChildCount);
                 }
-                Assert.AreEqual(1, grandChildCount);
+                else
+                {
+                    Assert.Fail();
+                }
             }
             Assert.AreEqual(3, childCount);
         }
@@ -42,10 +48,9 @@ namespace Pliant.Tests.Unit.Tree
         public void TreeNodeWhenAmbiguousParseShouldReturnFirstParseTree()
         {
             ProductionExpression A = "A";
-            A.Rule =
-                A + '+' + A
-                | A + '-' + A
-                | 'a';
+            A.Rule = (A + '+' + A)
+                     | (A + '-' + A)
+                     | 'a';
             var grammar = new GrammarExpression(A, new[] { A }).ToGrammar();
 
             var input = "a+a+a";
@@ -64,9 +69,9 @@ namespace Pliant.Tests.Unit.Tree
             
             var parseForest = parseEngine.GetParseForestRootNode();
 
-            Assert.IsTrue(parseForest is IInternalForestNode);
+            Assert.IsNotNull(parseForest);
 
-            var internalNode = parseForest as IInternalForestNode;
+            var internalNode = parseForest;
 
             var disambiguationAlgorithm = new SelectFirstChildDisambiguationAlgorithm();
             var treeNode = new InternalTreeNode(internalNode, disambiguationAlgorithm);

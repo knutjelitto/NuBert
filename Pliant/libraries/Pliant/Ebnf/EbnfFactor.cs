@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.Ebnf
 {
@@ -16,16 +15,10 @@ namespace Pliant.Ebnf
         public EbnfFactorIdentifier(EbnfQualifiedIdentifier qualifiedIdentifier)
         {
             QualifiedIdentifier = qualifiedIdentifier;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfFactorIdentifier;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfFactorIdentifier;
 
         int ComputeHashCode()
         {
@@ -36,16 +29,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as EbnfFactorIdentifier;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.NodeType == NodeType
                 && factor.QualifiedIdentifier.Equals(QualifiedIdentifier);
         }
@@ -65,16 +64,11 @@ namespace Pliant.Ebnf
         public EbnfFactorLiteral(string value)
         {
             Value = value;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfFactorLiteral;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfFactorLiteral;
+
         int ComputeHashCode()
         {
             return HashCode.Compute(
@@ -84,16 +78,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as EbnfFactorLiteral;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.NodeType == NodeType
                 && factor.Value.Equals(Value);
         }
@@ -113,16 +113,11 @@ namespace Pliant.Ebnf
         public EbnfFactorRegex(RegularExpressions.Regex regex)
         {
             Regex = regex;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfFactorRegex;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfFactorRegex;
+
         int ComputeHashCode()
         {
             return HashCode.Compute(
@@ -132,16 +127,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as EbnfFactorRegex;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.NodeType == NodeType
                 && factor.Regex.Equals(Regex);
         }
@@ -158,34 +159,34 @@ namespace Pliant.Ebnf
 
         public EbnfExpression Expression { get; private set; }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfFactorRepetition;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfFactorRepetition;
 
         public EbnfFactorRepetition(EbnfExpression expression)
         {
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as EbnfFactorRepetition;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.NodeType == NodeType
                 && factor.Expression.Equals(Expression);
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
         int ComputeHashCode()
         {
@@ -209,16 +210,11 @@ namespace Pliant.Ebnf
         public EbnfFactorOptional(EbnfExpression expression)
         {
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfFactorOptional;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfFactorOptional;
+
         int ComputeHashCode()
         {
             return HashCode.Compute(
@@ -228,16 +224,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as EbnfFactorOptional;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.NodeType == NodeType
                 && factor.Expression.Equals(Expression);
         }
@@ -257,16 +259,11 @@ namespace Pliant.Ebnf
         public EbnfFactorGrouping(EbnfExpression expression)
         {
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfFactorGrouping;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfFactorGrouping;
+
         int ComputeHashCode()
         {
             return HashCode.Compute(
@@ -276,16 +273,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as EbnfFactorGrouping;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.NodeType == NodeType
                 && factor.Expression.Equals(Expression);
         }

@@ -15,23 +15,29 @@ namespace Pliant.Charts
         {
             DottedRuleSet = dottedRuleSet;
             Origin = origin;
-            
-            _hashCode = ComputeHashCode(DottedRuleSet, Origin);  
+
+            this._hashCode = ComputeHashCode(DottedRuleSet, Origin);  
         }
         
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var deterministicState = obj as DeterministicState;
-            if (((object)deterministicState) == null)
+            if (deterministicState == null)
+            {
                 return false;
+            }
+
             return deterministicState.Origin == Origin && DottedRuleSet.Equals(deterministicState.DottedRuleSet);
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
         
         private static int ComputeHashCode(DottedRuleSet dottedRuleSet)

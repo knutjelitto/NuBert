@@ -23,16 +23,21 @@ namespace Pliant.Charts
             Reduction = reduction;
             Recognized = recognized;
             Index = index;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
+
             var transitionState = obj as TransitionState;
             if (transitionState == null)
+            {
                 return false;
+            }
 
             return GetHashCode() == transitionState.GetHashCode()
                 && Recognized.Equals(transitionState.Recognized)
@@ -54,7 +59,7 @@ namespace Pliant.Charts
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override string ToString()
@@ -62,13 +67,16 @@ namespace Pliant.Charts
             return $"{Recognized} : {Reduction}";
         }
 
-        public override StateType StateType { get { return StateType.Transitive; } }
+        public override StateType StateType => StateType.Transitive;
 
         public IState GetTargetState()
         {
             var parameterTransitionStateHasNoParseNode = ParseNode == null;
             if (parameterTransitionStateHasNoParseNode)
+            {
                 return Reduction;
+            }
+
             return this;
         }
     }

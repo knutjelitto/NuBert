@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.Ebnf
 {
@@ -9,30 +8,30 @@ namespace Pliant.Ebnf
 
         public EbnfExpressionEmpty()
         {
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfExpressionEmpty;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfExpressionEmpty;
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var expression = obj as EbnfExpressionEmpty;
-            if ((object)expression == null)
+            if (expression == null)
+            {
                 return false;
+            }
+
             return expression.NodeType == NodeType;
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         int ComputeHashCode()
@@ -51,24 +50,24 @@ namespace Pliant.Ebnf
         public EbnfExpression(EbnfTerm term)
         {
             Term = term;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfExpression;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfExpression;
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var expression = obj as EbnfExpression;
-            if ((object)expression == null)
+            if (expression == null)
+            {
                 return false;
+            }
+
             return expression.NodeType == NodeType
                 && expression.Term.Equals(Term);
         }
@@ -82,7 +81,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override string ToString()
@@ -103,24 +102,24 @@ namespace Pliant.Ebnf
             : base(term)
         {
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfExpressionAlteration;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfExpressionAlteration;
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var expression = obj as EbnfExpressionAlteration;
-            if ((object)expression == null)
+            if (expression == null)
+            {
                 return false;
+            }
+
             return expression.NodeType == NodeType
                 && expression.Term.Equals(Term)
                 && expression.Expression.Equals(Expression);
@@ -136,7 +135,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override string ToString()

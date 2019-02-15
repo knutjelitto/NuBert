@@ -1,5 +1,4 @@
-﻿using System;
-using Pliant.Tokens;
+﻿using Pliant.Tokens;
 using Pliant.Utilities;
 
 namespace Pliant.Grammars
@@ -21,7 +20,7 @@ namespace Pliant.Grammars
             : base(TerminalLexerRuleType, tokenType)
         {
             Terminal = terminal;
-            _hashCode = ComputeHashCode(terminal, TerminalLexerRuleType, tokenType);
+            this._hashCode = ComputeHashCode(terminal, TerminalLexerRuleType, tokenType);
         }
 
         public TerminalLexerRule(ITerminal terminal, string tokenTypeId)
@@ -36,18 +35,24 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var terminalLexerRule = obj as TerminalLexerRule;
-            if (((object)terminalLexerRule) == null)
+            if (terminalLexerRule == null)
+            {
                 return false;
+            }
+
             return LexerRuleType.Equals(terminalLexerRule.LexerRuleType)
                 && Terminal.Equals(terminalLexerRule.Terminal);
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         private static int ComputeHashCode(

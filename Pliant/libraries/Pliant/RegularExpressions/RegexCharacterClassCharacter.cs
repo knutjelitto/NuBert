@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.RegularExpressions
 {
@@ -11,16 +10,13 @@ namespace Pliant.RegularExpressions
 
         public bool IsEscaped { get; private set; }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexCharacterClassCharacter; }
-        }
-        
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClassCharacter;
+
         public RegexCharacterClassCharacter(char value, bool isEscaped = false)
         {
             Value = value;
             IsEscaped = isEscaped;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
         
         private int ComputeHashCode()
@@ -31,16 +27,22 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var characterClassCharacter = obj as RegexCharacterClassCharacter;
-            if ((object)characterClassCharacter == null)
+            if (characterClassCharacter == null)
+            {
                 return false;
+            }
+
             return characterClassCharacter.Value.Equals(Value)
                 && characterClassCharacter.IsEscaped.Equals(IsEscaped);
         }
@@ -48,7 +50,10 @@ namespace Pliant.RegularExpressions
         public override string ToString()
         {
             if (IsEscaped)
+            {
                 return $"\\{Value}";
+            }
+
             return Value.ToString();
         }
     }

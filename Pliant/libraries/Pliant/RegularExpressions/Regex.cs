@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.RegularExpressions
 {
@@ -9,10 +8,7 @@ namespace Pliant.RegularExpressions
         public RegexExpression Expression { get; private set; }
         public bool EndsWith { get; private set; }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.Regex; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.Regex;
 
         public Regex(
             bool startsWith,
@@ -22,17 +18,21 @@ namespace Pliant.RegularExpressions
             StartsWith = startsWith;
             EndsWith = endsWith;
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
 
             var other = obj as Regex;
-            if ((object)null == other)
+            if (null == other)
+            {
                 return false;
+            }
 
             return other.EndsWith == EndsWith
                 && other.StartsWith == StartsWith
@@ -43,7 +43,7 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         private int ComputeHashCode()

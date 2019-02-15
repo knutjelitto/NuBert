@@ -6,21 +6,18 @@ namespace Pliant.Automata
 {
     public class NfaState : INfaState, IComparable<INfaState>, IComparable
     {
-        private List<INfaTransition> _transitions;
+        private readonly List<INfaTransition> _transitions;
 
         public NfaState()
         {
-            _transitions = new List<INfaTransition>();
+            this._transitions = new List<INfaTransition>();
         }
 
-        public IReadOnlyList<INfaTransition> Transitions
-        {
-            get { return _transitions; }
-        }
+        public IReadOnlyList<INfaTransition> Transitions => this._transitions;
 
         public void AddTransistion(INfaTransition transition)
         {
-            _transitions.Add(transition);
+            this._transitions.Add(transition);
         }
 
         public IEnumerable<INfaState> Closure()
@@ -40,7 +37,9 @@ namespace Pliant.Automata
                 {
                     var transition = state.Transitions[t];
                     if (transition.TransitionType == NfaTransitionType.Null)
+                    {
                         queue.Enqueue(transition.Target);
+                    }
                 }
             }
 
@@ -49,11 +48,17 @@ namespace Pliant.Automata
 
         public int CompareTo(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 throw new NullReferenceException();
+            }
+
             var nfaState = obj as INfaState;
-            if (((object)nfaState) == null)
+            if (nfaState == null)
+            {
                 throw new ArgumentException("parameter must be a INfaState", nameof(obj));
+            }
+
             return CompareTo(nfaState);
         }
 

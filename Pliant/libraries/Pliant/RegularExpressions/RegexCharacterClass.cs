@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.RegularExpressions
 {
@@ -10,7 +9,7 @@ namespace Pliant.RegularExpressions
         public RegexCharacterClass(RegexCharacterUnitRange characterRange)
         {
             CharacterRange = characterRange;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         private readonly int _hashCode;
@@ -23,23 +22,26 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var characterClass = obj as RegexCharacterClass;
-            if ((object)characterClass == null)
+            if (characterClass == null)
+            {
                 return false;
+            }
+
             return characterClass.CharacterRange.Equals(CharacterRange);
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexCharacterClass; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClass;
 
         public override string ToString()
         {
@@ -57,7 +59,7 @@ namespace Pliant.RegularExpressions
             : base(characterRange)
         {
             CharacterClass = characterClass;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         private readonly int _hashCode;
@@ -71,24 +73,27 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var characterClassList = obj as RegexCharacterClassAlteration;
-            if ((object)characterClassList == null)
+            if (characterClassList == null)
+            {
                 return false;
+            }
+
             return characterClassList.CharacterRange.Equals(CharacterRange)
                 && characterClassList.CharacterClass.Equals(CharacterClass);
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexCharacterClassAlteration; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClassAlteration;
 
         public override string ToString()
         {

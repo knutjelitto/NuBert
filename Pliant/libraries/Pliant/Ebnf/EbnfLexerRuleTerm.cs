@@ -6,14 +6,14 @@ namespace Pliant.Ebnf
     {
         public EbnfLexerRuleFactor Factor { get; private set; }
 
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfLexerRuleTerm; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfLexerRuleTerm;
 
         readonly int _hashCode;
 
         public EbnfLexerRuleTerm(EbnfLexerRuleFactor factor)
         {
             Factor = factor;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         int ComputeHashCode()
@@ -23,16 +23,21 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var term = obj as EbnfLexerRuleTerm;
-            if ((object)term == null)
+            if (term == null)
+            {
                 return false;
+            }
 
             return term.NodeType == NodeType
                 && term.Factor.Equals(Factor);
@@ -43,7 +48,7 @@ namespace Pliant.Ebnf
     {
         public EbnfLexerRuleTerm Term { get; private set; }
 
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfLexerRuleTermConcatenation; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfLexerRuleTermConcatenation;
 
         readonly int _hashCode;
 
@@ -51,7 +56,7 @@ namespace Pliant.Ebnf
             : base(factor)
         {
             Term = term;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         int ComputeHashCode()
@@ -61,16 +66,21 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var term = obj as EbnfLexerRuleTermConcatenation;
-            if ((object)term == null)
+            if (term == null)
+            {
                 return false;
+            }
 
             return term.NodeType == NodeType
                 && term.Factor.Equals(Factor)

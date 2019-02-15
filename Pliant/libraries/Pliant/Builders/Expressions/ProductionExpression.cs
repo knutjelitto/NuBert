@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Pliant.Builders;
 using Pliant.Grammars;
 
 namespace Pliant.Builders.Expressions
@@ -33,11 +32,16 @@ namespace Pliant.Builders.Expressions
             set
             {
                 ProductionModel.Alterations.Clear();
-                if (((object)value) == null)
+                if (value == null)
+                {
                     return;
+                }
+
                 foreach (var alteration in value.Alterations)
+                {
                     ProductionModel.Alterations.Add(
                         GetAlterationModelFromAlterationExpression(alteration));
+                }
             }
         }
 
@@ -67,7 +71,9 @@ namespace Pliant.Builders.Expressions
                 else if (symbol is Expr)
                 {
                     foreach (var symbolModel in GetSymbolModelListFromExpr(symbol as Expr))
+                    {
                         alterationModel.Symbols.Add(symbolModel);
+                    }
                 }
             }
             return alterationModel;
@@ -76,6 +82,7 @@ namespace Pliant.Builders.Expressions
         private static IEnumerable<SymbolModel> GetSymbolModelListFromExpr(Expr expr)
         {
             foreach (var alteration in expr.Alterations)
+            {
                 foreach (var expression in alteration)
                 {
                     if (expression is SymbolExpression)
@@ -84,6 +91,7 @@ namespace Pliant.Builders.Expressions
                         yield return symbolExpression.SymbolModel;
                     }
                 }
+            }
         }
     }
     

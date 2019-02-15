@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.RegularExpressions
 {
@@ -10,17 +9,21 @@ namespace Pliant.RegularExpressions
         public RegexCharacterUnitRange(RegexCharacterClassCharacter startCharacter)
         {
             StartCharacter = startCharacter;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
 
             var characterRange = obj as RegexCharacterUnitRange;
-            if ((object)characterRange == null)
+            if (characterRange == null)
+            {
                 return false;
+            }
 
             return characterRange.StartCharacter.Equals(StartCharacter);
         }
@@ -35,13 +38,10 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexCharacterUnitRange; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterUnitRange;
 
         public override string ToString()
         {
@@ -59,16 +59,22 @@ namespace Pliant.RegularExpressions
             : base(startCharacter)
         {
             EndCharacter = endCharacter;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var characterRangeSet = obj as RegexCharacterRange;
-            if ((object)characterRangeSet == null)
+            if (characterRangeSet == null)
+            {
                 return false;
+            }
+
             return
                 StartCharacter.Equals(characterRangeSet.StartCharacter)
                 && EndCharacter.Equals(characterRangeSet.EndCharacter);
@@ -85,13 +91,10 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexCharacterRange; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterRange;
 
         public override string ToString()
         {

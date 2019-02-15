@@ -4,10 +4,7 @@
     {
         public INfaState Target { get; private set; }
 
-        public NfaTransitionType TransitionType
-        {
-            get { return NfaTransitionType.Null; }
-        }
+        public NfaTransitionType TransitionType => NfaTransitionType.Null;
 
         public NullNfaTransition(INfaState target)
         {

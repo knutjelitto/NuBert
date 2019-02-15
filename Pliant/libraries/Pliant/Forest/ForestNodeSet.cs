@@ -15,22 +15,23 @@ namespace Pliant.Forest
 
         public ForestNodeSet()
         {
-            _symbolNodes = new Dictionary<int, ISymbolForestNode>();
-            _intermediateNodes = new Dictionary<int, IIntermediateForestNode>();
-            _virtualNodes = new Dictionary<int, VirtualForestNode>();
-            _tokenNodes = new Dictionary<IToken, ITokenForestNode>();
+            this._symbolNodes = new Dictionary<int, ISymbolForestNode>();
+            this._intermediateNodes = new Dictionary<int, IIntermediateForestNode>();
+            this._virtualNodes = new Dictionary<int, VirtualForestNode>();
+            this._tokenNodes = new Dictionary<IToken, ITokenForestNode>();
         }
 
         public ISymbolForestNode AddOrGetExistingSymbolNode(ISymbol symbol, int origin, int location)
         {
             var hash = ComputeHashCode(symbol, origin, location);
 
-            ISymbolForestNode symbolNode = null;
-            if (_symbolNodes.TryGetValue(hash, out symbolNode))
+            if (this._symbolNodes.TryGetValue(hash, out var symbolNode))
+            {
                 return symbolNode;
+            }
 
             symbolNode = new SymbolForestNode(symbol, origin, location);
-            _symbolNodes.Add(hash, symbolNode);
+            this._symbolNodes.Add(hash, symbolNode);
             return symbolNode;
         }
         
@@ -44,14 +45,15 @@ namespace Pliant.Forest
 
         public IIntermediateForestNode AddOrGetExistingIntermediateNode(IDottedRule dottedRule, int origin, int location)
         {
-            int hash = ComputeHashCode(dottedRule, origin, location);
+            var hash = ComputeHashCode(dottedRule, origin, location);
 
-            IIntermediateForestNode intermediateNode = null;
-            if (_intermediateNodes.TryGetValue(hash, out intermediateNode))
+            if (this._intermediateNodes.TryGetValue(hash, out var intermediateNode))
+            {
                 return intermediateNode;
+            }
 
             intermediateNode = new IntermediateForestNode(dottedRule, origin, location);
-            _intermediateNodes.Add(hash, intermediateNode);
+            this._intermediateNodes.Add(hash, intermediateNode);
             return intermediateNode;
         }
 
@@ -65,11 +67,13 @@ namespace Pliant.Forest
 
         public ITokenForestNode AddOrGetExistingTokenNode(IToken token)
         {
-            ITokenForestNode tokenNode = null;
-            if (_tokenNodes.TryGetValue(token, out tokenNode))
+            if (this._tokenNodes.TryGetValue(token, out var tokenNode))
+            {
                 return tokenNode;
+            }
+
             tokenNode = new TokenForestNode(token, token.Position, token.Value.Length);
-            _tokenNodes.Add(token, tokenNode);
+            this._tokenNodes.Add(token, tokenNode);
             return tokenNode;
         }
 
@@ -80,7 +84,7 @@ namespace Pliant.Forest
                 virtualNode.Symbol, 
                 virtualNode.Origin, 
                 virtualNode.Location);
-            _virtualNodes.Add(hash, virtualNode);
+            this._virtualNodes.Add(hash, virtualNode);
         }
 
         public bool TryGetExistingVirtualNode(
@@ -90,15 +94,15 @@ namespace Pliant.Forest
         {
             var targetState = transitionState.GetTargetState();
             var hash = ComputeHashCode(targetState.DottedRule.Production.LeftHandSide, targetState.Origin, location);
-            return _virtualNodes.TryGetValue(hash, out node);
+            return this._virtualNodes.TryGetValue(hash, out node);
         }
 
         public void Clear()
         {
-            _symbolNodes.Clear();
-            _intermediateNodes.Clear();
-            _virtualNodes.Clear();
-            _tokenNodes.Clear();
+            this._symbolNodes.Clear();
+            this._intermediateNodes.Clear();
+            this._virtualNodes.Clear();
+            this._tokenNodes.Clear();
         }
     }
 }

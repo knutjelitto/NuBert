@@ -32,7 +32,9 @@ namespace Pliant.Grammars
             {
                 var lexerRule = Grammar.LexerRules[i];
                 if (lexerRule.CanApply(c))
+                {
                     return true;
+                }
             }
             return false;
         }

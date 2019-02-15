@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.Ebnf
 {
@@ -14,16 +13,10 @@ namespace Pliant.Ebnf
         {
             QualifiedIdentifier = qualifiedIdentifier;
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfRule;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfRule;
 
         int ComputeHashCode()
         {
@@ -35,16 +28,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var rule = obj as EbnfRule;
-            if ((object)rule == null)
+            if (rule == null)
+            {
                 return false;
+            }
+
             return rule.NodeType == EbnfNodeType.EbnfRule
                 && rule.QualifiedIdentifier.Equals(QualifiedIdentifier)
                 && rule.Expression.Equals(Expression);

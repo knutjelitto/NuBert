@@ -1,24 +1,17 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.RegularExpressions
 {
     public abstract class RegexAtom : RegexNode
     {
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexAtom; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexAtom;
     }
 
     public class RegexAtomAny : RegexAtom
     {
         const string Dot = ".";
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexAtomAny; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexAtomAny;
 
         public override string ToString()
         {
@@ -27,11 +20,17 @@ namespace Pliant.RegularExpressions
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var any = obj as RegexAtomAny;
-            if ((object)any == null)
+            if (any == null)
+            {
                 return false;
+            }
+
             return true;
         }
 
@@ -48,16 +47,22 @@ namespace Pliant.RegularExpressions
         public RegexAtomCharacter(RegexCharacter character)
         {
             Character = character;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var atomCharacter = obj as RegexAtomCharacter;
-            if ((object)atomCharacter == null)
+            if (atomCharacter == null)
+            {
                 return false;
+            }
+
             return Character.Equals(atomCharacter.Character);
         }
         
@@ -65,7 +70,7 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         private int ComputeHashCode()
@@ -73,10 +78,7 @@ namespace Pliant.RegularExpressions
             return HashCode.Compute(Character.GetHashCode());
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexAtomCharacter; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexAtomCharacter;
 
         public override string ToString()
         {
@@ -91,16 +93,22 @@ namespace Pliant.RegularExpressions
         public RegexAtomExpression(RegexExpression expression)
         {
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var atomExpression = obj as RegexAtomExpression;
-            if ((object)atomExpression == null)
+            if (atomExpression == null)
+            {
                 return false;
+            }
+
             return Expression.Equals(atomExpression.Expression);
         }
         
@@ -113,13 +121,10 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexAtomExpression; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexAtomExpression;
 
         public override string ToString()
         {
@@ -134,16 +139,22 @@ namespace Pliant.RegularExpressions
         public RegexAtomSet(RegexSet set)
         {
             Set = set;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var atomSet = obj as RegexAtomSet;
-            if ((object)atomSet == null)
+            if (atomSet == null)
+            {
                 return false;
+            }
+
             return Set.Equals(atomSet.Set);
         }
         
@@ -156,13 +167,10 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexAtomSet; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexAtomSet;
 
         public override string ToString()
         {

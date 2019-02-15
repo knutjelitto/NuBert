@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Pliant.Automata
+﻿namespace Pliant.Automata
 {
     public class IntervalTree
     {
@@ -17,9 +11,9 @@ namespace Pliant.Automata
 
         public bool Add(char min, char max)
         {
-            if (_root == null)
+            if (this._root == null)
             {
-                _root = new IntervalNode();
+                this._root = new IntervalNode();
                 return true;
             }
             return false;

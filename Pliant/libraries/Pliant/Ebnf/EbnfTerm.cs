@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.Ebnf
 {
@@ -12,16 +11,10 @@ namespace Pliant.Ebnf
         public EbnfTerm(EbnfFactor factor)
         {
             Factor = factor;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfTerm;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfTerm;
 
         int ComputeHashCode()
         {
@@ -32,18 +25,14 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
-                return false;
-            var term = obj as EbnfTerm;
-            if ((object)term == null)
-                return false;
-            return term.NodeType == NodeType
-                && term.Factor.Equals(Factor);
+            return obj is EbnfTerm term && 
+                   term.NodeType == NodeType && 
+                   term.Factor.Equals(Factor);
         }
 
         public override string ToString()
@@ -62,16 +51,10 @@ namespace Pliant.Ebnf
             : base(factor)
         {
             Term = term;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfTermConcatenation;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfTermConcatenation;
 
         int ComputeHashCode()
         {
@@ -83,16 +66,22 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var term = obj as EbnfTermConcatenation;
-            if ((object)term == null)
+            if (term == null)
+            {
                 return false;
+            }
+
             return term.NodeType == NodeType
                 && term.Factor.Equals(Factor)
                 && term.Term.Equals(Term);

@@ -1,5 +1,4 @@
-﻿using System;
-using Pliant.Grammars;
+﻿using Pliant.Grammars;
 using Pliant.Tokens;
 using Pliant.Utilities;
 
@@ -21,7 +20,7 @@ namespace Pliant.Automata
             : base(DfaLexerRuleType, tokenType)
         {
             Start = state;
-            _hashCode = ComputeHashCode(DfaLexerRuleType, tokenType);
+            this._hashCode = ComputeHashCode(DfaLexerRuleType, tokenType);
         }
 
         private static int ComputeHashCode(LexerRuleType dfaLexerRuleType, TokenType tokenType)
@@ -38,17 +37,23 @@ namespace Pliant.Automata
 
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var dfaLexerRule = obj as DfaLexerRule;
-            if (((object)dfaLexerRule) == null)
+            if (dfaLexerRule == null)
+            {
                 return false;
+            }
+
             return TokenType.Equals(dfaLexerRule.TokenType);
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool CanApply(char c)
@@ -57,7 +62,9 @@ namespace Pliant.Automata
             {
                 var transition = Start.Transitions[i];
                 if (transition.Terminal.IsMatch(c))
+                {
                     return true;
+                }
             }
             return false;
         }

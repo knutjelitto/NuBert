@@ -20,12 +20,16 @@ namespace Pliant.Ebnf
             while (!parseRunner.EndOfStream())
             {
                 if (!parseRunner.Read())
+                {
                     throw new Exception(
                         $"Unable to parse Ebnf. Error at line {parseRunner.Line}, column {parseRunner.Column}.");
+                }
             }
             if (!parseEngine.IsAccepted())
+            {
                 throw new Exception(
                     $"Ebnf parse not accepted. Error at line {parseRunner.Line}, column {parseRunner.Column}.");
+            }
 
             var parseForest = parseEngine.GetParseForestRootNode();
 

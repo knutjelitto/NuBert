@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Pliant.Grammars
 {
@@ -9,72 +8,54 @@ namespace Pliant.Grammars
 
         protected GrammarWrapper(IGrammar innerGrammar)
         {
-            _innerGrammar = innerGrammar;
+            this._innerGrammar = innerGrammar;
         }
 
-        public IReadOnlyList<IProduction> Productions
-        {
-            get { return _innerGrammar.Productions; }
-        }
+        public IReadOnlyList<IProduction> Productions => this._innerGrammar.Productions;
 
-        public INonTerminal Start
-        {
-            get { return _innerGrammar.Start; }
-        }
+        public INonTerminal Start => this._innerGrammar.Start;
 
-        public IReadOnlyList<ILexerRule> Ignores
-        {
-            get { return _innerGrammar.Ignores; }
-        }
+        public IReadOnlyList<ILexerRule> Ignores => this._innerGrammar.Ignores;
 
-        public IReadOnlyList<ILexerRule> Trivia
-        {
-            get { return _innerGrammar.Trivia; }
-        }
+        public IReadOnlyList<ILexerRule> Trivia => this._innerGrammar.Trivia;
 
-        public IReadOnlyList<ILexerRule> LexerRules
-        {
-            get { return _innerGrammar.LexerRules; }
-        }
+        public IReadOnlyList<ILexerRule> LexerRules => this._innerGrammar.LexerRules;
 
-        public IReadOnlyDottedRuleRegistry DottedRules
-        {
-            get { return _innerGrammar.DottedRules; }
-        }
+        public IReadOnlyDottedRuleRegistry DottedRules => this._innerGrammar.DottedRules;
 
         public int GetLexerRuleIndex(ILexerRule lexerRule)
         {
-            return _innerGrammar.GetLexerRuleIndex(lexerRule);
+            return this._innerGrammar.GetLexerRuleIndex(lexerRule);
         }
 
         public IReadOnlyList<IProduction> RulesFor(INonTerminal nonTerminal)
         {
-            return _innerGrammar.RulesFor(nonTerminal);
+            return this._innerGrammar.RulesFor(nonTerminal);
         }
 
         public IReadOnlyList<IProduction> StartProductions()
         {
-            return _innerGrammar.StartProductions();
+            return this._innerGrammar.StartProductions();
         }
 
         public bool IsNullable(INonTerminal nonTerminal)
         {
-            return _innerGrammar.IsNullable(nonTerminal);
+            return this._innerGrammar.IsNullable(nonTerminal);
         }
 
         public bool IsTransativeNullable(INonTerminal nonTerminal)
         {
-            return _innerGrammar.IsTransativeNullable(nonTerminal);
+            return this._innerGrammar.IsTransativeNullable(nonTerminal);
         }
 
         public IReadOnlyList<IProduction> RulesContainingSymbol(INonTerminal nonTerminal)
         {
-            return _innerGrammar.RulesContainingSymbol(nonTerminal);
+            return this._innerGrammar.RulesContainingSymbol(nonTerminal);
         }
 
         public bool IsRightRecursive(ISymbol symbol)
         {
-            return _innerGrammar.IsRightRecursive(symbol);
+            return this._innerGrammar.IsRightRecursive(symbol);
         }
     }
 }

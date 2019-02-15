@@ -70,7 +70,9 @@ namespace Pliant.Tests.Integration
             var tokens = jsonLexer.Lex(input).ToArray();
             Assert.AreEqual(7, tokens.Length);
             for (var i = 0; i < input.Length; i++)
+            {
                 Assert.AreEqual(input[i], tokens[i].Value[0]);
+            }
 
             Assert.AreEqual(JsonLexer.OpenBracket, tokens[0].TokenType);
             Assert.AreEqual(JsonLexer.Number, tokens[1].TokenType);

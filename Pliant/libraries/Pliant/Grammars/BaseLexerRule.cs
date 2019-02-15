@@ -9,21 +9,15 @@ namespace Pliant.Grammars
 
         protected BaseLexerRule(LexerRuleType lexerRuleType, TokenType tokenType)
         {
-            _lexerRuleType = lexerRuleType;
-            _tokenType = tokenType;
+            this._lexerRuleType = lexerRuleType;
+            this._tokenType = tokenType;
         }
 
-        public LexerRuleType LexerRuleType { get { return _lexerRuleType; } }
+        public LexerRuleType LexerRuleType => this._lexerRuleType;
 
-        public SymbolType SymbolType
-        {
-            get { return SymbolType.LexerRule; }
-        }
+        public SymbolType SymbolType => SymbolType.LexerRule;
 
-        public TokenType TokenType
-        {
-            get { return _tokenType; }
-        }
+        public TokenType TokenType => this._tokenType;
 
         public abstract bool CanApply(char c);
     }

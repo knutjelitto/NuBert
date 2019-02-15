@@ -5,38 +5,50 @@ namespace Pliant
 {
     public abstract class Observable<T> : IObservable<T>
     {
-        private IList<IObserver<T>> _observers;
+        private readonly IList<IObserver<T>> _observers;
 
         protected Observable()
         {
-            _observers = new List<IObserver<T>>();
+            this._observers = new List<IObserver<T>>();
         }
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
-            if (!_observers.Contains(observer))
-                _observers.Add(observer);
-            return new Unsubscriber(_observers, observer);
+            if (!this._observers.Contains(observer))
+            {
+                this._observers.Add(observer);
+            }
+
+            return new Unsubscriber(this._observers, observer);
         }
 
         protected virtual void OnNext(T value)
         {
-            foreach (var observer in _observers)
+            foreach (var observer in this._observers)
+            {
                 observer.OnNext(value);
+            }
         }
 
         protected virtual void OnError(Exception exception)
         {
-            foreach (var observer in _observers)
+            foreach (var observer in this._observers)
+            {
                 observer.OnError(exception);
+            }
         }
 
         protected virtual void Complete()
         {
-            foreach (var observer in _observers)
-                if (_observers.Contains(observer))
+            foreach (var observer in this._observers)
+            {
+                if (this._observers.Contains(observer))
+                {
                     observer.OnCompleted();
-            _observers.Clear();
+                }
+            }
+
+            this._observers.Clear();
         }
 
         private class Unsubscriber : IDisposable
@@ -46,14 +58,16 @@ namespace Pliant
 
             public Unsubscriber(IList<IObserver<T>> observers, IObserver<T> observer)
             {
-                _observers = observers;
-                _observer = observer;
+                this._observers = observers;
+                this._observer = observer;
             }
 
             public void Dispose()
             {
-                if (_observer != null && _observers.Contains(_observer))
-                    _observers.Remove(_observer);
+                if (this._observer != null && this._observers.Contains(this._observer))
+                {
+                    this._observers.Remove(this._observer);
+                }
             }
         }
     }

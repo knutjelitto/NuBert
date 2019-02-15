@@ -1,20 +1,19 @@
-﻿using Pliant.Collections;
-using Pliant.Forest;
+﻿using Pliant.Forest;
 using Pliant.Grammars;
 using System;
 using System.Collections.Generic;
 
 namespace Pliant.Tree
 {
-    public class InternalTreeNode : IInternalTreeNode
+    public sealed class InternalTreeNode : IInternalTreeNode
     {
-        private IForestDisambiguationAlgorithm _disambiguationAlgorithm;
-        private IInternalForestNode _internalNode;
-        private List<ITreeNode> _children;
+        private readonly IForestDisambiguationAlgorithm _disambiguationAlgorithm;
+        private readonly IInternalForestNode _internalNode;
+        private readonly List<ITreeNode> _children;
 
-        public int Origin { get { return _internalNode.Origin; } }
+        public int Origin => this._internalNode.Origin;
 
-        public int Location { get { return _internalNode.Location; } }
+        public int Location => this._internalNode.Location;
 
         public INonTerminal Symbol { get; private set; }
 
@@ -22,10 +21,10 @@ namespace Pliant.Tree
             IInternalForestNode internalNode,
             IForestDisambiguationAlgorithm stateManager)
         {
-            _disambiguationAlgorithm = stateManager;
-            _internalNode = internalNode;
-            _children = new List<ITreeNode>();
-            SetSymbol(_internalNode);
+            this._disambiguationAlgorithm = stateManager;
+            this._internalNode = internalNode;
+            this._children = new List<ITreeNode>();
+            SetSymbol(this._internalNode);
         }
 
         public InternalTreeNode(
@@ -38,11 +37,11 @@ namespace Pliant.Tree
         {
             switch (node.NodeType)
             {
-                case Forest.ForestNodeType.Symbol:
+                case ForestNodeType.Symbol:
                     Symbol = (node as ISymbolForestNode).Symbol as INonTerminal;
                     break;
 
-                case Forest.ForestNodeType.Intermediate:
+                case ForestNodeType.Intermediate:
                     Symbol = (node as IIntermediateForestNode).DottedRule.Production.LeftHandSide;
                     break;
             }
@@ -54,16 +53,16 @@ namespace Pliant.Tree
             {
                 if (ShouldLoadChildren())
                 {
-                    var andNode = _disambiguationAlgorithm.GetCurrentAndNode(_internalNode);
+                    var andNode = this._disambiguationAlgorithm.GetCurrentAndNode(this._internalNode);
                     LazyLoadChildren(andNode);
                 }
-                return _children;
+                return this._children;
             }
         }
 
         private void LazyLoadChildren(IAndForestNode andNode)
         {
-            for (int c = 0; c < andNode.Children.Count; c++)
+            for (var c = 0; c < andNode.Children.Count; c++)
             {
                 var child = andNode.Children[c];
                 switch (child.NodeType)
@@ -71,19 +70,19 @@ namespace Pliant.Tree
                     // skip intermediate nodes by enumerating children only
                     case ForestNodeType.Intermediate:
                         var intermediateNode = child as IIntermediateForestNode;
-                        var currentAndNode = _disambiguationAlgorithm.GetCurrentAndNode(intermediateNode);
+                        var currentAndNode = this._disambiguationAlgorithm.GetCurrentAndNode(intermediateNode);
                         LazyLoadChildren(currentAndNode);
                         break;
 
                     // create a internal tree node for symbol forest nodes
                     case ForestNodeType.Symbol:
                         var symbolNode = child as ISymbolForestNode;
-                        _children.Add(new InternalTreeNode(symbolNode, _disambiguationAlgorithm));
+                        this._children.Add(new InternalTreeNode(symbolNode, this._disambiguationAlgorithm));
                         break;
                         
                     // create a tree token node for token forest nodes
                     case ForestNodeType.Token:
-                        _children.Add(new TokenTreeNode(child as ITokenForestNode));
+                        this._children.Add(new TokenTreeNode(child as ITokenForestNode));
                         break;
 
                     default:
@@ -94,12 +93,7 @@ namespace Pliant.Tree
 
         private bool ShouldLoadChildren()
         {
-            return _children.Count == 0;
-        }
-        
-        public TreeNodeType NodeType
-        {
-            get { return TreeNodeType.Internal; }
+            return this._children.Count == 0;
         }
 
         public void Accept(ITreeNodeVisitor visitor)

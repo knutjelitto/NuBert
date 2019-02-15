@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Pliant.Grammars
 {
@@ -10,7 +9,7 @@ namespace Pliant.Grammars
 
         public CharacterClassTerminal(params ITerminal[] terminals)
         {
-            _terminals = new List<ITerminal>(terminals);
+            this._terminals = new List<ITerminal>(terminals);
         }
 
         private static IReadOnlyList<Interval> CreateIntervals(IReadOnlyList<ITerminal> terminals)
@@ -27,20 +26,25 @@ namespace Pliant.Grammars
         public override bool IsMatch(char character)
         {
             // PERF: Avoid LINQ Any due to Lambda allocation
-            for (int t = 0; t < _terminals.Count; t++)
+            for (var t = 0; t < this._terminals.Count; t++)
             {
-                var terminal = _terminals[t];
+                var terminal = this._terminals[t];
                 if (terminal.IsMatch(character))
+                {
                     return true;
+                }
             }
             return false;
         }
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            if(_intervals == null)
-                _intervals = CreateIntervals(_terminals);
-            return _intervals;
+            if(this._intervals == null)
+            {
+                this._intervals = CreateIntervals(this._terminals);
+            }
+
+            return this._intervals;
         }
     }
 }

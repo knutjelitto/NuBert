@@ -8,49 +8,50 @@ namespace Pliant.Builders
 {
     public class GrammarModel
     {
-        private ObservableCollection<ProductionModel> _productions;
-        private List<LexerRuleModel> _lexerRules;
+        private readonly ObservableCollection<ProductionModel> _productions;
+        private readonly List<LexerRuleModel> _lexerRules;
 
-        private List<TriviaSettingModel> _triviaSettings;
-        private List<IgnoreSettingModel> _ignoreSettings;
+        private readonly List<TriviaSettingModel> _triviaSettings;
+        private readonly List<IgnoreSettingModel> _ignoreSettings;
 
-        public ICollection<ProductionModel> Productions { get { return _productions; } }
-        
-        public ICollection<TriviaSettingModel> TriviaSettings { get { return _triviaSettings; } }
+        public ICollection<ProductionModel> Productions => this._productions;
 
-        public ICollection<IgnoreSettingModel> IgnoreSettings { get { return _ignoreSettings; } }
+        public ICollection<TriviaSettingModel> TriviaSettings => this._triviaSettings;
 
-        public ICollection<LexerRuleModel> LexerRules { get { return _lexerRules; } }
+        public ICollection<IgnoreSettingModel> IgnoreSettings => this._ignoreSettings;
+
+        public ICollection<LexerRuleModel> LexerRules => this._lexerRules;
 
         ProductionModel _start;
 
         public ProductionModel Start
         {
-            get { return _start; }
+            get => this._start;
             set
             {
                 if (value != null)
                 {
                     StartSetting = new StartProductionSettingModel(value);
                 }
-                _start = value;
+
+                this._start = value;
             }
         }
 
         public StartProductionSettingModel StartSetting { get; set; }
 
-        private ReachibilityMatrix _reachibilityMatrix;
+        private readonly ReachibilityMatrix _reachibilityMatrix;
 
         public GrammarModel()
         {
-            _reachibilityMatrix = new ReachibilityMatrix();
-            
-            _productions = new ObservableCollection<ProductionModel>();
-            _productions.CollectionChanged += ProductionsCollectionChanged;
-            _lexerRules = new List<LexerRuleModel>();
+            this._reachibilityMatrix = new ReachibilityMatrix();
 
-            _ignoreSettings = new List<IgnoreSettingModel>();
-            _triviaSettings = new List<TriviaSettingModel>();
+            this._productions = new ObservableCollection<ProductionModel>();
+            this._productions.CollectionChanged += ProductionsCollectionChanged;
+            this._lexerRules = new List<LexerRuleModel>();
+
+            this._ignoreSettings = new List<IgnoreSettingModel>();
+            this._triviaSettings = new List<TriviaSettingModel>();
         }
 
         public GrammarModel(ProductionModel start)
@@ -64,18 +65,28 @@ namespace Pliant.Builders
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach(object item in e.NewItems)
-                        if(item is ProductionModel)
+                    foreach(var item in e.NewItems)
+                    {
+                        if (item is ProductionModel)
+                        {
                             OnAddProduction(item as ProductionModel);
+                        }
+                    }
+
                     break;
 
                 case NotifyCollectionChangedAction.Move:
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (object item in e.NewItems)
+                    foreach (var item in e.NewItems)
+                    {
                         if (item is ProductionModel)
+                        {
                             OnRemoveProduction(item as ProductionModel);
+                        }
+                    }
+
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -89,18 +100,18 @@ namespace Pliant.Builders
 
         private void OnRemoveProduction(ProductionModel productionModel)
         {
-            _reachibilityMatrix.RemoveProduction(productionModel);
+            this._reachibilityMatrix.RemoveProduction(productionModel);
         }
 
         private void OnAddProduction(ProductionModel productionModel)
         {
-            _reachibilityMatrix.AddProduction(productionModel);
+            this._reachibilityMatrix.AddProduction(productionModel);
         }
 
         private void OnResetProductions()
         {
             Start = null;
-            _reachibilityMatrix.ClearProductions();
+            this._reachibilityMatrix.ClearProductions();
         }
 
         public IGrammar ToGrammar()
@@ -112,10 +123,14 @@ namespace Pliant.Builders
             var triviaRules = GetTriviaRulesFromTriviaRulesModel();
 
             if (Start == null)
+            {
                 throw new Exception("Unable to generate Grammar. The grammar definition is missing a Start production");
+            }
 
             if (Start.LeftHandSide == null)
+            {
                 throw new Exception("Unable to generate Grammar. The grammar definition is missing a Left Hand Symbol to the Start production.");
+            }
 
             return new Grammar(
                 Start.LeftHandSide.NonTerminal,
@@ -129,26 +144,34 @@ namespace Pliant.Builders
             if (StartSymbolExists())
             {
                 if (ProductionsAreEmpty())
+                {
                     PopulateMissingProductionsFromStart(Start);
-                AssertStartProductionExistsForStartSymbol(_reachibilityMatrix);
+                }
+
+                AssertStartProductionExistsForStartSymbol(this._reachibilityMatrix);
             }
             else if(StartSettingExists())
             {
                 if (ProductionsAreEmpty())
+                {
                     throw new InvalidOperationException("Unable to determine start symbol. No productions exist and a start symbol was not specified.");
-                AssertStartProductionexistsForStartSetting(_reachibilityMatrix);
+                }
+
+                AssertStartProductionexistsForStartSetting(this._reachibilityMatrix);
                 Start = FindProduction(StartSetting.Value);
             }
-            else { Start = _reachibilityMatrix.GetStartProduction(); }
+            else { Start = this._reachibilityMatrix.GetStartProduction(); }
         }
 
         private ProductionModel FindProduction(string value)
         {
-            for (var p = 0; p < _productions.Count; p++)
+            for (var p = 0; p < this._productions.Count; p++)
             {
-                var productionModel = _productions[p];
+                var productionModel = this._productions[p];
                 if (productionModel.LeftHandSide.NonTerminal.Value.Equals(value))
+                {
                     return productionModel;
+                }
             }
             return null;
         }
@@ -156,20 +179,25 @@ namespace Pliant.Builders
         private List<IProduction> GetProductionsFromProductionsModel()
         {
             var productions = new List<IProduction>();
-            foreach (var productionModel in _productions)
+            foreach (var productionModel in this._productions)
+            {
                 foreach (var production in productionModel.ToProductions())
+                {
                     productions.Add(production);
+                }
+            }
+
             return productions;
         }
 
         private List<ILexerRule> GetIgnoreRulesFromIgnoreRulesModel()
         {
-            return GetLexerRulesFromSettings(_ignoreSettings);
+            return GetLexerRulesFromSettings(this._ignoreSettings);
         }
 
         private List<ILexerRule> GetTriviaRulesFromTriviaRulesModel()
         {
-            return GetLexerRulesFromSettings(_triviaSettings);
+            return GetLexerRulesFromSettings(this._triviaSettings);
         }
 
         private List<ILexerRule> GetLexerRulesFromSettings(IReadOnlyList<SettingModel> settings)
@@ -180,7 +208,10 @@ namespace Pliant.Builders
                 var setting = settings[i];
                 var lexerRule = GetLexerRuleByName(setting.Value);
                 if (lexerRule == null)
+                {
                     throw new Exception($"lexer rule {setting.Value} not found.");
+                }
+
                 lexerRules.Add(lexerRule);
             }
             return lexerRules;
@@ -188,12 +219,14 @@ namespace Pliant.Builders
 
         private ILexerRule GetLexerRuleByName(string value)
         {
-            for (var i = 0; i < _lexerRules.Count; i++)
+            for (var i = 0; i < this._lexerRules.Count; i++)
             {
-                var lexerRuleModel = _lexerRules[i];
+                var lexerRuleModel = this._lexerRules[i];
                 var lexerRule = lexerRuleModel.Value;
                 if (lexerRule.TokenType.Id.Equals(value))
+                {
                     return lexerRule;
+                }
             }
             return null;
         }
@@ -210,26 +243,34 @@ namespace Pliant.Builders
             {
                 Productions.Add(production);
                 foreach (var alteration in production.Alterations)
+                {
                     for (var s =0; s< alteration.Symbols.Count; s++)
                     {
                         var symbol = alteration.Symbols[s];
                         if (symbol.ModelType == SymbolModelType.Production)
+                        {
                             PopulateMissingProductionsRecursively(symbol as ProductionModel, visited);
+                        }
                     }
+                }
             }
         }
 
         private void AssertStartProductionExistsForStartSymbol(ReachibilityMatrix reachibilityMatrix)
         {
             if (!reachibilityMatrix.ProudctionExistsForSymbol(Start.LeftHandSide))
+            {
                 throw new Exception("no start production found for start symbol");
+            }
         }
 
         private void AssertStartProductionexistsForStartSetting(ReachibilityMatrix reachibilityMatrix)
         {
             if (!reachibilityMatrix.ProudctionExistsForSymbol(
                 new NonTerminalModel(StartSetting.Value)))
+            {
                 throw new Exception("no start production found for start symbol");
+            }
         }
 
         private bool StartSymbolExists()

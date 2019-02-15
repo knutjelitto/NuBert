@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 using System.Collections.Generic;
 
 namespace Pliant.Grammars
@@ -16,20 +15,20 @@ namespace Pliant.Grammars
 
         public SetTerminal(char first)
         {
-            _characterSet = new HashSet<char>();
-            _characterSet.Add(first);
+            this._characterSet = new HashSet<char>();
+            this._characterSet.Add(first);
         }
 
         public SetTerminal(char first, char second)
             : this(first)
         {
-            _characterSet.Add(second);
+            this._characterSet.Add(second);
         }
 
         public SetTerminal(ISet<char> characterSet)
         {
-            _characterSet = new HashSet<char>(characterSet);
-            _intervals = CreateIntervals(_characterSet);            
+            this._characterSet = new HashSet<char>(characterSet);
+            this._intervals = CreateIntervals(this._characterSet);            
         }
                 
 
@@ -39,8 +38,10 @@ namespace Pliant.Grammars
             var intervalList = intervalListPool.AllocateAndClear();
 
             // create a initial set of intervals
-            foreach (var character in characterSet)            
+            foreach (var character in characterSet)
+            {
                 intervalList.Add(new Interval(character, character));
+            }
 
             var groupedIntervals = Interval.Group(intervalList);
             intervalListPool.ClearAndFree(intervalList);
@@ -50,19 +51,22 @@ namespace Pliant.Grammars
 
         public override bool IsMatch(char character)
         {
-            return _characterSet.Contains(character);
+            return this._characterSet.Contains(character);
         }
 
         public override string ToString()
         {
-            return $"[{string.Join(string.Empty, _characterSet)}]";
+            return $"[{string.Join(string.Empty, this._characterSet)}]";
         }
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            if(_intervals == null)
-                _intervals = CreateIntervals(_characterSet); 
-            return _intervals;
+            if(this._intervals == null)
+            {
+                this._intervals = CreateIntervals(this._characterSet);
+            }
+
+            return this._intervals;
         }
     }
 }

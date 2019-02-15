@@ -17,13 +17,7 @@ namespace Pliant.Runtime
 
         public int Location { get; private set; }
 
-        public IGrammar Grammar
-        {
-            get
-            {
-                return _precomputedGrammar.Grammar;
-            }
-        }
+        public IGrammar Grammar => this._precomputedGrammar.Grammar;
 
         public DeterministicParseEngine(IGrammar grammar)
             : this(new PreComputedGrammar(grammar))
@@ -32,40 +26,47 @@ namespace Pliant.Runtime
 
         public DeterministicParseEngine(PreComputedGrammar preComputedGrammar)
         {
-            _precomputedGrammar = preComputedGrammar;
+            this._precomputedGrammar = preComputedGrammar;
             Initialize();
         }
         
         private void Initialize()
         {
             Location = 0;
-            _chart = new DeterministicChart();
-            var kernelDottedRuleSet = _precomputedGrammar.Start;
+            this._chart = new DeterministicChart();
+            var kernelDottedRuleSet = this._precomputedGrammar.Start;
             Enqueue(Location, new DeterministicState(kernelDottedRuleSet, 0));
             Reduce(Location);
         }
 
         private bool Enqueue(int location, DeterministicState deterministicState)
         {
-            if (!_chart.Enqueue(location, deterministicState))
+            if (!this._chart.Enqueue(location, deterministicState))
+            {
                 return false;
+            }
 
             if (deterministicState.DottedRuleSet.NullTransition == null)
+            {
                 return true;
+            }
 
             var nullTransitionDeterministicState = new DeterministicState(
                 deterministicState.DottedRuleSet.NullTransition,
                 location);
 
-            return _chart.Enqueue(location, nullTransitionDeterministicState);
+            return this._chart.Enqueue(location, nullTransitionDeterministicState);
         }
 
         public bool Pulse(IToken token)
         {
             Scan(Location, token);
-            var tokenRecognized = _chart.Sets.Count > Location + 1;
+            var tokenRecognized = this._chart.Sets.Count > Location + 1;
             if (!tokenRecognized)
+            {
                 return false;
+            }
+
             Location++;
             Reduce(Location);
             return true;
@@ -74,10 +75,16 @@ namespace Pliant.Runtime
         public bool Pulse(IReadOnlyList<IToken> tokens)
         {
             for(var i=0;i<tokens.Count;i++)
+            {
                 Scan(Location, tokens[i]);
-            var tokenRecognized = _chart.Sets.Count > Location + 1;
+            }
+
+            var tokenRecognized = this._chart.Sets.Count > Location + 1;
             if (!tokenRecognized)
+            {
                 return false;
+            }
+
             Location++;
             Reduce(Location);
             return true;
@@ -85,12 +92,14 @@ namespace Pliant.Runtime
 
         public bool IsAccepted()
         {
-            var anyEarleySets = _chart.Sets.Count > 0;
+            var anyEarleySets = this._chart.Sets.Count > 0;
             if (!anyEarleySets)
+            {
                 return false;
+            }
 
-            var lastDeterministicSetIndex = _chart.Sets.Count - 1;
-            var lastDeterministicSet = _chart.Sets[lastDeterministicSetIndex];
+            var lastDeterministicSetIndex = this._chart.Sets.Count - 1;
+            var lastDeterministicSet = this._chart.Sets[lastDeterministicSetIndex];
             
             return AnyDeterministicSetAccepted(lastDeterministicSet);
         }
@@ -103,10 +112,14 @@ namespace Pliant.Runtime
                 var deterministicState = lastDeterministicSet.States[i];
                 var originIsFirstEarleySet = deterministicState.Origin == 0;
                 if (!originIsFirstEarleySet)
+                {
                     continue;
+                }
 
                 if (AnyPreComputedStateAccepted(deterministicState.DottedRuleSet.Data))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -118,10 +131,14 @@ namespace Pliant.Runtime
             {
                 var preComputedState = states[j];
                 if (!IsComplete(preComputedState))
+                {
                     continue;
+                }
 
                 if (!IsStartState(preComputedState))
+                {
                     continue;
+                }
 
                 return true;
             }
@@ -130,15 +147,17 @@ namespace Pliant.Runtime
 
         private void Reduce(int i)
         {
-            var set = _chart.Sets[i];
-            for (int f = 0; f < set.States.Count; f++)
+            var set = this._chart.Sets[i];
+            for (var f = 0; f < set.States.Count; f++)
             {
                 var state = set.States[f];
                 var parent = state.Origin;
                 var frame = state.DottedRuleSet;
 
                 if (parent == i)
+                {
                     continue;
+                }
 
                 ReduceDottedRuleSet(i, parent, frame);
             }
@@ -146,7 +165,7 @@ namespace Pliant.Runtime
 
         private void ReduceDottedRuleSet(int i, int parent, DottedRuleSet dottedRuleSet)
         {
-            var parentSet = _chart.Sets[parent];
+            var parentSet = this._chart.Sets[parent];
             var parentSetDeterministicStates = parentSet.States;
             var parentSetDeterministicStateCount = parentSetDeterministicStates.Count;
 
@@ -157,7 +176,9 @@ namespace Pliant.Runtime
                 var production = preComputedState.Production;
                 
                 if (!preComputedState.IsComplete)
+                {
                     continue;
+                }
 
                 var leftHandSide = production.LeftHandSide;
 
@@ -166,24 +187,29 @@ namespace Pliant.Runtime
                     var pState = parentSetDeterministicStates[p];
                     var pParent = pState.Origin;
 
-                    DottedRuleSet target = null;
-                    if (!pState.DottedRuleSet.Reductions.TryGetValue(leftHandSide, out target))
+                    if (!pState.DottedRuleSet.Reductions.TryGetValue(leftHandSide, out var target))
+                    {
                         continue;
+                    }
 
-                    if (!_chart.Enqueue(i, new DeterministicState(target, pParent)))
+                    if (!this._chart.Enqueue(i, new DeterministicState(target, pParent)))
+                    {
                         continue;
+                    }
 
                     if (target.NullTransition == null)
+                    {
                         continue;
+                    }
 
-                    _chart.Enqueue(i, new DeterministicState(target.NullTransition, i));
+                    this._chart.Enqueue(i, new DeterministicState(target.NullTransition, i));
                 }
             }
         }
 
         private void Scan(int location, IToken token)
         {
-            var set = _chart.Sets[location];
+            var set = this._chart.Sets[location];
             var states = set.States;
             var stateCount = states.Count;
             
@@ -199,24 +225,29 @@ namespace Pliant.Runtime
 
         private void ScanDottedRuleSet(int location, IToken token, int parent, DottedRuleSet dottedRuleSet)
         {
-            DottedRuleSet target;
 
             //PERF: This could perhaps be improved with an int array and direct index lookup based on "token.TokenType.Id"?...
-            if (!dottedRuleSet.TokenTransitions.TryGetValue(token.TokenType, out target))
+            if (!dottedRuleSet.TokenTransitions.TryGetValue(token.TokenType, out var target))
+            {
                 return;
+            }
 
-            if (!_chart.Enqueue(location + 1, new DeterministicState(target, parent)))
+            if (!this._chart.Enqueue(location + 1, new DeterministicState(target, parent)))
+            {
                 return;
+            }
 
             if (target.NullTransition == null)
+            {
                 return;
+            }
 
-            _chart.Enqueue(location + 1, new DeterministicState(target.NullTransition, location + 1));
+            this._chart.Enqueue(location + 1, new DeterministicState(target.NullTransition, location + 1));
         }
         
         public void Reset()
         {
-            _chart.Clear();
+            this._chart.Clear();
         }
 
         public IInternalForestNode GetParseForestRootNode()
@@ -230,45 +261,57 @@ namespace Pliant.Runtime
 
         public IReadOnlyList<ILexerRule> GetExpectedLexerRules()
         {
-            var frameSets = _chart.Sets;
+            var frameSets = this._chart.Sets;
             var frameSetCount = frameSets.Count;
 
             if (frameSetCount == 0)
+            {
                 return EmptyLexerRules;
+            }
 
             var hashCode = 0;
             var count = 0;
 
-            if (_expectedLexerRuleIndicies == null)
-                _expectedLexerRuleIndicies = new BitArray(Grammar.LexerRules.Count);
+            if (this._expectedLexerRuleIndicies == null)
+            {
+                this._expectedLexerRuleIndicies = new BitArray(Grammar.LexerRules.Count);
+            }
             else
-                _expectedLexerRuleIndicies.SetAll(false);
+            {
+                this._expectedLexerRuleIndicies.SetAll(false);
+            }
 
             var frameSet = frameSets[frameSets.Count - 1];
             for (var i = 0; i < frameSet.States.Count; i++)
             {
                 var stateFrame = frameSet.States[i];
-                for (int j = 0; j < stateFrame.DottedRuleSet.ScanKeys.Count; j++)
+                for (var j = 0; j < stateFrame.DottedRuleSet.ScanKeys.Count; j++)
                 {
                     var lexerRule = stateFrame.DottedRuleSet.ScanKeys[j];
                     var index = Grammar.GetLexerRuleIndex(lexerRule);
                     if (index < 0)
+                    {
                         continue;
-                    if (_expectedLexerRuleIndicies[index])
-                        continue;
+                    }
 
-                    _expectedLexerRuleIndicies[index] = true;
+                    if (this._expectedLexerRuleIndicies[index])
+                    {
+                        continue;
+                    }
+
+                    this._expectedLexerRuleIndicies[index] = true;
                     hashCode = HashCode.ComputeIncrementalHash(lexerRule.GetHashCode(), hashCode, count == 0);
                     count++;
                 }
             }
 
-            if (_expectedLexerRuleCache == null)
-                _expectedLexerRuleCache = new Dictionary<int, ILexerRule[]>();
+            if (this._expectedLexerRuleCache == null)
+            {
+                this._expectedLexerRuleCache = new Dictionary<int, ILexerRule[]>();
+            }
 
             // if the hash is found in the cached lexer rule lists, return the cached array
-            ILexerRule[] cachedLexerRules = null;
-            if (_expectedLexerRuleCache.TryGetValue(hashCode, out cachedLexerRules))
+            if (this._expectedLexerRuleCache.TryGetValue(hashCode, out var cachedLexerRules))
             {
                 return cachedLexerRules;
             }
@@ -277,13 +320,15 @@ namespace Pliant.Runtime
             var array = new ILexerRule[count];
             var returnItemIndex = 0;
             for (var i = 0; i < Grammar.LexerRules.Count; i++)
-                if (_expectedLexerRuleIndicies[i])
+            {
+                if (this._expectedLexerRuleIndicies[i])
                 {
                     array[returnItemIndex] = Grammar.LexerRules[i];
                     returnItemIndex++;
                 }
+            }
 
-            _expectedLexerRuleCache.Add(hashCode, array);
+            this._expectedLexerRuleCache.Add(hashCode, array);
 
             return array;
         }

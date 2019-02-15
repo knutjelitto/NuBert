@@ -11,44 +11,49 @@ namespace Pliant.Collections
     /// <typeparam name="TValue"></typeparam>
     public class FastLookupDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-        private Dictionary<TKey, TValue> _innerDictionary;
-        private List<KeyValuePair<TKey, TValue>> _innerList;
+        private readonly Dictionary<TKey, TValue> _innerDictionary;
+        private readonly List<KeyValuePair<TKey, TValue>> _innerList;
         private const int Threshold = 4;
         private int _count;
 
         public FastLookupDictionary()
         {
-            _innerDictionary = new Dictionary<TKey, TValue>();
-            _innerList = new List<KeyValuePair<TKey, TValue>>();
+            this._innerDictionary = new Dictionary<TKey, TValue>();
+            this._innerList = new List<KeyValuePair<TKey, TValue>>();
         }
 
         public KeyValuePair<TKey, TValue> GetByIndex(int index)
         {
-            return _innerList[index];
+            return this._innerList[index];
         }
 
         private TValue Get(TKey key)
         {
             if (DictionaryIsMoreEfficient())
+            {
                 return GetValueFromDictionary(key);
+            }
+
             return GetValueFromList(key);
         }
 
         private bool DictionaryIsMoreEfficient()
         {
-            return _count > Threshold;
+            return this._count > Threshold;
         }
 
         private bool TryGetValueFromDictionary(TKey key, out TValue value)
         {
-            return _innerDictionary.TryGetValue(key, out value);
+            return this._innerDictionary.TryGetValue(key, out value);
         }
 
         private TValue GetValueFromDictionary(TKey key)
         {
-            var value = default(TValue);
-            if (_innerDictionary.TryGetValue(key, out value))
+            if (this._innerDictionary.TryGetValue(key, out var value))
+            {
                 return value;
+            }
+
             return default(TValue);
         }
 
@@ -56,11 +61,14 @@ namespace Pliant.Collections
         {
             value = default(TValue);
             var hashCode = key.GetHashCode();
-            for (int i = 0; i < _innerList.Count; i++)
+            for (var i = 0; i < this._innerList.Count; i++)
             {
-                var keyValuePair = _innerList[i];
+                var keyValuePair = this._innerList[i];
                 if (!hashCode.Equals(keyValuePair.Key.GetHashCode()))
+                {
                     continue;
+                }
+
                 value = keyValuePair.Value;
                 return true;
             }
@@ -70,11 +78,13 @@ namespace Pliant.Collections
         private TValue GetValueFromList(TKey key)
         {
             var keyHashCode = key.GetHashCode();
-            for (int i = 0; i < _innerList.Count; i++)
+            for (var i = 0; i < this._innerList.Count; i++)
             {
-                var keyValuePair = _innerList[i];
+                var keyValuePair = this._innerList[i];
                 if (keyHashCode == keyValuePair.Key.GetHashCode())
+                {
                     return keyValuePair.Value;
+                }
             }
             return default(TValue);
         }
@@ -82,43 +92,51 @@ namespace Pliant.Collections
         private void Set(TKey key, TValue value)
         {
             if (DictionaryIsMoreEfficient())
+            {
                 SetValueInDictionary(key, value);
+            }
             else
+            {
                 SetValueInList(key, value);
+            }
+
             if (AtThreshold())
+            {
                 TransferItemsToDictionary();
-            _count++;
+            }
+
+            this._count++;
         }
 
 
         private void SetValueInDictionary(TKey key, TValue value)
         {
-            _innerDictionary.Add(key, value);
+            this._innerDictionary.Add(key, value);
         }
 
         private void SetValueInList(TKey key, TValue value)
         {
             var keyValuePair = new KeyValuePair<TKey, TValue>(key, value);
-            _innerList.Add(keyValuePair);
+            this._innerList.Add(keyValuePair);
         }
 
         private bool AtThreshold()
         {
-            return _count == Threshold;
+            return this._count == Threshold;
         }
 
         private void TransferItemsToDictionary()
         {
-            for (int i = 0; i < _innerList.Count; i++)
+            for (var i = 0; i < this._innerList.Count; i++)
             {
-                var keyValuePair = _innerList[i];
-                _innerDictionary.Add(keyValuePair.Key, keyValuePair.Value);
+                var keyValuePair = this._innerList[i];
+                this._innerDictionary.Add(keyValuePair.Key, keyValuePair.Value);
             }
         }
 
         public TValue this[TKey key]
         {
-            get { return Get(key); }
+            get => Get(key);
             set { Set(key, value); }
         }
 
@@ -127,23 +145,29 @@ namespace Pliant.Collections
             get
             {
                 if (DictionaryIsMoreEfficient())
-                    return _innerDictionary.Count;
-                return _innerList.Count;
+                {
+                    return this._innerDictionary.Count;
+                }
+
+                return this._innerList.Count;
             }
         }
 
-        public bool IsReadOnly { get { return false; } }
+        public bool IsReadOnly => false;
 
         public ICollection<TKey> Keys
         {
             get
             {
                 if (DictionaryIsMoreEfficient())
-                    return _innerDictionary.Keys;
-                var list = new List<TKey>();
-                for (int i = 0; i < _innerList.Count; i++)
                 {
-                    var keyValuePair = _innerList[i];
+                    return this._innerDictionary.Keys;
+                }
+
+                var list = new List<TKey>();
+                for (var i = 0; i < this._innerList.Count; i++)
+                {
+                    var keyValuePair = this._innerList[i];
                     list.Add(keyValuePair.Key);
                 }
                 return list;
@@ -155,11 +179,14 @@ namespace Pliant.Collections
             get
             {
                 if (DictionaryIsMoreEfficient())
-                    return _innerDictionary.Values;
-                var list = new List<TValue>();
-                for (int i = 0; i < _innerList.Count; i++)
                 {
-                    var keyValuePair = _innerList[i];
+                    return this._innerDictionary.Values;
+                }
+
+                var list = new List<TValue>();
+                for (var i = 0; i < this._innerList.Count; i++)
+                {
+                    var keyValuePair = this._innerList[i];
                     list.Add(keyValuePair.Value);
                 }
                 return list;
@@ -178,9 +205,9 @@ namespace Pliant.Collections
 
         public void Clear()
         {
-            _innerDictionary.Clear();
-            _innerList.Clear();
-            _count = 0;
+            this._innerDictionary.Clear();
+            this._innerList.Clear();
+            this._count = 0;
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
@@ -191,11 +218,19 @@ namespace Pliant.Collections
         public bool ContainsKey(TKey key)
         {
             if (DictionaryIsMoreEfficient())
-                return _innerDictionary.ContainsKey(key);
+            {
+                return this._innerDictionary.ContainsKey(key);
+            }
+
             var hashCode = key.GetHashCode();
-            for (int i = 0; i < _innerList.Count; i++)
-                if (hashCode.Equals(_innerList[i].Key.GetHashCode()))
+            for (var i = 0; i < this._innerList.Count; i++)
+            {
+                if (hashCode.Equals(this._innerList[i].Key.GetHashCode()))
+                {
                     return true;
+                }
+            }
+
             return false;
         }
 
@@ -207,8 +242,11 @@ namespace Pliant.Collections
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             if (DictionaryIsMoreEfficient())
-                return _innerDictionary.GetEnumerator();
-            return _innerList.GetEnumerator();
+            {
+                return this._innerDictionary.GetEnumerator();
+            }
+
+            return this._innerList.GetEnumerator();
         }
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
@@ -224,15 +262,21 @@ namespace Pliant.Collections
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (DictionaryIsMoreEfficient())
+            {
                 return TryGetValueFromDictionary(key, out value);
+            }
+
             return TryGetValueFromList(key, out value);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             if (DictionaryIsMoreEfficient())
-                return _innerDictionary.GetEnumerator();
-            return _innerList.GetEnumerator();
+            {
+                return this._innerDictionary.GetEnumerator();
+            }
+
+            return this._innerList.GetEnumerator();
         }
     }
 }

@@ -8,15 +8,9 @@ namespace Pliant.Builders
 
         public INonTerminal Reference { get; private set; }
 
-        public override SymbolModelType ModelType
-        {
-            get { return SymbolModelType.Reference; }
-        }
+        public override SymbolModelType ModelType => SymbolModelType.Reference;
 
-        public override ISymbol Symbol
-        {
-            get { return Reference; }
-        }        
+        public override ISymbol Symbol => Reference;
 
         public ProductionReferenceModel(IGrammar grammar)
         {

@@ -17,14 +17,14 @@ namespace Pliant.RegularExpressions
             IRegexToNfa regexToNfa,
             INfaToDfa nfaToDfa)
         {
-            _regexToNfa = regexToNfa;
-            _nfaToDfa = nfaToDfa;
+            this._regexToNfa = regexToNfa;
+            this._nfaToDfa = nfaToDfa;
         }
 
         public IDfaState Compile(Regex regex)
         {
-            var nfa = _regexToNfa.Transform(regex);
-            var dfa = _nfaToDfa.Transform(nfa);
+            var nfa = this._regexToNfa.Transform(regex);
+            var dfa = this._nfaToDfa.Transform(nfa);
             return dfa;
         }
     }

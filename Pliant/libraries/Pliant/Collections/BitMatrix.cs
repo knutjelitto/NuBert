@@ -6,36 +6,37 @@ namespace Pliant.Collections
 {
     public class BitMatrix
     {
-        private BitArray[] _matrix;
+        private readonly BitArray[] _matrix;
 
         public BitMatrix(int count)
         {
-            _matrix = new BitArray[count];
-            for (int i = 0; i < count; i++)
-                _matrix[i] = new BitArray(count);
+            this._matrix = new BitArray[count];
+            for (var i = 0; i < count; i++)
+            {
+                this._matrix[i] = new BitArray(count);
+            }
         }
 
-        public BitArray this[int index]
-        {
-            get { return _matrix[index]; }
-        }
+        public BitArray this[int index] => this._matrix[index];
 
-        public int Length { get { return _matrix.Length; } }
+        public int Length => this._matrix.Length;
 
         public void Clear()
         {
-            for (int i = 0; i < _matrix.Length; i++)
-                _matrix[i].SetAll(false);
+            for (var i = 0; i < this._matrix.Length; i++)
+            {
+                this._matrix[i].SetAll(false);
+            }
         }
 
         public BitMatrix TransitiveClosure()
         {
             var transitiveClosure = Clone();
-            for (int k = 0; k < transitiveClosure.Length; k++)
+            for (var k = 0; k < transitiveClosure.Length; k++)
             {
-                for (int i = 0; i < transitiveClosure.Length; i++)
+                for (var i = 0; i < transitiveClosure.Length; i++)
                 {
-                    for (int j = 0; j < transitiveClosure.Length; j++)
+                    for (var j = 0; j < transitiveClosure.Length; j++)
                     {
                         transitiveClosure[i][j] = transitiveClosure[i][j]
                             || (transitiveClosure[i][k] && transitiveClosure[k][j]);
@@ -47,10 +48,10 @@ namespace Pliant.Collections
 
         public BitMatrix Clone()
         {
-            var bitMatrix = new BitMatrix(_matrix.Length);
-            for (int i = 0; i < _matrix.Length; i++)
+            var bitMatrix = new BitMatrix(this._matrix.Length);
+            for (var i = 0; i < this._matrix.Length; i++)
             {
-                bitMatrix._matrix[i] = new BitArray(_matrix[i]);
+                bitMatrix._matrix[i] = new BitArray(this._matrix[i]);
             }
             return bitMatrix;
         }
@@ -61,14 +62,20 @@ namespace Pliant.Collections
             const string zero = "0";
             const string one = "1";
             var stringBuilder = new StringBuilder();
-            for (int i = 0; i < Length; i++)
+            for (var i = 0; i < Length; i++)
             {
                 if (i > 0)
+                {
                     stringBuilder.AppendLine();
-                for (int j = 0; j < Length; j++)
+                }
+
+                for (var j = 0; j < Length; j++)
                 {
                     if (j > 0)
+                    {
                         stringBuilder.Append(space);
+                    }
+
                     stringBuilder.Append(this[i][j] ? one : zero);
                 }
             }
@@ -77,16 +84,30 @@ namespace Pliant.Collections
 
         public override bool Equals(object obj)
         {
-            if (((object)obj) == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var bitMatrix = obj as BitMatrix;
-            if (((object)bitMatrix) == null)
+            if (bitMatrix == null)
+            {
                 return false;
+            }
+
             if (bitMatrix.Length != Length)
+            {
                 return false;
+            }
+
             for (var i = 0; i < bitMatrix.Length; i++)
+            {
                 if (!bitMatrix[i].Equals(this[i]))
+                {
                     return false;
+                }
+            }
+
             return true;
         }
 
@@ -94,7 +115,10 @@ namespace Pliant.Collections
         {
             var hashCode = 0;
             for (var i = 0; i < Length; i++)
-                hashCode = HashCode.ComputeIncrementalHash(this[i].GetHashCode(), hashCode, i == 0);            
+            {
+                hashCode = HashCode.ComputeIncrementalHash(this[i].GetHashCode(), hashCode, i == 0);
+            }
+
             return hashCode;
         }
     }

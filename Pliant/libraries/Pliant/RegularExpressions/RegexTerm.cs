@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.RegularExpressions
 {
@@ -7,24 +6,27 @@ namespace Pliant.RegularExpressions
     {
         public RegexFactor Factor { get; private set; }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexTerm; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexTerm;
 
         public RegexTerm(RegexFactor factor)
         {
             Factor = factor;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var term = obj as RegexTerm;
-            if ((object)term == null)
+            if (term == null)
+            {
                 return false;
+            }
+
             return term.Factor.Equals(Factor);
         }
         
@@ -37,7 +39,7 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override string ToString()
@@ -54,16 +56,22 @@ namespace Pliant.RegularExpressions
             : base(factor)
         {
             Term = term;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var termFactor = obj as RegexTermFactor;
-            if ((object)termFactor == null)
+            if (termFactor == null)
+            {
                 return false;
+            }
+
             return termFactor.Factor.Equals(Factor)
                 && termFactor.Term.Equals(Term);
         }
@@ -79,13 +87,10 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexTermFactor; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexTermFactor;
 
         public override string ToString()
         {

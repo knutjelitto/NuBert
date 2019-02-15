@@ -1,17 +1,11 @@
-﻿using Pliant.Forest;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Pliant.Forest;
 
 namespace Pliant.Tree
 {
     public class ParseTreeEnumerable : IEnumerable<ITreeNode>
     {
-        readonly IInternalForestNode _internalForestNode;
-
         public ParseTreeEnumerable(IInternalForestNode internalForestNode)
         {
             this._internalForestNode = internalForestNode;
@@ -19,12 +13,14 @@ namespace Pliant.Tree
 
         public IEnumerator<ITreeNode> GetEnumerator()
         {
-            return new ParseTreeEnumerator(_internalForestNode);
+            return new ParseTreeEnumerator(this._internalForestNode);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new ParseTreeEnumerator(_internalForestNode);
+            return new ParseTreeEnumerator(this._internalForestNode);
         }
+
+        private readonly IInternalForestNode _internalForestNode;
     }
 }

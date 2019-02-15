@@ -5,45 +5,53 @@ namespace Pliant.Automata
 {
     public class TableDfa
     {
-        private Dictionary<int, Dictionary<char, int>> _table;
-        private HashSet<int> _finalStates;
+        private readonly Dictionary<int, Dictionary<char, int>> _table;
+        private readonly HashSet<int> _finalStates;
 
         public TableDfa(int start)
         {
             Start = start;
-            _table = new Dictionary<int, Dictionary<char, int>>();
-            _finalStates = new HashSet<int>();
+            this._table = new Dictionary<int, Dictionary<char, int>>();
+            this._finalStates = new HashSet<int>();
         }
 
         public void AddTransition(int source, char character, int target)
         {
-            var sourceTransitions = _table.AddOrGetExisting(source);
+            var sourceTransitions = this._table.AddOrGetExisting(source);
             sourceTransitions[character] = target;
         }
 
         public void SetFinal(int state, bool isFinal)
         {
-            if (isFinal)            
-                _finalStates.Add(state);            
+            if (isFinal)
+            {
+                this._finalStates.Add(state);
+            }
             else
-                _finalStates.Remove(state);
+            {
+                this._finalStates.Remove(state);
+            }
         }
 
         public bool IsFinal(int state)
         {
-            return _finalStates.Contains(state);
+            return this._finalStates.Contains(state);
         }
 
         public int Start { get; private set; }
 
         public int? Transition(int source, char character)
         {
-            Dictionary<char, int> sourceTransitions = null;
-            if (!_table.TryGetValue(source, out sourceTransitions))
+            if (!this._table.TryGetValue(source, out var sourceTransitions))
+            {
                 return null;
-            var target = default(int);
-            if (sourceTransitions.TryGetValue(character, out target))
+            }
+
+            if (sourceTransitions.TryGetValue(character, out var target))
+            {
                 return target;
+            }
+
             return null;
         }
     }

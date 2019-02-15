@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.RegularExpressions
 {
@@ -9,26 +8,27 @@ namespace Pliant.RegularExpressions
 
         public RegexCharacterClass CharacterClass { get; private set; }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexSet; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexSet;
 
         public RegexSet(bool negate, RegexCharacterClass characterClass)
         {
             Negate = negate;
             CharacterClass = characterClass;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
 
             var set = obj as RegexSet;
-            if ((object)set == null)
+            if (set == null)
+            {
                 return false;
+            }
 
             return CharacterClass.Equals(set.CharacterClass)
                 && Negate.Equals(set.Negate);
@@ -44,7 +44,7 @@ namespace Pliant.RegularExpressions
         }
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override string ToString()

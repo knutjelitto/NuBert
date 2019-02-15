@@ -1,5 +1,4 @@
-﻿using System;
-using Pliant.Utilities;
+﻿using Pliant.Utilities;
 using System.Collections.Generic;
 
 namespace Pliant.Grammars
@@ -39,16 +38,22 @@ namespace Pliant.Grammars
         {
             var rangeTerminal = obj as RangeTerminal;
             if (rangeTerminal == null)
+            {
                 return false;
+            }
+
             return rangeTerminal.End == End
                 && rangeTerminal.Start == Start;
         }
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            if(_intervals == null)
-                _intervals = new[] { new Interval(Start, End) };
-            return _intervals;
+            if(this._intervals == null)
+            {
+                this._intervals = new[] { new Interval(Start, End) };
+            }
+
+            return this._intervals;
         }
     }
 }

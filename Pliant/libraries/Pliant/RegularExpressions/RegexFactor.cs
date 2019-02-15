@@ -10,7 +10,7 @@ namespace Pliant.RegularExpressions
         public RegexFactor(RegexAtom atom)
         {
             Atom = atom;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
         
         private readonly int _hashCode;
@@ -23,23 +23,26 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as RegexFactor;
             if (factor == null)
+            {
                 return false;
+            }
+
             return factor.Atom.Equals(Atom);
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexFactor; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexFactor;
 
         public override string ToString()
         {
@@ -55,16 +58,22 @@ namespace Pliant.RegularExpressions
             : base(atom)
         {
             Iterator = iterator;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var factor = obj as RegexFactor;
-            if ((object)factor == null)
+            if (factor == null)
+            {
                 return false;
+            }
+
             return factor.Atom.Equals(Atom);
         }
         
@@ -79,13 +88,10 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
-        public override RegexNodeType NodeType
-        {
-            get { return RegexNodeType.RegexFactorIterator; }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexFactorIterator;
 
         public override string ToString()
         {

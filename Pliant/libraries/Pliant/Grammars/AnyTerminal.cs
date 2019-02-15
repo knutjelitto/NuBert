@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Pliant.Grammars
 {
@@ -16,7 +15,10 @@ namespace Pliant.Grammars
         {
             var anyTerminal = obj as AnyTerminal;
             if (anyTerminal != null)
+            {
                 return true;
+            }
+
             return false;
         }
 

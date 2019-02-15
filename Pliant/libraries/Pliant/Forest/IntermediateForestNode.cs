@@ -1,5 +1,4 @@
-﻿using Pliant.Charts;
-using Pliant.Grammars;
+﻿using Pliant.Grammars;
 using Pliant.Utilities;
 
 namespace Pliant.Forest
@@ -8,13 +7,13 @@ namespace Pliant.Forest
     {
         public IDottedRule DottedRule { get; private set; }
 
-        public override ForestNodeType NodeType { get { return ForestNodeType.Intermediate; } }
+        public override ForestNodeType NodeType => ForestNodeType.Intermediate;
 
         public IntermediateForestNode(IDottedRule dottedRule, int origin, int location)
             : base(origin, location)
         {
             DottedRule = dottedRule;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override string ToString()
@@ -30,11 +29,15 @@ namespace Pliant.Forest
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
 
             var intermediateNode = obj as IIntermediateForestNode;
             if (intermediateNode == null)
+            {
                 return false;
+            }
 
             return Location == intermediateNode.Location
                 && NodeType == intermediateNode.NodeType
@@ -55,7 +58,7 @@ namespace Pliant.Forest
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 }

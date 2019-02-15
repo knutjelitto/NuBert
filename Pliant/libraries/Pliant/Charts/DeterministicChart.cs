@@ -1,32 +1,29 @@
-﻿using System;
-using Pliant.Grammars;
-using System.Collections.Generic;
-using Pliant.Collections;
+﻿using System.Collections.Generic;
 
 namespace Pliant.Charts
 {
     public class DeterministicChart
     {
-        private List<DeterministicSet> _preComputedSets;
+        private readonly List<DeterministicSet> _preComputedSets;
 
-        public IReadOnlyList<DeterministicSet> Sets { get { return _preComputedSets; } }
+        public IReadOnlyList<DeterministicSet> Sets => this._preComputedSets;
 
         public DeterministicChart()
         {
-            _preComputedSets = new List<DeterministicSet>();
+            this._preComputedSets = new List<DeterministicSet>();
         }
 
         public bool Enqueue(int index, DeterministicState state)
         {
             DeterministicSet preComputedSet = null;
-            if (_preComputedSets.Count <= index)
+            if (this._preComputedSets.Count <= index)
             {
                 preComputedSet = new DeterministicSet(index);
-                _preComputedSets.Add(preComputedSet);
+                this._preComputedSets.Add(preComputedSet);
             }
             else
             {
-                preComputedSet = _preComputedSets[index];
+                preComputedSet = this._preComputedSets[index];
             }
 
             return preComputedSet.Enqueue(state);
@@ -34,7 +31,7 @@ namespace Pliant.Charts
 
         public void Clear()
         {
-            _preComputedSets.Clear();
+            this._preComputedSets.Clear();
         }
     }
 }

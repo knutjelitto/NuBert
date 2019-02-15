@@ -1,9 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pliant.Ebnf
 {
@@ -11,23 +6,29 @@ namespace Pliant.Ebnf
     {
         public EbnfLexerRuleTerm Term { get; private set;  }
 
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfLexerRuleExpression; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfLexerRuleExpression;
 
         private readonly int _hashCode;
 
         public EbnfLexerRuleExpression(EbnfLexerRuleTerm term)
         {
             Term = term;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
         
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var expression = obj as EbnfLexerRuleExpression;
-            if ((object)expression == null)
+            if (expression == null)
+            {
                 return false;
+            }
+
             return expression.NodeType == NodeType
                 && expression.Term.Equals(Term);
         }
@@ -41,7 +42,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 
@@ -51,22 +52,28 @@ namespace Pliant.Ebnf
 
         public EbnfLexerRuleExpression Expression { get; private set; }
 
-        public override EbnfNodeType NodeType { get { return EbnfNodeType.EbnfLexerRuleExpressionAlteration; } }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfLexerRuleExpressionAlteration;
 
         public EbnfLexerRuleExpressionAlteration(EbnfLexerRuleTerm term, EbnfLexerRuleExpression expression)
             : base(term)
         {
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var expression = obj as EbnfLexerRuleExpressionAlteration;
-            if ((object)expression == null)
+            if (expression == null)
+            {
                 return false;
+            }
+
             return expression.NodeType == NodeType
                 && expression.Term.Equals(Term)
                 && expression.Expression.Equals(Expression);
@@ -82,7 +89,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
     }
 }

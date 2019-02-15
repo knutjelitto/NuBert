@@ -1,19 +1,79 @@
-﻿using Pliant.Forest;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Pliant.Forest;
 using Pliant.Grammars;
-using Pliant.Collections;
 using Pliant.Tokens;
 
 namespace Pliant.Tree
 {
-    public class ParseTreeEnumerator
-        : IParseTreeEnumerator
+    public class ParseTreeEnumerator : IParseTreeEnumerator
     {
-        IInternalForestNode _forestRoot;
-        ParseTreeEnumeratorState _status;
-        ForestNodeVisitorImpl _visitor;
+        public ParseTreeEnumerator(IInternalForestNode forestRoot)
+        {
+            this._forestRoot = forestRoot;
+            this._status = ParseTreeEnumeratorState.New;
+            this._visitor = new ForestNodeVisitorImpl();
+        }
+
+        public ITreeNode Current
+        {
+            get
+            {
+                switch (this._status)
+                {
+                    case ParseTreeEnumeratorState.Current:
+                        return this._visitor.Root;
+
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            this._visitor = null;
+            this._forestRoot = null;
+        }
+
+        public bool MoveNext()
+        {
+            if (this._status == ParseTreeEnumeratorState.Done)
+            {
+                return false;
+            }
+
+            if (this._forestRoot.NodeType == ForestNodeType.Intermediate)
+            {
+                this._visitor.Visit(this._forestRoot as IIntermediateForestNode);
+            }
+            else if (this._forestRoot.NodeType == ForestNodeType.Symbol)
+            {
+                this._visitor.Visit(this._forestRoot as ISymbolForestNode);
+            }
+
+            if (this._visitor.Root == null)
+            {
+                this._status = ParseTreeEnumeratorState.Done;
+                return false;
+            }
+
+            this._status = ParseTreeEnumeratorState.Current;
+            return true;
+        }
+
+        public void Reset()
+        {
+            this._status = ParseTreeEnumeratorState.New;
+            this._visitor.Reset();
+        }
+
+        object IEnumerator.Current => Current;
+        private IInternalForestNode _forestRoot;
+        private ParseTreeEnumeratorState _status;
+        private ForestNodeVisitorImpl _visitor;
+
+        #region  not sortable (modify ReSharper template to catch these cases)
 
         private enum ParseTreeEnumeratorState
         {
@@ -22,104 +82,48 @@ namespace Pliant.Tree
             Done
         }
 
-        public ParseTreeEnumerator(
-            IInternalForestNode forestRoot)
-        {
-            _forestRoot = forestRoot;
-            _status = ParseTreeEnumeratorState.New;
-            _visitor = new ForestNodeVisitorImpl();
-        }
-
-        public ITreeNode Current
-        {
-            get
-            {
-                switch (_status)
-                {
-                    case ParseTreeEnumeratorState.Current:
-                        return _visitor.Root;
-
-                    default:
-                        return null;
-                }
-            }
-        }
-
-        object IEnumerator.Current
-        {
-            get
-            {
-                return Current;
-            }
-        }
-
-        public void Dispose()
-        {
-            _visitor = null;
-            _forestRoot = null;
-        }
-
-        public bool MoveNext()
-        {
-            if (_status == ParseTreeEnumeratorState.Done)
-                return false;
-
-            if (_forestRoot.NodeType == ForestNodeType.Intermediate)
-                _visitor.Visit(_forestRoot as IIntermediateForestNode);
-            else if (_forestRoot.NodeType == ForestNodeType.Symbol)
-                _visitor.Visit(_forestRoot as ISymbolForestNode);
-            
-            if (_visitor.Root == null)
-            {    _status = ParseTreeEnumeratorState.Done;
-                return false;
-            }
-
-            _status = ParseTreeEnumeratorState.Current;
-            return true;
-        }
-
-        public void Reset()
-        {
-            _status = ParseTreeEnumeratorState.New;
-            _visitor.Reset();
-        }
-
         private class ForestNodeVisitorImpl : ForestNodeVisitorBase
         {
-            Dictionary<IInternalForestNode, int> _paths;
-            HashSet<IInternalForestNode> _visited;
-
-            Stack<InternalTreeNodeImpl> _nodeStack;
-            IInternalForestNode _lock;
-            int _count;
+            public ForestNodeVisitorImpl()
+            {
+                this._paths = new Dictionary<IInternalForestNode, int>();
+                this._nodeStack = new Stack<InternalTreeNodeImpl>();
+                this._visited = new HashSet<IInternalForestNode>();
+                this._count = 0;
+            }
 
             public ITreeNode Root { get; private set; }
 
-            public ForestNodeVisitorImpl()
+            public void Reset()
             {
-                _paths = new Dictionary<IInternalForestNode, int>();
-                _nodeStack = new Stack<InternalTreeNodeImpl>();
-                _visited = new HashSet<IInternalForestNode>();
-                _count = 0;
+                this._paths.Clear();
+                this._nodeStack.Clear();
+                this._visited.Clear();
+                this._count = 0;
+                this._lock = null;
             }
 
             public override void Visit(IIntermediateForestNode intermediateNode)
             {
-                if (!_visited.Add(intermediateNode))
+                if (!this._visited.Add(intermediateNode))
+                {
                     return;
+                }
 
                 var childIndex = GetOrSetChildIndex(intermediateNode);
                 var path = intermediateNode.Children[childIndex];
-                
+
                 Visit(path);
             }
 
             public override void Visit(ISymbolForestNode symbolNode)
             {
-                if (!_visited.Add(symbolNode))
+                if (!this._visited.Add(symbolNode))
+                {
                     return;
+                }
 
-                int childIndex = GetOrSetChildIndex(symbolNode);
+                var childIndex = GetOrSetChildIndex(symbolNode);
 
                 var path = symbolNode.Children[childIndex];
                 var internalTreeNode = new InternalTreeNodeImpl(
@@ -127,72 +131,81 @@ namespace Pliant.Tree
                     symbolNode.Location,
                     symbolNode.Symbol as INonTerminal);
 
-                var isRoot = _nodeStack.Count == 0;
+                var isRoot = this._nodeStack.Count == 0;
                 if (!isRoot)
                 {
-                    _nodeStack
+                    this._nodeStack
                         .Peek()
                         .ReadWriteChildren
                         .Add(internalTreeNode);
                 }
 
-                _nodeStack.Push(internalTreeNode);
-                
+                this._nodeStack.Push(internalTreeNode);
+
                 Visit(path);
 
-                var top = _nodeStack.Pop();
-                            
+                var top = this._nodeStack.Pop();
+
                 if (isRoot)
                 {
-                    if (_count > 0 && _lock == null)
+                    if (this._count > 0 && this._lock == null)
+                    {
                         Root = null;
+                    }
                     else
+                    {
                         Root = top;
-                    _count++;
-                    _visited.Clear();
+                    }
+
+                    this._count++;
+                    this._visited.Clear();
                 }
+            }
+
+            public override void Visit(ITerminalForestNode terminalNode)
+            {
+                var token = new Token(
+                    terminalNode.Capture.ToString(),
+                    terminalNode.Origin,
+                    new TokenType(terminalNode.ToString()));
+                VisitToken(terminalNode.Origin, terminalNode.Location, token);
+            }
+
+            public override void Visit(ITokenForestNode tokenNode)
+            {
+                VisitToken(tokenNode.Origin, tokenNode.Location, tokenNode.Token);
             }
 
             private int GetOrSetChildIndex(IInternalForestNode symbolNode)
             {
-                var childIndex = 0;
-                if (!_paths.TryGetValue(symbolNode, out childIndex))
+                if (!this._paths.TryGetValue(symbolNode, out var childIndex))
                 {
-                    _paths.Add(symbolNode, 0);
+                    this._paths.Add(symbolNode, 0);
                     return childIndex;
                 }
 
-                var isLocked = !object.ReferenceEquals(null, _lock);
+                var isLocked = !ReferenceEquals(null, this._lock);
                 if (!isLocked)
-                    _lock = symbolNode;
+                {
+                    this._lock = symbolNode;
+                }
 
-                var isCurrentNodeLocked = object.ReferenceEquals(_lock, symbolNode);
-                if(!isCurrentNodeLocked)
+                var isCurrentNodeLocked = ReferenceEquals(this._lock, symbolNode);
+                if (!isCurrentNodeLocked)
+                {
                     return childIndex;
+                }
 
                 childIndex++;
                 if (childIndex >= symbolNode.Children.Count)
                 {
-                    _lock = null;
-                    _paths[symbolNode] = 0;
+                    this._lock = null;
+                    this._paths[symbolNode] = 0;
                     return 0;
                 }
-                _paths[symbolNode] = childIndex;
+
+                this._paths[symbolNode] = childIndex;
                 return childIndex;
-            }
-            
-            public override void Visit(ITerminalForestNode terminalNode)
-            {
-                var token = new Token(
-                    terminalNode.Capture.ToString(), 
-                    terminalNode.Origin, 
-                    new TokenType(terminalNode.ToString()));
-                VisitToken(terminalNode.Origin, terminalNode.Location, token);
-            }
-            
-            public override void Visit(ITokenForestNode tokenNode)
-            {
-                VisitToken(tokenNode.Origin, tokenNode.Location, tokenNode.Token);
             }
 
             private void VisitToken(int origin, int location, IToken token)
@@ -202,55 +215,46 @@ namespace Pliant.Tree
                     location,
                     token);
 
-                var parent = _nodeStack.Peek();
+                var parent = this._nodeStack.Peek();
                 parent.ReadWriteChildren.Add(tokenTreeNodeImpl);
             }
 
-            public void Reset()
-            {
-                _paths.Clear();
-                _nodeStack.Clear();
-                _visited.Clear();
-                _count = 0;
-                _lock = null;                
-            }
+            private int _count;
+            private IInternalForestNode _lock;
+
+            private readonly Stack<InternalTreeNodeImpl> _nodeStack;
+            private readonly Dictionary<IInternalForestNode, int> _paths;
+            private readonly HashSet<IInternalForestNode> _visited;
         }
 
         private abstract class TreeNodeImpl : ITreeNode
         {
-            public int Location { get; private set; }
-
-            public TreeNodeType NodeType { get; private set; }
-
-            public int Origin { get; private set; }
-
-            protected TreeNodeImpl(int origin, int location, TreeNodeType nodeType)
+            protected TreeNodeImpl(int origin, int location)
             {
                 Origin = origin;
                 Location = location;
-                NodeType = nodeType;
             }
+
+            public int Location { get; }
+
+            public int Origin { get; }
 
             public abstract void Accept(ITreeNodeVisitor visitor);
         }
 
         private class InternalTreeNodeImpl : TreeNodeImpl, IInternalTreeNode
         {
-            public List<ITreeNode> ReadWriteChildren { get; private set; }
-
-            public IReadOnlyList<ITreeNode> Children
-            {
-                get { return ReadWriteChildren; }
-            }
-
-            public INonTerminal Symbol { get; private set; }
-
             public InternalTreeNodeImpl(int origin, int location, INonTerminal symbol)
-                : base(origin, location, TreeNodeType.Internal)
+                : base(origin, location)
             {
                 Symbol = symbol;
                 ReadWriteChildren = new List<ITreeNode>();
             }
+
+            public IReadOnlyList<ITreeNode> Children => ReadWriteChildren;
+            public List<ITreeNode> ReadWriteChildren { get; }
+
+            public INonTerminal Symbol { get; }
 
             public override void Accept(ITreeNodeVisitor visitor)
             {
@@ -260,18 +264,20 @@ namespace Pliant.Tree
 
         private class TokenTreeNodeImpl : TreeNodeImpl, ITokenTreeNode
         {
-            public TokenTreeNodeImpl(int origin, int location, IToken token) 
-                : base(origin, location, TreeNodeType.Token)
+            public TokenTreeNodeImpl(int origin, int location, IToken token)
+                : base(origin, location)
             {
                 Token = token;
             }
 
-            public IToken Token { get; private set; }
+            public IToken Token { get; }
 
             public override void Accept(ITreeNodeVisitor visitor)
             {
                 visitor.Visit(this);
             }
-        }        
+        }
+
+        #endregion
     }
 }

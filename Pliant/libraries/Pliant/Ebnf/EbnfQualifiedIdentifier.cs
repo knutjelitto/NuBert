@@ -1,6 +1,5 @@
 ﻿using Pliant.Diagnostics;
 using Pliant.Utilities;
-using System;
 
 namespace Pliant.Ebnf
 {
@@ -14,24 +13,24 @@ namespace Pliant.Ebnf
         {
             Assert.IsNotNull(identifier, nameof(identifier));
             Identifier = identifier;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfQualifiedIdentifier;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfQualifiedIdentifier;
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var qualifiedIdentifier = obj as EbnfQualifiedIdentifier;
-            if ((object)qualifiedIdentifier == null)
+            if (qualifiedIdentifier == null)
+            {
                 return false;
+            }
+
             return qualifiedIdentifier.NodeType == NodeType
                 && qualifiedIdentifier.Identifier.Equals(Identifier);
         }
@@ -43,7 +42,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override string ToString()
@@ -64,24 +63,24 @@ namespace Pliant.Ebnf
             : base(identifier)
         {
             QualifiedIdentifier = qualifiedIdentifier;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType
-        {
-            get
-            {
-                return EbnfNodeType.EbnfQualifiedIdentifierConcatenation;
-            }
-        }
+        public override EbnfNodeType NodeType => EbnfNodeType.EbnfQualifiedIdentifierConcatenation;
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
+
             var qualifiedIdentifier = obj as EbnfQualifiedIdentifierConcatenation;
-            if ((object)qualifiedIdentifier == null)
+            if (qualifiedIdentifier == null)
+            {
                 return false;
+            }
+
             return qualifiedIdentifier.NodeType == NodeType
                 && qualifiedIdentifier.Identifier.Equals(Identifier)
                 && qualifiedIdentifier.QualifiedIdentifier.Equals(QualifiedIdentifier);
@@ -97,7 +96,7 @@ namespace Pliant.Ebnf
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override string ToString()

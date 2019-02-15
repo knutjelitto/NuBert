@@ -5,54 +5,44 @@ namespace Pliant.Forest
 {
     public class TokenForestNode : ForestNodeBase, ITokenForestNode
     {
-        public IToken Token { get; private set; }
-
         public TokenForestNode(IToken token, int origin, int location)
             : base(origin, location)
         {
             Token = token;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
-        public override ForestNodeType NodeType
-        {
-            get { return ForestNodeType.Token; }
-        }
+        public override ForestNodeType NodeType => ForestNodeType.Token;
+        public IToken Token { get; }
 
         public override void Accept(IForestNodeVisitor visitor)
         {
             visitor.Visit(this);
         }
-        
+
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
-            var tokenNode = obj as TokenForestNode;
-            if (tokenNode == null)
-                return false;
-
-            return Location == tokenNode.Location
-                && NodeType == tokenNode.NodeType
-                && Origin == tokenNode.Origin
-                && Token.Equals(tokenNode.Token);
+            return obj is TokenForestNode other && 
+                   Location == other.Location && 
+                   NodeType == other.NodeType && 
+                   Origin == other.Origin && 
+                   Token.Equals(other.Token);
         }
 
-        private readonly int _hashCode;
-        
+        public override int GetHashCode()
+        {
+            return this._hashCode;
+        }
+
         private int ComputeHashCode()
         {
             return HashCode.Compute(
-                ((int)NodeType).GetHashCode(),
+                ((int) NodeType).GetHashCode(),
                 Location.GetHashCode(),
                 Origin.GetHashCode(),
                 Token.GetHashCode());
         }
 
-        public override int GetHashCode()
-        {
-            return _hashCode;
-        }
+        private readonly int _hashCode;
     }
 }

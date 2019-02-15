@@ -1,82 +1,92 @@
-﻿
+﻿using System.Text;
 using Pliant.Tokens;
 using Pliant.Utilities;
-using System.Text;
 
 namespace Pliant.Automata
 {
-    public class DfaLexeme : LexemeBase<IDfaLexerRule>, ILexeme
+    public class DfaLexeme : LexemeBase<IDfaLexerRule>
     {
-        private StringBuilder _stringBuilder;
-        private string _capture;
+        public DfaLexeme(IDfaLexerRule dfaLexerRule, int position)
+            : base(dfaLexerRule, position)
+        {
+            this._stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
+            this._currentState = dfaLexerRule.Start;
+        }
 
-        private IDfaState _currentState;
-
-        // TODO: Make property inspection work better for the debugger        
         public override string Value
         {
             get
             {
                 if (IsStringBuilderAllocated())
+                {
                     DeallocateStringBuilderAndAssignCapture();
-                return _capture;
+                }
+
+                return this._capture;
             }
-        }        
-        
-        public DfaLexeme(IDfaLexerRule dfaLexerRule, int position)
-            : base(dfaLexerRule, position)
-        {
-            _stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
-            _currentState = dfaLexerRule.Start;
-        }
-
-        private bool IsStringBuilderAllocated()
-        {
-            return _stringBuilder != null;
-        }
-        
-        public override void Reset()
-        {
-            _capture = null;
-            if (IsStringBuilderAllocated())
-                _stringBuilder.Clear();
-            _currentState = ConcreteLexerRule.Start;
-        }
-
-        private void DeallocateStringBuilderAndAssignCapture()
-        {
-            _capture = _stringBuilder.ToString();
-            SharedPools.Default<StringBuilder>().ClearAndFree(_stringBuilder);
-            _stringBuilder = null;
-        }
-
-        private void ReallocateStringBuilderFromCapture()
-        {
-            _stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
-            if(!string.IsNullOrWhiteSpace(_capture))
-                _stringBuilder.Append(_capture);
         }
 
         public override bool IsAccepted()
         {
-            return _currentState.IsFinal;
+            return this._currentState.IsFinal;
+        }
+
+        public override void Reset()
+        {
+            this._capture = null;
+            if (IsStringBuilderAllocated())
+            {
+                this._stringBuilder.Clear();
+            }
+
+            this._currentState = ConcreteLexerRule.Start;
         }
 
         public override bool Scan(char c)
         {
-            for(var e = 0; e<_currentState.Transitions.Count; e++)
+            for (var e = 0; e < this._currentState.Transitions.Count; e++)
             {
-                var edge = _currentState.Transitions[e];
+                var edge = this._currentState.Transitions[e];
                 if (edge.Terminal.IsMatch(c))
                 {
                     if (!IsStringBuilderAllocated())
+                    {
                         ReallocateStringBuilderFromCapture();
-                    _currentState = edge.Target;
-                    _stringBuilder.Append(c);
+                    }
+
+                    this._currentState = edge.Target;
+                    this._stringBuilder.Append(c);
                     return true;
                 }
             }
+
             return false;
         }
+
+        private void DeallocateStringBuilderAndAssignCapture()
+        {
+            this._capture = this._stringBuilder.ToString();
+            SharedPools.Default<StringBuilder>().ClearAndFree(this._stringBuilder);
+            this._stringBuilder = null;
+        }
+
+        private bool IsStringBuilderAllocated()
+        {
+            return this._stringBuilder != null;
+        }
+
+        private void ReallocateStringBuilderFromCapture()
+        {
+            this._stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
+            if (!string.IsNullOrWhiteSpace(this._capture))
+            {
+                this._stringBuilder.Append(this._capture);
+            }
+        }
+
+        private string _capture;
+
+        private IDfaState _currentState;
+        private StringBuilder _stringBuilder;
     }
 }

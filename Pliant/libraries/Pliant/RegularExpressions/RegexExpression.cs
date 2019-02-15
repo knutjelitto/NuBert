@@ -1,5 +1,4 @@
 ﻿using Pliant.Utilities;
-using System;
 
 namespace Pliant.RegularExpressions
 {
@@ -7,12 +6,17 @@ namespace Pliant.RegularExpressions
     {
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
 
             var otherRegexExpression = obj as RegexExpression;
             if (otherRegexExpression != null)
+            {
                 return false;
+            }
+
             return otherRegexExpression.NodeType == RegexNodeType.RegexExpression;
         }
 
@@ -21,13 +25,7 @@ namespace Pliant.RegularExpressions
             return 0;
         }
 
-        public override RegexNodeType NodeType
-        {
-            get
-            {
-                return RegexNodeType.RegexExpression;
-            }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexExpression;
     }
 
     public class RegexExpressionTerm : RegexExpression
@@ -37,17 +35,21 @@ namespace Pliant.RegularExpressions
         public RegexExpressionTerm(RegexTerm term)
         {
             Term = term;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
 
             var otherRegexExpressionTerm = obj as RegexExpressionTerm;
-            if ((object)otherRegexExpressionTerm == null)
+            if (otherRegexExpressionTerm == null)
+            {
                 return false;
+            }
 
             return Term.Equals(otherRegexExpressionTerm.Term);
         }
@@ -61,16 +63,10 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
-        public override RegexNodeType NodeType
-        {
-            get
-            {
-                return RegexNodeType.RegexExpressionTerm;
-            }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexExpressionTerm;
 
         public override string ToString()
         {
@@ -86,7 +82,7 @@ namespace Pliant.RegularExpressions
             : base(term)
         {
             Expression = expression;
-            _hashCode = ComputeHashCode();
+            this._hashCode = ComputeHashCode();
         }
         
         private readonly int _hashCode;
@@ -100,28 +96,26 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return this._hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null)
+            if (obj == null)
+            {
                 return false;
+            }
 
             var otherAlteration = obj as RegexExpressionAlteration;
-            if ((object)otherAlteration == null)
+            if (otherAlteration == null)
+            {
                 return false;
+            }
 
             return otherAlteration.Expression.Equals(Expression);
         }
 
-        public override RegexNodeType NodeType
-        {
-            get
-            {
-                return RegexNodeType.RegexExpressionAlteration;
-            }
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexExpressionAlteration;
 
         public override string ToString()
         {

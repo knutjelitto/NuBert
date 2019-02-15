@@ -7,9 +7,6 @@ namespace Pliant.Grammars
         public Repetition(IReadOnlyList<ISymbol> items)
             : base(items) { }
 
-        public override SymbolType SymbolType
-        {
-            get { return SymbolType.Repetition; }
-        }
+        public override SymbolType SymbolType => SymbolType.Repetition;
     }
 }

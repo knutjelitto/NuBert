@@ -1,16 +1,9 @@
-﻿using Pliant.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Pliant.Automata
 {
     public class DfaState : IDfaState
     {
-        public bool IsFinal { get; private set; }
-
-        private readonly List<IDfaTransition> _transitions;
-
-        public IReadOnlyList<IDfaTransition> Transitions { get { return _transitions; } }
-        
         public DfaState()
             : this(false)
         {
@@ -19,12 +12,18 @@ namespace Pliant.Automata
         public DfaState(bool isFinal)
         {
             IsFinal = isFinal;
-            _transitions = new List<IDfaTransition>();
+            this._transitions = new List<IDfaTransition>();
         }
+
+        public bool IsFinal { get; }
+
+        public IReadOnlyList<IDfaTransition> Transitions => this._transitions;
 
         public void AddTransition(IDfaTransition edge)
         {
-            _transitions.Add(edge);
+            this._transitions.Add(edge);
         }
+
+        private readonly List<IDfaTransition> _transitions;
     }
 }

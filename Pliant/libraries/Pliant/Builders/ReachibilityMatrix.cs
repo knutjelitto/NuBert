@@ -6,22 +6,26 @@ namespace Pliant.Builders
 {
     internal class ReachibilityMatrix 
     {
-        private Dictionary<ISymbol, UniqueList<NonTerminalModel>> _matrix;
-        private Dictionary<ISymbol, ProductionModel> _lookup;
+        private readonly Dictionary<ISymbol, UniqueList<NonTerminalModel>> _matrix;
+        private readonly Dictionary<ISymbol, ProductionModel> _lookup;
         
         public ReachibilityMatrix()
         {
-            _matrix = new Dictionary<ISymbol, UniqueList<NonTerminalModel>>();
-            _lookup = new Dictionary<ISymbol, ProductionModel>();
+            this._matrix = new Dictionary<ISymbol, UniqueList<NonTerminalModel>>();
+            this._lookup = new Dictionary<ISymbol, ProductionModel>();
         }
              
         public void AddProduction(ProductionModel production)
         {
-            if (!_matrix.ContainsKey(production.LeftHandSide.NonTerminal))
-                _matrix[production.LeftHandSide.NonTerminal] = new UniqueList<NonTerminalModel>();
+            if (!this._matrix.ContainsKey(production.LeftHandSide.NonTerminal))
+            {
+                this._matrix[production.LeftHandSide.NonTerminal] = new UniqueList<NonTerminalModel>();
+            }
 
-            if (!_lookup.ContainsKey(production.LeftHandSide.NonTerminal))
-                _lookup[production.LeftHandSide.NonTerminal] = production;
+            if (!this._lookup.ContainsKey(production.LeftHandSide.NonTerminal))
+            {
+                this._lookup[production.LeftHandSide.NonTerminal] = production;
+            }
 
             foreach (var alteration in production.Alterations)
             {
@@ -30,7 +34,10 @@ namespace Pliant.Builders
                     var symbol = alteration.Symbols[s];
                     if (symbol.ModelType != SymbolModelType.Production
                         || symbol.ModelType != SymbolModelType.Reference)
+                    {
                         continue;
+                    }
+
                     AddProductionToNewOrExistingSymbolSet(production, symbol);
                 }
             }
@@ -38,38 +45,45 @@ namespace Pliant.Builders
 
         private void AddProductionToNewOrExistingSymbolSet(ProductionModel production, SymbolModel symbol)
         {
-            var set = _matrix.AddOrGetExisting(symbol.Symbol);
+            var set = this._matrix.AddOrGetExisting(symbol.Symbol);
             set.Add(production.LeftHandSide);
         }
 
         public void RemoveProduction(ProductionModel productionModel)
         {
-            if (!_matrix.ContainsKey(productionModel.LeftHandSide.NonTerminal))
-                _matrix.Remove(productionModel.LeftHandSide.NonTerminal);
-            if (!_lookup.ContainsKey(productionModel.LeftHandSide.NonTerminal))
-                _lookup.Remove(productionModel.LeftHandSide.NonTerminal);
+            if (!this._matrix.ContainsKey(productionModel.LeftHandSide.NonTerminal))
+            {
+                this._matrix.Remove(productionModel.LeftHandSide.NonTerminal);
+            }
+
+            if (!this._lookup.ContainsKey(productionModel.LeftHandSide.NonTerminal))
+            {
+                this._lookup.Remove(productionModel.LeftHandSide.NonTerminal);
+            }
         }
 
         public void ClearProductions()
         {
-            _matrix.Clear();
-            _lookup.Clear();
+            this._matrix.Clear();
+            this._lookup.Clear();
         }
         
         public ProductionModel GetStartProduction()
         {
-            foreach (var leftHandSide in _matrix.Keys)
+            foreach (var leftHandSide in this._matrix.Keys)
             {
-                var symbolsReachableByLeftHandSide = _matrix[leftHandSide];
+                var symbolsReachableByLeftHandSide = this._matrix[leftHandSide];
                 if (symbolsReachableByLeftHandSide.Count == 0)
-                    return _lookup[leftHandSide];
+                {
+                    return this._lookup[leftHandSide];
+                }
             }
             return null;
         }
 
         public bool ProudctionExistsForSymbol(NonTerminalModel nonTerminalModel)
         {
-            return _matrix.ContainsKey(nonTerminalModel.NonTerminal);
+            return this._matrix.ContainsKey(nonTerminalModel.NonTerminal);
         }
     }
 }

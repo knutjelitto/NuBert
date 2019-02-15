@@ -3,24 +3,18 @@ using Pliant.Tokens;
 
 namespace Pliant.Tree
 {
-    public class TokenTreeNode : ITokenTreeNode
+    public sealed class TokenTreeNode : ITokenTreeNode
     {
-        private ITokenForestNode _innerNode;
-
-        public int Origin { get { return _innerNode.Origin; } }
-        public int Location { get { return _innerNode.Location; } }
-
         public TokenTreeNode(ITokenForestNode innerNode)
         {
-            _innerNode = innerNode;
+            this._innerNode = innerNode;
         }
 
-        public TreeNodeType NodeType
-        {
-            get { return TreeNodeType.Token; }
-        }
+        public int Location => this._innerNode.Location;
 
-        public IToken Token { get { return _innerNode.Token; } }
+        public int Origin => this._innerNode.Origin;
+
+        public IToken Token => this._innerNode.Token;
 
         public void Accept(ITreeNodeVisitor visitor)
         {
@@ -31,5 +25,7 @@ namespace Pliant.Tree
         {
             return $"{Token.TokenType.Id}({Origin}, {Location}) = {Token.Value}";
         }
+
+        private readonly ITokenForestNode _innerNode;
     }
 }

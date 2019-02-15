@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Pliant.Collections;
 using Pliant.Utilities;
 
@@ -7,28 +6,32 @@ namespace Pliant.Grammars
 {
     public class DottedRuleRegistry : IDottedRuleRegistry
     {
-        private Dictionary<IProduction, Dictionary<int, IDottedRule>> _dottedRuleIndex;
+        private readonly Dictionary<IProduction, Dictionary<int, IDottedRule>> _dottedRuleIndex;
 
         public DottedRuleRegistry()
         {
-            _dottedRuleIndex = new Dictionary<IProduction, Dictionary<int, IDottedRule>>(
+            this._dottedRuleIndex = new Dictionary<IProduction, Dictionary<int, IDottedRule>>(
                 new HashCodeEqualityComparer<IProduction>());
         }
 
         public void Register(IDottedRule dottedRule)
         {
-            var positionIndex = _dottedRuleIndex.AddOrGetExisting(dottedRule.Production);
+            var positionIndex = this._dottedRuleIndex.AddOrGetExisting(dottedRule.Production);
             positionIndex[dottedRule.Position] = dottedRule;
         }
 
         public IDottedRule Get(IProduction production, int position)
         {
-            Dictionary<int, IDottedRule> positionIndex;
-            if (!_dottedRuleIndex.TryGetValue(production, out positionIndex))
+            if (!this._dottedRuleIndex.TryGetValue(production, out var positionIndex))
+            {
                 return null;
-            IDottedRule dottedRule;
-            if (!positionIndex.TryGetValue(position, out dottedRule))
+            }
+
+            if (!positionIndex.TryGetValue(position, out var dottedRule))
+            {
                 return null;
+            }
+
             return dottedRule;
         }
 
