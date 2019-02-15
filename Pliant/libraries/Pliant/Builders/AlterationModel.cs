@@ -4,8 +4,6 @@ namespace Pliant.Builders
 {
     public class AlterationModel
     {
-        public IList<SymbolModel> Symbols { get; private set; }
-
         public AlterationModel()
         {
             Symbols = new List<SymbolModel>();
@@ -15,5 +13,7 @@ namespace Pliant.Builders
         {
             Symbols = new List<SymbolModel>(symbols);
         }
+
+        public IList<SymbolModel> Symbols { get; }
     }
 }

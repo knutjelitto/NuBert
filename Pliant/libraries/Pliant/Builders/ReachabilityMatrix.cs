@@ -1,20 +1,20 @@
-﻿using Pliant.Collections;
+﻿using System.Collections.Generic;
+using Pliant.Collections;
 using Pliant.Grammars;
-using System.Collections.Generic;
 
 namespace Pliant.Builders
 {
-    internal class ReachibilityMatrix 
+    internal class ReachabilityMatrix
     {
-        private readonly Dictionary<ISymbol, UniqueList<NonTerminalModel>> _matrix;
         private readonly Dictionary<ISymbol, ProductionModel> _lookup;
-        
-        public ReachibilityMatrix()
+        private readonly Dictionary<ISymbol, UniqueList<NonTerminalModel>> _matrix;
+
+        public ReachabilityMatrix()
         {
             this._matrix = new Dictionary<ISymbol, UniqueList<NonTerminalModel>>();
             this._lookup = new Dictionary<ISymbol, ProductionModel>();
         }
-             
+
         public void AddProduction(ProductionModel production)
         {
             if (!this._matrix.ContainsKey(production.LeftHandSide.NonTerminal))
@@ -29,16 +29,12 @@ namespace Pliant.Builders
 
             foreach (var alteration in production.Alterations)
             {
-                for(var s = 0; s< alteration.Symbols.Count; s++)
+                foreach (var symbol in alteration.Symbols)
                 {
-                    var symbol = alteration.Symbols[s];
-                    if (symbol.ModelType != SymbolModelType.Production
-                        || symbol.ModelType != SymbolModelType.Reference)
+                    if (symbol.ModelType == SymbolModelType.Production && symbol.ModelType == SymbolModelType.Reference)
                     {
-                        continue;
+                        AddProductionToNewOrExistingSymbolSet(production, symbol);
                     }
-
-                    AddProductionToNewOrExistingSymbolSet(production, symbol);
                 }
             }
         }
@@ -67,7 +63,7 @@ namespace Pliant.Builders
             this._matrix.Clear();
             this._lookup.Clear();
         }
-        
+
         public ProductionModel GetStartProduction()
         {
             foreach (var leftHandSide in this._matrix.Keys)
@@ -78,10 +74,11 @@ namespace Pliant.Builders
                     return this._lookup[leftHandSide];
                 }
             }
+
             return null;
         }
 
-        public bool ProudctionExistsForSymbol(NonTerminalModel nonTerminalModel)
+        public bool ProductionExistsForSymbol(NonTerminalModel nonTerminalModel)
         {
             return this._matrix.ContainsKey(nonTerminalModel.NonTerminal);
         }

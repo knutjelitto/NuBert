@@ -1,21 +1,19 @@
-﻿using Pliant.Grammars;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Pliant.Grammars;
 
 namespace Pliant.Builders.Expressions
 {
     public class GrammarExpression
     {
-        public GrammarModel GrammarModel { get; private set; }
-
         public GrammarExpression(
-            ProductionExpression start, 
+            ProductionExpression start,
             IReadOnlyList<ProductionExpression> productions = null,
             IReadOnlyList<LexerRuleModel> ignore = null,
             IReadOnlyList<LexerRuleModel> trivia = null)
         {
             Initialize(start, productions, ignore, trivia);
         }
-        
+
         public GrammarExpression(
             ProductionExpression start,
             IReadOnlyList<ProductionExpression> productions,
@@ -28,28 +26,27 @@ namespace Pliant.Builders.Expressions
             Initialize(start, productions, ignoreModelList, triviaModelList);
         }
 
+        public GrammarModel GrammarModel { get; private set; }
+
         private static List<LexerRuleModel> ToLexerRuleModelList(IReadOnlyList<ILexerRule> lexerRuleList)
         {
-            if (lexerRuleList == null)
+            if (lexerRuleList == null || lexerRuleList.Count == 0)
             {
                 return null;
             }
 
-            List<LexerRuleModel> modelList = null;
-            for (var i = 0; i < lexerRuleList.Count; i++)
-            {
-                if (i == 0)
-                {
-                    modelList = new List<LexerRuleModel>();
-                }
+            var modelList = new List<LexerRuleModel>();
 
-                modelList.Add(new LexerRuleModel(lexerRuleList[i]));
+            foreach (var lexerRule in lexerRuleList)
+            {
+                modelList.Add(new LexerRuleModel(lexerRule));
             }
 
             return modelList;
         }
 
-        private void Initialize(ProductionExpression start, IReadOnlyList<ProductionExpression> productions, IReadOnlyList<LexerRuleModel> ignore, IReadOnlyList<LexerRuleModel> trivia)
+        private void Initialize(ProductionExpression start, IReadOnlyList<ProductionExpression> productions,
+            IReadOnlyList<LexerRuleModel> ignore, IReadOnlyList<LexerRuleModel> trivia)
         {
             GrammarModel = new GrammarModel
             {

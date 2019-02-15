@@ -1,12 +1,10 @@
-﻿using Pliant.Grammars;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Pliant.Grammars;
 
 namespace Pliant.Builders.Expressions
 {
     public class RuleExpression : BaseExpression
     {
-        public List<List<BaseExpression>> Alterations { get; private set; }
-
         public RuleExpression()
         {
             Alterations = new List<List<BaseExpression>>();
@@ -17,6 +15,8 @@ namespace Pliant.Builders.Expressions
         {
             AddWithAnd(baseExpression);
         }
+
+        public List<List<BaseExpression>> Alterations { get; }
 
         private void AddWithAnd(BaseExpression baseExpression)
         {

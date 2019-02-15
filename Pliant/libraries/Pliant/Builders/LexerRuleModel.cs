@@ -4,8 +4,6 @@ namespace Pliant.Builders
 {
     public class LexerRuleModel : SymbolModel
     {
-        public LexerRuleModel() { }
-
         public LexerRuleModel(ILexerRule value)
         {
             Value = value;
@@ -13,7 +11,7 @@ namespace Pliant.Builders
 
         public override ISymbol Symbol => Value;
 
-        public ILexerRule Value { get; set; }
+        public ILexerRule Value { get; }
 
         public override SymbolModelType ModelType => SymbolModelType.LexerRule;
 
@@ -24,18 +22,7 @@ namespace Pliant.Builders
 
         public override bool Equals(object obj)
         {
-            if (null == obj)
-            {
-                return false;
-            }
-
-            var lexerRuleModel = obj as LexerRuleModel;
-            if (null == lexerRuleModel)
-            {
-                return false;
-            }
-
-            return Value.Equals(lexerRuleModel.Value);
+            return obj is LexerRuleModel lexerRuleModel && Value.Equals(lexerRuleModel.Value);
         }
     }
 }

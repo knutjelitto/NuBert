@@ -5,8 +5,6 @@ namespace Pliant.Builders.Expressions
 {
     public class ProductionExpression : BaseExpression
     {
-        public ProductionModel ProductionModel { get; private set; }
-
         public ProductionExpression(INonTerminal leftHandSide)
         {
             ProductionModel = new ProductionModel(leftHandSide);
@@ -17,16 +15,8 @@ namespace Pliant.Builders.Expressions
             ProductionModel = new ProductionModel(fullyQualifiedName);
         }
 
-        public static implicit operator ProductionExpression(string leftHandSide)
-        {
-            return new ProductionExpression(new NonTerminal(leftHandSide));
-        }
+        public ProductionModel ProductionModel { get; }
 
-        public static implicit operator ProductionExpression(FullyQualifiedName fullyQualifiedName)
-        {
-            return new ProductionExpression(fullyQualifiedName);
-        }
-        
         public RuleExpression Rule
         {
             set
@@ -45,37 +35,45 @@ namespace Pliant.Builders.Expressions
             }
         }
 
+        public static implicit operator ProductionExpression(string leftHandSide)
+        {
+            return new ProductionExpression(new NonTerminal(leftHandSide));
+        }
+
+        public static implicit operator ProductionExpression(FullyQualifiedName fullyQualifiedName)
+        {
+            return new ProductionExpression(fullyQualifiedName);
+        }
+
         private static AlterationModel GetAlterationModelFromAlterationExpression(List<BaseExpression> symbols)
         {
             var alterationModel = new AlterationModel();
             foreach (var symbol in symbols)
             {
-                if (symbol is ProductionExpression)
+                if (symbol is ProductionExpression productionExpression)
                 {
-                    var productionExpression = symbol as ProductionExpression;
                     alterationModel.Symbols.Add(
                         productionExpression.ProductionModel);
                 }
-                else if (symbol is SymbolExpression)
+                else if (symbol is SymbolExpression symbolExpression)
                 {
-                    var symbolExpression = symbol as SymbolExpression;
                     alterationModel.Symbols.Add(
                         symbolExpression.SymbolModel);
                 }
-                else if (symbol is ProductionReferenceExpression)
+                else if (symbol is ProductionReferenceExpression productionReferenceExpression)
                 {
-                    var productionReferenceExpression = symbol as ProductionReferenceExpression;
                     alterationModel.Symbols.Add(
                         productionReferenceExpression.ProductionReferenceModel);
                 }
-                else if (symbol is Expr)
+                else if (symbol is Expr expr)
                 {
-                    foreach (var symbolModel in GetSymbolModelListFromExpr(symbol as Expr))
+                    foreach (var symbolModel in GetSymbolModelListFromExpr(expr))
                     {
                         alterationModel.Symbols.Add(symbolModel);
                     }
                 }
             }
+
             return alterationModel;
         }
 
@@ -85,14 +83,12 @@ namespace Pliant.Builders.Expressions
             {
                 foreach (var expression in alteration)
                 {
-                    if (expression is SymbolExpression)
+                    if (expression is SymbolExpression symbolExpression)
                     {
-                        var symbolExpression = expression as SymbolExpression;
                         yield return symbolExpression.SymbolModel;
                     }
                 }
             }
         }
     }
-    
 }

@@ -8,7 +8,8 @@ namespace Pliant.Builders
 
         public TriviaSettingModel(LexerRuleModel lexerRuleModel)
             : base(SettingKey, lexerRuleModel.Value.TokenType.Id)
-        { }
+        {
+        }
 
         public TriviaSettingModel(FullyQualifiedName fullyQualifiedName)
             : base(SettingKey, fullyQualifiedName.FullName)

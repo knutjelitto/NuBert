@@ -20,7 +20,7 @@ namespace Pliant.Tests.Unit.Builders
         public void GrammarModelShouldAddIgnoreLexerRuleModel()
         {
             var grammar = new GrammarModel();
-            var lexerRuleModel = new LexerRuleModel { Value = new StringLiteralLexerRule("this is a literal") };
+            var lexerRuleModel = new LexerRuleModel(new StringLiteralLexerRule("this is a literal"));
             grammar.IgnoreSettings.Add(
                 new IgnoreSettingModel(
                     lexerRuleModel));
@@ -84,7 +84,7 @@ namespace Pliant.Tests.Unit.Builders
             ns1GrammarModel.Productions.Add(S);
             ns1GrammarModel.Productions.Add(A);
 
-            var ns1ProductionReferece = new ProductionReferenceModel(ns1GrammarModel.ToGrammar());
+            var ns1ProductionReference = new ProductionReferenceModel(ns1GrammarModel.ToGrammar());
 
             var Z = new ProductionModel { LeftHandSide = new NonTerminalModel(new FullyQualifiedName("ns2", "Z")) };
             var X = new ProductionModel { LeftHandSide = new NonTerminalModel(new FullyQualifiedName("ns2", "X")) };
@@ -92,7 +92,7 @@ namespace Pliant.Tests.Unit.Builders
                 new AlterationModel(
                     new SymbolModel[]
                     {
-                        Z, ns1ProductionReferece
+                        Z, ns1ProductionReference
                     }));
 
             var ns2GrammarModel = new GrammarModel

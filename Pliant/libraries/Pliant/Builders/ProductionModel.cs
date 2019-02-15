@@ -1,18 +1,10 @@
-﻿using Pliant.Grammars;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Pliant.Grammars;
 
 namespace Pliant.Builders
 {
-    public class ProductionModel : SymbolModel
+    public sealed class ProductionModel : SymbolModel
     {
-        public List<AlterationModel> Alterations { get; private set; }
-
-        public NonTerminalModel LeftHandSide { get; set; }
-
-        public override SymbolModelType ModelType => SymbolModelType.Production;
-
-        public override ISymbol Symbol => LeftHandSide.NonTerminal;
-
         public ProductionModel()
         {
             Alterations = new List<AlterationModel>();
@@ -40,29 +32,38 @@ namespace Pliant.Builders
         {
         }
 
+        public List<AlterationModel> Alterations { get; }
+
+        public NonTerminalModel LeftHandSide { get; set; }
+
+        public override SymbolModelType ModelType => SymbolModelType.Production;
+
+        public override ISymbol Symbol => LeftHandSide.NonTerminal;
+
         public IEnumerable<IProduction> ToProductions()
         {
             if (Alterations == null || Alterations.Count == 0)
             {
                 yield return new Production(LeftHandSide.NonTerminal);
+                yield break;
             }
 
             foreach (var alteration in Alterations)
             {
                 var symbols = new List<ISymbol>();
-                for (var s = 0; s < alteration.Symbols.Count; s++)
+                foreach (var symbolModel in alteration.Symbols)
                 {
-                    var symbolModel = alteration.Symbols[s];
                     symbols.Add(symbolModel.Symbol);
-                    if (symbolModel.ModelType == SymbolModelType.Reference)
+
+                    if (symbolModel is ProductionReferenceModel productionReferenceModel)
                     {
-                        var productionReferenceModel = symbolModel as ProductionReferenceModel;
-                        for (var p = 0; p < productionReferenceModel.Grammar.Productions.Count; p++)
+                        foreach (var production in productionReferenceModel.Grammar.Productions)
                         {
-                            yield return productionReferenceModel.Grammar.Productions[p];
+                            yield return production;
                         }
                     }
                 }
+
                 yield return new Production(LeftHandSide.NonTerminal, symbols);
             }
         }

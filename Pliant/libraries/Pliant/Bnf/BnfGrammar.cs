@@ -24,7 +24,7 @@ namespace Pliant.Bnf
             var implements = CreateImplementsLexerRule();
             var eol = CreateEndOfLineLexerRule();
             var notDoubleQuote = CreateNotDoubleQuoteLexerRule();
-            var notSingleQuuote = CreateNotSingleQuoteLexerRule();
+            var notSingleQuote = CreateNotSingleQuoteLexerRule();
 
             var grammar = new NonTerminal("grammar");
             var rule = new NonTerminal("rule");
@@ -34,8 +34,8 @@ namespace Pliant.Bnf
             var list = new NonTerminal("list");
             var term = new NonTerminal("term");
             var literal = new NonTerminal("literal");
-            var doubleQuoteText = new NonTerminal("doubleQuoteText");
-            var singleQuoteText = new NonTerminal("singleQuoteText");
+            //var doubleQuoteText = new NonTerminal("doubleQuoteText");
+            //var singleQuoteText = new NonTerminal("singleQuoteText");
 
             var lessThan = new TerminalLexerRule('<');
             var greaterThan = new TerminalLexerRule('>');
@@ -58,7 +58,7 @@ namespace Pliant.Bnf
                 new Production(term, identifier),
                 new Production(identifier, lessThan, ruleName, greaterThan),
                 new Production(literal, doubleQuote, notDoubleQuote, doubleQuote),
-                new Production(literal, slash, notSingleQuuote, slash)
+                new Production(literal, slash, notSingleQuote, slash)
             };
 
             var ignore = new[]

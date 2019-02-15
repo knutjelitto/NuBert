@@ -9,10 +9,12 @@ namespace Pliant.Builders
 
         public StartProductionSettingModel(ProductionModel productionModel)
             : base(SettingKey, productionModel.LeftHandSide.NonTerminal.Value)
-        { }
+        {
+        }
 
         public StartProductionSettingModel(FullyQualifiedName fullyQualifiedName)
             : base(SettingKey, fullyQualifiedName.FullName)
-        { }
+        {
+        }
     }
 }

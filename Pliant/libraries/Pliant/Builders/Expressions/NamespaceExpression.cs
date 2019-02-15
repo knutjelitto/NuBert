@@ -4,12 +4,12 @@ namespace Pliant.Builders.Expressions
 {
     public class NamespaceExpression
     {
-        public string Namespace { get; private set; }
-
         public NamespaceExpression(string @namespace)
         {
             Namespace = @namespace;
         }
+
+        public string Namespace { get; }
 
         public static FullyQualifiedName operator +(NamespaceExpression @namespace, string name)
         {
