@@ -7,14 +7,14 @@ using System.Text;
 
 namespace Pliant.Runtime
 {
-    public class ParseEngineLexeme : LexemeBase<IGrammarLexerRule>, ILexeme
+    public class ParseEngineLexeme : LexemeBase<GrammarLexerRule>
     {
         public override string Value => this._capture.ToString();
 
         private readonly StringBuilder _capture;
         private IParseEngine _parseEngine;
 
-        public ParseEngineLexeme(IGrammarLexerRule lexerRule)
+        public ParseEngineLexeme(GrammarLexerRule lexerRule)
             : base(lexerRule, 0)
         {
             this._capture = new StringBuilder();
@@ -32,7 +32,7 @@ namespace Pliant.Runtime
             {
                 if (rule.LexerRuleType == TerminalLexerRule.TerminalLexerRuleType)
                 {
-                    expectedLexemes.Add(new TerminalLexeme(rule as ITerminalLexerRule, Position));
+                    expectedLexemes.Add(new TerminalLexeme(rule as TerminalLexerRule, Position));
                 }
             }
 

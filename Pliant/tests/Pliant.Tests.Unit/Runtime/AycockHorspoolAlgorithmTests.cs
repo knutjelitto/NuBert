@@ -37,8 +37,9 @@ namespace Pliant.Tests.Unit.Runtime
             var parseEngine = new ParseEngine(grammar);
             parseEngine.Pulse(new Token("a", 0, a.TokenType));
 
-            var privateObject = new PrivateObject(parseEngine);
-            var chart = privateObject.GetField("_chart") as Chart;
+            //var privateObject = new PrivateObject(parseEngine);
+            //var chart = privateObject.GetField("_chart") as Chart;
+            var chart = parseEngine.Chart;
 
             Assert.IsNotNull(chart);
             Assert.AreEqual(2, chart.Count);

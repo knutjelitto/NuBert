@@ -81,7 +81,7 @@ namespace Pliant.Tests.Unit.Runtime
                 .ToGrammar();
         }
 
-        private static BaseLexerRule CreateMultiLineCommentLexerRule()
+        private static LexerRule CreateMultiLineCommentLexerRule()
         {
             var states = new DfaState[5];
             for (int i = 0; i < states.Length; i++)
@@ -427,7 +427,8 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static Chart GetParseEngineChart(ParseEngine parseEngine)
         {
-            return new PrivateObject(parseEngine).GetField("_chart") as Chart;
+            //return new PrivateObject(parseEngine).GetField("_chart") as Chart;
+            return parseEngine.Chart;
         }
 
         private static void RunParse(ParseEngine parseEngine, string input)

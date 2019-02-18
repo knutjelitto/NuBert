@@ -5,7 +5,7 @@ namespace Pliant.Builders.Expressions
 {
     public class ProductionExpression : BaseExpression
     {
-        public ProductionExpression(INonTerminal leftHandSide)
+        public ProductionExpression(NonTerminal leftHandSide)
         {
             ProductionModel = new ProductionModel(leftHandSide);
         }

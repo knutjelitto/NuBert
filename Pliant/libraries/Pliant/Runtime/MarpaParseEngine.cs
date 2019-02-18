@@ -1,26 +1,18 @@
-﻿using Pliant.Charts;
-using Pliant.Grammars;
-using Pliant.Collections;
-using System.Collections.Generic;
-using Pliant.Utilities;
-using Pliant.Tokens;
-using System;
-using System.Runtime.CompilerServices;
-using Pliant.Forest;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Pliant.Charts;
+using Pliant.Collections;
+using Pliant.Forest;
+using Pliant.Grammars;
+using Pliant.Tokens;
+using Pliant.Utilities;
 
 namespace Pliant.Runtime
 {
     public class MarpaParseEngine : IParseEngine
     {
-        private readonly PreComputedGrammar _preComputedGrammar;
-
-        public DeterministicChart Chart { get; private set; }
-        
-        public int Location { get; private set; }
-
-        public IGrammar Grammar => this._preComputedGrammar.Grammar;
-
         public MarpaParseEngine(PreComputedGrammar preComputedGrammar)
         {
             this._preComputedGrammar = preComputedGrammar;
@@ -30,29 +22,16 @@ namespace Pliant.Runtime
 
         public MarpaParseEngine(IGrammar grammar)
             : this(new PreComputedGrammar(grammar))
-        { }
-
-        private void Initialize()
         {
-            var start = this._preComputedGrammar.Start;
-            AddEimPair(0, start, 0);
         }
 
-        public void Reset()
-        {
-            Initialize();
-        }
+        public DeterministicChart Chart { get; }
 
-        public IInternalForestNode GetParseForestRootNode()
-        {
-            throw new NotImplementedException();
-        }
-        
-        private Dictionary<int, ILexerRule[]> _expectedLexerRuleCache;
-        private static readonly ILexerRule[] EmptyLexerRules = { };
-        private BitArray _expectedLexerRuleIndicies;
+        public IGrammar Grammar => this._preComputedGrammar.Grammar;
 
-        public IReadOnlyList<ILexerRule> GetExpectedLexerRules()
+        public int Location { get; private set; }
+
+        public IReadOnlyList<LexerRule> GetExpectedLexerRules()
         {
             var frameSets = Chart.Sets;
             var frameSetCount = frameSets.Count;
@@ -100,7 +79,7 @@ namespace Pliant.Runtime
 
             if (this._expectedLexerRuleCache == null)
             {
-                this._expectedLexerRuleCache = new Dictionary<int, ILexerRule[]>();
+                this._expectedLexerRuleCache = new Dictionary<int, LexerRule[]>();
             }
 
             // if the hash is found in the cached lexer rule lists, return the cached array
@@ -110,7 +89,7 @@ namespace Pliant.Runtime
             }
 
             // compute the new lexer rule array and add it to the cache
-            var array = new ILexerRule[count];
+            var array = new LexerRule[count];
             var returnItemIndex = 0;
             for (var i = 0; i < Grammar.LexerRules.Count; i++)
             {
@@ -125,7 +104,26 @@ namespace Pliant.Runtime
 
             return array;
         }
-        
+
+        public IInternalForestNode GetParseForestRootNode()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsAccepted()
+        {
+            var anyEarleySets = Chart.Sets.Count > 0;
+            if (!anyEarleySets)
+            {
+                return false;
+            }
+
+            var lastDeterministicSetIndex = Chart.Sets.Count - 1;
+            var lastDeterministicSet = Chart.Sets[lastDeterministicSetIndex];
+
+            return AnyDeterministicStateAccepted(lastDeterministicSet);
+        }
+
         public bool Pulse(IToken token)
         {
             ScanPass(Location, token);
@@ -158,18 +156,38 @@ namespace Pliant.Runtime
             return true;
         }
 
-        public bool IsAccepted()
+        public void Reset()
         {
-            var anyEarleySets = Chart.Sets.Count > 0;
-            if (!anyEarleySets)
+            Initialize();
+        }
+
+        private static DottedRuleSet Goto(DottedRuleSet fromAH)
+        {
+            return fromAH.NullTransition;
+        }
+
+        private static DottedRuleSet Goto(DottedRuleSet fromAH, ISymbol symbol)
+        {
+            return fromAH.Reductions.GetOrReturnNull(symbol);
+        }
+
+        private static DottedRuleSet Goto(DottedRuleSet fromAH, IToken token)
+        {
+            return fromAH.TokenTransitions.GetOrReturnNull(token.TokenType);
+        }
+
+        private void AddEimPair(int iLoc, DottedRuleSet confirmedAH, int origLoc)
+        {
+            var confirmedEIM = new DeterministicState(confirmedAH, origLoc);
+            var predictedAH = Goto(confirmedAH);
+            Chart.Enqueue(iLoc, confirmedEIM);
+            if (predictedAH == null)
             {
-                return false;
+                return;
             }
 
-            var lastDeterministicSetIndex = Chart.Sets.Count - 1;
-            var lastDeterministicSet = Chart.Sets[lastDeterministicSetIndex];
-
-            return AnyDeterministicStateAccepted(lastDeterministicSet);
+            var predictedEIM = new DeterministicState(predictedAH, iLoc);
+            Chart.Enqueue(iLoc, predictedEIM);
         }
 
         private bool AnyDeterministicStateAccepted(DeterministicSet lastFrameSet)
@@ -211,147 +229,12 @@ namespace Pliant.Runtime
 
                 return true;
             }
+
             return false;
         }
 
-        private void ScanPass(int iLoc, IToken token)
-        {
-            var iES = Chart.Sets[iLoc];
-            for (var i = 0; i < iES.States.Count; i++)
-            {
-                var workEIM = iES.States[i];
-                var fromAH = workEIM.DottedRuleSet;
-                var origLoc = workEIM.Origin;
-
-                var toAH = Goto(fromAH, token);
-                if (toAH == null)
-                {
-                    continue;
-                }
-
-                AddEimPair(iLoc + 1, toAH, origLoc);
-            }
-        }
-
-        private void ReductionPass(int iLoc)
-        {
-            var iES = Chart.Sets[iLoc];
-            var processed = SharedPools.Default<HashSet<ISymbol>>().AllocateAndClear();
-            for (var i = 0; i < iES.States.Count; i++)
-            {
-                var workEIM = iES.States[i];
-                var workAH = workEIM.DottedRuleSet;
-                var origLoc = workEIM.Origin;
-
-                for (var j = 0; j < workAH.Data.Count; j++)
-                {
-                    var dottedRule = workAH.Data[j];
-                    if (!dottedRule.IsComplete)
-                    {
-                        continue;
-                    }
-
-                    var lhsSym = dottedRule.Production.LeftHandSide;
-                    if (!processed.Add(lhsSym))
-                    {
-                        continue;
-                    }
-
-                    ReduceOneLeftHandSide(iLoc, origLoc, lhsSym);
-                }
-                processed.Clear();
-            }
-            SharedPools.Default<HashSet<ISymbol>>().ClearAndFree(processed);
-            MemoizeTransitions(iLoc);
-        }
-
-        private void ReduceOneLeftHandSide(int iLoc, int origLoc, INonTerminal lhsSym)
-        {
-            var frameSet = Chart.Sets[origLoc];
-            var transitionItem = frameSet.FindCachedDottedRuleSetTransition(lhsSym);
-            if (transitionItem != null)
-            {
-                LeoReductionOperation(iLoc, transitionItem);
-            }
-            else
-            {
-                for (var i = 0; i < frameSet.States.Count; i++)
-                {
-                    var stateFrame = frameSet.States[i];
-                    EarleyReductionOperation(iLoc, stateFrame, lhsSym);
-                }
-            }
-        }
-        
-        private void MemoizeTransitions(int iLoc)
-        {
-            var frameSet = Chart.Sets[iLoc];
-            // leo eligibility needs to be cached before creating the cached transition
-            // if the size of the list is != 1, do not enter the cached frame transition
-            var cachedTransitionsPool = SharedPools.Default<Dictionary<ISymbol, CachedDottedRuleSetTransition>>();
-            var cachedTransitions = cachedTransitionsPool.AllocateAndClear();
-            var cachedCountPool = SharedPools.Default<Dictionary<ISymbol, int>>();
-            var cachedCount = cachedCountPool.AllocateAndClear();
-
-            for (var i = 0; i < frameSet.States.Count; i++)
-            {
-                var stateFrame = frameSet.States[i];
-                var frame = stateFrame.DottedRuleSet;
-                var frameData = frame.Data;
-                var stateFrameDataCount = frameData.Count;
-
-                for (var j = 0; j < stateFrameDataCount; j++)
-                {
-                    var preComputedState = frameData[j];
-                    if (preComputedState.IsComplete)
-                    {
-                        continue;
-                    }
-
-                    var postDotSymbol = preComputedState.PostDotSymbol;
-                    if (postDotSymbol.SymbolType != SymbolType.NonTerminal)
-                    {
-                        continue;
-                    }
-
-                    // leo eligibile items are right recursive directly or indirectly                    
-                    if (!this._preComputedGrammar.Grammar.IsRightRecursive(
-                        preComputedState.Production.LeftHandSide))
-                    {
-                        continue;
-                    }
-
-                    // to determine if the item is leo unique, cache it here
-                    if (!cachedCount.TryGetValue(postDotSymbol, out var count))
-                    {
-                        cachedCount[postDotSymbol] = 1;
-                        cachedTransitions[postDotSymbol] = CreateTopCachedItem(stateFrame, postDotSymbol);
-                    }
-                    else
-                    {
-                        cachedCount[postDotSymbol] = count + 1;
-                    }
-                }
-            }
-
-            // add all memoized leo items to the frameSet
-            foreach (var symbol in cachedCount.Keys)
-            {
-                var count = cachedCount[symbol];
-                if (count != 1)
-                {
-                    continue;
-                }
-
-                frameSet.AddCachedTransition(cachedTransitions[symbol]);
-            }
-
-            cachedTransitionsPool.ClearAndFree(cachedTransitions);
-            cachedCountPool.ClearAndFree(cachedCount);
-        }
-
         private CachedDottedRuleSetTransition CreateTopCachedItem(
-            DeterministicState stateFrame, 
+            DeterministicState stateFrame,
             ISymbol postDotSymbol)
         {
             var origin = stateFrame.Origin;
@@ -395,6 +278,19 @@ namespace Pliant.Runtime
             AddEimPair(iLoc, toAH, originLoc);
         }
 
+        private void Initialize()
+        {
+            var start = this._preComputedGrammar.Start;
+            AddEimPair(0, start, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool IsStartState(IDottedRule state)
+        {
+            var start = this._preComputedGrammar.Grammar.Start;
+            return state.Production.LeftHandSide.Equals(start);
+        }
+
         private void LeoReductionOperation(int iLoc, CachedDottedRuleSetTransition fromLim)
         {
             var fromAH = fromLim.DottedRuleSet;
@@ -410,40 +306,146 @@ namespace Pliant.Runtime
             AddEimPair(iLoc, toAH, originLoc);
         }
 
-        private void AddEimPair(int iLoc, DottedRuleSet confirmedAH, int origLoc)
+        private void MemoizeTransitions(int iLoc)
         {
-            var confirmedEIM = new DeterministicState(confirmedAH, origLoc);
-            var predictedAH = Goto(confirmedAH);
-            Chart.Enqueue(iLoc, confirmedEIM);
-            if (predictedAH == null)
+            var frameSet = Chart.Sets[iLoc];
+            // leo eligibility needs to be cached before creating the cached transition
+            // if the size of the list is != 1, do not enter the cached frame transition
+            var cachedTransitionsPool = SharedPools.Default<Dictionary<ISymbol, CachedDottedRuleSetTransition>>();
+            var cachedTransitions = cachedTransitionsPool.AllocateAndClear();
+            var cachedCountPool = SharedPools.Default<Dictionary<ISymbol, int>>();
+            var cachedCount = cachedCountPool.AllocateAndClear();
+
+            for (var i = 0; i < frameSet.States.Count; i++)
             {
-                return;
+                var stateFrame = frameSet.States[i];
+                var frame = stateFrame.DottedRuleSet;
+                var frameData = frame.Data;
+                var stateFrameDataCount = frameData.Count;
+
+                for (var j = 0; j < stateFrameDataCount; j++)
+                {
+                    var preComputedState = frameData[j];
+                    if (preComputedState.IsComplete)
+                    {
+                        continue;
+                    }
+
+                    var postDotSymbol = preComputedState.PostDotSymbol;
+                    if (postDotSymbol is NonTerminal)
+                    {
+                        if (!this._preComputedGrammar.Grammar.IsRightRecursive(preComputedState.Production.LeftHandSide))
+                        {
+                            continue;
+                        }
+
+                        // to determine if the item is leo unique, cache it here
+                        if (!cachedCount.TryGetValue(postDotSymbol, out var count))
+                        {
+                            cachedCount[postDotSymbol] = 1;
+                            cachedTransitions[postDotSymbol] = CreateTopCachedItem(stateFrame, postDotSymbol);
+                        }
+                        else
+                        {
+                            cachedCount[postDotSymbol] = count + 1;
+                        }
+                    }
+
+                    // leo eligibile items are right recursive directly or indirectly                    
+                }
             }
 
-            var predictedEIM = new DeterministicState(predictedAH, iLoc);
-            Chart.Enqueue(iLoc, predictedEIM);
-        }
-                
-        private static DottedRuleSet Goto(DottedRuleSet fromAH)
-        {
-            return fromAH.NullTransition;
+            // add all memoized leo items to the frameSet
+            foreach (var symbol in cachedCount.Keys)
+            {
+                var count = cachedCount[symbol];
+                if (count != 1)
+                {
+                    continue;
+                }
+
+                frameSet.AddCachedTransition(cachedTransitions[symbol]);
+            }
+
+            cachedTransitionsPool.ClearAndFree(cachedTransitions);
+            cachedCountPool.ClearAndFree(cachedCount);
         }
 
-        private static DottedRuleSet Goto(DottedRuleSet fromAH, ISymbol symbol)
+        private void ReduceOneLeftHandSide(int iLoc, int origLoc, NonTerminal lhsSym)
         {
-            return fromAH.Reductions.GetOrReturnNull(symbol);         
+            var frameSet = Chart.Sets[origLoc];
+            var transitionItem = frameSet.FindCachedDottedRuleSetTransition(lhsSym);
+            if (transitionItem != null)
+            {
+                LeoReductionOperation(iLoc, transitionItem);
+            }
+            else
+            {
+                for (var i = 0; i < frameSet.States.Count; i++)
+                {
+                    var stateFrame = frameSet.States[i];
+                    EarleyReductionOperation(iLoc, stateFrame, lhsSym);
+                }
+            }
         }
 
-        private static DottedRuleSet Goto(DottedRuleSet fromAH, IToken token)
+        private void ReductionPass(int iLoc)
         {
-            return fromAH.TokenTransitions.GetOrReturnNull(token.TokenType);
+            var iES = Chart.Sets[iLoc];
+            var processed = SharedPools.Default<HashSet<ISymbol>>().AllocateAndClear();
+            for (var i = 0; i < iES.States.Count; i++)
+            {
+                var workEIM = iES.States[i];
+                var workAH = workEIM.DottedRuleSet;
+                var origLoc = workEIM.Origin;
+
+                for (var j = 0; j < workAH.Data.Count; j++)
+                {
+                    var dottedRule = workAH.Data[j];
+                    if (!dottedRule.IsComplete)
+                    {
+                        continue;
+                    }
+
+                    var lhsSym = dottedRule.Production.LeftHandSide;
+                    if (!processed.Add(lhsSym))
+                    {
+                        continue;
+                    }
+
+                    ReduceOneLeftHandSide(iLoc, origLoc, lhsSym);
+                }
+
+                processed.Clear();
+            }
+
+            SharedPools.Default<HashSet<ISymbol>>().ClearAndFree(processed);
+            MemoizeTransitions(iLoc);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool IsStartState(IDottedRule state)
+        private void ScanPass(int iLoc, IToken token)
         {
-            var start = this._preComputedGrammar.Grammar.Start;
-            return state.Production.LeftHandSide.Equals(start);
+            var iES = Chart.Sets[iLoc];
+            for (var i = 0; i < iES.States.Count; i++)
+            {
+                var workEIM = iES.States[i];
+                var fromAH = workEIM.DottedRuleSet;
+                var origLoc = workEIM.Origin;
+
+                var toAH = Goto(fromAH, token);
+                if (toAH == null)
+                {
+                    continue;
+                }
+
+                AddEimPair(iLoc + 1, toAH, origLoc);
+            }
         }
+
+        private static readonly LexerRule[] EmptyLexerRules = { };
+
+        private Dictionary<int, LexerRule[]> _expectedLexerRuleCache;
+        private BitArray _expectedLexerRuleIndicies;
+        private readonly PreComputedGrammar _preComputedGrammar;
     }
 }

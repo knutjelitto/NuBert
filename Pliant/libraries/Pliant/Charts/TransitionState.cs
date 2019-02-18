@@ -3,20 +3,12 @@ using Pliant.Utilities;
 
 namespace Pliant.Charts
 {
-    public class TransitionState : StateBase, ITransitionState
+    public sealed class TransitionState : State
     {
-        public ISymbol Recognized { get; private set; }
-
-        public INormalState Reduction { get; private set; }
-
-        public int Index { get; private set; }
-
-        public ITransitionState NextTransition { get; set; }
-                
         public TransitionState(
             ISymbol recognized,
-            IState transition,
-            INormalState reduction,
+            State transition,
+            NormalState reduction,
             int index)
             : base(transition.DottedRule, transition.Origin)
         {
@@ -26,25 +18,43 @@ namespace Pliant.Charts
             this._hashCode = ComputeHashCode();
         }
 
+        public int Index { get; }
+
+        public TransitionState NextTransition { get; set; }
+        public ISymbol Recognized { get; }
+
+        public NormalState Reduction { get; }
+
+        public override StateType StateType => StateType.Transitive;
+
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var transitionState = obj as TransitionState;
-            if (transitionState == null)
-            {
-                return false;
-            }
-
-            return GetHashCode() == transitionState.GetHashCode()
-                && Recognized.Equals(transitionState.Recognized)
-                && Index == transitionState.Index;
+            return obj is TransitionState transitionState && 
+                   GetHashCode() == transitionState.GetHashCode() && 
+                   Recognized.Equals(transitionState.Recognized) && 
+                   Index == transitionState.Index;
         }
-        
-        private readonly int _hashCode;
+
+        public override int GetHashCode()
+        {
+            return this._hashCode;
+        }
+
+        public State GetTargetState()
+        {
+            var parameterTransitionStateHasNoParseNode = ParseNode == null;
+            if (parameterTransitionStateHasNoParseNode)
+            {
+                return Reduction;
+            }
+
+            return this;
+        }
+
+        public override string ToString()
+        {
+            return $"{Recognized} : {Reduction}";
+        }
 
         private int ComputeHashCode()
         {
@@ -57,27 +67,6 @@ namespace Pliant.Charts
                 Index.GetHashCode());
         }
 
-        public override int GetHashCode()
-        {
-            return this._hashCode;
-        }
-
-        public override string ToString()
-        {
-            return $"{Recognized} : {Reduction}";
-        }
-
-        public override StateType StateType => StateType.Transitive;
-
-        public IState GetTargetState()
-        {
-            var parameterTransitionStateHasNoParseNode = ParseNode == null;
-            if (parameterTransitionStateHasNoParseNode)
-            {
-                return Reduction;
-            }
-
-            return this;
-        }
+        private readonly int _hashCode;
     }
 }

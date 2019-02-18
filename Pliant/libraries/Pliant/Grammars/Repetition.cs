@@ -2,11 +2,9 @@
 
 namespace Pliant.Grammars
 {
-    public class Repetition : Grouping, IRepetition
+    public sealed class Repetition : Grouping
     {
         public Repetition(IReadOnlyList<ISymbol> items)
             : base(items) { }
-
-        public override SymbolType SymbolType => SymbolType.Repetition;
     }
 }

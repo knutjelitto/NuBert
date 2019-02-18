@@ -131,7 +131,7 @@ namespace Pliant.Tests.Integration.Runtime
             }
         }
 
-        private static BaseLexerRule CreateRegexDfa(string pattern)
+        private static LexerRule CreateRegexDfa(string pattern)
         {
             var regexParser = new RegexParser();
             var regex = regexParser.Parse(pattern);
@@ -166,14 +166,14 @@ namespace Pliant.Tests.Integration.Runtime
             }
         }
 
-        private static BaseLexerRule String()
+        private static LexerRule String()
         {
             // ["][^"]+["]
             const string pattern = "[\"][^\"]+[\"]";
             return CreateRegexDfa(pattern);
         }
 
-        private static ILexerRule Whitespace()
+        private static LexerRule Whitespace()
         {
             var start = new DfaState();
             var end = new DfaState(true);

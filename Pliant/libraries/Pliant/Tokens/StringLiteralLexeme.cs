@@ -2,7 +2,7 @@
 
 namespace Pliant.Tokens
 {
-    public class StringLiteralLexeme : LexemeBase<IStringLiteralLexerRule>, ILexeme
+    public class StringLiteralLexeme : LexemeBase<StringLiteralLexerRule>, ILexeme
     {
         private string _capture;
         private int _index;
@@ -22,7 +22,7 @@ namespace Pliant.Tokens
             }
         }        
         
-        public StringLiteralLexeme(IStringLiteralLexerRule lexerRule, int position)
+        public StringLiteralLexeme(StringLiteralLexerRule lexerRule, int position)
             : base(lexerRule, position)
         {
             this._index = 0;

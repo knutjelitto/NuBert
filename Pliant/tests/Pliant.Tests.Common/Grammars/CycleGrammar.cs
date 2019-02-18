@@ -5,8 +5,6 @@ namespace Pliant.Tests.Common.Grammars
 {
     public class CycleGrammar : GrammarWrapper
     {
-        private static IGrammar _grammar;
-
         static CycleGrammar()
         {
             ProductionExpression
@@ -18,12 +16,13 @@ namespace Pliant.Tests.Common.Grammars
             B.Rule = C | 'b';
             C.Rule = A | 'c';
 
-            _grammar = new GrammarExpression(A, new[] { A, B, C })
-                .ToGrammar();
+            _grammar = new GrammarExpression(A, new[] {A, B, C}).ToGrammar();
         }
 
         public CycleGrammar() : base(_grammar)
         {
         }
+
+        private static readonly IGrammar _grammar;
     }
 }

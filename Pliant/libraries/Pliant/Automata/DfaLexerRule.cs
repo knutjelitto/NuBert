@@ -4,57 +4,21 @@ using Pliant.Utilities;
 
 namespace Pliant.Automata
 {
-    public class DfaLexerRule : BaseLexerRule, IDfaLexerRule
+    public class DfaLexerRule : LexerRule
     {
-        public static readonly LexerRuleType DfaLexerRuleType = new LexerRuleType("Dfa");
-        private readonly int _hashCode;
-
-        public IDfaState Start { get; private set; }
-
-        public DfaLexerRule(IDfaState state, string tokenType)
+        public DfaLexerRule(DfaState state, string tokenType)
             : this(state, new TokenType(tokenType))
         {
         }
 
-        public DfaLexerRule(IDfaState state, TokenType tokenType)
+        public DfaLexerRule(DfaState state, TokenType tokenType)
             : base(DfaLexerRuleType, tokenType)
         {
             Start = state;
             this._hashCode = ComputeHashCode(DfaLexerRuleType, tokenType);
         }
 
-        private static int ComputeHashCode(LexerRuleType dfaLexerRuleType, TokenType tokenType)
-        {
-            return HashCode.Compute(
-                dfaLexerRuleType.GetHashCode(),
-                tokenType.GetHashCode());
-        }
-
-        public override string ToString()
-        {
-            return TokenType.ToString();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var dfaLexerRule = obj as DfaLexerRule;
-            if (dfaLexerRule == null)
-            {
-                return false;
-            }
-
-            return TokenType.Equals(dfaLexerRule.TokenType);
-        }
-
-        public override int GetHashCode()
-        {
-            return this._hashCode;
-        }
+        public DfaState Start { get; }
 
         public override bool CanApply(char c)
         {
@@ -66,7 +30,35 @@ namespace Pliant.Automata
                     return true;
                 }
             }
+
             return false;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is DfaLexerRule dfaLexerRule && 
+                   TokenType.Equals(dfaLexerRule.TokenType);
+        }
+
+        public override int GetHashCode()
+        {
+            return this._hashCode;
+        }
+
+        public override string ToString()
+        {
+            return TokenType.ToString();
+        }
+
+        public static readonly LexerRuleType DfaLexerRuleType = new LexerRuleType("Dfa");
+
+        private static int ComputeHashCode(LexerRuleType dfaLexerRuleType, TokenType tokenType)
+        {
+            return HashCode.Compute(
+                dfaLexerRuleType.GetHashCode(),
+                tokenType.GetHashCode());
+        }
+
+        private readonly int _hashCode;
     }
 }

@@ -7,7 +7,7 @@ namespace Pliant.LexerRules
     public class NumberLexerRule : DfaLexerRule
     {
         private const string _pattern = @"[-+]?[0-9]*[.]?[0-9]+";
-        private static readonly IDfaState _start;
+        private static readonly DfaState _start;
         private static readonly TokenType _staticTokenType = new TokenType(_pattern);
 
         static NumberLexerRule()

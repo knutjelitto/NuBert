@@ -21,7 +21,7 @@ namespace Pliant.RegularExpressions
             this._nfaToDfa = nfaToDfa;
         }
 
-        public IDfaState Compile(Regex regex)
+        public DfaState Compile(Regex regex)
         {
             var nfa = this._regexToNfa.Transform(regex);
             var dfa = this._nfaToDfa.Transform(nfa);

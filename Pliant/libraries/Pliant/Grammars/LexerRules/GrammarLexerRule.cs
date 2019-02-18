@@ -2,12 +2,8 @@
 
 namespace Pliant.Grammars
 {
-    public class GrammarLexerRule : BaseLexerRule, IGrammarLexerRule
+    public class GrammarLexerRule : LexerRule //, IGrammarLexerRule
     {
-        public IGrammar Grammar { get; private set; }
-
-        public static readonly LexerRuleType GrammarLexerRuleType = new LexerRuleType("Grammar");
-
         public GrammarLexerRule(string tokenType, IGrammar grammar)
             : this(new TokenType(tokenType), grammar)
         {
@@ -19,11 +15,8 @@ namespace Pliant.Grammars
             Grammar = grammar;
         }
 
-        public override string ToString()
-        {
-            return TokenType.Id;
-        }
-        
+        public IGrammar Grammar { get; }
+
         public override bool CanApply(char c)
         {
             // this is the best I could come up with without copying the initialization and reduction code necessary to 
@@ -36,7 +29,15 @@ namespace Pliant.Grammars
                     return true;
                 }
             }
+
             return false;
         }
+
+        public override string ToString()
+        {
+            return TokenType.Id;
+        }
+
+        public static readonly LexerRuleType GrammarLexerRuleType = new LexerRuleType("Grammar");
     }
 }

@@ -6,27 +6,27 @@ namespace Pliant.Grammars
     {
         IReadOnlyList<IProduction> Productions { get; }
 
-        INonTerminal Start { get; }
+        NonTerminal Start { get; }
 
-        IReadOnlyList<ILexerRule> Ignores { get; }
+        IReadOnlyList<LexerRule> Ignores { get; }
 
-        IReadOnlyList<ILexerRule> Trivia { get; }
+        IReadOnlyList<LexerRule> Trivia { get; }
 
         IReadOnlyDottedRuleRegistry DottedRules { get; }
 
-        IReadOnlyList<ILexerRule> LexerRules { get; }
+        IReadOnlyList<LexerRule> LexerRules { get; }
 
-        int GetLexerRuleIndex(ILexerRule lexerRule);
+        int GetLexerRuleIndex(LexerRule lexerRule);
 
-        IReadOnlyList<IProduction> RulesFor(INonTerminal nonTerminal);
+        IReadOnlyList<IProduction> RulesFor(NonTerminal nonTerminal);
 
-        IReadOnlyList<IProduction> RulesContainingSymbol(INonTerminal nonTerminal);
+        IReadOnlyList<IProduction> RulesContainingSymbol(NonTerminal nonTerminal);
 
         IReadOnlyList<IProduction> StartProductions();
 
-        bool IsNullable(INonTerminal nonTerminal);
+        bool IsNullable(NonTerminal nonTerminal);
 
-        bool IsTransativeNullable(INonTerminal nonTerminal);
+        bool IsTransativeNullable(NonTerminal nonTerminal);
 
         bool IsRightRecursive(ISymbol symbol);
     }

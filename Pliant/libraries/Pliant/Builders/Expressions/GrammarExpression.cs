@@ -17,8 +17,8 @@ namespace Pliant.Builders.Expressions
         public GrammarExpression(
             ProductionExpression start,
             IReadOnlyList<ProductionExpression> productions,
-            IReadOnlyList<ILexerRule> ignore,
-            IReadOnlyList<ILexerRule> trivia)
+            IReadOnlyList<LexerRule> ignore,
+            IReadOnlyList<LexerRule> trivia)
         {
             var ignoreModelList = ToLexerRuleModelList(ignore);
             var triviaModelList = ToLexerRuleModelList(trivia);
@@ -28,7 +28,7 @@ namespace Pliant.Builders.Expressions
 
         public GrammarModel GrammarModel { get; private set; }
 
-        private static List<LexerRuleModel> ToLexerRuleModelList(IReadOnlyList<ILexerRule> lexerRuleList)
+        private static List<LexerRuleModel> ToLexerRuleModelList(IReadOnlyList<LexerRule> lexerRuleList)
         {
             if (lexerRuleList == null || lexerRuleList.Count == 0)
             {

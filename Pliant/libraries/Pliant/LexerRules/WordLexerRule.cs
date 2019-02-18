@@ -6,7 +6,7 @@ namespace Pliant.LexerRules
 {
     public class WordLexerRule : DfaLexerRule
     {
-        private static readonly IDfaState _start;
+        private static readonly DfaState _start;
         private static readonly TokenType _staticTokenType = new TokenType(@"[\w]+");
 
         static WordLexerRule()

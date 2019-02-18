@@ -1,22 +1,20 @@
-﻿using Pliant.Grammars;
-using Pliant.Tokens;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Pliant.Grammars;
+using Pliant.Tokens;
 
 namespace Pliant.Automata
 {
     public class DfaLexemeFactory : ILexemeFactory
     {
-        public LexerRuleType LexerRuleType => DfaLexerRule.DfaLexerRuleType;
-
-        private readonly Queue<DfaLexeme> _queue;
-
         public DfaLexemeFactory()
         {
             this._queue = new Queue<DfaLexeme>();
         }
 
-        public ILexeme Create(ILexerRule lexerRule, int position)
+        public LexerRuleType LexerRuleType => DfaLexerRule.DfaLexerRuleType;
+
+        public ILexeme Create(LexerRule lexerRule, int position)
         {
             if (lexerRule.LexerRuleType != LexerRuleType)
             {
@@ -24,13 +22,14 @@ namespace Pliant.Automata
                     $"Unable to create DfaLexeme from type {lexerRule.GetType().FullName}. Expected DfaLexerRule");
             }
 
-            var dfaLexerRule = lexerRule as IDfaLexerRule;
+            var dfaLexerRule = lexerRule as DfaLexerRule;
             if (this._queue.Count > 0)
             {
                 var reusedLexeme = this._queue.Dequeue();
                 reusedLexeme.Reset(dfaLexerRule, position);
                 return reusedLexeme;
             }
+
             var dfaLexeme = new DfaLexeme(dfaLexerRule, position);
             return dfaLexeme;
         }
@@ -45,5 +44,7 @@ namespace Pliant.Automata
 
             this._queue.Enqueue(dfaLexeme);
         }
+
+        private readonly Queue<DfaLexeme> _queue;
     }
 }

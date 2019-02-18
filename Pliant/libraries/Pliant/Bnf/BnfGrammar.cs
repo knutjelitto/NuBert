@@ -69,7 +69,7 @@ namespace Pliant.Bnf
             _bnfGrammar = new Grammar(grammar, productions, ignore, null);
         }
 
-        private static ILexerRule CreateNotSingleQuoteLexerRule()
+        private static LexerRule CreateNotSingleQuoteLexerRule()
         {
             var start = new DfaState();
             var final = new DfaState(true);
@@ -80,7 +80,7 @@ namespace Pliant.Bnf
             return new DfaLexerRule(start, new TokenType("not-single-quote"));
         }
 
-        private static ILexerRule CreateNotDoubleQuoteLexerRule()
+        private static LexerRule CreateNotDoubleQuoteLexerRule()
         {
             // ( [^"\\] | (\\ .) ) +
             var start = new DfaState();
@@ -106,17 +106,17 @@ namespace Pliant.Bnf
             return new DfaLexerRule(start, new TokenType("not-double-quote"));
         }
 
-        private static ILexerRule CreateEndOfLineLexerRule()
+        private static LexerRule CreateEndOfLineLexerRule()
         {
             return new StringLiteralLexerRule("\r\n", new TokenType("eol"));
         }
 
-        private static ILexerRule CreateImplementsLexerRule()
+        private static LexerRule CreateImplementsLexerRule()
         {
             return new StringLiteralLexerRule("::=", new TokenType("implements"));
         }
 
-        private static ILexerRule CreateRuleNameLexerRule()
+        private static LexerRule CreateRuleNameLexerRule()
         {
             var ruleNameState = new DfaState();
             var zeroOrMoreLetterOrDigit = new DfaState(true);
@@ -138,7 +138,7 @@ namespace Pliant.Bnf
             return ruleName;
         }
 
-        private static BaseLexerRule CreateWhitespaceLexerRule()
+        private static LexerRule CreateWhitespaceLexerRule()
         {
             var whitespaceTerminal = new WhitespaceTerminal();
             var startState = new DfaState();

@@ -337,7 +337,7 @@ namespace Pliant.Runtime
             return MatchLexerRules(character, ParseEngine.Grammar.Ignores, this._ignoreLexemes);
         }
 
-        private bool MatchLexerRules(char character, IReadOnlyList<ILexerRule> lexerRules, List<ILexeme> lexemes)
+        private bool MatchLexerRules(char character, IReadOnlyList<LexerRule> lexerRules, List<ILexeme> lexemes)
         {
             var anyMatches = false;
             for (var i = 0; i < lexerRules.Count; i++)

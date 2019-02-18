@@ -12,7 +12,7 @@ namespace Pliant.Ebnf
     {
         static EbnfGrammar()
         {
-            BaseLexerRule
+            LexerRule
                 settingIdentifier = CreateSettingIdentifierLexerRule(),
                 notDoubleQuote = CreateNotDoubleQuoteLexerRule(),
                 notSingleQuote = CreateNotSingleQuoteLexerRule(),
@@ -158,7 +158,7 @@ namespace Pliant.Ebnf
         public static readonly FullyQualifiedName Setting = new FullyQualifiedName(Namespace, nameof(Setting));
         public static readonly FullyQualifiedName Term = new FullyQualifiedName(Namespace, nameof(Term));
 
-        private static BaseLexerRule CreateEscapeCharacterLexerRule()
+        private static LexerRule CreateEscapeCharacterLexerRule()
         {
             var start = new DfaState();
             var escape = new DfaState();
@@ -168,7 +168,7 @@ namespace Pliant.Ebnf
             return new DfaLexerRule(start, TokenTypes.Escape);
         }
 
-        private static BaseLexerRule CreateIdentifierLexerRule()
+        private static LexerRule CreateIdentifierLexerRule()
         {
             // /[a-zA-Z][a-zA-Z0-9-_]*/
             var identifierState = new DfaState();
@@ -191,7 +191,7 @@ namespace Pliant.Ebnf
             return identifier;
         }
 
-        private static BaseLexerRule CreateMultiLineCommentLexerRule()
+        private static LexerRule CreateMultiLineCommentLexerRule()
         {
             var states = new DfaState[5];
             for (var i = 0; i < states.Length; i++)
@@ -221,7 +221,7 @@ namespace Pliant.Ebnf
             return new DfaLexerRule(states[0], TokenTypes.MultiLineComment);
         }
 
-        private static BaseLexerRule CreateNotDoubleQuoteLexerRule()
+        private static LexerRule CreateNotDoubleQuoteLexerRule()
         {
             // ([^"]|(\\.))*
             var start = new DfaState();
@@ -247,7 +247,7 @@ namespace Pliant.Ebnf
             return new DfaLexerRule(start, TokenTypes.NotDoubleQuote);
         }
 
-        private static BaseLexerRule CreateNotSingleQuoteLexerRule()
+        private static LexerRule CreateNotSingleQuoteLexerRule()
         {
             var start = new DfaState();
             var final = new DfaState(true);
@@ -258,7 +258,7 @@ namespace Pliant.Ebnf
             return new DfaLexerRule(start, TokenTypes.NotSingleQuote);
         }
 
-        private static BaseLexerRule CreateSettingIdentifierLexerRule()
+        private static LexerRule CreateSettingIdentifierLexerRule()
         {
             // /:[a-zA-Z][a-zA-Z0-9]*/
             var start = new DfaState();
@@ -284,7 +284,7 @@ namespace Pliant.Ebnf
             return new DfaLexerRule(start, TokenTypes.SettingIdentifier);
         }
 
-        private static BaseLexerRule CreateWhitespaceLexerRule()
+        private static LexerRule CreateWhitespaceLexerRule()
         {
             var whitespaceTerminal = new WhitespaceTerminal();
             var startWhitespace = new DfaState();

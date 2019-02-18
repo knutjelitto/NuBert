@@ -4,9 +4,9 @@ using Pliant.Utilities;
 
 namespace Pliant.Automata
 {
-    public class DfaLexeme : LexemeBase<IDfaLexerRule>
+    public class DfaLexeme : LexemeBase<DfaLexerRule>
     {
-        public DfaLexeme(IDfaLexerRule dfaLexerRule, int position)
+        public DfaLexeme(DfaLexerRule dfaLexerRule, int position)
             : base(dfaLexerRule, position)
         {
             this._stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
@@ -86,7 +86,7 @@ namespace Pliant.Automata
 
         private string _capture;
 
-        private IDfaState _currentState;
+        private DfaState _currentState;
         private StringBuilder _stringBuilder;
     }
 }

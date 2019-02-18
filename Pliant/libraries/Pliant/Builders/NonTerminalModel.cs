@@ -5,7 +5,7 @@ namespace Pliant.Builders
     public class NonTerminalModel
         : SymbolModel
     {
-        public NonTerminalModel(INonTerminal value)
+        public NonTerminalModel(NonTerminal value)
         {
             NonTerminal = value;
         }
@@ -24,7 +24,7 @@ namespace Pliant.Builders
 
         public override ISymbol Symbol => NonTerminal;
 
-        public INonTerminal NonTerminal { get; }
+        public NonTerminal NonTerminal { get; }
 
         public override int GetHashCode()
         {

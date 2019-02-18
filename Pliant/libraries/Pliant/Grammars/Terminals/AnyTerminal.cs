@@ -2,29 +2,26 @@
 
 namespace Pliant.Grammars
 {
-    public class AnyTerminal : BaseTerminal
+    public class AnyTerminal : Terminal
     {
-        private static readonly Interval[] Interval = { new Interval(char.MinValue, char.MaxValue) };
-
-        public override bool IsMatch(char character)
-        {
-            return true;
-        }
-
         public override bool Equals(object obj)
         {
-            var anyTerminal = obj as AnyTerminal;
-            if (anyTerminal != null)
-            {
-                return true;
-            }
-
-            return false;
+            return obj is AnyTerminal;
         }
 
         public override int GetHashCode()
         {
-            return true.GetHashCode();
+            return GetType().GetHashCode();
+        }
+
+        public override IReadOnlyList<Interval> GetIntervals()
+        {
+            return Interval;
+        }
+
+        public override bool IsMatch(char character)
+        {
+            return true;
         }
 
         public override string ToString()
@@ -32,9 +29,6 @@ namespace Pliant.Grammars
             return ".";
         }
 
-        public override IReadOnlyList<Interval> GetIntervals()
-        {
-            return Interval;
-        }
+        private static readonly Interval[] Interval = {new Interval(char.MinValue, char.MaxValue)};
     }
 }

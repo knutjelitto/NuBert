@@ -15,7 +15,7 @@ namespace Pliant.Tree
 
         public int Location => this._internalNode.Location;
 
-        public INonTerminal Symbol { get; private set; }
+        public NonTerminal Symbol { get; private set; }
 
         public InternalTreeNode(
             IInternalForestNode internalNode,
@@ -38,7 +38,7 @@ namespace Pliant.Tree
             switch (node.NodeType)
             {
                 case ForestNodeType.Symbol:
-                    Symbol = (node as ISymbolForestNode).Symbol as INonTerminal;
+                    Symbol = (node as ISymbolForestNode).Symbol as NonTerminal;
                     break;
 
                 case ForestNodeType.Intermediate:

@@ -51,7 +51,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
             AssertLexerRuleMatches(lexerRule, "\f");
         }
         
-        private static IDfaState CreateDfaFromRegexPattern(string pattern)
+        private static DfaState CreateDfaFromRegexPattern(string pattern)
         {
             var regex = new RegexParser().Parse(pattern);
             var nfa = new ThompsonConstructionAlgorithm().Transform(regex);
@@ -61,7 +61,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
 
         private static DfaLexemeFactory _factory = new DfaLexemeFactory();
          
-        private static void AssertLexerRuleMatches(IDfaLexerRule lexerRule, string input)
+        private static void AssertLexerRuleMatches(DfaLexerRule lexerRule, string input)
         {
             var lexeme = _factory.Create(lexerRule, 0);
             for (int i = 0; i < input.Length; i++)

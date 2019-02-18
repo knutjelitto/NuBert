@@ -2,7 +2,7 @@
 
 namespace Pliant.Automata
 {
-    public class DfaState : IDfaState
+    public class DfaState
     {
         public DfaState()
             : this(false)
@@ -12,18 +12,18 @@ namespace Pliant.Automata
         public DfaState(bool isFinal)
         {
             IsFinal = isFinal;
-            this._transitions = new List<IDfaTransition>();
+            this._transitions = new List<DfaTransition>();
         }
 
         public bool IsFinal { get; }
 
-        public IReadOnlyList<IDfaTransition> Transitions => this._transitions;
+        public IReadOnlyList<DfaTransition> Transitions => this._transitions;
 
-        public void AddTransition(IDfaTransition edge)
+        public void AddTransition(DfaTransition edge)
         {
             this._transitions.Add(edge);
         }
 
-        private readonly List<IDfaTransition> _transitions;
+        private readonly List<DfaTransition> _transitions;
     }
 }

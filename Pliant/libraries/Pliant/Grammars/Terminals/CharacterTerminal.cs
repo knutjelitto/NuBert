@@ -1,39 +1,30 @@
-﻿using Pliant.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class CharacterTerminal : BaseTerminal
+    public class CharacterTerminal : Terminal
     {
-        public char Character { get; private set; }
-
-        private Interval[] _intervals;
-
         public CharacterTerminal(char character)
         {
-            Character = character;            
+            Character = character;
+        }
+
+        public char Character { get; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is CharacterTerminal other && other.Character.Equals(Character);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(
-                Character.GetHashCode());
+            return Character.GetHashCode();
         }
 
-        public override bool Equals(object obj)
+        public override IReadOnlyList<Interval> GetIntervals()
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var terminal = obj as CharacterTerminal;
-            if (terminal == null)
-            {
-                return false;
-            }
-
-            return terminal.Character == Character;
+            return this._intervals ?? (this._intervals = new[] {new Interval(Character)});
         }
 
         public override bool IsMatch(char character)
@@ -46,14 +37,6 @@ namespace Pliant.Grammars
             return Character.ToString();
         }
 
-        public override IReadOnlyList<Interval> GetIntervals()
-        {
-            if(this._intervals == null)
-            {
-                this._intervals = new[] { new Interval(Character, Character) };
-            }
-
-            return this._intervals;
-        }
+        private Interval[] _intervals;
     }
 }

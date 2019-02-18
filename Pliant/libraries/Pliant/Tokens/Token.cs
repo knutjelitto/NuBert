@@ -1,23 +1,11 @@
-﻿using Pliant.Diagnostics;
+﻿using System.Collections.Generic;
+using Pliant.Diagnostics;
 using Pliant.Utilities;
-using System.Collections.Generic;
 
 namespace Pliant.Tokens
 {
     public class Token : IToken
     {
-        private static readonly ITrivia[] EmptyTriviaArray = { };
-        
-        public string Value { get; private set; }
-
-        public int Position { get; private set; }
-
-        public TokenType TokenType { get; private set; }
-
-        public IReadOnlyList<ITrivia> LeadingTrivia { get; private set; }
-
-        public IReadOnlyList<ITrivia> TrailingTrivia { get; private set; }
-
         public Token(string value, int position, TokenType tokenType)
         {
             Value = value;
@@ -26,9 +14,11 @@ namespace Pliant.Tokens
             this._hashCode = ComputeHashCode();
         }
 
-        public Token(string value, int position, TokenType tokenType, 
-            IReadOnlyList<ITrivia> leadingTrivia, 
-            IReadOnlyList<ITrivia> trailingTrivia)
+        public Token(string value,
+                     int position,
+                     TokenType tokenType,
+                     IReadOnlyList<ITrivia> leadingTrivia,
+                     IReadOnlyList<ITrivia> trailingTrivia)
             : this(value, position, tokenType)
         {
             Assert.IsNotNull(leadingTrivia, nameof(leadingTrivia));
@@ -38,20 +28,15 @@ namespace Pliant.Tokens
             TrailingTrivia = new List<ITrivia>(trailingTrivia);
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                TokenType.GetHashCode(), 
-                Position.GetHashCode(), 
-                Value.GetHashCode());
-        }
+        public IReadOnlyList<ITrivia> LeadingTrivia { get; }
 
-        private readonly int _hashCode;
+        public int Position { get; }
 
-        public override int GetHashCode()
-        {
-            return this._hashCode;
-        }
+        public TokenType TokenType { get; }
+
+        public IReadOnlyList<ITrivia> TrailingTrivia { get; }
+
+        public string Value { get; }
 
         public override bool Equals(object obj)
         {
@@ -67,8 +52,25 @@ namespace Pliant.Tokens
             }
 
             return Value == token.Value
-                && Position == token.Position
-                && TokenType.Equals(token.TokenType);
+                   && Position == token.Position
+                   && TokenType.Equals(token.TokenType);
         }
+
+        public override int GetHashCode()
+        {
+            return this._hashCode;
+        }
+
+        private int ComputeHashCode()
+        {
+            return HashCode.Compute(
+                TokenType.GetHashCode(),
+                Position.GetHashCode(),
+                Value.GetHashCode());
+        }
+
+        private static readonly ITrivia[] EmptyTriviaArray = { };
+
+        private readonly int _hashCode;
     }
 }

@@ -2,17 +2,17 @@
 
 namespace Pliant.Grammars
 {
-    public class CharacterClassTerminal : BaseTerminal
+    public class CharacterClassTerminal : Terminal
     {
-        private readonly List<ITerminal> _terminals;
+        private readonly List<Terminal> _terminals;
         private IReadOnlyList<Interval> _intervals;
 
-        public CharacterClassTerminal(params ITerminal[] terminals)
+        public CharacterClassTerminal(params Terminal[] terminals)
         {
-            this._terminals = new List<ITerminal>(terminals);
+            this._terminals = new List<Terminal>(terminals);
         }
 
-        private static IReadOnlyList<Interval> CreateIntervals(IReadOnlyList<ITerminal> terminals)
+        private static IReadOnlyList<Interval> CreateIntervals(IReadOnlyList<Terminal> terminals)
         {
             var intervalList = new List<Interval>();
             for (var i = 0; i < terminals.Count; i++)

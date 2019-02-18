@@ -4,6 +4,6 @@ namespace Pliant.RegularExpressions
 {
     public interface IRegexToNfa
     {
-        INfa Transform(Regex regex);
+        Nfa Transform(Regex regex);
     }
 }

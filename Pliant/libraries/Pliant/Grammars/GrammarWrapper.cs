@@ -13,22 +13,22 @@ namespace Pliant.Grammars
 
         public IReadOnlyList<IProduction> Productions => this._innerGrammar.Productions;
 
-        public INonTerminal Start => this._innerGrammar.Start;
+        public NonTerminal Start => this._innerGrammar.Start;
 
-        public IReadOnlyList<ILexerRule> Ignores => this._innerGrammar.Ignores;
+        public IReadOnlyList<LexerRule> Ignores => this._innerGrammar.Ignores;
 
-        public IReadOnlyList<ILexerRule> Trivia => this._innerGrammar.Trivia;
+        public IReadOnlyList<LexerRule> Trivia => this._innerGrammar.Trivia;
 
-        public IReadOnlyList<ILexerRule> LexerRules => this._innerGrammar.LexerRules;
+        public IReadOnlyList<LexerRule> LexerRules => this._innerGrammar.LexerRules;
 
         public IReadOnlyDottedRuleRegistry DottedRules => this._innerGrammar.DottedRules;
 
-        public int GetLexerRuleIndex(ILexerRule lexerRule)
+        public int GetLexerRuleIndex(LexerRule lexerRule)
         {
             return this._innerGrammar.GetLexerRuleIndex(lexerRule);
         }
 
-        public IReadOnlyList<IProduction> RulesFor(INonTerminal nonTerminal)
+        public IReadOnlyList<IProduction> RulesFor(NonTerminal nonTerminal)
         {
             return this._innerGrammar.RulesFor(nonTerminal);
         }
@@ -38,17 +38,17 @@ namespace Pliant.Grammars
             return this._innerGrammar.StartProductions();
         }
 
-        public bool IsNullable(INonTerminal nonTerminal)
+        public bool IsNullable(NonTerminal nonTerminal)
         {
             return this._innerGrammar.IsNullable(nonTerminal);
         }
 
-        public bool IsTransativeNullable(INonTerminal nonTerminal)
+        public bool IsTransativeNullable(NonTerminal nonTerminal)
         {
             return this._innerGrammar.IsTransativeNullable(nonTerminal);
         }
 
-        public IReadOnlyList<IProduction> RulesContainingSymbol(INonTerminal nonTerminal)
+        public IReadOnlyList<IProduction> RulesContainingSymbol(NonTerminal nonTerminal)
         {
             return this._innerGrammar.RulesContainingSymbol(nonTerminal);
         }

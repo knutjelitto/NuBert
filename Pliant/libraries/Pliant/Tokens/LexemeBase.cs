@@ -8,7 +8,7 @@ namespace Pliant.Tokens
     {
         protected LexemeBase(TLexerRule lexerRule, int position)
         {
-            LexerRule = lexerRule as ILexerRule;
+            LexerRule = lexerRule as LexerRule;
             ConcreteLexerRule = lexerRule;
             Position = position;
         }
@@ -26,7 +26,7 @@ namespace Pliant.Tokens
             }
         }
 
-        public ILexerRule LexerRule { get; private set; }
+        public LexerRule LexerRule { get; private set; }
 
         public int Position { get; private set; }
 
@@ -96,7 +96,7 @@ namespace Pliant.Tokens
                 pool.ClearAndFree(this._trailingTrivia);
             }
 
-            LexerRule = lexerRule as ILexerRule;
+            LexerRule = lexerRule as LexerRule;
             ConcreteLexerRule = lexerRule;
             Position = position;
         }

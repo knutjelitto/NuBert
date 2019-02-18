@@ -16,7 +16,7 @@ namespace Pliant.Runtime
             this._queue = new Queue<ParseEngineLexeme>();
         }
 
-        public ILexeme Create(ILexerRule lexerRule, int position)
+        public ILexeme Create(LexerRule lexerRule, int position)
         {
             if (lexerRule.LexerRuleType != LexerRuleType)
             {
@@ -24,7 +24,7 @@ namespace Pliant.Runtime
                     $"Unable to create ParseEngineLexeme from type {lexerRule.GetType().FullName}. Expected TerminalLexerRule");
             }
 
-            var grammarLexerRule = lexerRule as IGrammarLexerRule;
+            var grammarLexerRule = lexerRule as GrammarLexerRule;
 
             if (this._queue.Count == 0)
             {

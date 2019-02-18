@@ -1,25 +1,25 @@
 ﻿namespace Pliant.Automata
 {
-    public class Nfa : INfa
+    public class Nfa
     {
-        public INfaState End { get; private set; }
-
-        public INfaState Start { get; private set; }
-
-        public Nfa(INfaState start, INfaState end)
+        public Nfa(NfaState start, NfaState end)
         {
             Start = start;
             End = end;
         }
 
-        public INfa Concatenation(INfa nfa)
+        public NfaState End { get; }
+
+        public NfaState Start { get; }
+
+        public Nfa Concatenation(Nfa nfa)
         {
             End.AddTransistion(
                 new NullNfaTransition(nfa.Start));
             return this;
         }
 
-        public INfa Kleene()
+        public Nfa Kleene()
         {
             var newStart = new NfaState();
             var newEnd = new NfaState();
@@ -33,7 +33,7 @@
             return new Nfa(newStart, newEnd);
         }
 
-        public INfa Union(INfa nfa)
+        public Nfa Union(Nfa nfa)
         {
             var newStart = new NfaState();
             var newEnd = new NfaState();

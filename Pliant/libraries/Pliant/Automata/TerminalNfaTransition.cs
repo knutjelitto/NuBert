@@ -2,18 +2,16 @@
 
 namespace Pliant.Automata
 {
-    public class TerminalNfaTransition : INfaTransition
+    public sealed class TerminalNfaTransition : NfaTransition
     {
-        public INfaState Target { get; private set; }
-
-        public ITerminal Terminal { get; private set; }
-
-        public NfaTransitionType TransitionType => NfaTransitionType.Edge;
-
-        public TerminalNfaTransition(ITerminal terminal, INfaState target)
+        public TerminalNfaTransition(Terminal terminal, NfaState target)
+            : base(target)
         {
             Terminal = terminal;
-            Target = target;
         }
+
+        public Terminal Terminal { get; }
+
+        public override NfaTransitionType TransitionType => NfaTransitionType.Edge;
     }
 }

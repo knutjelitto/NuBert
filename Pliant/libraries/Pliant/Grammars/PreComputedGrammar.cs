@@ -106,21 +106,22 @@ namespace Pliant.Grammars
                 for (var s = state.Position; s < state.Production.RightHandSide.Count; s++)
                 {
                     var postDotSymbol = production.RightHandSide[s];
-                    if (postDotSymbol.SymbolType != SymbolType.NonTerminal)
+                    if (postDotSymbol is NonTerminal nonTerminalPostDotSymbol)
+                    {
+                        if (!Grammar.IsTransativeNullable(nonTerminalPostDotSymbol))
+                        {
+                            break;
+                        }
+
+                        var preComputedState = GetPreComputedState(production, s + 1);
+                        if (closure.Add(preComputedState))
+                        {
+                            queue.Enqueue(preComputedState);
+                        }
+                    }
+                    else
                     {
                         break;
-                    }
-
-                    var nonTerminalPostDotSymbol = postDotSymbol as INonTerminal;
-                    if (!Grammar.IsTransativeNullable(nonTerminalPostDotSymbol))
-                    {
-                        break;
-                    }
-
-                    var preComputedState = GetPreComputedState(production, s + 1);
-                    if (closure.Add(preComputedState))
-                    {
-                        queue.Enqueue(preComputedState);
                     }
                 }
             }
@@ -153,45 +154,42 @@ namespace Pliant.Grammars
                 }
 
                 var postDotSymbol = GetPostDotSymbol(state);
-                if (postDotSymbol.SymbolType != SymbolType.NonTerminal)
+                if (postDotSymbol is NonTerminal nonTerminalPostDotSymbol)
                 {
-                    continue;
-                }
-
-                var nonTerminalPostDotSymbol = postDotSymbol as INonTerminal;
-                if (Grammar.IsTransativeNullable(nonTerminalPostDotSymbol))
-                {
-                    var preComputedState = GetPreComputedState(state.Production, state.Position + 1);
-                    if (!frame.Contains(preComputedState))
+                    if (Grammar.IsTransativeNullable(nonTerminalPostDotSymbol))
                     {
-                        if (closure.Add(preComputedState))
+                        var preComputedState = GetPreComputedState(state.Production, state.Position + 1);
+                        if (!frame.Contains(preComputedState))
                         {
-                            if (!IsComplete(preComputedState))
+                            if (closure.Add(preComputedState))
                             {
-                                queue.Enqueue(preComputedState);
+                                if (!IsComplete(preComputedState))
+                                {
+                                    queue.Enqueue(preComputedState);
+                                }
                             }
                         }
                     }
-                }
 
-                var predictions = Grammar.RulesFor(nonTerminalPostDotSymbol);
-                for (var p = 0; p < predictions.Count; p++)
-                {
-                    var prediction = predictions[p];
-                    var preComputedState = GetPreComputedState(prediction, 0);
-                    if (frame.Contains(preComputedState))
+                    var predictions = Grammar.RulesFor(nonTerminalPostDotSymbol);
+                    for (var p = 0; p < predictions.Count; p++)
                     {
-                        continue;
-                    }
+                        var prediction = predictions[p];
+                        var preComputedState = GetPreComputedState(prediction, 0);
+                        if (frame.Contains(preComputedState))
+                        {
+                            continue;
+                        }
 
-                    if (!closure.Add(preComputedState))
-                    {
-                        continue;
-                    }
+                        if (!closure.Add(preComputedState))
+                        {
+                            continue;
+                        }
 
-                    if (!IsComplete(preComputedState))
-                    {
-                        queue.Enqueue(preComputedState);
+                        if (!IsComplete(preComputedState))
+                        {
+                            queue.Enqueue(preComputedState);
+                        }
                     }
                 }
             }

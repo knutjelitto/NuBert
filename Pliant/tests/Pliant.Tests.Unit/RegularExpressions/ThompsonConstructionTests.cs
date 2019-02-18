@@ -69,7 +69,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var start = nfa.Start;           
             Assert.AreEqual(2, start.Transitions.Count());
 
-            var startTransitions = new List<INfaTransition>(start.Transitions);
+            var startTransitions = new List<NfaTransition>(start.Transitions);
             var firstTransition = startTransitions[0];
             var q0 = firstTransition.Target;
             VerifyNullTransition(firstTransition);
@@ -219,7 +219,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
             Assert.IsNotNull(digitTerminal);
         }
 
-        private static void VerifyNfaIsNotNullAndHasValidStartAndEndStates(INfa nfa)
+        private static void VerifyNfaIsNotNullAndHasValidStartAndEndStates(Nfa nfa)
         {
             Assert.IsNotNull(nfa);
             Assert.IsNotNull(nfa.Start);
@@ -227,7 +227,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
             Assert.AreEqual(0, nfa.End.Transitions.Count());
         }
 
-        private static void VerifyCharacterTransition(INfaTransition transition, char character)
+        private static void VerifyCharacterTransition(NfaTransition transition, char character)
         {
             var terminalNfaTransition = transition as TerminalNfaTransition;
             Assert.IsNotNull(terminalNfaTransition);
@@ -235,12 +235,12 @@ namespace Pliant.Tests.Unit.RegularExpressions
             Assert.AreEqual(character, characterTerminal.Character);
         }
 
-        private static void VerifyNullTransition(INfaTransition transition)
+        private static void VerifyNullTransition(NfaTransition transition)
         {
             Assert.IsInstanceOfType(transition, typeof(NullNfaTransition));
         }
 
-        private static INfa CreateNfa(string input)
+        private static Nfa CreateNfa(string input)
         {
             var regex = new RegexParser().Parse(input);
             return new ThompsonConstructionAlgorithm().Transform(regex);

@@ -26,7 +26,7 @@ namespace Pliant.Builders.Expressions
                         new TerminalLexerRule(value))));
         }
 
-        public static explicit operator Expr(BaseLexerRule value)
+        public static explicit operator Expr(LexerRule value)
         {
             return new Expr(
                    new SymbolExpression(
@@ -34,7 +34,7 @@ namespace Pliant.Builders.Expressions
                            value)));
         }
 
-        public static explicit operator Expr(BaseTerminal value)
+        public static explicit operator Expr(Terminal value)
         {
             return new Expr(
                 new SymbolExpression(

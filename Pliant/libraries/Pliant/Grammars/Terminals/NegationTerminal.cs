@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 namespace Pliant.Grammars
 {
-    public class NegationTerminal : BaseTerminal
+    public class NegationTerminal : Terminal
     {
-        public ITerminal InnerTerminal { get; private set; }
+        public Terminal InnerTerminal { get; private set; }
 
         private IReadOnlyList<Interval> _intervals;
 
         private readonly int _hashCode = 0;
 
-        public NegationTerminal(ITerminal innerTerminal)
+        public NegationTerminal(Terminal innerTerminal)
         {
             InnerTerminal = innerTerminal;
             this._hashCode = ComputeHashCode();
         }
 
-        private static IReadOnlyList<Interval> CreateIntervals(ITerminal innerTerminal)
+        private static IReadOnlyList<Interval> CreateIntervals(Terminal innerTerminal)
         {
             var inverseIntervalList = new List<Interval>();
             var intervals = innerTerminal.GetIntervals();

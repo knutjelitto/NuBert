@@ -131,7 +131,7 @@ namespace Pliant.RegularExpressions
             _regexGrammar = new Grammar(regex, productions, null, null);
         }
         
-        private static BaseLexerRule CreateNotMetaLexerRule()
+        private static LexerRule CreateNotMetaLexerRule()
         {
             return new TerminalLexerRule(
                 new NegationTerminal(
@@ -139,7 +139,7 @@ namespace Pliant.RegularExpressions
                 "NotMeta");
         }
 
-        private static BaseLexerRule CreateNotCloseBracketLexerRule()
+        private static LexerRule CreateNotCloseBracketLexerRule()
         {
             return new TerminalLexerRule(
                 new NegationTerminal(
@@ -147,7 +147,7 @@ namespace Pliant.RegularExpressions
                 "NotCloseBracket");
         }
 
-        private static BaseLexerRule CreateEscapeCharacterLexerRule()
+        private static LexerRule CreateEscapeCharacterLexerRule()
         {
             var start = new DfaState();
             var escape = new DfaState();

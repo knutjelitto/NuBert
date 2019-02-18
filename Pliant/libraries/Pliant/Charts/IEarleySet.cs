@@ -5,20 +5,20 @@ namespace Pliant.Charts
 {
     public interface IEarleySet
     {
-        IReadOnlyList<INormalState> Predictions { get; }
+        IReadOnlyList<NormalState> Predictions { get; }
 
-        IReadOnlyList<INormalState> Scans { get; }
+        IReadOnlyList<NormalState> Scans { get; }
 
-        IReadOnlyList<INormalState> Completions { get; }
+        IReadOnlyList<NormalState> Completions { get; }
 
-        IReadOnlyList<ITransitionState> Transitions { get; }
+        IReadOnlyList<TransitionState> Transitions { get; }
 
-        bool Enqueue(IState state);
+        bool Enqueue(State state);
 
         int Location { get; }
 
-        ITransitionState FindTransitionState(ISymbol searchSymbol);
+        TransitionState FindTransitionState(ISymbol searchSymbol);
         
-        INormalState FindSourceState(ISymbol searchSymbol);
+        NormalState FindSourceState(ISymbol searchSymbol);
     }
 }

@@ -2,15 +2,22 @@
 
 namespace Pliant.Tokens
 {
-    public class TerminalLexeme : LexemeBase<ITerminalLexerRule>, ILexeme
+    public class TerminalLexeme : LexemeBase<TerminalLexerRule>, ILexeme
     {
-        public ITerminal Terminal => ConcreteLexerRule.Terminal;
+        public TerminalLexeme(TerminalLexerRule lexerRule, int position)
+            : base(lexerRule, position)
+        {
+            this._captureRendered = false;
+            this._isAccepted = false;
+        }
 
-        string _stringCapture;
-        char _capture;
-        bool _captureRendered;
-        bool _isAccepted;
-                
+        public TerminalLexeme(Terminal terminal, TokenType tokenType, int position)
+            : this(new TerminalLexerRule(terminal, tokenType), position)
+        {
+        }
+
+        public Terminal Terminal => ConcreteLexerRule.Terminal;
+
         public override string Value
         {
             get
@@ -32,37 +39,15 @@ namespace Pliant.Tokens
             }
         }
 
-        public TerminalLexeme(ITerminalLexerRule lexerRule, int position)
-            : base(lexerRule, position)
+        public override bool IsAccepted()
         {
-            this._captureRendered = false;
-            this._isAccepted = false;
-        }
-
-        public TerminalLexeme(ITerminal terminal, TokenType tokenType, int position)
-            : this(new TerminalLexerRule(terminal, tokenType), position)
-        {
+            return this._isAccepted;
         }
 
         public override void Reset()
         {
             this._captureRendered = false;
             this._isAccepted = false;
-        }
-                
-        public override bool IsAccepted()
-        {
-            return this._isAccepted;
-        }
-
-        void SetAccepted(bool value)
-        {
-            this._isAccepted = value;
-        }
-
-        void SetCapture(char value)
-        {
-            this._capture = value;
         }
 
         public override bool Scan(char c)
@@ -82,5 +67,20 @@ namespace Pliant.Tokens
             return true;
         }
 
+        private void SetAccepted(bool value)
+        {
+            this._isAccepted = value;
+        }
+
+        private void SetCapture(char value)
+        {
+            this._capture = value;
+        }
+
+        private char _capture;
+        private bool _captureRendered;
+        private bool _isAccepted;
+
+        private string _stringCapture;
     }
 }

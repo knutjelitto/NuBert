@@ -49,7 +49,7 @@ namespace Pliant.Builders.Expressions
                         new TerminalLexerRule(literal))));
         }
 
-        public static implicit operator RuleExpression(BaseLexerRule lexerRule)
+        public static implicit operator RuleExpression(LexerRule lexerRule)
         {
             return new RuleExpression(
                 new SymbolExpression(
@@ -57,7 +57,7 @@ namespace Pliant.Builders.Expressions
                         lexerRule)));
         }
 
-        public static implicit operator RuleExpression(BaseTerminal baseTerminal)
+        public static implicit operator RuleExpression(Terminal baseTerminal)
         {
             return new RuleExpression(
                 new SymbolExpression(

@@ -17,7 +17,7 @@ namespace Pliant.Builders
             Alterations = new List<AlterationModel>();
         }
 
-        public ProductionModel(INonTerminal leftHandSide)
+        public ProductionModel(NonTerminal leftHandSide)
             : this(new NonTerminalModel(leftHandSide))
         {
         }

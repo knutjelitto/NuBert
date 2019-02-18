@@ -52,7 +52,7 @@ namespace Pliant.Tests.Unit.Grammars
             var grammar = new HiddenRightRecursionGrammar();
             var preComputedGrammar = new PreComputedGrammar(grammar);
 
-            var leftHandSides = new UniqueList<INonTerminal>();
+            var leftHandSides = new UniqueList<NonTerminal>();
             for (var p = 0; p < grammar.Productions.Count; p++)
             {
                 var production = grammar.Productions[p];
@@ -146,7 +146,7 @@ namespace Pliant.Tests.Unit.Grammars
                 null).ToGrammar();
         }
 
-        private static BaseLexerRule String()
+        private static LexerRule String()
         {
             // ["][^"]+["]
             const string pattern = "[\"][^\"]+[\"]";
@@ -154,7 +154,7 @@ namespace Pliant.Tests.Unit.Grammars
         }
 
 
-        private static BaseLexerRule CreateRegexDfa(string pattern)
+        private static LexerRule CreateRegexDfa(string pattern)
         {
             var regexParser = new RegexParser();
             var regex = regexParser.Parse(pattern);

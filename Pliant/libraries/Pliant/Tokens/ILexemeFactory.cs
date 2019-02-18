@@ -6,7 +6,7 @@ namespace Pliant.Tokens
     {
         LexerRuleType LexerRuleType { get; }
 
-        ILexeme Create(ILexerRule lexerRule, int position);
+        ILexeme Create(LexerRule lexerRule, int position);
 
         void Free(ILexeme lexeme);
     }

@@ -41,8 +41,8 @@ namespace Pliant.Tests.Unit.Automata
 
             Assert.IsNotNull(dfa_0);
 
-            IDfaTransition transition_0_01 = null;
-            IDfaTransition transition_0_23 = null;
+            DfaTransition transition_0_01 = null;
+            DfaTransition transition_0_23 = null;
 
             var count = 0;
             foreach (var transition in dfa_0.Transitions)
@@ -58,9 +58,9 @@ namespace Pliant.Tests.Unit.Automata
             Assert.AreEqual(2, count);
 
             var dfa_01 = transition_0_01.Target;
-            IDfaTransition transition_01_01 = null;
-            IDfaTransition transition_01_23 = null;
-            IDfaTransition transition_01_2 = null;
+            DfaTransition transition_01_01 = null;
+            DfaTransition transition_01_23 = null;
+            DfaTransition transition_01_2 = null;
             
             count = 0;
             foreach (var transition in dfa_01.Transitions)
@@ -78,8 +78,8 @@ namespace Pliant.Tests.Unit.Automata
             Assert.AreEqual(3, count);
 
             var dfa_23 = transition_0_23.Target;
-            IDfaTransition transition_23_01 = null;
-            IDfaTransition transition_23_2 = null;
+            DfaTransition transition_23_01 = null;
+            DfaTransition transition_23_2 = null;
             
             count = 0;
             foreach (var transition in dfa_23.Transitions)
@@ -95,7 +95,7 @@ namespace Pliant.Tests.Unit.Automata
             Assert.AreEqual(2, count);
 
             var dfa_2 = transition_23_2.Target;
-            IDfaTransition transition_2_01 = null;
+            DfaTransition transition_2_01 = null;
             count = 0;
             foreach (var transition in dfa_2.Transitions)
             {
@@ -116,7 +116,7 @@ namespace Pliant.Tests.Unit.Automata
             return states;
         }
 
-        private IDfaState ConvertNfaToDfa(INfa nfa)
+        private DfaState ConvertNfaToDfa(Nfa nfa)
         {
             return new SubsetConstructionAlgorithm().Transform(nfa);
         }

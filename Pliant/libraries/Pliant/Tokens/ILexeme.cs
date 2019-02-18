@@ -7,8 +7,8 @@ namespace Pliant.Tokens
         bool Scan(char c);
 
         bool IsAccepted();
-             
-        ILexerRule LexerRule { get; }
+
+        LexerRule LexerRule { get; }
 
         void AddTrailingTrivia(ITrivia trivia);
 

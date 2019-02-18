@@ -2,6 +2,6 @@
 {
     public interface INfaToDfa
     {
-        IDfaState Transform(INfa nfa);
+        DfaState Transform(Nfa nfa);
     }
 }

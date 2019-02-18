@@ -5,7 +5,7 @@ namespace Pliant.Tree
 {
     public interface IInternalTreeNode : ITreeNode
     {
-        INonTerminal Symbol { get; }
+        NonTerminal Symbol { get; }
         IReadOnlyList<ITreeNode> Children { get; }
     }
 }

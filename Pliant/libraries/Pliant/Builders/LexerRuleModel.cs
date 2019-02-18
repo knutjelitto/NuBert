@@ -4,14 +4,14 @@ namespace Pliant.Builders
 {
     public class LexerRuleModel : SymbolModel
     {
-        public LexerRuleModel(ILexerRule value)
+        public LexerRuleModel(LexerRule value)
         {
             Value = value;
         }
 
         public override ISymbol Symbol => Value;
 
-        public ILexerRule Value { get; }
+        public LexerRule Value { get; }
 
         public override SymbolModelType ModelType => SymbolModelType.LexerRule;
 

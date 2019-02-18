@@ -363,12 +363,12 @@ namespace Pliant.Tests.Unit.Ebnf
 
         private class GuidEbnfProductionNamingStrategy : IEbnfProductionNamingStrategy
         {
-            public INonTerminal GetSymbolForOptional(EbnfFactorOptional optional)
+            public NonTerminal GetSymbolForOptional(EbnfFactorOptional optional)
             {
                 return new NonTerminal(Guid.NewGuid().ToString());
             }
 
-            public INonTerminal GetSymbolForRepetition(EbnfFactorRepetition repetition)
+            public NonTerminal GetSymbolForRepetition(EbnfFactorRepetition repetition)
             {
                 return new NonTerminal(Guid.NewGuid().ToString());
             }

@@ -2,16 +2,8 @@
 
 namespace Pliant.Grammars
 {
-    public class WordTerminal : BaseTerminal
+    public class WordTerminal : Terminal
     {
-        private static readonly Interval[] _intervals = 
-        {
-            new Interval('A', 'Z'),
-            new Interval('a', 'z'),
-            new Interval('0', '9'),
-            new Interval('_', '_')
-        };
-        
         public override IReadOnlyList<Interval> GetIntervals()
         {
             return _intervals;
@@ -19,10 +11,18 @@ namespace Pliant.Grammars
 
         public override bool IsMatch(char character)
         {
-            return ('A' <= character && character <= 'Z'
-                || 'a' <= character && character <= 'z'
-                || '0' <= character && character <= '9'
-                || '_' == character) ;                
+            return 'A' <= character && character <= 'Z' || 
+                   'a' <= character && character <= 'z' || 
+                   '0' <= character && character <= '9' || 
+                   '_' == character;
         }
+
+        private static readonly Interval[] _intervals =
+        {
+            new Interval('A', 'Z'),
+            new Interval('a', 'z'),
+            new Interval('0', '9'),
+            new Interval('_')
+        };
     }
 }

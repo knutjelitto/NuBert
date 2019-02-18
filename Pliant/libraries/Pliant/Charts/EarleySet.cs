@@ -6,14 +6,14 @@ namespace Pliant.Charts
 {
     public class EarleySet : IEarleySet
     {
-        private static readonly INormalState[] EmptyNormalStates = { };
-        private static readonly ITransitionState[] EmptyTransitionStates = { };
-        private UniqueList<INormalState> _predictions;
-        private UniqueList<INormalState> _scans;
-        private UniqueList<INormalState> _completions;
-        private UniqueList<ITransitionState> _transitions;
+        private static readonly NormalState[] EmptyNormalStates = { };
+        private static readonly TransitionState[] EmptyTransitionStates = { };
+        private UniqueList<NormalState> _predictions;
+        private UniqueList<NormalState> _scans;
+        private UniqueList<NormalState> _completions;
+        private UniqueList<TransitionState> _transitions;
 
-        public IReadOnlyList<INormalState> Predictions
+        public IReadOnlyList<NormalState> Predictions
         {
             get
             {
@@ -26,7 +26,7 @@ namespace Pliant.Charts
             } 
         }
 
-        public IReadOnlyList<INormalState> Scans
+        public IReadOnlyList<NormalState> Scans
         {
             get
             {
@@ -39,7 +39,7 @@ namespace Pliant.Charts
             }
         }
 
-        public IReadOnlyList<INormalState> Completions
+        public IReadOnlyList<NormalState> Completions
         {
             get
             {
@@ -52,7 +52,7 @@ namespace Pliant.Charts
             }
         }
 
-        public IReadOnlyList<ITransitionState> Transitions
+        public IReadOnlyList<TransitionState> Transitions
         {
             get
             {
@@ -72,13 +72,8 @@ namespace Pliant.Charts
             Location = location;
         }
 
-        public bool Contains(StateType stateType, IDottedRule dottedRule, int origin)
+        public bool ContainsNormal(IDottedRule dottedRule, int origin)
         {
-            if (stateType != StateType.Normal)
-            {
-                return false;
-            }
-
             var hashCode = NormalStateHashCodeAlgorithm.Compute(dottedRule, origin);
             if (dottedRule.IsComplete)
             {
@@ -86,7 +81,7 @@ namespace Pliant.Charts
             }
 
             var currentSymbol = dottedRule.PostDotSymbol;
-            if (currentSymbol.SymbolType == SymbolType.NonTerminal)
+            if (currentSymbol is NonTerminal)
             {
                 return PredictionsContainsHash(hashCode);
             }
@@ -124,23 +119,23 @@ namespace Pliant.Charts
             return this._scans.ContainsHash(hashCode);
         }
 
-        public bool Enqueue(IState state)
+        public bool Enqueue(State state)
         {
             if (state.StateType == StateType.Transitive)
             {
-                return EnqueueTransition(state as ITransitionState);
+                return EnqueueTransition(state as TransitionState);
             }
 
-            return EnqueueNormal(state, state as INormalState);
+            return EnqueueNormal(state, state as NormalState);
         }
 
-        private bool EnqueueNormal(IState state, INormalState normalState)
+        private bool EnqueueNormal(State state, NormalState normalState)
         {
             var dottedRule = state.DottedRule;
             if (!dottedRule.IsComplete)
             {
                 var currentSymbol = dottedRule.PostDotSymbol;
-                if (currentSymbol.SymbolType == SymbolType.NonTerminal)
+                if (currentSymbol is NonTerminal)
                 {
                     return AddUniquePrediction(normalState);
                 }
@@ -151,47 +146,47 @@ namespace Pliant.Charts
             return AddUniqueCompletion(normalState);
         }
 
-        private bool AddUniqueCompletion(INormalState normalState)
+        private bool AddUniqueCompletion(NormalState normalState)
         {
             if (this._completions == null)
             {
-                this._completions = new UniqueList<INormalState>();
+                this._completions = new UniqueList<NormalState>();
             }
 
             return this._completions.AddUnique(normalState);
         }
 
-        private bool AddUniqueScan(INormalState normalState)
+        private bool AddUniqueScan(NormalState normalState)
         {
             if (this._scans == null)
             {
-                this._scans = new UniqueList<INormalState>();
+                this._scans = new UniqueList<NormalState>();
             }
 
             return this._scans.AddUnique(normalState);
         }
 
-        private bool AddUniquePrediction(INormalState normalState)
+        private bool AddUniquePrediction(NormalState normalState)
         {
             if (this._predictions == null)
             {
-                this._predictions = new UniqueList<INormalState>();
+                this._predictions = new UniqueList<NormalState>();
             }
 
             return this._predictions.AddUnique(normalState);
         }
 
-        private bool EnqueueTransition(ITransitionState transitionState)
+        private bool EnqueueTransition(TransitionState transitionState)
         {
             if (this._transitions == null)
             {
-                this._transitions = new UniqueList<ITransitionState>();
+                this._transitions = new UniqueList<TransitionState>();
             }
 
             return this._transitions.AddUnique(transitionState);
         }
 
-        public ITransitionState FindTransitionState(ISymbol searchSymbol)
+        public TransitionState FindTransitionState(ISymbol searchSymbol)
         {
             for (var t = 0; t < Transitions.Count; t++)
             {
@@ -204,10 +199,10 @@ namespace Pliant.Charts
             return null;
         }
 
-        public INormalState FindSourceState(ISymbol searchSymbol)
+        public NormalState FindSourceState(ISymbol searchSymbol)
         {
             var sourceItemCount = 0;
-            INormalState sourceItem = null;
+            NormalState sourceItem = null;
 
             for (var s = 0; s < Predictions.Count; s++)
             {

@@ -15,7 +15,7 @@ namespace Pliant.Tokens
             this._queue = new Queue<StringLiteralLexeme>();
         }
 
-        public ILexeme Create(ILexerRule lexerRule, int position)
+        public ILexeme Create(LexerRule lexerRule, int position)
         {
             if (lexerRule.LexerRuleType != LexerRuleType)
             {
@@ -23,7 +23,7 @@ namespace Pliant.Tokens
                     $"Unable to create StringLiteralLexeme from type {lexerRule.GetType().FullName}. Expected StringLiteralLexerRule");
             }
 
-            var stringLiteralLexerRule = lexerRule as IStringLiteralLexerRule;
+            var stringLiteralLexerRule = lexerRule as StringLiteralLexerRule;
 
             if (this._queue.Count == 0)
             {

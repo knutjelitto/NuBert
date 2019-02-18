@@ -6,16 +6,14 @@ namespace Pliant.LexerRules
 {
     public class WhitespaceLexerRule : DfaLexerRule
     {
-        private static readonly IDfaState _start;
+        private static readonly DfaState _start;
         private static readonly TokenType _staticTokenType = new TokenType(@"[\s]+");
 
         static WhitespaceLexerRule()
         {
             _start = new DfaState();
-            var end = new DfaState(isFinal: true);
-            var transition = new DfaTransition(
-                new WhitespaceTerminal(),
-                end);
+            var end = new DfaState(true);
+            var transition = new DfaTransition(new WhitespaceTerminal(), end);
             _start.AddTransition(transition);
             end.AddTransition(transition);
         }

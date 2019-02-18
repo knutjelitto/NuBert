@@ -3,9 +3,9 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class TerminalLexerRule : BaseLexerRule, ITerminalLexerRule
+    public sealed class TerminalLexerRule : LexerRule
     {
-        public ITerminal Terminal { get; }
+        public Terminal Terminal { get; }
 
         public static readonly LexerRuleType TerminalLexerRuleType = new LexerRuleType("Terminal");
 
@@ -16,14 +16,14 @@ namespace Pliant.Grammars
         {
         }
 
-        public TerminalLexerRule(ITerminal terminal, TokenType tokenType)
+        public TerminalLexerRule(Terminal terminal, TokenType tokenType)
             : base(TerminalLexerRuleType, tokenType)
         {
             Terminal = terminal;
             this._hashCode = ComputeHashCode(terminal, TerminalLexerRuleType, tokenType);
         }
 
-        public TerminalLexerRule(ITerminal terminal, string tokenTypeId)
+        public TerminalLexerRule(Terminal terminal, string tokenTypeId)
             : this(terminal, new TokenType(tokenTypeId))
         {
         }
@@ -35,19 +35,9 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var terminalLexerRule = obj as TerminalLexerRule;
-            if (terminalLexerRule == null)
-            {
-                return false;
-            }
-
-            return LexerRuleType.Equals(terminalLexerRule.LexerRuleType)
-                && Terminal.Equals(terminalLexerRule.Terminal);
+            return obj is TerminalLexerRule terminalLexerRule && 
+                   LexerRuleType.Equals(terminalLexerRule.LexerRuleType) && 
+                   Terminal.Equals(terminalLexerRule.Terminal);
         }
 
         public override int GetHashCode()
@@ -56,7 +46,7 @@ namespace Pliant.Grammars
         }
 
         private static int ComputeHashCode(
-            ITerminal terminal,
+            Terminal terminal,
             LexerRuleType terminalLexerRuleType,
             TokenType tokenType)
         {

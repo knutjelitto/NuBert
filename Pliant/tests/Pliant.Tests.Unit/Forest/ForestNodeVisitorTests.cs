@@ -15,9 +15,9 @@ namespace Pliant.Tests.Common.Forest
     [TestClass]
     public class ForestNodeVisitorTests
     {
-        private readonly ILexerRule _whitespace;
+        private readonly LexerRule _whitespace;
 
-        private static ILexerRule CreateWhitespaceRule()
+        private static LexerRule CreateWhitespaceRule()
         {
             var start = new DfaState();
             var end = new DfaState(true);

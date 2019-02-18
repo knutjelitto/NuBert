@@ -4,22 +4,22 @@ using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public abstract class StateBase : IState
+    public abstract class State //: IState
     {
-        public IDottedRule DottedRule { get; private set; }
-
-        public int Origin { get; private set; }
-        
-        public abstract StateType StateType { get; }
-
-        public IForestNode ParseNode { get; set; }
-        
-        protected StateBase(IDottedRule dottedRule, int origin)
+        protected State(IDottedRule dottedRule, int origin)
         {
             Assert.IsNotNull(dottedRule, nameof(dottedRule));
             Assert.IsGreaterThanEqualToZero(origin, nameof(origin));
             DottedRule = dottedRule;
             Origin = origin;
         }
+
+        public IDottedRule DottedRule { get; }
+
+        public int Origin { get; }
+
+        public IForestNode ParseNode { get; set; }
+
+        public abstract StateType StateType { get; }
     }
 }

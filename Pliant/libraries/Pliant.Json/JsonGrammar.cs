@@ -66,14 +66,14 @@ namespace Pliant.Json
         public JsonGrammar() 
             : base(InnerGrammar) { }
         
-        private static BaseLexerRule String()
+        private static LexerRule String()
         {
             // ["][^"]+["]
             const string pattern = "[\"][^\"]+[\"]";
             return CreateRegexDfa(pattern);
         }
 
-        private static BaseLexerRule CreateRegexDfa(string pattern)
+        private static LexerRule CreateRegexDfa(string pattern)
         {
             var regexParser = new RegexParser();
             var regex = regexParser.Parse(pattern);

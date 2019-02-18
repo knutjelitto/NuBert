@@ -4,7 +4,7 @@ namespace Pliant.Ebnf
 {
     public interface IEbnfProductionNamingStrategy
     {
-        INonTerminal GetSymbolForRepetition(EbnfFactorRepetition repetition);
-        INonTerminal GetSymbolForOptional(EbnfFactorOptional optional);        
+        NonTerminal GetSymbolForRepetition(EbnfFactorRepetition repetition);
+        NonTerminal GetSymbolForOptional(EbnfFactorOptional optional);        
     }
 }

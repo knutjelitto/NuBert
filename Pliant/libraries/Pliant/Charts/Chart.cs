@@ -3,7 +3,7 @@ using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public class Chart : IChart
+    public class Chart //: IChart
     {
         private readonly List<EarleySet> _earleySets;
         
@@ -14,31 +14,31 @@ namespace Pliant.Charts
             this._earleySets = new List<EarleySet>();
         }
 
-        public bool Enqueue(int index, IState state)
+        public bool Enqueue(int position, State state)
         {
-            IEarleySet earleySet = GetEarleySet(index);
+            IEarleySet earleySet = GetEarleySet(position);
             return earleySet.Enqueue(state);
         }
 
         public int Count => EarleySets.Count;
 
-        public bool Contains(int index, StateType stateType, IDottedRule dottedRule, int origin)
+        public bool Contains(int position, IDottedRule dottedRule, int origin)
         {
-            var earleySet = GetEarleySet(index);
-            return earleySet.Contains(stateType, dottedRule, origin);
+            var earleySet = GetEarleySet(position);
+            return earleySet.ContainsNormal(dottedRule, origin);
         }
 
-        private EarleySet GetEarleySet(int index)
+        private EarleySet GetEarleySet(int position)
         {
-            EarleySet earleySet = null;
-            if (this._earleySets.Count <= index)
+            EarleySet earleySet;
+            if (position < this._earleySets.Count)
             {
-                earleySet = new EarleySet(index);
-                this._earleySets.Add(earleySet);
+                earleySet = this._earleySets[position];
             }
             else
             {
-                earleySet = this._earleySets[index];
+                earleySet = new EarleySet(position);
+                this._earleySets.Add(earleySet);
             }
 
             return earleySet;

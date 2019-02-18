@@ -898,7 +898,7 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static void AssertNodeProperties(ISymbolForestNode node, string nodeName, int origin, int location)
         {
-            var actualNodeName = (node.Symbol as INonTerminal).Value;
+            var actualNodeName = (node.Symbol as NonTerminal).Value;
             Assert.AreEqual(nodeName, actualNodeName, "Node Name Match Failed.");
             Assert.AreEqual(origin, node.Origin, "Origin Match Failed.");
             Assert.AreEqual(location, node.Location, "Location Match Failed.");
@@ -929,7 +929,8 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static Chart GetChartFromParseEngine(ParseEngine parseEngine)
         {
-            return new PrivateObject(parseEngine).GetField("_chart") as Chart;
+            //return new PrivateObject(parseEngine).GetField("_chart") as Chart;
+            return parseEngine.Chart;
         }
 
         private static IGrammar CreateExpressionGrammar()

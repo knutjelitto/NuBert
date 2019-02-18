@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Pliant.Grammars
 {
-    public class RangeTerminal : BaseTerminal
+    public class RangeTerminal : Terminal
     {
         public char Start { get; private set; }
 

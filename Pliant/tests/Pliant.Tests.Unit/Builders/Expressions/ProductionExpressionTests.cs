@@ -313,7 +313,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseLexerRule 
+            LexerRule 
                 a = new StringLiteralLexerRule("a"),
                 b = new StringLiteralLexerRule("b");
             S.Rule = (Expr) a + b;
@@ -328,7 +328,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseLexerRule
+            LexerRule
                 a = new StringLiteralLexerRule("a");
             S.Rule = a + (Expr)"s";
 
@@ -342,7 +342,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseLexerRule
+            LexerRule
                 a = new StringLiteralLexerRule("a"),
                 b = new StringLiteralLexerRule("b");
             S.Rule = (Expr)a | b;
@@ -358,7 +358,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseLexerRule
+            LexerRule
                 a = new StringLiteralLexerRule("a");
             S.Rule = a | (Expr)"b";
 
@@ -373,7 +373,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseLexerRule
+            LexerRule
                 a = new StringLiteralLexerRule("a");
             S.Rule = (Expr)"b" | a;
 
@@ -388,7 +388,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseTerminal
+            Terminal
                 a = new RangeTerminal('a', 'b');
             S.Rule = a + (Expr)"b";
 
@@ -402,7 +402,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseTerminal
+            Terminal
                 a = new RangeTerminal('a', 'b');
             S.Rule = (Expr)"b"+ a;
 
@@ -416,7 +416,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseTerminal
+            Terminal
                 a = new RangeTerminal('a', 'b');
             S.Rule = a | (Expr)"b";
 
@@ -431,7 +431,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            BaseTerminal
+            Terminal
                 a = new RangeTerminal('a', 'b');
             S.Rule = (Expr)"b" | a;
 

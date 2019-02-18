@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Pliant.Charts
 {
-    public class NormalState : StateBase, INormalState
+    public class NormalState : State
     {        
         private readonly int _hashCode;
 

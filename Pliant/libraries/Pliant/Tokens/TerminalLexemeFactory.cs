@@ -14,7 +14,7 @@ namespace Pliant.Tokens
             this._queue = new Queue<TerminalLexeme>();
         }
 
-        public ILexeme Create(ILexerRule lexerRule, int position)
+        public ILexeme Create(LexerRule lexerRule, int position)
         {
             if (!LexerRuleType.Equals(lexerRule.LexerRuleType))
             {
@@ -22,7 +22,7 @@ namespace Pliant.Tokens
                     $"Unable to create TerminalLexeme from type {lexerRule.GetType().FullName}. Expected TerminalLexerRule");
             }
 
-            var terminalLexerRule = lexerRule as ITerminalLexerRule;
+            var terminalLexerRule = lexerRule as TerminalLexerRule;
             if (this._queue.Count == 0)
             {
                 return new TerminalLexeme(terminalLexerRule, position);

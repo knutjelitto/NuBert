@@ -1,31 +1,25 @@
-﻿using Pliant.Collections;
-using Pliant.Forest;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Pliant.Forest;
 
 namespace Pliant.Tests.Common.Forest
 {
     public abstract class FakeInternalForestNode : IInternalForestNode
     {
-        private List<IAndForestNode> _children;
-
         protected FakeInternalForestNode(int origin, int location, params IAndForestNode[] children)
         {
             Origin = origin;
             Location = location;
-            _children = new List<IAndForestNode>(children);
+            this._children = new List<IAndForestNode>(children);
         }
 
-        public IReadOnlyList<IAndForestNode> Children
-        {
-            get { return _children; }
-        }
+        public IReadOnlyList<IAndForestNode> Children => this._children;
 
-        public int Location { get; private set; }
+        public int Location { get; }
 
         public abstract ForestNodeType NodeType { get; }
 
-        public int Origin { get; private set; }
+        public int Origin { get; }
 
         public void Accept(IForestNodeVisitor visitor)
         {
@@ -41,5 +35,7 @@ namespace Pliant.Tests.Common.Forest
         {
             throw new NotImplementedException();
         }
+
+        private readonly List<IAndForestNode> _children;
     }
 }

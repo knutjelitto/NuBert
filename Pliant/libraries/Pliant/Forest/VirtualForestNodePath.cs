@@ -6,17 +6,17 @@ namespace Pliant.Forest
     public class VirtualForestNodePath
     {
         private readonly int _hashCode;
-        public ITransitionState TransitionState { get; private set; }
+        public TransitionState TransitionState { get; private set; }
         public IForestNode ForestNode { get; private set; }
 
-        public VirtualForestNodePath(ITransitionState transitionState, IForestNode forestNode)
+        public VirtualForestNodePath(TransitionState transitionState, IForestNode forestNode)
         {
             TransitionState = transitionState;
             ForestNode = forestNode;
             this._hashCode = ComputeHashCode(TransitionState, ForestNode);
         }
 
-        private static int ComputeHashCode(ITransitionState transitionState, IForestNode forestNode)
+        private static int ComputeHashCode(TransitionState transitionState, IForestNode forestNode)
         {
             return HashCode.Compute(
                 transitionState.GetHashCode(), 

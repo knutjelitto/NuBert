@@ -2,11 +2,11 @@
 
 namespace Pliant.Grammars
 {
-    public class Optional : Grouping, IOptional
+    public sealed class Optional : Grouping
     {
         public Optional(IReadOnlyList<ISymbol> items)
-            : base(items) { }
-
-        public override SymbolType SymbolType => SymbolType.Optional;
+            : base(items)
+        {
+        }
     }
 }

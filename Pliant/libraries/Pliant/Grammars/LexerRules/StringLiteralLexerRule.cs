@@ -3,70 +3,43 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class StringLiteralLexerRule : BaseLexerRule, IStringLiteralLexerRule
+    public sealed class StringLiteralLexerRule : LexerRule //, IStringLiteralLexerRule
     {
-        public static readonly LexerRuleType StringLiteralLexerRuleType = new LexerRuleType("StringLiteral");
-        private readonly int _hashCode;
-
-        public string Literal { get; private set; }
-
         public StringLiteralLexerRule(string literal, TokenType tokenType)
             : base(StringLiteralLexerRuleType, tokenType)
         {
             Literal = literal;
-            this._hashCode = ComputeHashCode(literal, StringLiteralLexerRuleType, tokenType);
         }
 
         public StringLiteralLexerRule(string literal)
             : this(literal, new TokenType(literal))
-        { }
+        {
+        }
+
+        public string Literal { get; }
+
+        public override bool CanApply(char c)
+        {
+            return Literal.Length != 0 && Literal[0].Equals(c);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is StringLiteralLexerRule other &&
+                   LexerRuleType.Equals(other.LexerRuleType) &&
+                   Literal.Equals(other.Literal);
+        }
+
+        public override int GetHashCode()
+        {
+            return (StringLiteralLexerRuleType, TokenType, Literal).GetHashCode();
+        }
 
         public override string ToString()
         {
             return Literal;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var terminalLexerRule = obj as StringLiteralLexerRule;
-            if (terminalLexerRule == null)
-            {
-                return false;
-            }
-
-            return LexerRuleType.Equals(terminalLexerRule.LexerRuleType)
-                && Literal.Equals(terminalLexerRule.Literal);
-        }
-
-        public override int GetHashCode()
-        {
-            return this._hashCode;
-        }
-
-        private static int ComputeHashCode(
-            string literal,
-            LexerRuleType terminalLexerRuleType,
-            TokenType tokenType)
-        {
-            return HashCode.Compute(
-                terminalLexerRuleType.GetHashCode(),
-                tokenType.GetHashCode(),
-                literal.GetHashCode());
-        }
-
-        public override bool CanApply(char c)
-        {
-            if (Literal.Length == 0)
-            {
-                return false;
-            }
-
-            return Literal[0].Equals(c);
-        }
+        public static readonly LexerRuleType StringLiteralLexerRuleType = new LexerRuleType("StringLiteral");
     }
 }

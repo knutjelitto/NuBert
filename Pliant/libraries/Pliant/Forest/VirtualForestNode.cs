@@ -9,7 +9,7 @@ namespace Pliant.Forest
     {
         public VirtualForestNode(
             int location,
-            ITransitionState transitionState,
+            TransitionState transitionState,
             IForestNode completedParseNode)
             : this(
                 location,
@@ -21,9 +21,9 @@ namespace Pliant.Forest
 
         private VirtualForestNode(
             int location,
-            ITransitionState transitionState,
+            TransitionState transitionState,
             IForestNode completedParseNode,
-            IState targetState)
+            State targetState)
             : base(targetState.Origin, location)
         {
             this._paths = new List<VirtualForestNodePath>();
@@ -73,10 +73,10 @@ namespace Pliant.Forest
 
         public override bool Equals(object obj)
         {
-            return obj is ISymbolForestNode other && 
-                   Location == other.Location && 
-                   NodeType == other.NodeType && 
-                   Origin == other.Origin && 
+            return obj is ISymbolForestNode other &&
+                   Location == other.Location &&
+                   NodeType == other.NodeType &&
+                   Origin == other.Origin &&
                    Symbol.Equals(other.Symbol);
         }
 

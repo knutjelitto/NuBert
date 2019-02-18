@@ -29,22 +29,22 @@ namespace Pliant.Builders.Expressions
             return AddWithAnd(lhs, new TerminalLexerRule(rhs));
         }
 
-        public static RuleExpression operator +(BaseExpression lhs, BaseLexerRule rhs)
+        public static RuleExpression operator +(BaseExpression lhs, LexerRule rhs)
         {
             return AddWithAnd(lhs, rhs);
         }
 
-        public static RuleExpression operator +(BaseLexerRule lhs, BaseExpression rhs)
+        public static RuleExpression operator +(LexerRule lhs, BaseExpression rhs)
         {
             return AddWithAnd(lhs, rhs);
         }
 
-        public static RuleExpression operator +(BaseTerminal lhs, BaseExpression rhs)
+        public static RuleExpression operator +(Terminal lhs, BaseExpression rhs)
         {
             return AddWithAnd(lhs, rhs);
         }
         
-        public static RuleExpression operator +(BaseExpression lhs, BaseTerminal rhs)
+        public static RuleExpression operator +(BaseExpression lhs, Terminal rhs)
         {
             return AddWithAnd(lhs, rhs);
         }
@@ -74,37 +74,37 @@ namespace Pliant.Builders.Expressions
             return AddWithOr(lhs, new TerminalLexerRule(rhs));
         }
 
-        public static RuleExpression operator |(BaseExpression lhs, BaseLexerRule rhs)
+        public static RuleExpression operator |(BaseExpression lhs, LexerRule rhs)
         {
             return AddWithOr(lhs, rhs);
         }
 
-        public static RuleExpression operator |(BaseLexerRule lhs, BaseExpression rhs)
+        public static RuleExpression operator |(LexerRule lhs, BaseExpression rhs)
         {
             return AddWithOr(lhs, rhs);
         }
         
-        public static RuleExpression operator |(BaseTerminal lhs, BaseExpression rhs)
+        public static RuleExpression operator |(Terminal lhs, BaseExpression rhs)
         {
             return AddWithOr(lhs, rhs);
         }
 
-        public static RuleExpression operator |(BaseExpression lhs, BaseTerminal rhs)
+        public static RuleExpression operator |(BaseExpression lhs, Terminal rhs)
         {
             return AddWithOr(lhs, rhs);
         }
 
-        private static RuleExpression AddWithAnd(BaseLexerRule lhs, BaseExpression rhs)
+        private static RuleExpression AddWithAnd(LexerRule lhs, BaseExpression rhs)
         {
             return AddWithAnd(new SymbolExpression(new LexerRuleModel(lhs)), rhs);
         }
 
-        private static RuleExpression AddWithAnd(BaseExpression lhs, BaseLexerRule rhs)
+        private static RuleExpression AddWithAnd(BaseExpression lhs, LexerRule rhs)
         {
             return AddWithAnd(lhs, new SymbolExpression(new LexerRuleModel(rhs)));
         }
 
-        private static RuleExpression AddWithAnd(BaseTerminal lhs, BaseExpression rhs)
+        private static RuleExpression AddWithAnd(Terminal lhs, BaseExpression rhs)
         {
             return AddWithAnd(
                 new SymbolExpression(
@@ -113,7 +113,7 @@ namespace Pliant.Builders.Expressions
                 rhs);
         }
 
-        private static RuleExpression AddWithAnd(BaseExpression lhs, BaseTerminal rhs)
+        private static RuleExpression AddWithAnd(BaseExpression lhs, Terminal rhs)
         {
             return AddWithAnd(
                 lhs, 
@@ -129,17 +129,17 @@ namespace Pliant.Builders.Expressions
             return expression;
         }
         
-        private static RuleExpression AddWithOr(BaseLexerRule lhs, BaseExpression rhs)
+        private static RuleExpression AddWithOr(LexerRule lhs, BaseExpression rhs)
         {
             return AddWithOr(new SymbolExpression(new LexerRuleModel(lhs)), rhs);
         }
 
-        private static RuleExpression AddWithOr(BaseExpression lhs, BaseLexerRule rhs)
+        private static RuleExpression AddWithOr(BaseExpression lhs, LexerRule rhs)
         {
             return AddWithOr(lhs, new SymbolExpression(new LexerRuleModel(rhs)));
         }
 
-        private static RuleExpression AddWithOr(BaseTerminal lhs, BaseExpression rhs)
+        private static RuleExpression AddWithOr(Terminal lhs, BaseExpression rhs)
         {
             return AddWithOr(
                 new SymbolExpression(
@@ -148,7 +148,7 @@ namespace Pliant.Builders.Expressions
                 rhs);
         }
 
-        private static RuleExpression AddWithOr(BaseExpression lhs, BaseTerminal rhs)
+        private static RuleExpression AddWithOr(BaseExpression lhs, Terminal rhs)
         {
             return AddWithOr(
                 lhs,
@@ -159,8 +159,8 @@ namespace Pliant.Builders.Expressions
 
         private static RuleExpression AddWithOr(BaseExpression lhs, BaseExpression rhs)
         {
-            var lhsExpression = (lhs as RuleExpression) ?? new RuleExpression(lhs);
-            var rhsExpression = (rhs as RuleExpression) ?? new RuleExpression(rhs);
+            var lhsExpression = lhs as RuleExpression ?? new RuleExpression(lhs);
+            var rhsExpression = rhs as RuleExpression ?? new RuleExpression(rhs);
             foreach (var symbolList in rhsExpression.Alterations)
             {
                 lhsExpression.Alterations.Add(symbolList);

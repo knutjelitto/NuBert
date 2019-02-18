@@ -2,17 +2,15 @@
 
 namespace Pliant.Grammars
 {
-    public class Grouping : IGrouping
+    public abstract class Grouping : Symbol
     {
         private readonly List<ISymbol> _items;
 
         public IReadOnlyList<ISymbol> Items => this._items;
 
-        public Grouping(IReadOnlyList<ISymbol> items)
+        protected Grouping(IReadOnlyList<ISymbol> items)
         {
             this._items = new List<ISymbol>(items);
         }
-
-        public virtual SymbolType SymbolType => SymbolType.Grouping;
     }
 }

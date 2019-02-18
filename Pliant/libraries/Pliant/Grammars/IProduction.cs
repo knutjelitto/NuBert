@@ -4,7 +4,7 @@ namespace Pliant.Grammars
 {
     public interface IProduction
     {
-        INonTerminal LeftHandSide { get; }
+        NonTerminal LeftHandSide { get; }
 
         IReadOnlyList<ISymbol> RightHandSide { get; }
 

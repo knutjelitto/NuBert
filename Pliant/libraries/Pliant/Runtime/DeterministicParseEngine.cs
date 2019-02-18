@@ -255,11 +255,11 @@ namespace Pliant.Runtime
             throw new NotImplementedException();
         }
 
-        private Dictionary<int, ILexerRule[]> _expectedLexerRuleCache;
-        private static readonly ILexerRule[] EmptyLexerRules = { };
+        private Dictionary<int, LexerRule[]> _expectedLexerRuleCache;
+        private static readonly LexerRule[] EmptyLexerRules = { };
         private BitArray _expectedLexerRuleIndicies;
 
-        public IReadOnlyList<ILexerRule> GetExpectedLexerRules()
+        public IReadOnlyList<LexerRule> GetExpectedLexerRules()
         {
             var frameSets = this._chart.Sets;
             var frameSetCount = frameSets.Count;
@@ -307,7 +307,7 @@ namespace Pliant.Runtime
 
             if (this._expectedLexerRuleCache == null)
             {
-                this._expectedLexerRuleCache = new Dictionary<int, ILexerRule[]>();
+                this._expectedLexerRuleCache = new Dictionary<int, LexerRule[]>();
             }
 
             // if the hash is found in the cached lexer rule lists, return the cached array
@@ -317,7 +317,7 @@ namespace Pliant.Runtime
             }
 
             // compute the new lexer rule array and add it to the cache
-            var array = new ILexerRule[count];
+            var array = new LexerRule[count];
             var returnItemIndex = 0;
             for (var i = 0; i < Grammar.LexerRules.Count; i++)
             {

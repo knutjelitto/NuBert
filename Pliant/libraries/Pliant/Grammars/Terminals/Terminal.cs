@@ -2,9 +2,9 @@
 
 namespace Pliant.Grammars
 {
-    public abstract class BaseTerminal : Symbol, ITerminal
+    public abstract class Terminal : Symbol
     {
-        protected BaseTerminal() : base(SymbolType.Terminal)
+        protected Terminal()
         {
         }
 

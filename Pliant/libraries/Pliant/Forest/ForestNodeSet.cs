@@ -1,18 +1,13 @@
-﻿using Pliant.Charts;
+﻿using System.Collections.Generic;
+using Pliant.Charts;
 using Pliant.Grammars;
 using Pliant.Tokens;
 using Pliant.Utilities;
-using System.Collections.Generic;
 
 namespace Pliant.Forest
 {
     public class ForestNodeSet
     {
-        private readonly Dictionary<int, ISymbolForestNode> _symbolNodes;
-        private readonly Dictionary<int, IIntermediateForestNode> _intermediateNodes;
-        private readonly Dictionary<int, VirtualForestNode> _virtualNodes;
-        private readonly Dictionary<IToken, ITokenForestNode> _tokenNodes;
-
         public ForestNodeSet()
         {
             this._symbolNodes = new Dictionary<int, ISymbolForestNode>();
@@ -21,26 +16,13 @@ namespace Pliant.Forest
             this._tokenNodes = new Dictionary<IToken, ITokenForestNode>();
         }
 
-        public ISymbolForestNode AddOrGetExistingSymbolNode(ISymbol symbol, int origin, int location)
+        public void AddNewVirtualNode(VirtualForestNode virtualNode)
         {
-            var hash = ComputeHashCode(symbol, origin, location);
-
-            if (this._symbolNodes.TryGetValue(hash, out var symbolNode))
-            {
-                return symbolNode;
-            }
-
-            symbolNode = new SymbolForestNode(symbol, origin, location);
-            this._symbolNodes.Add(hash, symbolNode);
-            return symbolNode;
-        }
-        
-        private static int ComputeHashCode(ISymbol symbol, int origin, int location)
-        {
-            return HashCode.Compute(
-                symbol.GetHashCode(), 
-                origin.GetHashCode(), 
-                location.GetHashCode());
+            var hash = ComputeHashCode(
+                virtualNode.Symbol,
+                virtualNode.Origin,
+                virtualNode.Location);
+            this._virtualNodes.Add(hash, virtualNode);
         }
 
         public IIntermediateForestNode AddOrGetExistingIntermediateNode(IDottedRule dottedRule, int origin, int location)
@@ -57,12 +39,18 @@ namespace Pliant.Forest
             return intermediateNode;
         }
 
-        private static int ComputeHashCode(IDottedRule dottedRule, int origin, int location)
+        public ISymbolForestNode AddOrGetExistingSymbolNode(ISymbol symbol, int origin, int location)
         {
-            return HashCode.Compute(
-                dottedRule.GetHashCode(),
-                origin.GetHashCode(),
-                location.GetHashCode());
+            var hash = ComputeHashCode(symbol, origin, location);
+
+            if (this._symbolNodes.TryGetValue(hash, out var symbolNode))
+            {
+                return symbolNode;
+            }
+
+            symbolNode = new SymbolForestNode(symbol, origin, location);
+            this._symbolNodes.Add(hash, symbolNode);
+            return symbolNode;
         }
 
         public ITokenForestNode AddOrGetExistingTokenNode(IToken token)
@@ -77,26 +65,6 @@ namespace Pliant.Forest
             return tokenNode;
         }
 
-        public void AddNewVirtualNode(
-            VirtualForestNode virtualNode)
-        {
-            var hash = ComputeHashCode(
-                virtualNode.Symbol, 
-                virtualNode.Origin, 
-                virtualNode.Location);
-            this._virtualNodes.Add(hash, virtualNode);
-        }
-
-        public bool TryGetExistingVirtualNode(
-            int location,
-            ITransitionState transitionState,
-            out VirtualForestNode node)
-        {
-            var targetState = transitionState.GetTargetState();
-            var hash = ComputeHashCode(targetState.DottedRule.Production.LeftHandSide, targetState.Origin, location);
-            return this._virtualNodes.TryGetValue(hash, out node);
-        }
-
         public void Clear()
         {
             this._symbolNodes.Clear();
@@ -104,5 +72,36 @@ namespace Pliant.Forest
             this._virtualNodes.Clear();
             this._tokenNodes.Clear();
         }
+
+        public bool TryGetExistingVirtualNode(
+            int location,
+            TransitionState transitionState,
+            out VirtualForestNode node)
+        {
+            var targetState = transitionState.GetTargetState();
+            var hash = ComputeHashCode(targetState.DottedRule.Production.LeftHandSide, targetState.Origin, location);
+            return this._virtualNodes.TryGetValue(hash, out node);
+        }
+
+        private static int ComputeHashCode(ISymbol symbol, int origin, int location)
+        {
+            return HashCode.Compute(
+                symbol.GetHashCode(),
+                origin.GetHashCode(),
+                location.GetHashCode());
+        }
+
+        private static int ComputeHashCode(IDottedRule dottedRule, int origin, int location)
+        {
+            return HashCode.Compute(
+                dottedRule.GetHashCode(),
+                origin.GetHashCode(),
+                location.GetHashCode());
+        }
+
+        private readonly Dictionary<int, IIntermediateForestNode> _intermediateNodes;
+        private readonly Dictionary<int, ISymbolForestNode> _symbolNodes;
+        private readonly Dictionary<IToken, ITokenForestNode> _tokenNodes;
+        private readonly Dictionary<int, VirtualForestNode> _virtualNodes;
     }
 }

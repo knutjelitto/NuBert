@@ -129,7 +129,7 @@ namespace Pliant.Tree
                 var internalTreeNode = new InternalTreeNodeImpl(
                     symbolNode.Origin,
                     symbolNode.Location,
-                    symbolNode.Symbol as INonTerminal);
+                    symbolNode.Symbol as NonTerminal);
 
                 var isRoot = this._nodeStack.Count == 0;
                 if (!isRoot)
@@ -244,7 +244,7 @@ namespace Pliant.Tree
 
         private class InternalTreeNodeImpl : TreeNodeImpl, IInternalTreeNode
         {
-            public InternalTreeNodeImpl(int origin, int location, INonTerminal symbol)
+            public InternalTreeNodeImpl(int origin, int location, NonTerminal symbol)
                 : base(origin, location)
             {
                 Symbol = symbol;
@@ -254,7 +254,7 @@ namespace Pliant.Tree
             public IReadOnlyList<ITreeNode> Children => ReadWriteChildren;
             public List<ITreeNode> ReadWriteChildren { get; }
 
-            public INonTerminal Symbol { get; }
+            public NonTerminal Symbol { get; }
 
             public override void Accept(ITreeNodeVisitor visitor)
             {

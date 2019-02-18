@@ -1,13 +1,10 @@
-﻿using Pliant.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class SetTerminal : BaseTerminal
+    public class SetTerminal : Terminal
     {
-        private readonly HashSet<char> _characterSet;
-        private IReadOnlyList<Interval> _intervals;
-
         public SetTerminal(params char[] characters)
             : this(new HashSet<char>(characters))
         {
@@ -28,25 +25,17 @@ namespace Pliant.Grammars
         public SetTerminal(ISet<char> characterSet)
         {
             this._characterSet = new HashSet<char>(characterSet);
-            this._intervals = CreateIntervals(this._characterSet);            
+            this._intervals = CreateIntervals(this._characterSet);
         }
-                
 
-        private static IReadOnlyList<Interval> CreateIntervals(HashSet<char> characterSet)
+        public override IReadOnlyList<Interval> GetIntervals()
         {
-            var intervalListPool = SharedPools.Default<List<Interval>>();
-            var intervalList = intervalListPool.AllocateAndClear();
-
-            // create a initial set of intervals
-            foreach (var character in characterSet)
+            if (this._intervals == null)
             {
-                intervalList.Add(new Interval(character, character));
+                this._intervals = CreateIntervals(this._characterSet);
             }
 
-            var groupedIntervals = Interval.Group(intervalList);
-            intervalListPool.ClearAndFree(intervalList);
-
-            return groupedIntervals;
+            return this._intervals;
         }
 
         public override bool IsMatch(char character)
@@ -59,14 +48,24 @@ namespace Pliant.Grammars
             return $"[{string.Join(string.Empty, this._characterSet)}]";
         }
 
-        public override IReadOnlyList<Interval> GetIntervals()
+        private static IReadOnlyList<Interval> CreateIntervals(HashSet<char> characterSet)
         {
-            if(this._intervals == null)
+            var intervalListPool = SharedPools.Default<List<Interval>>();
+            var intervalList = intervalListPool.AllocateAndClear();
+
+            // create a initial set of intervals
+            foreach (var character in characterSet)
             {
-                this._intervals = CreateIntervals(this._characterSet);
+                intervalList.Add(new Interval(character));
             }
 
-            return this._intervals;
+            var groupedIntervals = Interval.Group(intervalList);
+            intervalListPool.ClearAndFree(intervalList);
+
+            return groupedIntervals;
         }
+
+        private readonly HashSet<char> _characterSet;
+        private IReadOnlyList<Interval> _intervals;
     }
 }

@@ -6,12 +6,12 @@ namespace Pliant.RegularExpressions
 {
     public class ThompsonConstructionAlgorithm : IRegexToNfa
     {
-        public INfa Transform(Regex regex)
+        public Nfa Transform(Regex regex)
         {
             return Expression(regex.Expression);
         }
 
-        private static INfa Any()
+        private static Nfa Any()
         {
             var start = new NfaState();
             var end = new NfaState();
@@ -19,7 +19,7 @@ namespace Pliant.RegularExpressions
             return new Nfa(start, end);
         }
 
-        private static INfa Atom(RegexAtom atom)
+        private static Nfa Atom(RegexAtom atom)
         {
             switch (atom.NodeType)
             {
@@ -42,7 +42,7 @@ namespace Pliant.RegularExpressions
             throw new InvalidOperationException("Unrecognized regex atom");
         }
 
-        private static INfa Character(RegexCharacterClassCharacter character, bool negate)
+        private static Nfa Character(RegexCharacterClassCharacter character, bool negate)
         {
             var start = new NfaState();
             var end = new NfaState();
@@ -57,7 +57,7 @@ namespace Pliant.RegularExpressions
             return new Nfa(start, end);
         }
 
-        private static INfa Character(RegexCharacter character)
+        private static Nfa Character(RegexCharacter character)
         {
             var start = new NfaState();
             var end = new NfaState();
@@ -73,7 +73,7 @@ namespace Pliant.RegularExpressions
             return new Nfa(start, end);
         }
 
-        private static INfa CharacterClass(RegexCharacterClass characterClass, bool negate)
+        private static Nfa CharacterClass(RegexCharacterClass characterClass, bool negate)
         {
             switch (characterClass)
             {
@@ -89,15 +89,15 @@ namespace Pliant.RegularExpressions
             throw new InvalidOperationException("Unreachable code detected.");
         }
 
-        private static INfa Concatenation(INfa first, INfa second)
+        private static Nfa Concatenation(Nfa first, Nfa second)
         {
             first.End.AddTransistion(new NullNfaTransition(second.Start));
             return new Nfa(first.Start, second.End);
         }
 
-        private static ITerminal CreateTerminalForCharacter(char value, bool isEscaped, bool negate)
+        private static Terminal CreateTerminalForCharacter(char value, bool isEscaped, bool negate)
         {
-            ITerminal terminal = null;
+            Terminal terminal = null;
             if (!isEscaped)
             {
                 terminal = new CharacterTerminal(value);
@@ -141,7 +141,7 @@ namespace Pliant.RegularExpressions
             return terminal;
         }
 
-        private static INfa Empty()
+        private static Nfa Empty()
         {
             var start = new NfaState();
             var end = new NfaState();
@@ -149,7 +149,7 @@ namespace Pliant.RegularExpressions
             return new Nfa(start, end);
         }
 
-        private static INfa Expression(RegexExpression expression)
+        private static Nfa Expression(RegexExpression expression)
         {
             switch (expression.NodeType)
             {
@@ -172,7 +172,7 @@ namespace Pliant.RegularExpressions
             throw new InvalidOperationException("Unrecognized Regex Expression");
         }
 
-        private static INfa Factor(RegexFactor factor)
+        private static Nfa Factor(RegexFactor factor)
         {
             var atomNfa = Atom(factor.Atom);
             switch (factor.NodeType)
@@ -198,7 +198,7 @@ namespace Pliant.RegularExpressions
             throw new InvalidOperationException("Unrecognized regex factor");
         }
 
-        private static INfa KleenePlus(INfa nfa)
+        private static Nfa KleenePlus(Nfa nfa)
         {
             var end = new NfaState();
             nfa.End.AddTransistion(new NullNfaTransition(end));
@@ -206,7 +206,7 @@ namespace Pliant.RegularExpressions
             return new Nfa(nfa.Start, end);
         }
 
-        private static INfa KleeneStar(INfa nfa)
+        private static Nfa KleeneStar(Nfa nfa)
         {
             var start = new NfaState();
             var nullToNfaStart = new NullNfaTransition(nfa.Start);
@@ -223,7 +223,7 @@ namespace Pliant.RegularExpressions
             return new Nfa(start, end);
         }
 
-        private static INfa Optional(INfa nfa)
+        private static Nfa Optional(Nfa nfa)
         {
             var start = new NfaState();
             var end = new NfaState();
@@ -233,12 +233,12 @@ namespace Pliant.RegularExpressions
             return new Nfa(start, end);
         }
 
-        private static INfa Range(RegexCharacterRange range, bool negate)
+        private static Nfa Range(RegexCharacterRange range, bool negate)
         {
             // combine characters into a character range terminal
             var start = range.StartCharacter.Value;
             var end = range.EndCharacter.Value;
-            ITerminal terminal = new RangeTerminal(start, end);
+            Terminal terminal = new RangeTerminal(start, end);
             var nfaStartState = new NfaState();
             var nfaEndState = new NfaState();
             if (negate)
@@ -251,17 +251,17 @@ namespace Pliant.RegularExpressions
             return new Nfa(nfaStartState, nfaEndState);
         }
 
-        private static INfa Set(RegexAtomSet atomSet)
+        private static Nfa Set(RegexAtomSet atomSet)
         {
             return Set(atomSet.Set);
         }
 
-        private static INfa Set(RegexSet set)
+        private static Nfa Set(RegexSet set)
         {
             return CharacterClass(set.CharacterClass, set.Negate);
         }
 
-        private static INfa Term(RegexTerm term)
+        private static Nfa Term(RegexTerm term)
         {
             switch (term.NodeType)
             {
@@ -278,7 +278,7 @@ namespace Pliant.RegularExpressions
             throw new InvalidOperationException("Unrecognized Regex Term");
         }
 
-        private static INfa Union(INfa first, INfa second)
+        private static Nfa Union(Nfa first, Nfa second)
         {
             var start = new NfaState();
             start.AddTransistion(new NullNfaTransition(first.Start));
@@ -292,7 +292,7 @@ namespace Pliant.RegularExpressions
             return new Nfa(start, end);
         }
 
-        private static INfa UnitRange(RegexCharacterUnitRange unitRange, bool negate)
+        private static Nfa UnitRange(RegexCharacterUnitRange unitRange, bool negate)
         {
             switch (unitRange.NodeType)
             {

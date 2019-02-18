@@ -6,7 +6,6 @@
         NonTerminal,
         LexerRule,
         Repetition,
-        Grouping,
         Optional
     }
 }
