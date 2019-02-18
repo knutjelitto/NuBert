@@ -4,30 +4,43 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class DottedRuleRegistry : IDottedRuleRegistry
+    public class DottedRuleRegistry //: IDottedRuleRegistry
     {
-        private readonly Dictionary<IProduction, Dictionary<int, IDottedRule>> _dottedRuleIndex;
+        private readonly Dictionary<Production, Dictionary<int, DottedRule>> _dottedRuleIndex;
 
         public DottedRuleRegistry()
         {
-            this._dottedRuleIndex = new Dictionary<IProduction, Dictionary<int, IDottedRule>>(
-                new HashCodeEqualityComparer<IProduction>());
+            this._dottedRuleIndex = new Dictionary<Production, Dictionary<int, DottedRule>>(
+                new HashCodeEqualityComparer<Production>());
         }
 
-        public void Register(IDottedRule dottedRule)
+        public void SeedFrom(IGrammar grammar)
+        {
+            for (var p = 0; p < grammar.Productions.Count; p++)
+            {
+                var production = grammar.Productions[p];
+                for (var s = 0; s <= production.RightHandSide.Count; s++)
+                {
+                    var dottedRule = new DottedRule(production, s);
+                    Register(dottedRule);
+                }
+            }
+        }
+
+        public void Register(DottedRule dottedRule)
         {
             var positionIndex = this._dottedRuleIndex.AddOrGetExisting(dottedRule.Production);
-            positionIndex[dottedRule.Position] = dottedRule;
+            positionIndex[dottedRule.Dot] = dottedRule;
         }
 
-        public IDottedRule Get(IProduction production, int position)
+        public DottedRule Get(Production production, int dot)
         {
             if (!this._dottedRuleIndex.TryGetValue(production, out var positionIndex))
             {
                 return null;
             }
 
-            if (!positionIndex.TryGetValue(position, out var dottedRule))
+            if (!positionIndex.TryGetValue(dot, out var dottedRule))
             {
                 return null;
             }
@@ -35,9 +48,9 @@ namespace Pliant.Grammars
             return dottedRule;
         }
 
-        public IDottedRule GetNext(IDottedRule dottedRule)
+        public DottedRule GetNext(DottedRule dottedRule)
         {
-            return Get(dottedRule.Production, dottedRule.Position + 1);
+            return Get(dottedRule.Production, dottedRule.Dot + 1);
         }        
     }
 }

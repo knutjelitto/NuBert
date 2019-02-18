@@ -32,17 +32,15 @@ namespace Pliant.Grammars
 
         public static IReadOnlyList<Interval> Group(IReadOnlyList<Interval> input)
         {
-            var intervalPool = SharedPools.Default<List<Interval>>();
-            var sortedIntervals = intervalPool.AllocateAndClear();
+            var sortedIntervals = new List<Interval>();
             sortedIntervals.AddRange(input);
             sortedIntervals.Sort();
 
-            var intervalList = intervalPool.AllocateAndClear();
+            var intervalList = new List<Interval>();
 
             Interval? accumulator = null;
-            for (var i = 0; i < sortedIntervals.Count; i++)
+            foreach (var interval in sortedIntervals)
             {
-                var interval = sortedIntervals[i];
                 if (accumulator == null)
                 {
                     accumulator = interval;
@@ -67,8 +65,6 @@ namespace Pliant.Grammars
             {
                 intervalList.Add(accumulator.Value);
             }
-
-            intervalPool.ClearAndFree(sortedIntervals);
 
             return intervalList;
         }

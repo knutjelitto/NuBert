@@ -21,21 +21,18 @@ namespace Pliant.RegularExpressions
 
         private static Nfa Atom(RegexAtom atom)
         {
-            switch (atom.NodeType)
+            switch (atom)
             {
-                case RegexNodeType.RegexAtomAny:
+                case RegexAtomAny _:
                     return Any();
 
-                case RegexNodeType.RegexAtomCharacter:
-                    var regexAtomCharacter = atom as RegexAtomCharacter;
+                case RegexAtomCharacter regexAtomCharacter:
                     return Character(regexAtomCharacter.Character);
 
-                case RegexNodeType.RegexAtomExpression:
-                    var regexAtomExpression = atom as RegexAtomExpression;
+                case RegexAtomExpression regexAtomExpression:
                     return Expression(regexAtomExpression.Expression);
 
-                case RegexNodeType.RegexAtomSet:
-                    var regexAtomSet = atom as RegexAtomSet;
+                case RegexAtomSet regexAtomSet:
                     return Set(regexAtomSet);
             }
 
@@ -97,7 +94,7 @@ namespace Pliant.RegularExpressions
 
         private static Terminal CreateTerminalForCharacter(char value, bool isEscaped, bool negate)
         {
-            Terminal terminal = null;
+            Terminal terminal;
             if (!isEscaped)
             {
                 terminal = new CharacterTerminal(value);
@@ -151,22 +148,20 @@ namespace Pliant.RegularExpressions
 
         private static Nfa Expression(RegexExpression expression)
         {
-            switch (expression.NodeType)
+            switch (expression)
             {
-                case RegexNodeType.RegexExpression:
-                    return Empty();
 
-                case RegexNodeType.RegexExpressionAlteration:
-                    var regexExpressionAlteration = expression as RegexExpressionAlteration;
-
+                case RegexExpressionAlteration regexExpressionAlteration:
                     var termNfa = Term(regexExpressionAlteration.Term);
                     var expressionNfa = Expression(regexExpressionAlteration.Expression);
 
                     return Union(termNfa, expressionNfa);
 
-                case RegexNodeType.RegexExpressionTerm:
-                    var regexExpressionTerm = expression as RegexExpressionTerm;
+                case RegexExpressionTerm regexExpressionTerm:
                     return Term(regexExpressionTerm.Term);
+
+                case RegexExpression _:
+                    return Empty();
             }
 
             throw new InvalidOperationException("Unrecognized Regex Expression");
@@ -175,13 +170,9 @@ namespace Pliant.RegularExpressions
         private static Nfa Factor(RegexFactor factor)
         {
             var atomNfa = Atom(factor.Atom);
-            switch (factor.NodeType)
+            switch (factor)
             {
-                case RegexNodeType.RegexFactor:
-                    return atomNfa;
-
-                case RegexNodeType.RegexFactorIterator:
-                    var regexFactorIterator = factor as RegexFactorIterator;
+                case RegexFactorIterator regexFactorIterator:
                     switch (regexFactorIterator.Iterator)
                     {
                         case RegexIterator.ZeroOrMany:
@@ -193,6 +184,8 @@ namespace Pliant.RegularExpressions
                     }
 
                     break;
+                case RegexFactor _:
+                    return atomNfa;
             }
 
             throw new InvalidOperationException("Unrecognized regex factor");
@@ -263,16 +256,14 @@ namespace Pliant.RegularExpressions
 
         private static Nfa Term(RegexTerm term)
         {
-            switch (term.NodeType)
+            switch (term)
             {
-                case RegexNodeType.RegexTerm:
-                    return Factor(term.Factor);
-
-                case RegexNodeType.RegexTermFactor:
-                    var regexTermFactor = term as RegexTermFactor;
+                case RegexTermFactor regexTermFactor:
                     var factorNfa = Factor(regexTermFactor.Factor);
                     var termNfa = Term(regexTermFactor.Term);
                     return Concatenation(factorNfa, termNfa);
+                case RegexTerm _:
+                    return Factor(term.Factor);
             }
 
             throw new InvalidOperationException("Unrecognized Regex Term");
@@ -294,14 +285,13 @@ namespace Pliant.RegularExpressions
 
         private static Nfa UnitRange(RegexCharacterUnitRange unitRange, bool negate)
         {
-            switch (unitRange.NodeType)
+            switch (unitRange)
             {
-                case RegexNodeType.RegexCharacterUnitRange:
-                    return Character(unitRange.StartCharacter, negate);
-
-                case RegexNodeType.RegexCharacterRange:
-                    var range = unitRange as RegexCharacterRange;
+                case RegexCharacterRange range:
                     return Range(range, negate);
+
+                case RegexCharacterUnitRange _:
+                    return Character(unitRange.StartCharacter, negate);
             }
 
             throw new InvalidOperationException("Unreachable code detected.");

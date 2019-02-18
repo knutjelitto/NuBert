@@ -6,7 +6,7 @@ namespace Pliant.Charts
     public sealed class TransitionState : State
     {
         public TransitionState(
-            ISymbol recognized,
+            Symbol recognized,
             State transition,
             NormalState reduction,
             int index)
@@ -21,7 +21,7 @@ namespace Pliant.Charts
         public int Index { get; }
 
         public TransitionState NextTransition { get; set; }
-        public ISymbol Recognized { get; }
+        public Symbol Recognized { get; }
 
         public NormalState Reduction { get; }
 
@@ -59,7 +59,7 @@ namespace Pliant.Charts
         private int ComputeHashCode()
         {
             return HashCode.Compute(
-                DottedRule.Position.GetHashCode(),
+                DottedRule.Dot.GetHashCode(),
                 Origin.GetHashCode(),
                 DottedRule.Production.GetHashCode(),
                 Recognized.GetHashCode(),

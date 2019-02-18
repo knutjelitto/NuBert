@@ -11,7 +11,7 @@ namespace Pliant.Grammars
             this._innerGrammar = innerGrammar;
         }
 
-        public IReadOnlyList<IProduction> Productions => this._innerGrammar.Productions;
+        public IReadOnlyList<Production> Productions => this._innerGrammar.Productions;
 
         public NonTerminal Start => this._innerGrammar.Start;
 
@@ -21,19 +21,19 @@ namespace Pliant.Grammars
 
         public IReadOnlyList<LexerRule> LexerRules => this._innerGrammar.LexerRules;
 
-        public IReadOnlyDottedRuleRegistry DottedRules => this._innerGrammar.DottedRules;
+        public DottedRuleRegistry DottedRules => this._innerGrammar.DottedRules;
 
         public int GetLexerRuleIndex(LexerRule lexerRule)
         {
             return this._innerGrammar.GetLexerRuleIndex(lexerRule);
         }
 
-        public IReadOnlyList<IProduction> RulesFor(NonTerminal nonTerminal)
+        public IReadOnlyList<Production> RulesFor(NonTerminal nonTerminal)
         {
             return this._innerGrammar.RulesFor(nonTerminal);
         }
 
-        public IReadOnlyList<IProduction> StartProductions()
+        public IReadOnlyList<Production> StartProductions()
         {
             return this._innerGrammar.StartProductions();
         }
@@ -48,12 +48,12 @@ namespace Pliant.Grammars
             return this._innerGrammar.IsTransativeNullable(nonTerminal);
         }
 
-        public IReadOnlyList<IProduction> RulesContainingSymbol(NonTerminal nonTerminal)
+        public IReadOnlyList<Production> RulesContainingSymbol(NonTerminal nonTerminal)
         {
             return this._innerGrammar.RulesContainingSymbol(nonTerminal);
         }
 
-        public bool IsRightRecursive(ISymbol symbol)
+        public bool IsRightRecursive(Symbol symbol)
         {
             return this._innerGrammar.IsRightRecursive(symbol);
         }

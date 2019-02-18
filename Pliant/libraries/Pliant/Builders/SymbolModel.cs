@@ -6,6 +6,6 @@ namespace Pliant.Builders
     {
         public abstract SymbolModelType ModelType { get; }
 
-        public abstract ISymbol Symbol { get; }
+        public abstract Symbol Symbol { get; }
     }
 }

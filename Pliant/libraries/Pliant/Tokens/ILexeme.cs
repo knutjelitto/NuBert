@@ -2,7 +2,7 @@
 
 namespace Pliant.Tokens
 {
-    public interface ILexeme : IToken, ITrivia
+    public interface ILexeme : IToken
     {
         bool Scan(char c);
 

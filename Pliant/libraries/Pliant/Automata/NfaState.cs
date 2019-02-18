@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Pliant.Collections;
 using System;
+using System.Linq;
+using Pliant.Utilities;
 
 namespace Pliant.Automata
 {
-    public class NfaState : IComparable<NfaState>, IComparable
+    public class NfaState
     {
         private readonly List<NfaTransition> _transitions;
 
@@ -46,24 +48,14 @@ namespace Pliant.Automata
             return queue.Visited;
         }
 
-        public int CompareTo(object obj)
+        public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            if (!(obj is NfaState nfaState))
-            {
-                throw new ArgumentException("parameter must be a INfaState", nameof(obj));
-            }
-
-            return CompareTo(nfaState);
+            return obj is NfaState other && Transitions.SequenceEqual(other.Transitions);
         }
 
-        public int CompareTo(NfaState other)
+        public override int GetHashCode()
         {
-            return GetHashCode().CompareTo(other.GetHashCode());
+            return HashCode.Compute(Transitions);
         }
     }    
 }

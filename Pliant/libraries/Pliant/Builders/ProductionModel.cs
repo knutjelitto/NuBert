@@ -38,9 +38,9 @@ namespace Pliant.Builders
 
         public override SymbolModelType ModelType => SymbolModelType.Production;
 
-        public override ISymbol Symbol => LeftHandSide.NonTerminal;
+        public override Symbol Symbol => LeftHandSide.NonTerminal;
 
-        public IEnumerable<IProduction> ToProductions()
+        public IEnumerable<Production> ToProductions()
         {
             if (Alterations == null || Alterations.Count == 0)
             {
@@ -50,7 +50,7 @@ namespace Pliant.Builders
 
             foreach (var alteration in Alterations)
             {
-                var symbols = new List<ISymbol>();
+                var symbols = new List<Symbol>();
                 foreach (var symbolModel in alteration.Symbols)
                 {
                     symbols.Add(symbolModel.Symbol);

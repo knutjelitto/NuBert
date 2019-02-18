@@ -1,21 +1,18 @@
-﻿using Pliant.Forest;
+﻿using System.Text;
+using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Utilities;
-using System.Text;
 
 namespace Pliant.Charts
 {
     public class NormalState : State
-    {        
-        private readonly int _hashCode;
-
-        public NormalState(IDottedRule dottedRule, int origin)
+    {
+        public NormalState(DottedRule dottedRule, int origin)
             : base(dottedRule, origin)
         {
-            this._hashCode = ComputeHashCode();
         }
 
-        public NormalState(IDottedRule dottedRule, int origin, IForestNode parseNode) 
+        public NormalState(DottedRule dottedRule, int origin, IForestNode parseNode)
             : this(dottedRule, origin)
         {
             ParseNode = parseNode;
@@ -23,7 +20,19 @@ namespace Pliant.Charts
 
         public override StateType StateType => StateType.Normal;
 
-        public bool IsSource(ISymbol searchSymbol)
+        public override bool Equals(object obj)
+        {
+            return obj is NormalState other &&
+                   DottedRule.Equals(other.DottedRule) &&
+                   Origin.Equals(other.Origin);
+        }
+
+        public override int GetHashCode()
+        {
+            return (DottedRule, Origin).GetHashCode();
+        }
+
+        public bool IsSource(Symbol searchSymbol)
         {
             var dottedRule = DottedRule;
             if (dottedRule.IsComplete)
@@ -32,35 +41,6 @@ namespace Pliant.Charts
             }
 
             return dottedRule.PostDotSymbol.Equals(searchSymbol);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var state = obj as NormalState;
-            if (state == null)
-            {
-                return false;
-            }
-            // PERF: Hash Codes are Cached, so equality performance is cached as well
-            return GetHashCode() == state.GetHashCode();
-        }
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                DottedRule.Position.GetHashCode(),
-                Origin.GetHashCode(),
-                DottedRule.Production.GetHashCode());
-        }
-
-        public override int GetHashCode()
-        {
-            return this._hashCode;
         }
 
         public override string ToString()
@@ -73,17 +53,17 @@ namespace Pliant.Charts
             {
                 stringBuilder.AppendFormat(
                     "{0}{1}",
-                    p == DottedRule.Position ? Dot : " ",
+                    p == DottedRule.Dot ? Dot : " ",
                     DottedRule.Production.RightHandSide[p]);
             }
 
-            if (DottedRule.Position == DottedRule.Production.RightHandSide.Count)
+            if (DottedRule.Dot == DottedRule.Production.RightHandSide.Count)
             {
                 stringBuilder.Append(Dot);
             }
 
             stringBuilder.Append($"\t\t({Origin})");
             return stringBuilder.ToString();
-        }        
+        }
     }
 }

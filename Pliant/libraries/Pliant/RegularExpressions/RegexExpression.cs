@@ -2,7 +2,6 @@
 {
     public abstract class RegexExpression : RegexNode
     {
-        public override RegexNodeType NodeType => RegexNodeType.RegexExpression;
     }
 
     public class RegexExpressionTerm : RegexExpression
@@ -13,8 +12,6 @@
         }
 
         public RegexTerm Term { get; }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexExpressionTerm;
 
         public override bool Equals(object obj)
         {
@@ -42,8 +39,6 @@
         }
 
         public RegexExpression Expression { get; }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexExpressionAlteration;
 
         public override int GetHashCode()
         {

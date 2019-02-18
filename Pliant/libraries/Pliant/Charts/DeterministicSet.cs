@@ -7,18 +7,18 @@ namespace Pliant.Charts
     public class DeterministicSet
     {
         private readonly UniqueList<DeterministicState> _states;
-        private readonly Dictionary<ISymbol, CachedDottedRuleSetTransition> _transitions;
+        private readonly Dictionary<Symbol, CachedDottedRuleSetTransition> _transitions;
 
         public IReadOnlyList<DeterministicState> States => this._states;
 
-        public IReadOnlyDictionary<ISymbol, CachedDottedRuleSetTransition> CachedTransitions => this._transitions;
+        public IReadOnlyDictionary<Symbol, CachedDottedRuleSetTransition> CachedTransitions => this._transitions;
 
         public int Location { get; private set; }
 
         public DeterministicSet(int location)
         {
             this._states = new UniqueList<DeterministicState>();
-            this._transitions = new Dictionary<ISymbol, CachedDottedRuleSetTransition>();
+            this._transitions = new Dictionary<Symbol, CachedDottedRuleSetTransition>();
             Location = location;
         }
 
@@ -28,12 +28,12 @@ namespace Pliant.Charts
             return hasEnqueued;
         }
 
-        public bool IsLeoUnique(ISymbol symbol)
+        public bool IsLeoUnique(Symbol symbol)
         {
             return !CachedTransitions.ContainsKey(symbol);
         }
 
-        public CachedDottedRuleSetTransition FindCachedDottedRuleSetTransition(ISymbol searchSymbol)
+        public CachedDottedRuleSetTransition FindCachedDottedRuleSetTransition(Symbol searchSymbol)
         {
             if (this._transitions.TryGetValue(searchSymbol, out var transition))
             {

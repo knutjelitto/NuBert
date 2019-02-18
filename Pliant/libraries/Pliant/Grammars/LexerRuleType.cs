@@ -2,18 +2,22 @@
 {
     public class LexerRuleType
     {
-        public string Id { get; private set; }
-        private readonly int _hashCode;
-
         public LexerRuleType(string id)
         {
             Id = id;
             this._hashCode = ComputeHashCode(id);
         }
 
-        private static int ComputeHashCode(string id)
+        private string Id { get; }
+
+        public static bool operator ==(LexerRuleType first, LexerRuleType second)
         {
-            return id.GetHashCode();
+            return first.Equals(second);
+        }
+
+        public static bool operator !=(LexerRuleType first, LexerRuleType second)
+        {
+            return !first.Equals(second);
         }
 
         public override bool Equals(object obj)
@@ -25,7 +29,7 @@
 
             var other = obj as LexerRuleType;
 
-            if (((object)other) == null)
+            if ((object) other == null)
             {
                 return false;
             }
@@ -38,14 +42,11 @@
             return this._hashCode;
         }
 
-        public static bool operator ==(LexerRuleType first, LexerRuleType second)
+        private static int ComputeHashCode(string id)
         {
-            return first.Equals(second);
+            return id.GetHashCode();
         }
 
-        public static bool operator !=(LexerRuleType first, LexerRuleType second)
-        {
-            return !first.Equals(second);
-        }
+        private readonly int _hashCode;
     }
 }

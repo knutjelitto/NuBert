@@ -34,6 +34,11 @@ namespace Pliant.Automata
             return false;
         }
 
+        public override ILexeme CreateLexeme(int position)
+        {
+            return new DfaLexeme(this, position);
+        }
+
         public override bool Equals(object obj)
         {
             return obj is DfaLexerRule dfaLexerRule && 

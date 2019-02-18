@@ -5,30 +5,30 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class Production : IProduction
+    public class Production
     {
-        public Production(NonTerminal leftHandSide, List<ISymbol> rightHandSide)
+        public Production(NonTerminal leftHandSide, List<Symbol> rightHandSide)
         {
             Assert.IsNotNull(leftHandSide, nameof(leftHandSide));
             Assert.IsNotNull(rightHandSide, nameof(rightHandSide));
             LeftHandSide = leftHandSide;
-            this._rightHandSide = new List<ISymbol>(new List<ISymbol>(rightHandSide));
+            this._rightHandSide = new List<Symbol>(new List<Symbol>(rightHandSide));
             this._hashCode = ComputeHashCode();
         }
 
-        public Production(NonTerminal leftHandSide, params ISymbol[] rightHandSide)
+        public Production(NonTerminal leftHandSide, params Symbol[] rightHandSide)
         {
             Assert.IsNotNull(leftHandSide, nameof(leftHandSide));
             Assert.IsNotNull(rightHandSide, nameof(rightHandSide));
             LeftHandSide = leftHandSide;
-            this._rightHandSide = new List<ISymbol>(new List<ISymbol>(rightHandSide));
+            this._rightHandSide = new List<Symbol>(new List<Symbol>(rightHandSide));
             this._hashCode = ComputeHashCode();
         }
 
         public bool IsEmpty => this._rightHandSide.Count == 0;
         public NonTerminal LeftHandSide { get; }
 
-        public IReadOnlyList<ISymbol> RightHandSide => this._rightHandSide;
+        public IReadOnlyList<Symbol> RightHandSide => this._rightHandSide;
 
         public override bool Equals(object obj)
         {
@@ -100,6 +100,6 @@ namespace Pliant.Grammars
         // PERF: Cache Costly Hash Code Computation
         private readonly int _hashCode;
 
-        private readonly List<ISymbol> _rightHandSide;
+        private readonly List<Symbol> _rightHandSide;
     }
 }

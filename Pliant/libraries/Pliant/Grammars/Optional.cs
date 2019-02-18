@@ -4,7 +4,7 @@ namespace Pliant.Grammars
 {
     public sealed class Optional : Grouping
     {
-        public Optional(IReadOnlyList<ISymbol> items)
+        public Optional(IReadOnlyList<Symbol> items)
             : base(items)
         {
         }

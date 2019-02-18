@@ -9,8 +9,6 @@
 
         public RegexCharacterClassCharacter StartCharacter { get; }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterUnitRange;
-
         public override bool Equals(object obj)
         {
             return obj is RegexCharacterUnitRange other &&
@@ -39,8 +37,6 @@
         }
 
         public RegexCharacterClassCharacter EndCharacter { get; }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterRange;
 
         public override bool Equals(object obj)
         {

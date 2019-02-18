@@ -2,11 +2,8 @@
 
 namespace Pliant.Tokens
 {
-    public interface IToken
+    public interface IToken : ITrivia
     {
-        int Position { get; }
-        string Value { get; }
-        TokenType TokenType { get; }
         IReadOnlyList<ITrivia> LeadingTrivia { get; }
         IReadOnlyList<ITrivia> TrailingTrivia { get; }
     }

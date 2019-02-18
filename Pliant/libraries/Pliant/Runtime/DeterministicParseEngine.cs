@@ -125,7 +125,7 @@ namespace Pliant.Runtime
             return false;
         }
 
-        private bool AnyPreComputedStateAccepted(IReadOnlyList<IDottedRule> states)
+        private bool AnyPreComputedStateAccepted(IReadOnlyList<DottedRule> states)
         {
             for (var j = 0; j < states.Count; j++)
             {
@@ -334,22 +334,22 @@ namespace Pliant.Runtime
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool IsStartState(IDottedRule state)
+        private bool IsStartState(DottedRule state)
         {
             var start = Grammar.Start;
             return state.Production.LeftHandSide.Equals(start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsComplete(IDottedRule preComputedState)
+        private static bool IsComplete(DottedRule preComputedState)
         {
-            return preComputedState.Position == preComputedState.Production.RightHandSide.Count;
+            return preComputedState.Dot == preComputedState.Production.RightHandSide.Count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static ISymbol GetPostDotSymbol(IDottedRule preComputedState)
+        private static Symbol GetPostDotSymbol(DottedRule preComputedState)
         {
-            return preComputedState.Production.RightHandSide[preComputedState.Position];
+            return preComputedState.Production.RightHandSide[preComputedState.Dot];
         }
     }
 }

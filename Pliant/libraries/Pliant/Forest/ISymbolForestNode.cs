@@ -4,6 +4,6 @@ namespace Pliant.Forest
 {
     public interface ISymbolForestNode : IInternalForestNode
     {
-        ISymbol Symbol { get; }
+        Symbol Symbol { get; }
     }
 }

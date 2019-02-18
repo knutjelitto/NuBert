@@ -1,48 +1,26 @@
-﻿using Pliant.Utilities;
-using System;
+﻿using System;
+using Pliant.Utilities;
 
 namespace Pliant.RegularExpressions
 {
     public class RegexFactor : RegexNode
     {
-        public RegexAtom Atom { get; private set; }
-
         public RegexFactor(RegexAtom atom)
         {
             Atom = atom;
-            this._hashCode = ComputeHashCode();
         }
-        
-        private readonly int _hashCode;
 
-        int ComputeHashCode()
+        public RegexAtom Atom { get; }
+
+        public override bool Equals(object obj)
         {
-            return HashCode.Compute(
-                    Atom.GetHashCode());
+            return obj is RegexFactor other && other.Atom.Equals(Atom);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return Atom.GetHashCode();
         }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var factor = obj as RegexFactor;
-            if (factor == null)
-            {
-                return false;
-            }
-
-            return factor.Atom.Equals(Atom);
-        }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexFactor;
 
         public override string ToString()
         {
@@ -52,46 +30,25 @@ namespace Pliant.RegularExpressions
 
     public class RegexFactorIterator : RegexFactor
     {
-        public RegexIterator Iterator { get; private set; }
-
         public RegexFactorIterator(RegexAtom atom, RegexIterator iterator)
             : base(atom)
         {
             Iterator = iterator;
-            this._hashCode = ComputeHashCode();
         }
+
+        public RegexIterator Iterator { get; }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var factor = obj as RegexFactor;
-            if (factor == null)
-            {
-                return false;
-            }
-
-            return factor.Atom.Equals(Atom);
-        }
-        
-        private readonly int _hashCode ;
-
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                Atom.GetHashCode(),
-                Iterator.GetHashCode());
+            return obj is RegexFactorIterator other &&
+                   other.Atom.Equals(Atom) &&
+                   other.Iterator.Equals(Iterator);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return (Atom, Iterator).GetHashCode();
         }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexFactorIterator;
 
         public override string ToString()
         {
@@ -104,6 +61,7 @@ namespace Pliant.RegularExpressions
                 case RegexIterator.ZeroOrOne:
                     return $"{Atom}?";
             }
+
             throw new InvalidOperationException("Unexpected RegexIterator encountered.");
         }
     }

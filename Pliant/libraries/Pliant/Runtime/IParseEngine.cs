@@ -1,7 +1,7 @@
-﻿using Pliant.Forest;
+﻿using System.Collections.Generic;
+using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Tokens;
-using System.Collections.Generic;
 
 namespace Pliant.Runtime
 {
@@ -11,16 +11,21 @@ namespace Pliant.Runtime
     public interface IParseEngine
     {
         /// <summary>
-        /// Resets the parse engine clearing out any current state.
+        /// Gets the grammar used by the parse engine.
         /// </summary>
-        void Reset();
+        IGrammar Grammar { get; }
 
         /// <summary>
-        /// Gets the current accepted status of the parse.
+        /// Gets the location in the parse. The location is the current token index and not the character index in the parse.
         /// </summary>
-        /// <returns>true if the parse is in a accepted state / false otherwise. </returns>
-        bool IsAccepted();
-        
+        int Location { get; }
+
+        /// <summary>
+        /// Returns the list of expected lexer rules based on the current state of the parse.
+        /// </summary>
+        /// <returns>The enumeration of lexer rules that apply at the current parse position.</returns>
+        IReadOnlyList<LexerRule> GetExpectedLexerRules();
+
         /// <summary>
         /// Gets the root of the parse forest.
         /// </summary>
@@ -28,11 +33,11 @@ namespace Pliant.Runtime
         IInternalForestNode GetParseForestRootNode();
 
         /// <summary>
-        /// Returns the list of expected lexer rules based on the current state of the parse.
+        /// Gets the current accepted status of the parse.
         /// </summary>
-        /// <returns>The enumeration of lexer rules that apply at the current parse position.</returns>
-        IReadOnlyList<LexerRule> GetExpectedLexerRules();
-        
+        /// <returns>true if the parse is in a accepted state / false otherwise. </returns>
+        bool IsAccepted();
+
         /// <summary>
         /// Accepts one token and incrementally moves the parser forward if successful.
         /// </summary>
@@ -48,13 +53,8 @@ namespace Pliant.Runtime
         bool Pulse(IReadOnlyList<IToken> tokens);
 
         /// <summary>
-        /// Gets the grammar used by the parse engine.
+        /// Resets the parse engine clearing out any current state.
         /// </summary>
-        IGrammar Grammar { get; }
-
-        /// <summary>
-        /// Gets the location in the parse. The location is the current token index and not the character index in the parse.
-        /// </summary>
-        int Location { get; }
+        void Reset();
     }
 }

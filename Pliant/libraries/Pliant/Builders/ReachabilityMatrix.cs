@@ -6,13 +6,13 @@ namespace Pliant.Builders
 {
     internal class ReachabilityMatrix
     {
-        private readonly Dictionary<ISymbol, ProductionModel> _lookup;
-        private readonly Dictionary<ISymbol, UniqueList<NonTerminalModel>> _matrix;
+        private readonly Dictionary<Symbol, ProductionModel> _lookup;
+        private readonly Dictionary<Symbol, UniqueList<NonTerminalModel>> _matrix;
 
         public ReachabilityMatrix()
         {
-            this._matrix = new Dictionary<ISymbol, UniqueList<NonTerminalModel>>();
-            this._lookup = new Dictionary<ISymbol, ProductionModel>();
+            this._matrix = new Dictionary<Symbol, UniqueList<NonTerminalModel>>();
+            this._lookup = new Dictionary<Symbol, ProductionModel>();
         }
 
         public void AddProduction(ProductionModel production)

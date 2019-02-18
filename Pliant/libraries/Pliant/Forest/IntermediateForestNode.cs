@@ -5,11 +5,11 @@ namespace Pliant.Forest
 {
     public class IntermediateForestNode : InternalForestNode, IIntermediateForestNode
     {
-        public IDottedRule DottedRule { get; private set; }
+        public DottedRule DottedRule { get; private set; }
 
         public override ForestNodeType NodeType => ForestNodeType.Intermediate;
 
-        public IntermediateForestNode(IDottedRule dottedRule, int origin, int location)
+        public IntermediateForestNode(DottedRule dottedRule, int origin, int location)
             : base(origin, location)
         {
             DottedRule = dottedRule;

@@ -15,5 +15,7 @@ namespace Pliant.Grammars
         public TokenType TokenType { get; }
 
         public abstract bool CanApply(char c);
+
+        public abstract ILexeme CreateLexeme(int position);
     }
 }
