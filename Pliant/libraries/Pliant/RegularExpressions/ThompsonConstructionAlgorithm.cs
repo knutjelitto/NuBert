@@ -75,16 +75,15 @@ namespace Pliant.RegularExpressions
 
         private static INfa CharacterClass(RegexCharacterClass characterClass, bool negate)
         {
-            switch (characterClass.NodeType)
+            switch (characterClass)
             {
-                case RegexNodeType.RegexCharacterClass:
-                    return UnitRange(characterClass.CharacterRange, negate);
-
-                case RegexNodeType.RegexCharacterClassAlteration:
-                    var alteration = characterClass as RegexCharacterClassAlteration;
+                case RegexCharacterClassAlteration alteration:
                     return Union(
                         UnitRange(alteration.CharacterRange, negate),
                         CharacterClass(alteration.CharacterClass, negate));
+
+                case RegexCharacterClass _:
+                    return UnitRange(characterClass.CharacterRange, negate);
             }
 
             throw new InvalidOperationException("Unreachable code detected.");

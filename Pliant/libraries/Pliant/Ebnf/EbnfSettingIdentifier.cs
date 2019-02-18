@@ -1,48 +1,23 @@
-﻿using Pliant.Utilities;
-
-namespace Pliant.Ebnf
+﻿namespace Pliant.Ebnf
 {
     public class EbnfSettingIdentifier : EbnfNode
     {
-        public string Value { get; private set; }
-
-        private readonly int _hashCode;
-
         public EbnfSettingIdentifier(string value)
         {
             Value = value;
-            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType => EbnfNodeType.EbnfSettingIdentifier;
-
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                NodeType.GetHashCode(),
-                Value.GetHashCode());
-        }
+        public string Value { get; }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return Value.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var factor = obj as EbnfSettingIdentifier;
-            if (factor == null)
-            {
-                return false;
-            }
-
-            return factor.NodeType == NodeType
-                && factor.Value.Equals(Value);
+            return obj is EbnfSettingIdentifier other && 
+                   other.Value.Equals(Value);
         }
     }
 }

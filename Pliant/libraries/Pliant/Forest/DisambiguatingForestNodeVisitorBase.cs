@@ -2,12 +2,12 @@
 {
     public abstract class DisambiguatingForestNodeVisitorBase : ForestNodeVisitorBase
     {
-        public IForestDisambiguationAlgorithm ForestDisambiguationAlgorithm { get; private set; }
-
         protected DisambiguatingForestNodeVisitorBase(IForestDisambiguationAlgorithm forestDisambiguationAlgorithm)
         {
             ForestDisambiguationAlgorithm = forestDisambiguationAlgorithm;
         }
+
+        public IForestDisambiguationAlgorithm ForestDisambiguationAlgorithm { get; }
 
         public override void Visit(IIntermediateForestNode intermediateNode)
         {
@@ -16,7 +16,8 @@
         }
 
         public override void Visit(ITokenForestNode tokenNode)
-        { }
+        {
+        }
 
         public override void Visit(ISymbolForestNode symbolNode)
         {
@@ -25,6 +26,7 @@
         }
 
         public override void Visit(ITerminalForestNode terminalNode)
-        { }
+        {
+        }
     }
 }

@@ -1,15 +1,7 @@
-﻿using Pliant.Utilities;
-
-namespace Pliant.RegularExpressions
+﻿namespace Pliant.RegularExpressions
 {
-    public class Regex : RegexNode
+    public sealed class Regex : RegexNode
     {
-        public bool StartsWith { get; private set; }
-        public RegexExpression Expression { get; private set; }
-        public bool EndsWith { get; private set; }
-
-        public override RegexNodeType NodeType => RegexNodeType.Regex;
-
         public Regex(
             bool startsWith,
             RegexExpression expression,
@@ -18,40 +10,25 @@ namespace Pliant.RegularExpressions
             StartsWith = startsWith;
             EndsWith = endsWith;
             Expression = expression;
-            this._hashCode = ComputeHashCode();
         }
+
+        public bool StartsWith { get; }
+        public RegexExpression Expression { get; }
+        public bool EndsWith { get; }
+
+        public override RegexNodeType NodeType => RegexNodeType.Regex;
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var other = obj as Regex;
-            if (null == other)
-            {
-                return false;
-            }
-
-            return other.EndsWith == EndsWith
-                && other.StartsWith == StartsWith
-                && other.Expression.Equals(Expression);
+            return obj is Regex other &&
+                   other.StartsWith == StartsWith &&
+                   other.EndsWith == EndsWith && 
+                   other.Expression.Equals(Expression);
         }
-        
-        private readonly int _hashCode;
 
         public override int GetHashCode()
         {
-            return this._hashCode;
-        }
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                StartsWith.GetHashCode(),
-                Expression.GetHashCode(),
-                EndsWith.GetHashCode());
+            return (StartsWith, EndsWith, Expression).GetHashCode();
         }
 
         public override string ToString()

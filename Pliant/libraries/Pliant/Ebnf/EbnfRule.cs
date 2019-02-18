@@ -1,52 +1,26 @@
-﻿using Pliant.Utilities;
-
-namespace Pliant.Ebnf
+﻿namespace Pliant.Ebnf
 {
     public class EbnfRule : EbnfNode
     {
-        private readonly int _hashCode;
-
-        public EbnfQualifiedIdentifier QualifiedIdentifier { get; private set; }
-        public EbnfExpression Expression { get; private set; }
-
         public EbnfRule(EbnfQualifiedIdentifier qualifiedIdentifier, EbnfExpression expression)
         {
             QualifiedIdentifier = qualifiedIdentifier;
             Expression = expression;
-            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType => EbnfNodeType.EbnfRule;
-
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                QualifiedIdentifier.GetHashCode(),
-                Expression.GetHashCode(),
-                NodeType.GetHashCode());
-        }
+        public EbnfQualifiedIdentifier QualifiedIdentifier { get; }
+        public EbnfExpression Expression { get; }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return (QualifiedIdentifier, Expression).GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var rule = obj as EbnfRule;
-            if (rule == null)
-            {
-                return false;
-            }
-
-            return rule.NodeType == EbnfNodeType.EbnfRule
-                && rule.QualifiedIdentifier.Equals(QualifiedIdentifier)
-                && rule.Expression.Equals(Expression);
+            return obj is EbnfRule rule && 
+                   rule.QualifiedIdentifier.Equals(QualifiedIdentifier) && 
+                   rule.Expression.Equals(Expression);
         }
 
         public override string ToString()

@@ -4,7 +4,6 @@ namespace Pliant.Forest
 {
     public abstract class ForestNodeBase : IForestNode
     {
-        private readonly int _hashCode;
         protected ForestNodeBase(int origin, int location)
         {
             Origin = origin;
@@ -12,31 +11,22 @@ namespace Pliant.Forest
             this._hashCode = ComputeHashCode();
         }
 
-        public int Location { get; private set; }
+        public int Location { get; }
 
         public abstract ForestNodeType NodeType { get; }
 
-        public int Origin { get; private set; }
+        public int Origin { get; }
 
         public abstract void Accept(IForestNodeVisitor visitor);
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var nodeBase = obj as ForestNodeBase;
-            if (nodeBase == null)
-            {
-                return false;
-            }
-
-            return Location == nodeBase.Location
-                && NodeType == nodeBase.NodeType
-                && Origin == nodeBase.Origin;
+            return obj is ForestNodeBase nodeBase && 
+                   Location == nodeBase.Location && 
+                   NodeType == nodeBase.NodeType && 
+                   Origin == nodeBase.Origin;
         }
+
         public override int GetHashCode()
         {
             return this._hashCode;
@@ -45,9 +35,11 @@ namespace Pliant.Forest
         private int ComputeHashCode()
         {
             return HashCode.Compute(
-                ((int)NodeType).GetHashCode(),
+                ((int) NodeType).GetHashCode(),
                 Location.GetHashCode(),
                 Origin.GetHashCode());
         }
+
+        private readonly int _hashCode;
     }
 }

@@ -1,93 +1,50 @@
-﻿using Pliant.Utilities;
+﻿using Pliant.RegularExpressions;
 
 namespace Pliant.Ebnf
 {
     public abstract class EbnfLexerRuleFactor : EbnfNode
-    {     
+    {
     }
 
-    public class EbnfLexerRuleFactorLiteral : EbnfLexerRuleFactor
+    public sealed class EbnfLexerRuleFactorLiteral : EbnfLexerRuleFactor
     {
-        public override EbnfNodeType NodeType => EbnfNodeType.EbnfLexerRuleFactorLiteral;
-
-        public string Value { get; private set; }
-
-        private readonly int _hashCode;
-
         public EbnfLexerRuleFactorLiteral(string value)
         {
             Value = value;
-            this._hashCode = ComputeHashCode();
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(NodeType.GetHashCode(), Value.GetHashCode());
-        }
+        public string Value { get; }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return Value.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var factor = obj as EbnfLexerRuleFactorLiteral;
-            if (factor == null)
-            {
-                return false;
-            }
-
-            return factor.NodeType == NodeType
-                && factor.Value.Equals(Value);
+            return obj is EbnfLexerRuleFactorLiteral factor && 
+                   factor.Value.Equals(Value);
         }
     }
 
-    public class EbnfLexerRuleFactorRegex : EbnfLexerRuleFactor
+    public sealed class EbnfLexerRuleFactorRegex : EbnfLexerRuleFactor
     {
-        public override EbnfNodeType NodeType => EbnfNodeType.EbnfLexerRuleFactorRegex;
-        private readonly int _hashCode;
-
-        public RegularExpressions.Regex Regex { get; private set; }
-
-        public EbnfLexerRuleFactorRegex(RegularExpressions.Regex regex)
+        public EbnfLexerRuleFactorRegex(Regex regex)
         {
             Regex = regex;
-            this._hashCode = ComputeHashCode();
         }
 
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                NodeType.GetHashCode(),
-                Regex.GetHashCode());
-        }
+        public Regex Regex { get; }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return Regex.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var factor = obj as EbnfFactorRegex;
-            if (factor == null)
-            {
-                return false;
-            }
-
-            return factor.NodeType == NodeType
-                && factor.Regex.Equals(Regex);
+            return obj is EbnfFactorRegex factor && 
+                   factor.Regex.Equals(Regex);
         }
     }
 }

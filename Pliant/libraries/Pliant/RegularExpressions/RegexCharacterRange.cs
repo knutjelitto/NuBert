@@ -1,47 +1,26 @@
-﻿using Pliant.Utilities;
-
-namespace Pliant.RegularExpressions
+﻿namespace Pliant.RegularExpressions
 {
     public class RegexCharacterUnitRange : RegexNode
     {
-        public RegexCharacterClassCharacter StartCharacter { get; set; }
-
         public RegexCharacterUnitRange(RegexCharacterClassCharacter startCharacter)
         {
             StartCharacter = startCharacter;
-            this._hashCode = ComputeHashCode();
         }
+
+        public RegexCharacterClassCharacter StartCharacter { get; }
+
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterUnitRange;
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var characterRange = obj as RegexCharacterUnitRange;
-            if (characterRange == null)
-            {
-                return false;
-            }
-
-            return characterRange.StartCharacter.Equals(StartCharacter);
-        }
-
-        private readonly int _hashCode;
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                    StartCharacter.GetHashCode());
+            return obj is RegexCharacterUnitRange other &&
+                   other.StartCharacter.Equals(StartCharacter);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return StartCharacter.GetHashCode();
         }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterUnitRange;
 
         public override string ToString()
         {
@@ -51,50 +30,29 @@ namespace Pliant.RegularExpressions
 
     public class RegexCharacterRange : RegexCharacterUnitRange
     {
-        public RegexCharacterClassCharacter EndCharacter { get; set; }
-
         public RegexCharacterRange(
             RegexCharacterClassCharacter startCharacter,
             RegexCharacterClassCharacter endCharacter)
             : base(startCharacter)
         {
             EndCharacter = endCharacter;
-            this._hashCode = ComputeHashCode();
         }
+
+        public RegexCharacterClassCharacter EndCharacter { get; }
+
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterRange;
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var characterRangeSet = obj as RegexCharacterRange;
-            if (characterRangeSet == null)
-            {
-                return false;
-            }
-
-            return
-                StartCharacter.Equals(characterRangeSet.StartCharacter)
-                && EndCharacter.Equals(characterRangeSet.EndCharacter);
-        }
-        
-        private readonly int _hashCode;
-
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                    StartCharacter.GetHashCode(),
-                    EndCharacter.GetHashCode());
+            return obj is RegexCharacterRange other && 
+                   StartCharacter.Equals(other.StartCharacter) && 
+                   EndCharacter.Equals(other.EndCharacter);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return (StartCharacter, EndCharacter).GetHashCode();
         }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterRange;
 
         public override string ToString()
         {

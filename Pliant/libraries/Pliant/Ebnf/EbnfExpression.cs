@@ -1,87 +1,36 @@
-﻿using Pliant.Utilities;
-
-namespace Pliant.Ebnf
+﻿namespace Pliant.Ebnf
 {
-    public class EbnfExpressionEmpty: EbnfNode
+    public class EbnfExpressionEmpty : EbnfNode
     {
-        private readonly int _hashCode;
-
-        public EbnfExpressionEmpty()
-        {
-            this._hashCode = ComputeHashCode();
-        }
-
-        public override EbnfNodeType NodeType => EbnfNodeType.EbnfExpressionEmpty;
-
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var expression = obj as EbnfExpressionEmpty;
-            if (expression == null)
-            {
-                return false;
-            }
-
-            return expression.NodeType == NodeType;
+            return obj is EbnfExpressionEmpty;
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
-        }
-
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                NodeType.GetHashCode());
+            return GetType().GetHashCode();
         }
     }
 
     public class EbnfExpression : EbnfExpressionEmpty
     {
-        private readonly int _hashCode;
-
-        public EbnfTerm Term { get; private set; }
-
         public EbnfExpression(EbnfTerm term)
         {
             Term = term;
-            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType => EbnfNodeType.EbnfExpression;
+        public EbnfTerm Term { get; }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var expression = obj as EbnfExpression;
-            if (expression == null)
-            {
-                return false;
-            }
-
-            return expression.NodeType == NodeType
-                && expression.Term.Equals(Term);
-        }
-
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                NodeType.GetHashCode(),
-                Term.GetHashCode());
+            return obj is EbnfExpression other && 
+                   other.Term.Equals(Term);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return Term.GetHashCode();
         }
 
         public override string ToString()
@@ -92,50 +41,24 @@ namespace Pliant.Ebnf
 
     public class EbnfExpressionAlteration : EbnfExpression
     {
-        private readonly int _hashCode;
-
-        public EbnfExpression Expression { get; private set; }
-
-        public EbnfExpressionAlteration(
-            EbnfTerm term,
-            EbnfExpression expression)
+        public EbnfExpressionAlteration(EbnfTerm term, EbnfExpression expression)
             : base(term)
         {
             Expression = expression;
-            this._hashCode = ComputeHashCode();
         }
 
-        public override EbnfNodeType NodeType => EbnfNodeType.EbnfExpressionAlteration;
+        public EbnfExpression Expression { get; }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var expression = obj as EbnfExpressionAlteration;
-            if (expression == null)
-            {
-                return false;
-            }
-
-            return expression.NodeType == NodeType
-                && expression.Term.Equals(Term)
-                && expression.Expression.Equals(Expression);
-        }
-
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                NodeType.GetHashCode(),
-                Term.GetHashCode(),
-                Expression.GetHashCode());
+            return obj is EbnfExpressionAlteration other && 
+                   other.Term.Equals(Term) && 
+                   other.Expression.Equals(Expression);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return (Term, Expression).GetHashCode();
         }
 
         public override string ToString()

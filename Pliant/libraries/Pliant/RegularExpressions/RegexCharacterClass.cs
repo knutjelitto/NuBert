@@ -4,44 +4,25 @@ namespace Pliant.RegularExpressions
 {
     public class RegexCharacterClass : RegexNode
     {
-        public RegexCharacterUnitRange CharacterRange { get; private set; }
-
         public RegexCharacterClass(RegexCharacterUnitRange characterRange)
         {
             CharacterRange = characterRange;
-            this._hashCode = ComputeHashCode();
         }
 
-        private readonly int _hashCode;
+        public RegexCharacterUnitRange CharacterRange { get; }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                    CharacterRange.GetHashCode());
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClass;
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return CharacterRange.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var characterClass = obj as RegexCharacterClass;
-            if (characterClass == null)
-            {
-                return false;
-            }
-
-            return characterClass.CharacterRange.Equals(CharacterRange);
+            return obj is RegexCharacterClass other && 
+                   other.CharacterRange.Equals(CharacterRange);
         }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClass;
 
         public override string ToString()
         {
@@ -51,49 +32,29 @@ namespace Pliant.RegularExpressions
 
     public class RegexCharacterClassAlteration : RegexCharacterClass
     {
-        public RegexCharacterClass CharacterClass { get; private set; }
-
         public RegexCharacterClassAlteration(
             RegexCharacterUnitRange characterRange,
             RegexCharacterClass characterClass)
             : base(characterRange)
         {
             CharacterClass = characterClass;
-            this._hashCode = ComputeHashCode();
         }
 
-        private readonly int _hashCode;
+        public RegexCharacterClass CharacterClass { get; }
 
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                    CharacterRange.GetHashCode(),
-                    CharacterClass.GetHashCode());
-        }
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClassAlteration;
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return (CharacterRange, CharacterClass).GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var characterClassList = obj as RegexCharacterClassAlteration;
-            if (characterClassList == null)
-            {
-                return false;
-            }
-
-            return characterClassList.CharacterRange.Equals(CharacterRange)
-                && characterClassList.CharacterClass.Equals(CharacterClass);
+            return obj is RegexCharacterClassAlteration other && 
+                   other.CharacterRange.Equals(CharacterRange) && 
+                   other.CharacterClass.Equals(CharacterClass);
         }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClassAlteration;
 
         public override string ToString()
         {

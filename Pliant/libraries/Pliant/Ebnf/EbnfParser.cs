@@ -7,15 +7,12 @@ namespace Pliant.Ebnf
 {
     public class EbnfParser
     {
-#pragma warning disable CC0091 // Use static method
         public EbnfDefinition Parse(string ebnf)
         {
             var grammar = new EbnfGrammar();
             var parseEngine = new ParseEngine(
                 grammar, 
-                new ParseEngineOptions(
-                    optimizeRightRecursion: true,
-                    loggingEnabled: false));
+                new ParseEngineOptions());
             var parseRunner = new ParseRunner(parseEngine, ebnf);
             while (!parseRunner.EndOfStream())
             {
@@ -34,13 +31,12 @@ namespace Pliant.Ebnf
             var parseForest = parseEngine.GetParseForestRootNode();
 
             var parseTree = new InternalTreeNode(
-                    parseForest as IInternalForestNode,
+                    parseForest,
                     new SelectFirstChildDisambiguationAlgorithm());
 
             var ebnfVisitor = new EbnfVisitor();
             parseTree.Accept(ebnfVisitor);
             return ebnfVisitor.Definition;            
         }
-#pragma warning restore CC0091 // Use static method
     }
 }
