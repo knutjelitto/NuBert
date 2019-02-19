@@ -15,7 +15,7 @@ namespace Pliant.RegularExpressions
         {
             var start = new NfaState();
             var end = new NfaState();
-            start.AddTransition(new TerminalNfaTransition(new AnyTerminal(), end));
+            start.AddTransistion(new TerminalNfaTransition(new AnyTerminal(), end));
             return new Nfa(start, end);
         }
 
@@ -49,7 +49,7 @@ namespace Pliant.RegularExpressions
                 terminal,
                 end);
 
-            start.AddTransition(transition);
+            start.AddTransistion(transition);
 
             return new Nfa(start, end);
         }
@@ -65,7 +65,7 @@ namespace Pliant.RegularExpressions
                 terminal,
                 end);
 
-            start.AddTransition(transition);
+            start.AddTransistion(transition);
 
             return new Nfa(start, end);
         }
@@ -88,7 +88,7 @@ namespace Pliant.RegularExpressions
 
         private static Nfa Concatenation(Nfa first, Nfa second)
         {
-            first.End.AddTransition(new NullNfaTransition(second.Start));
+            first.End.AddTransistion(new NullNfaTransition(second.Start));
             return new Nfa(first.Start, second.End);
         }
 
@@ -142,7 +142,7 @@ namespace Pliant.RegularExpressions
         {
             var start = new NfaState();
             var end = new NfaState();
-            start.AddTransition(new NullNfaTransition(end));
+            start.AddTransistion(new NullNfaTransition(end));
             return new Nfa(start, end);
         }
 
@@ -194,8 +194,8 @@ namespace Pliant.RegularExpressions
         private static Nfa KleenePlus(Nfa nfa)
         {
             var end = new NfaState();
-            nfa.End.AddTransition(new NullNfaTransition(end));
-            nfa.End.AddTransition(new NullNfaTransition(nfa.Start));
+            nfa.End.AddTransistion(new NullNfaTransition(end));
+            nfa.End.AddTransistion(new NullNfaTransition(nfa.Start));
             return new Nfa(nfa.Start, end);
         }
 
@@ -204,14 +204,14 @@ namespace Pliant.RegularExpressions
             var start = new NfaState();
             var nullToNfaStart = new NullNfaTransition(nfa.Start);
 
-            start.AddTransition(nullToNfaStart);
-            nfa.End.AddTransition(nullToNfaStart);
+            start.AddTransistion(nullToNfaStart);
+            nfa.End.AddTransistion(nullToNfaStart);
 
             var end = new NfaState();
             var nullToNewEnd = new NullNfaTransition(end);
 
-            start.AddTransition(nullToNewEnd);
-            nfa.End.AddTransition(nullToNewEnd);
+            start.AddTransistion(nullToNewEnd);
+            nfa.End.AddTransistion(nullToNewEnd);
 
             return new Nfa(start, end);
         }
@@ -220,9 +220,9 @@ namespace Pliant.RegularExpressions
         {
             var start = new NfaState();
             var end = new NfaState();
-            start.AddTransition(new NullNfaTransition(nfa.Start));
-            start.AddTransition(new NullNfaTransition(end));
-            nfa.End.AddTransition(new NullNfaTransition(end));
+            start.AddTransistion(new NullNfaTransition(nfa.Start));
+            start.AddTransistion(new NullNfaTransition(end));
+            nfa.End.AddTransistion(new NullNfaTransition(end));
             return new Nfa(start, end);
         }
 
@@ -239,7 +239,7 @@ namespace Pliant.RegularExpressions
                 terminal = new NegationTerminal(terminal);
             }
 
-            nfaStartState.AddTransition(
+            nfaStartState.AddTransistion(
                 new TerminalNfaTransition(terminal, nfaEndState));
             return new Nfa(nfaStartState, nfaEndState);
         }
@@ -272,13 +272,13 @@ namespace Pliant.RegularExpressions
         private static Nfa Union(Nfa first, Nfa second)
         {
             var start = new NfaState();
-            start.AddTransition(new NullNfaTransition(first.Start));
-            start.AddTransition(new NullNfaTransition(second.Start));
+            start.AddTransistion(new NullNfaTransition(first.Start));
+            start.AddTransistion(new NullNfaTransition(second.Start));
 
             var end = new NfaState();
             var endTransition = new NullNfaTransition(end);
-            first.End.AddTransition(endTransition);
-            second.End.AddTransition(endTransition);
+            first.End.AddTransistion(endTransition);
+            second.End.AddTransistion(endTransition);
 
             return new Nfa(start, end);
         }

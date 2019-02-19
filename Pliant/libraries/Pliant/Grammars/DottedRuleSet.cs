@@ -31,7 +31,7 @@ namespace Pliant.Grammars
 
         public IReadOnlyDictionary<TokenType, DottedRuleSet> TokenTransitions => this._tokenTransitions;
 
-        public void AddTransition(Symbol symbol, DottedRuleSet target)
+        public void AddTransistion(Symbol symbol, DottedRuleSet target)
         {
             if (symbol is NonTerminal)
             {

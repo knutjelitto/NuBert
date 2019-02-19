@@ -815,7 +815,6 @@ namespace Pliant.Tests.Unit.Runtime
             AssertLeoAndClassicParseAlgorithmsCreateSameForest(input, grammar);
         }
 
-#if false
         [TestMethod]
         public void ParseEngineShouldDisambiguateFollowingOperatorPresidence()
         {
@@ -834,7 +833,6 @@ namespace Pliant.Tests.Unit.Runtime
             // (E, 6, 7) = ('7', 6, 7)
             Assert.Inconclusive();
         }
-#endif
 
         [TestMethod]
         public void ParseEngineCanParseNullableGrammar()
