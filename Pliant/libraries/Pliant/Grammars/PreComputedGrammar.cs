@@ -233,7 +233,7 @@ namespace Pliant.Grammars
             {
                 var confirmedStates = GetConfirmedStates(transitions[symbol]);
                 var valueDottedRuleSet = AddNewOrGetExistingDottedRuleSet(confirmedStates);
-                frame.AddTransistion(symbol, valueDottedRuleSet);
+                frame.AddTransition(symbol, valueDottedRuleSet);
             }
         }
 

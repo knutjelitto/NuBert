@@ -264,7 +264,7 @@ namespace Pliant.Ebnf
                 }
 
                 var previous = states[i - 1];
-                previous.AddTransistion(
+                previous.AddTransition(
                     new TerminalNfaTransition(
                         new CharacterTerminal(literal[i - 1]),
                         current));

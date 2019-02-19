@@ -5,17 +5,16 @@ using Pliant.Grammars;
 
 namespace Pliant.Utilities
 {
-    public class XortedSet<T> : SortedSet<T>
+#if false
+    public class DottedSet : HashSet<DottedRule>
     {
     }
-
+#else
     public class DottedSet : SortedSet<DottedRule>
     {
         public DottedSet() : base(new DottedRuleComparer())
         {
         }
-
-        #region  not sortable (modify ReSharper template to catch these cases)
 
         private class DottedRuleComparer : IComparer<DottedRule>
         {
@@ -26,7 +25,6 @@ namespace Pliant.Utilities
                 return x.GetHashCode().CompareTo(y.GetHashCode());
             }
         }
-
-        #endregion
     }
+#endif
 }

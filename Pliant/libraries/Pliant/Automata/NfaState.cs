@@ -17,7 +17,7 @@ namespace Pliant.Automata
 
         public IReadOnlyList<NfaTransition> Transitions => this._transitions;
 
-        public void AddTransistion(NfaTransition transition)
+        public void AddTransition(NfaTransition transition)
         {
             this._transitions.Add(transition);
         }
@@ -27,7 +27,7 @@ namespace Pliant.Automata
             // the working queue used to process states 
             var queue = new ProcessOnceQueue<NfaState>();
             
-            // initialize by adding the curren state (this)
+            // initialize by adding the current state (this)
             queue.Enqueue(this);
 
             // loop over items in the queue, adding newly discovered

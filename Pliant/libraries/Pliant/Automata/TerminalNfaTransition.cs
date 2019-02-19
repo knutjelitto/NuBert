@@ -11,7 +11,5 @@ namespace Pliant.Automata
         }
 
         public Terminal Terminal { get; }
-
-        public override NfaTransitionType TransitionType => NfaTransitionType.Edge;
     }
 }

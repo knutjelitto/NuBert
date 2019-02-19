@@ -14,7 +14,7 @@
 
         public Nfa Concatenation(Nfa nfa)
         {
-            End.AddTransistion(
+            End.AddTransition(
                 new NullNfaTransition(nfa.Start));
             return this;
         }
@@ -24,11 +24,11 @@
             var newStart = new NfaState();
             var newEnd = new NfaState();
 
-            newStart.AddTransistion(new NullNfaTransition(Start));
-            newStart.AddTransistion(new NullNfaTransition(newEnd));
+            newStart.AddTransition(new NullNfaTransition(Start));
+            newStart.AddTransition(new NullNfaTransition(newEnd));
 
-            newEnd.AddTransistion(new NullNfaTransition(Start));
-            End.AddTransistion(new NullNfaTransition(newEnd));
+            newEnd.AddTransition(new NullNfaTransition(Start));
+            End.AddTransition(new NullNfaTransition(newEnd));
 
             return new Nfa(newStart, newEnd);
         }
@@ -38,11 +38,11 @@
             var newStart = new NfaState();
             var newEnd = new NfaState();
 
-            newStart.AddTransistion(new NullNfaTransition(Start));
-            newStart.AddTransistion(new NullNfaTransition(nfa.Start));
+            newStart.AddTransition(new NullNfaTransition(Start));
+            newStart.AddTransition(new NullNfaTransition(nfa.Start));
 
-            End.AddTransistion(new NullNfaTransition(newEnd));
-            nfa.End.AddTransistion(new NullNfaTransition(newEnd));
+            End.AddTransition(new NullNfaTransition(newEnd));
+            nfa.End.AddTransition(new NullNfaTransition(newEnd));
 
             return new Nfa(newStart, newEnd);
         }

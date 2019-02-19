@@ -6,7 +6,5 @@
             : base(target)
         {
         }
-
-        public override NfaTransitionType TransitionType => NfaTransitionType.Null;
     }
 }
