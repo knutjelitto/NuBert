@@ -9,7 +9,7 @@ namespace Pliant.Automata
         public DfaLexeme(DfaLexerRule dfaLexerRule, int position)
             : base(dfaLexerRule, position)
         {
-            this._stringBuilder = new StringBuilder();
+            this._stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
             this._currentState = dfaLexerRule.Start;
         }
 
@@ -66,6 +66,7 @@ namespace Pliant.Automata
         private void DeallocateStringBuilderAndAssignCapture()
         {
             this._capture = this._stringBuilder.ToString();
+            SharedPools.Default<StringBuilder>().ClearAndFree(this._stringBuilder);
             this._stringBuilder = null;
         }
 
@@ -76,7 +77,7 @@ namespace Pliant.Automata
 
         private void ReallocateStringBuilderFromCapture()
         {
-            this._stringBuilder = new StringBuilder();
+            this._stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
             if (!string.IsNullOrWhiteSpace(this._capture))
             {
                 this._stringBuilder.Append(this._capture);

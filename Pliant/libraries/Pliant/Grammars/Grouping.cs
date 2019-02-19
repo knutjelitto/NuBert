@@ -4,13 +4,13 @@ namespace Pliant.Grammars
 {
     public abstract class Grouping : Symbol
     {
-        private readonly List<Symbol> _items;
+        private readonly List<ISymbol> _items;
 
-        public IReadOnlyList<Symbol> Items => this._items;
+        public IReadOnlyList<ISymbol> Items => this._items;
 
-        protected Grouping(IReadOnlyList<Symbol> items)
+        protected Grouping(IReadOnlyList<ISymbol> items)
         {
-            this._items = new List<Symbol>(items);
+            this._items = new List<ISymbol>(items);
         }
     }
 }

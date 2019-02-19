@@ -23,11 +23,6 @@ namespace Pliant.Grammars
             return Literal.Length != 0 && Literal[0].Equals(c);
         }
 
-        public override ILexeme CreateLexeme(int position)
-        {
-            return new StringLiteralLexeme(this, position);
-        }
-
         public override bool Equals(object obj)
         {
             return obj is StringLiteralLexerRule other &&

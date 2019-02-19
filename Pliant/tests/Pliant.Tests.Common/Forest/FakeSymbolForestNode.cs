@@ -5,7 +5,7 @@ namespace Pliant.Tests.Common.Forest
 {
     public class FakeSymbolForestNode : FakeInternalForestNode, ISymbolForestNode
     {
-        public FakeSymbolForestNode(Symbol symbol, int origin, int location, params IAndForestNode[] children)
+        public FakeSymbolForestNode(ISymbol symbol, int origin, int location, params IAndForestNode[] children) 
             : base(origin, location, children)
         {
             Symbol = symbol;
@@ -16,8 +16,11 @@ namespace Pliant.Tests.Common.Forest
         {
         }
 
-        public override ForestNodeType NodeType => ForestNodeType.Symbol;
+        public override ForestNodeType NodeType
+        {
+            get { return ForestNodeType.Symbol; }
+        }
 
-        public Symbol Symbol { get; }
+        public ISymbol Symbol { get; private set; }
     }
 }

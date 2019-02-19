@@ -9,7 +9,7 @@ namespace Pliant.Builders
             Value = value;
         }
 
-        public override Symbol Symbol => Value;
+        public override ISymbol Symbol => Value;
 
         public LexerRule Value { get; }
 

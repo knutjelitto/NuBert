@@ -72,7 +72,7 @@ namespace Pliant.Charts
             Location = location;
         }
 
-        public bool ContainsNormal(DottedRule dottedRule, int origin)
+        public bool ContainsNormal(IDottedRule dottedRule, int origin)
         {
             var hashCode = NormalStateHashCodeAlgorithm.Compute(dottedRule, origin);
             if (dottedRule.IsComplete)
@@ -186,7 +186,7 @@ namespace Pliant.Charts
             return this._transitions.AddUnique(transitionState);
         }
 
-        public TransitionState FindTransitionState(Symbol searchSymbol)
+        public TransitionState FindTransitionState(ISymbol searchSymbol)
         {
             for (var t = 0; t < Transitions.Count; t++)
             {
@@ -199,7 +199,7 @@ namespace Pliant.Charts
             return null;
         }
 
-        public NormalState FindSourceState(Symbol searchSymbol)
+        public NormalState FindSourceState(ISymbol searchSymbol)
         {
             var sourceItemCount = 0;
             NormalState sourceItem = null;

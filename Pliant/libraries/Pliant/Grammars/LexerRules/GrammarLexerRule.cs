@@ -1,9 +1,8 @@
-﻿using Pliant.Runtime;
-using Pliant.Tokens;
+﻿using Pliant.Tokens;
 
 namespace Pliant.Grammars
 {
-    public class GrammarLexerRule : LexerRule
+    public class GrammarLexerRule : LexerRule //, IGrammarLexerRule
     {
         public GrammarLexerRule(string tokenType, IGrammar grammar)
             : this(new TokenType(tokenType), grammar)
@@ -32,11 +31,6 @@ namespace Pliant.Grammars
             }
 
             return false;
-        }
-
-        public override ILexeme CreateLexeme(int position)
-        {
-            return new ParseEngineLexeme(this);
         }
 
         public override string ToString()

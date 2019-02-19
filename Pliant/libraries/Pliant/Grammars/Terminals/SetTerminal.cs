@@ -50,7 +50,8 @@ namespace Pliant.Grammars
 
         private static IReadOnlyList<Interval> CreateIntervals(HashSet<char> characterSet)
         {
-            var intervalList = new List<Interval>();
+            var intervalListPool = SharedPools.Default<List<Interval>>();
+            var intervalList = intervalListPool.AllocateAndClear();
 
             // create a initial set of intervals
             foreach (var character in characterSet)
@@ -59,6 +60,7 @@ namespace Pliant.Grammars
             }
 
             var groupedIntervals = Interval.Group(intervalList);
+            intervalListPool.ClearAndFree(intervalList);
 
             return groupedIntervals;
         }

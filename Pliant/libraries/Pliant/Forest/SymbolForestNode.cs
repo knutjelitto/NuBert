@@ -5,7 +5,7 @@ namespace Pliant.Forest
 {
     public class SymbolForestNode : InternalForestNode, ISymbolForestNode
     {
-        public SymbolForestNode(Symbol symbol, int origin, int location)
+        public SymbolForestNode(ISymbol symbol, int origin, int location)
             : base(origin, location)
         {
             Symbol = symbol;
@@ -13,7 +13,7 @@ namespace Pliant.Forest
         }
 
         public override ForestNodeType NodeType => ForestNodeType.Symbol;
-        public Symbol Symbol { get; }
+        public ISymbol Symbol { get; }
 
         public override void Accept(IForestNodeVisitor visitor)
         {

@@ -12,16 +12,17 @@
             Expression = expression;
         }
 
-        public bool EndsWith { get; }
-        public RegexExpression Expression { get; }
-
         public bool StartsWith { get; }
+        public RegexExpression Expression { get; }
+        public bool EndsWith { get; }
+
+        public override RegexNodeType NodeType => RegexNodeType.Regex;
 
         public override bool Equals(object obj)
         {
             return obj is Regex other &&
                    other.StartsWith == StartsWith &&
-                   other.EndsWith == EndsWith &&
+                   other.EndsWith == EndsWith && 
                    other.Expression.Equals(Expression);
         }
 

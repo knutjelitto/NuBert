@@ -40,10 +40,20 @@ namespace Pliant.Tokens
 
         public override bool Equals(object obj)
         {
-            return obj is Token token && 
-                   Value.Equals(token.Value) && 
-                   Position.Equals(token.Position) && 
-                   TokenType.Equals(token.TokenType);
+            if (obj == null)
+            {
+                return false;
+            }
+
+            var token = obj as Token;
+            if (token == null)
+            {
+                return false;
+            }
+
+            return Value == token.Value
+                   && Position == token.Position
+                   && TokenType.Equals(token.TokenType);
         }
 
         public override int GetHashCode()

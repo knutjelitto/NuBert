@@ -4,7 +4,7 @@ namespace Pliant.Grammars
 {
     public interface IGrammar
     {
-        IReadOnlyList<Production> Productions { get; }
+        IReadOnlyList<IProduction> Productions { get; }
 
         NonTerminal Start { get; }
 
@@ -12,22 +12,22 @@ namespace Pliant.Grammars
 
         IReadOnlyList<LexerRule> Trivia { get; }
 
-        DottedRuleRegistry DottedRules { get; }
+        IReadOnlyDottedRuleRegistry DottedRules { get; }
 
         IReadOnlyList<LexerRule> LexerRules { get; }
 
         int GetLexerRuleIndex(LexerRule lexerRule);
 
-        IReadOnlyList<Production> RulesFor(NonTerminal nonTerminal);
+        IReadOnlyList<IProduction> RulesFor(NonTerminal nonTerminal);
 
-        IReadOnlyList<Production> RulesContainingSymbol(NonTerminal nonTerminal);
+        IReadOnlyList<IProduction> RulesContainingSymbol(NonTerminal nonTerminal);
 
-        IReadOnlyList<Production> StartProductions();
+        IReadOnlyList<IProduction> StartProductions();
 
         bool IsNullable(NonTerminal nonTerminal);
 
         bool IsTransativeNullable(NonTerminal nonTerminal);
 
-        bool IsRightRecursive(Symbol symbol);
+        bool IsRightRecursive(ISymbol symbol);
     }
 }

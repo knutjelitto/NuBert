@@ -16,6 +16,6 @@ namespace Pliant.Builders
 
         public override SymbolModelType ModelType => SymbolModelType.Reference;
 
-        public override Symbol Symbol => Reference;
+        public override ISymbol Symbol => Reference;
     }
 }

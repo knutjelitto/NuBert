@@ -2,7 +2,7 @@
 
 namespace Pliant.Tokens
 {
-    public class StringLiteralLexeme : LexemeBase<StringLiteralLexerRule>
+    public class StringLiteralLexeme : LexemeBase<StringLiteralLexerRule>, ILexeme
     {
         private string _capture;
         private int _index;

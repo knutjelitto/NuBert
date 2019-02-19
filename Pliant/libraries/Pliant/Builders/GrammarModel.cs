@@ -144,9 +144,9 @@ namespace Pliant.Builders
             return lexerRules;
         }
 
-        private List<Production> GetProductionsFromProductionsModel()
+        private List<IProduction> GetProductionsFromProductionsModel()
         {
-            var productions = new List<Production>();
+            var productions = new List<IProduction>();
             foreach (var productionModel in this._productions)
             {
                 foreach (var production in productionModel.ToProductions())

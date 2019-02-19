@@ -22,7 +22,7 @@ namespace Pliant.Charts
 
         public int Count => EarleySets.Count;
 
-        public bool Contains(int position, DottedRule dottedRule, int origin)
+        public bool Contains(int position, IDottedRule dottedRule, int origin)
         {
             var earleySet = GetEarleySet(position);
             return earleySet.ContainsNormal(dottedRule, origin);

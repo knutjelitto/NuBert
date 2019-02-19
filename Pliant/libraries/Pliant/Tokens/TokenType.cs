@@ -5,6 +5,7 @@
         public TokenType(string id)
         {
             Id = id;
+            this._hashCode = ComputeHashCode(Id);
         }
 
         public string Id { get; }
@@ -16,12 +17,19 @@
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return this._hashCode;
         }
 
         public override string ToString()
         {
             return Id;
         }
+
+        private static int ComputeHashCode(string id)
+        {
+            return id.GetHashCode();
+        }
+
+        private readonly int _hashCode;
     }
 }

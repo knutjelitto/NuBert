@@ -233,7 +233,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private IForestNode CreateNullParseNode(Symbol symbol, int location)
+        private IForestNode CreateNullParseNode(ISymbol symbol, int location)
         {
             var symbolNode = this._nodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
             var token = new Token(string.Empty, location, EmptyTokenType);
@@ -243,7 +243,7 @@ namespace Pliant.Runtime
         }
 
         private IForestNode CreateParseNode(
-            DottedRule nextDottedRule,
+            IDottedRule nextDottedRule,
             int origin,
             IForestNode w,
             IForestNode v,
@@ -251,11 +251,11 @@ namespace Pliant.Runtime
         {
             Assert.IsNotNull(v, nameof(v));
             var anyPreDotRuleNull = true;
-            if (nextDottedRule.Dot > 1)
+            if (nextDottedRule.Position > 1)
             {
                 var predotPrecursorSymbol = nextDottedRule
                                             .Production
-                                            .RightHandSide[nextDottedRule.Dot - 2];
+                                            .RightHandSide[nextDottedRule.Position - 2];
                 anyPreDotRuleNull = IsSymbolTransativeNullable(predotPrecursorSymbol);
             }
 
@@ -381,7 +381,7 @@ namespace Pliant.Runtime
                 return true;
             }
 
-            var nextStatePosition = state.DottedRule.Dot + 1;
+            var nextStatePosition = state.DottedRule.Position + 1;
             var isComplete = nextStatePosition == state.DottedRule.Production.RightHandSide.Count;
             if (isComplete)
             {
@@ -418,7 +418,7 @@ namespace Pliant.Runtime
             return true;
         }
 
-        private bool IsSymbolNullable(Symbol symbol)
+        private bool IsSymbolNullable(ISymbol symbol)
         {
             if (symbol == null)
             {
@@ -433,7 +433,7 @@ namespace Pliant.Runtime
             return false;
         }
 
-        private bool IsSymbolTransativeNullable(Symbol symbol)
+        private bool IsSymbolTransativeNullable(ISymbol symbol)
         {
             if (symbol == null)
             {
@@ -489,17 +489,18 @@ namespace Pliant.Runtime
             }
         }
 
-        private void OptimizeReductionPath(Symbol searchSymbol, int k)
+        private void OptimizeReductionPath(ISymbol searchSymbol, int k)
         {
             State t_rule = null;
             TransitionState previousTransitionState = null;
 
-            var visited = new HashSet<State>();
+            var visited = SharedPools.Default<HashSet<State>>().AllocateAndClear();
             OptimizeReductionPathRecursive(searchSymbol, k, ref t_rule, ref previousTransitionState, visited);
+            SharedPools.Default<HashSet<State>>().ClearAndFree(visited);
         }
 
         private void OptimizeReductionPathRecursive(
-            Symbol searchSymbol,
+            ISymbol searchSymbol,
             int k,
             ref State t_rule,
             ref TransitionState previousTransitionState,
@@ -643,7 +644,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void PredictProduction(int j, Production production)
+        private void PredictProduction(int j, IProduction production)
         {
             var dottedRule = this._dottedRuleRegistry.Get(production, 0);
             if (Chart.Contains(j, dottedRule, 0))
@@ -736,7 +737,7 @@ namespace Pliant.Runtime
 
         private static readonly TokenType EmptyTokenType = new TokenType(string.Empty);
 
-        private readonly DottedRuleRegistry _dottedRuleRegistry;
+        private readonly IDottedRuleRegistry _dottedRuleRegistry;
 
         private Dictionary<int, LexerRule[]> _expectedLexerRuleCache;
         private BitArray _expectedLexerRuleIndicies;

@@ -53,16 +53,21 @@ namespace Pliant.Automata
 
         public TableDfa ToDfa()
         {
-            var queue = new ProcessOnceQueue<Closure>();
+            var queuePool = SharedPools.Default<ProcessOnceQueue<Closure>>();
+            var queue = queuePool.Allocate();
+            queue.Clear();
             var start = new Closure(Start, this._nullTransitions, this._finalStates);
 
-            queue.Enqueue(start);
+            queue.Enqueue(
+                start);
 
             var tableDfa = new TableDfa(start.GetHashCode());
 
             while (queue.Count > 0)
             {
-                var transitions = new Dictionary<char, SortedSet<int>>();
+                var transitions = SharedPools
+                       .Default<Dictionary<char, SortedSet<int>>>()
+                       .AllocateAndClear();
 
                 var nfaClosure = queue.Dequeue();
                 var nfaClosureId = nfaClosure.GetHashCode();
@@ -80,7 +85,7 @@ namespace Pliant.Automata
                     {
                         if (!transitions.TryGetValue(characterTransition.Key, out var targets))
                         {
-                            targets = new SortedSet<int>();
+                            targets = SharedPools.Default<SortedSet<int>>().AllocateAndClear();
                             transitions.Add(characterTransition.Key, targets);
                         }
 
@@ -96,8 +101,16 @@ namespace Pliant.Automata
 
                     tableDfa.AddTransition(nfaClosureId, targetSet.Key, closureId);
                     tableDfa.SetFinal(closureId, closure.IsFinal);
+
+                    SharedPools.Default<SortedSet<int>>().ClearAndFree(targetSet.Value);
                 }
+
+                SharedPools
+                       .Default<Dictionary<char, SortedSet<int>>>()
+                       .ClearAndFree(transitions);
             }
+
+            queuePool.Free(queue);
             return tableDfa;
         }
 

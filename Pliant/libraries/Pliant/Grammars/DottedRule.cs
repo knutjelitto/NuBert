@@ -1,97 +1,120 @@
-﻿using System;
+﻿using Pliant.Utilities;
 using System.Text;
+using System;
 using Pliant.Diagnostics;
 
 namespace Pliant.Grammars
 {
-    public class DottedRule //: IComparable<DottedRule> //, IDottedRule
+    public class DottedRule : IComparable<DottedRule>, IDottedRule
     {
-        public DottedRule(Production production, int dot)
+        private readonly int _hashCode;
+        
+        public IProduction Production { get; private set; }
+
+        public int Position { get; private set; }
+
+        public ISymbol PreDotSymbol { get; private set; }
+
+        public ISymbol PostDotSymbol { get; private set; }
+
+        public bool IsComplete { get; private set; }
+
+        public DottedRule(IProduction production, int position)
         {
             Assert.IsNotNull(production, nameof(production));
-            Assert.IsGreaterThanEqualToZero(dot, nameof(dot));
+            Assert.IsGreaterThanEqualToZero(position, nameof(position));
 
             Production = production;
-            Dot = dot;
-            PostDotSymbol = GetPostDotSymbol(production, dot);
-            PreDotSymbol = GetPreDotSymbol(production, dot);
-            IsComplete = IsCompleted(production, dot);
+            Position = position;
+            this._hashCode = ComputeHashCode(Production, Position);
+            PostDotSymbol = GetPostDotSymbol(position, production);
+            PreDotSymbol = GetPreDotSymbol(position, production);
+            IsComplete = IsCompleted(position, production);
         }
-
-        public bool IsComplete { get; }
-
-        public int Dot { get; }
-
-        public Symbol PostDotSymbol { get; }
-
-        public Symbol PreDotSymbol { get; }
-
-        public Production Production { get; }
-
-#if false
-        public int CompareTo(DottedRule other)
+        
+        private static int ComputeHashCode(IProduction production, int position)
         {
-            return GetHashCode().CompareTo(other.GetHashCode());
-        }
-#endif
-
-        public override bool Equals(object obj)
-        {
-            return obj is DottedRule other && 
-                   other.Production.Equals(Production) && 
-                   other.Dot.Equals(Dot);
+            return HashCode.Compute(production.GetHashCode(), position.GetHashCode());
         }
 
         public override int GetHashCode()
         {
-            return (Production, Dot).GetHashCode();
+            return this._hashCode;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            var preComputedState = obj as DottedRule;
+            if (preComputedState == null)
+            {
+                return false;
+            }
+
+            return preComputedState.Production.Equals(Production)
+                && preComputedState.Position == Position;
         }
 
         public override string ToString()
         {
             var stringBuilder = new StringBuilder()
                 .AppendFormat("{0} ->", Production.LeftHandSide.Value);
-            const string dot = "\u25CF";
+            const string Dot = "\u25CF";
 
             for (var p = 0; p < Production.RightHandSide.Count; p++)
             {
                 stringBuilder.AppendFormat(
                     "{0}{1}",
-                    p == Dot ? dot : " ",
+                    p == Position ? Dot : " ",
                     Production.RightHandSide[p]);
             }
 
-            if (Dot == Production.RightHandSide.Count)
+            if (Position == Production.RightHandSide.Count)
             {
                 stringBuilder.Append(Dot);
             }
 
             return stringBuilder.ToString();
         }
-
-        private static Symbol GetPostDotSymbol(Production production, int dot)
+        
+        private static bool IsCompleted(int position, IProduction production)
         {
-            if (dot >= production.RightHandSide.Count)
+            return position == production.RightHandSide.Count;
+        }
+
+        public int CompareTo(DottedRule other)
+        {
+            return GetHashCode().CompareTo(other.GetHashCode());
+        }
+
+        public int CompareTo(IDottedRule other)
+        {
+            return GetHashCode().CompareTo(other.GetHashCode());
+        }
+
+        private static ISymbol GetPreDotSymbol(int position, IProduction production)
+        {
+            if (position == 0 || production.IsEmpty)
             {
                 return null;
             }
 
-            return production.RightHandSide[dot];
+            return production.RightHandSide[position - 1];
         }
-
-        private static Symbol GetPreDotSymbol(Production production, int dot)
+        
+        private static ISymbol GetPostDotSymbol(int position, IProduction production)
         {
-            if (dot == 0 || production.IsEmpty)
+            var productionRighHandSide = production.RightHandSide;
+            if (position >= productionRighHandSide.Count)
             {
                 return null;
             }
 
-            return production.RightHandSide[dot - 1];
-        }
-
-        private static bool IsCompleted(Production production, int dot)
-        {
-            return dot == production.RightHandSide.Count;
-        }
+            return productionRighHandSide[position];
+        }        
     }
 }

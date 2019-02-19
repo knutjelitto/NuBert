@@ -4,9 +4,9 @@ using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public abstract class State
+    public abstract class State //: IState
     {
-        protected State(DottedRule dottedRule, int origin)
+        protected State(IDottedRule dottedRule, int origin)
         {
             Assert.IsNotNull(dottedRule, nameof(dottedRule));
             Assert.IsGreaterThanEqualToZero(origin, nameof(origin));
@@ -14,7 +14,7 @@ namespace Pliant.Charts
             Origin = origin;
         }
 
-        public DottedRule DottedRule { get; }
+        public IDottedRule DottedRule { get; }
 
         public int Origin { get; }
 

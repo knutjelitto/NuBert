@@ -10,6 +10,7 @@ namespace Pliant.Runtime
     public class ParseRunner : IParseRunner
     {
         private readonly TextReader _reader;
+        private readonly ILexemeFactoryRegistry _lexemeFactoryRegistry;
         private readonly List<ILexeme> _tokenLexemes;
         private readonly List<ILexeme> _ignoreLexemes;
         private List<ILexeme> _previousTokenLexemes;
@@ -22,7 +23,7 @@ namespace Pliant.Runtime
 
         public int Column { get; private set; }
 
-        public IParseEngine ParseEngine { get; }
+        public IParseEngine ParseEngine { get; private set; }
 
         public ParseRunner(IParseEngine parseEngine, string input)
             : this(parseEngine, new StringReader(input))
@@ -37,6 +38,8 @@ namespace Pliant.Runtime
             this._ignoreLexemes = new List<ILexeme>();
             this._triviaLexemes = new List<ILexeme>();
             this._triviaAccumulator = new List<ILexeme>();
+            this._lexemeFactoryRegistry = new LexemeFactoryRegistry();
+            RegisterDefaultLexemeFactories(this._lexemeFactoryRegistry);
             Position = 0;
         }
 
@@ -280,6 +283,7 @@ namespace Pliant.Runtime
             i = this._tokenLexemes.Count - 1;
             while (i >= size)
             {
+                FreeLexeme(this._tokenLexemes[i]);
                 this._tokenLexemes.RemoveAt(i);
                 i--;
             }
@@ -325,7 +329,7 @@ namespace Pliant.Runtime
 
         private void ClearExistingIgnoreLexemes()
         {
-            this._ignoreLexemes.Clear();
+            ClearLexemes(this._ignoreLexemes);
         }
 
         private bool MatchesNewIgnoreLexemes(char character)
@@ -344,10 +348,12 @@ namespace Pliant.Runtime
                     continue;
                 }
 
-                var lexeme = lexerRule.CreateLexeme(Position);
+                var factory = this._lexemeFactoryRegistry.Get(lexerRule.LexerRuleType);
+                var lexeme = factory.Create(lexerRule, Position);
 
                 if (!lexeme.Scan(character))
                 {
+                    FreeLexeme(lexeme);
                     continue;
                 }
 
@@ -401,6 +407,7 @@ namespace Pliant.Runtime
             i = lexemes.Count - 1;
             while (i >= size)
             {
+                FreeLexeme(lexemes[i]);
                 lexemes.RemoveAt(i);
                 i--;
             }
@@ -445,15 +452,41 @@ namespace Pliant.Runtime
             i = lexemes.Count - 1;
             while (i >= size)
             {
+                FreeLexeme(lexemes[i]);
                 lexemes.RemoveAt(i);
                 i--;
             }
             return true;
         }
 
+        private void ClearLexemes(List<ILexeme> lexemes)
+        {
+            for (var i = 0; i < lexemes.Count; i++)
+            {
+                FreeLexeme(lexemes[i]);
+            }
+
+            lexemes.Clear();
+        }
+
+        private void FreeLexeme(ILexeme lexeme)
+        {
+            var lexemeFactory = this._lexemeFactoryRegistry.Get(lexeme.LexerRule.LexerRuleType);
+            lexemeFactory.Free(lexeme);
+        }
+
         private bool AnyExistingTokenLexemes()
         {
             return this._tokenLexemes.Count > 0;
         }
+
+        private static void RegisterDefaultLexemeFactories(ILexemeFactoryRegistry lexemeFactoryRegistry)
+        {
+            lexemeFactoryRegistry.Register(new TerminalLexemeFactory());
+            lexemeFactoryRegistry.Register(new ParseEngineLexemeFactory());
+            lexemeFactoryRegistry.Register(new StringLiteralLexemeFactory());
+            lexemeFactoryRegistry.Register(new DfaLexemeFactory());
+        }
+
     }
 }

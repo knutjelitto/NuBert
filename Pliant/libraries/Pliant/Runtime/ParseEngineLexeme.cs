@@ -25,12 +25,12 @@ namespace Pliant.Runtime
         {
             // get expected lexems
             // PERF: Avoid Linq where, let and select expressions due to lambda allocation
-            var expectedLexemes = new List<TerminalLexeme>();
+            var expectedLexemes = SharedPools.Default<List<TerminalLexeme>>().AllocateAndClear();
             var expectedLexerRules = this._parseEngine.GetExpectedLexerRules();
 
             foreach (var rule in expectedLexerRules)
             {
-                if (rule.LexerRuleType.Equals(TerminalLexerRule.TerminalLexerRuleType))
+                if (rule.LexerRuleType == TerminalLexerRule.TerminalLexerRuleType)
                 {
                     expectedLexemes.Add(new TerminalLexeme(rule as TerminalLexerRule, Position));
                 }
@@ -47,6 +47,9 @@ namespace Pliant.Runtime
                     break;
                 }
             }
+
+            SharedPools.Default<List<TerminalLexeme>>()
+                .ClearAndFree(expectedLexemes);
 
             if (firstPassingRule == null)
             {

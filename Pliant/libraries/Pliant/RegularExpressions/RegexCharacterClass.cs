@@ -11,6 +11,8 @@ namespace Pliant.RegularExpressions
 
         public RegexCharacterUnitRange CharacterRange { get; }
 
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClass;
+
         public override int GetHashCode()
         {
             return CharacterRange.GetHashCode();
@@ -39,6 +41,8 @@ namespace Pliant.RegularExpressions
         }
 
         public RegexCharacterClass CharacterClass { get; }
+
+        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClassAlteration;
 
         public override int GetHashCode()
         {

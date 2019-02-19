@@ -6,7 +6,7 @@ namespace Pliant.Tests.Common.Forest
 {
     public class FakeIntermediateForestNode : FakeInternalForestNode, IIntermediateForestNode
     {
-        public FakeIntermediateForestNode(DottedRule dottedRule, int origin, int location, params IAndForestNode[] children) 
+        public FakeIntermediateForestNode(IDottedRule dottedRule, int origin, int location, params IAndForestNode[] children) 
             : base(origin, location, children)
         {
             DottedRule = dottedRule;
@@ -17,6 +17,6 @@ namespace Pliant.Tests.Common.Forest
             get { return ForestNodeType.Intermediate; }
         }
 
-        public DottedRule DottedRule { get; private set; }
+        public IDottedRule DottedRule { get; private set; }
     }
 }

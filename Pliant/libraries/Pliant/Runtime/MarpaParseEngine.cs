@@ -166,7 +166,7 @@ namespace Pliant.Runtime
             return fromAH.NullTransition;
         }
 
-        private static DottedRuleSet Goto(DottedRuleSet fromAH, Symbol symbol)
+        private static DottedRuleSet Goto(DottedRuleSet fromAH, ISymbol symbol)
         {
             return fromAH.Reductions.GetOrReturnNull(symbol);
         }
@@ -211,12 +211,12 @@ namespace Pliant.Runtime
             return false;
         }
 
-        private bool AnyPreComputedStateAccepted(IReadOnlyList<DottedRule> states)
+        private bool AnyPreComputedStateAccepted(IReadOnlyList<IDottedRule> states)
         {
             for (var j = 0; j < states.Count; j++)
             {
                 var preComputedState = states[j];
-                var isCompleted = preComputedState.Dot == preComputedState.Production.RightHandSide.Count;
+                var isCompleted = preComputedState.Position == preComputedState.Production.RightHandSide.Count;
                 if (!preComputedState.IsComplete)
                 {
                     continue;
@@ -235,7 +235,7 @@ namespace Pliant.Runtime
 
         private CachedDottedRuleSetTransition CreateTopCachedItem(
             DeterministicState stateFrame,
-            Symbol postDotSymbol)
+            ISymbol postDotSymbol)
         {
             var origin = stateFrame.Origin;
             CachedDottedRuleSetTransition topCacheItem = null;
@@ -264,7 +264,7 @@ namespace Pliant.Runtime
                 topCacheItem == null ? stateFrame.Origin : origin);
         }
 
-        private void EarleyReductionOperation(int iLoc, DeterministicState fromEim, Symbol transSym)
+        private void EarleyReductionOperation(int iLoc, DeterministicState fromEim, ISymbol transSym)
         {
             var fromAH = fromEim.DottedRuleSet;
             var originLoc = fromEim.Origin;
@@ -285,7 +285,7 @@ namespace Pliant.Runtime
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool IsStartState(DottedRule state)
+        private bool IsStartState(IDottedRule state)
         {
             var start = this._preComputedGrammar.Grammar.Start;
             return state.Production.LeftHandSide.Equals(start);
@@ -311,8 +311,10 @@ namespace Pliant.Runtime
             var frameSet = Chart.Sets[iLoc];
             // leo eligibility needs to be cached before creating the cached transition
             // if the size of the list is != 1, do not enter the cached frame transition
-            var cachedTransitions = new Dictionary<Symbol, CachedDottedRuleSetTransition>();
-            var cachedCount = new Dictionary<Symbol, int>();
+            var cachedTransitionsPool = SharedPools.Default<Dictionary<ISymbol, CachedDottedRuleSetTransition>>();
+            var cachedTransitions = cachedTransitionsPool.AllocateAndClear();
+            var cachedCountPool = SharedPools.Default<Dictionary<ISymbol, int>>();
+            var cachedCount = cachedCountPool.AllocateAndClear();
 
             for (var i = 0; i < frameSet.States.Count; i++)
             {
@@ -364,6 +366,9 @@ namespace Pliant.Runtime
 
                 frameSet.AddCachedTransition(cachedTransitions[symbol]);
             }
+
+            cachedTransitionsPool.ClearAndFree(cachedTransitions);
+            cachedCountPool.ClearAndFree(cachedCount);
         }
 
         private void ReduceOneLeftHandSide(int iLoc, int origLoc, NonTerminal lhsSym)
@@ -387,7 +392,7 @@ namespace Pliant.Runtime
         private void ReductionPass(int iLoc)
         {
             var iES = Chart.Sets[iLoc];
-            var processed = new  HashSet<Symbol>();
+            var processed = SharedPools.Default<HashSet<ISymbol>>().AllocateAndClear();
             for (var i = 0; i < iES.States.Count; i++)
             {
                 var workEIM = iES.States[i];
@@ -414,6 +419,7 @@ namespace Pliant.Runtime
                 processed.Clear();
             }
 
+            SharedPools.Default<HashSet<ISymbol>>().ClearAndFree(processed);
             MemoizeTransitions(iLoc);
         }
 
