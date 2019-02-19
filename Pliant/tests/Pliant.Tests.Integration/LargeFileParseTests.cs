@@ -21,17 +21,17 @@ namespace Pliant.Tests.Integration.Runtime
 #pragma warning restore RECS0154 // Parameter is never used
 #pragma warning restore CC0057 // Unused parameters
         {
-            _grammar = new JsonGrammar();
+            grammar = new JsonGrammar();
         }
 
         [TestInitialize]
         public void InitializeTest()
         {
-            this._parseTester = new ParseTester(_grammar);
-            var preComputedGrammar = new PreComputedGrammar(_grammar);
-            this._compressedParseTester = new ParseTester(
+            this.parseTester = new ParseTester(grammar);
+            var preComputedGrammar = new PreComputedGrammar(grammar);
+            this.compressedParseTester = new ParseTester(
                 new DeterministicParseEngine(preComputedGrammar));
-            this._marpaParseTester = new ParseTester(
+            this.marpaParseTester = new ParseTester(
                 new MarpaParseEngine(preComputedGrammar));
         }
 
@@ -39,14 +39,14 @@ namespace Pliant.Tests.Integration.Runtime
         public void TestCanParseJsonArray()
         {
             var json = @"[""one"", ""two""]";
-            this._parseTester.RunParse(json);
+            this.parseTester.RunParse(json);
         }
 
         [TestMethod]
         public void TestCanParseJsonArrayWithCompression()
         {
             var json = @"[""one"", ""two""]";
-            this._compressedParseTester.RunParse(json);
+            this.compressedParseTester.RunParse(json);
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace Pliant.Tests.Integration.Runtime
                 ""lastName"": ""Huber"",
                 ""id"": 12345
             }";
-            this._parseTester.RunParse(json);
+            this.parseTester.RunParse(json);
         }
 
         [TestMethod]
@@ -70,7 +70,7 @@ namespace Pliant.Tests.Integration.Runtime
                 ""lastName"": ""Huber"",
                 ""id"": 12345
             }";
-            this._compressedParseTester.RunParse(json);
+            this.compressedParseTester.RunParse(json);
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace Pliant.Tests.Integration.Runtime
             using (var stream = File.OpenRead(path))
             using (var reader = new StreamReader(stream))
             {
-                this._parseTester.RunParse(reader);
+                this.parseTester.RunParse(reader);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Pliant.Tests.Integration.Runtime
             using (var stream = File.OpenRead(path))
             using (var reader = new StreamReader(stream))
             {
-                this._compressedParseTester.RunParse(reader);
+                this.compressedParseTester.RunParse(reader);
             }
         }
 
@@ -101,21 +101,21 @@ namespace Pliant.Tests.Integration.Runtime
         [DeploymentItem(@"10000.json")]
         public void TestCanParseLargeJsonFileWithCustomLexer()
         {
-            var parser = this._parseTester.ParseEngine;
+            var parser = this.parseTester.ParseEngine;
             RunParseWithCustomLexer(parser);
         }
 
         [TestMethod]
         public void TestCanParseLargeJsonFileWithCustomLexerAndCompression()
         {
-            var parser = this._compressedParseTester.ParseEngine;
+            var parser = this.compressedParseTester.ParseEngine;
             RunParseWithCustomLexer(parser);
         }
 
         [TestMethod]
         public void TestCanParseLargeJsonFileWithCustomLexerAndMarpa()
         {
-            var parser = this._marpaParseTester.ParseEngine;
+            var parser = this.marpaParseTester.ParseEngine;
             RunParseWithCustomLexer(parser);
         }
 
@@ -127,7 +127,7 @@ namespace Pliant.Tests.Integration.Runtime
             using (var stream = File.OpenRead(path))
             using (var reader = new StreamReader(stream))
             {
-                this._marpaParseTester.RunParse(reader);
+                this.marpaParseTester.RunParse(reader);
             }
         }
 
@@ -175,8 +175,8 @@ namespace Pliant.Tests.Integration.Runtime
 
         private static LexerRule Whitespace()
         {
-            var start = new DfaState();
-            var end = new DfaState(true);
+            var start = DfaState.Inner();
+            var end = DfaState.Final();
             var transition = new DfaTransition(
                 new WhitespaceTerminal(),
                 end);
@@ -185,10 +185,11 @@ namespace Pliant.Tests.Integration.Runtime
             return new DfaLexerRule(start, "\\w+");
         }
 
-        private static IGrammar _grammar;
-        private ParseTester _compressedParseTester;
-        private ParseTester _marpaParseTester;
+        private ParseTester compressedParseTester;
+        private ParseTester marpaParseTester;
 
-        private ParseTester _parseTester;
+        private ParseTester parseTester;
+
+        private static IGrammar grammar;
     }
 }

@@ -16,19 +16,17 @@
         public RegexExpression Expression { get; }
         public bool EndsWith { get; }
 
-        public override RegexNodeType NodeType => RegexNodeType.Regex;
-
         public override bool Equals(object obj)
         {
             return obj is Regex other &&
-                   other.StartsWith == StartsWith &&
-                   other.EndsWith == EndsWith && 
-                   other.Expression.Equals(Expression);
+                   StartsWith.Equals(other.StartsWith) &&
+                   Expression.Equals(other.Expression) &&
+                   EndsWith.Equals(other.EndsWith);
         }
 
         public override int GetHashCode()
         {
-            return (StartsWith, EndsWith, Expression).GetHashCode();
+            return (StartsWith, Expression, EndsWith).GetHashCode();
         }
 
         public override string ToString()

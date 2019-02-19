@@ -102,7 +102,7 @@ namespace Pliant.Automata
                 Set = closure;
                 this._hashCode = HashCode.Compute(closure);
                 Closure = closure.ToArray();
-                State = new DfaState(isFinal);
+                State = isFinal ? DfaState.Final() : DfaState.Inner();
             }
 
             public NfaState[] Closure { get; }

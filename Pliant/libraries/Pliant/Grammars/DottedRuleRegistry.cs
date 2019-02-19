@@ -14,6 +14,20 @@ namespace Pliant.Grammars
                 new HashCodeEqualityComparer<Production>());
         }
 
+        public void Seed(IGrammar grammar)
+        {
+            var ruleId = 0;
+
+            foreach (var production in grammar.Productions)
+            {
+                for (var dot = 0; dot <= production.RightHandSide.Count; dot++)
+                {
+                    var dottedRule = new DottedRule(ruleId++, production, dot);
+                    Register(dottedRule);
+                }
+            }
+        }
+
         public void Register(DottedRule dottedRule)
         {
             var positionIndex = this._dottedRuleIndex.AddOrGetExisting(dottedRule.Production);

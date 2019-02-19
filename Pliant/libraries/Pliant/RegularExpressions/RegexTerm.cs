@@ -16,8 +16,6 @@ namespace Pliant.RegularExpressions
 
         public RegexFactor Factor { get; }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexTerm;
-
         public override bool Equals(object obj)
         {
             return obj is RegexTermFactor other && other.Factor.Equals(Factor);
@@ -50,7 +48,6 @@ namespace Pliant.RegularExpressions
             this._hashCode = ComputeHashCode();
         }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexTermFactor;
         public RegexFactor Factor { get; }
         public RegexTerm Term { get; }
 

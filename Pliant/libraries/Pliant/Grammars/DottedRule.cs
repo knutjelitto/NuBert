@@ -1,14 +1,16 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Pliant.Diagnostics;
 using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class DottedRule : IComparable<DottedRule>
+    public sealed class DottedRule
     {
-        public DottedRule(Production production, int position)
+        public int Id { get; }
+
+        public DottedRule(int id, Production production, int position)
         {
+            Id = id;
             Assert.IsNotNull(production, nameof(production));
             Assert.IsGreaterThanEqualToZero(position, nameof(position));
 
@@ -18,7 +20,8 @@ namespace Pliant.Grammars
             PreDotSymbol = GetPreDotSymbol(production, position);
             IsComplete = IsCompleted(position, production);
 
-            this._hashCode = ComputeHashCode(Production, Position);
+            //this._hashCode = ComputeHashCode(Production, Position);
+            this._hashCode = Id.GetHashCode();
         }
 
         public bool IsComplete { get; }
@@ -31,38 +34,33 @@ namespace Pliant.Grammars
 
         public Production Production { get; }
 
-        public int CompareTo(DottedRule other)
-        {
-            return GetHashCode().CompareTo(other.GetHashCode());
-        }
-
         public override bool Equals(object obj)
         {
-            return obj is DottedRule other && other.Production.Equals(Production) && other.Position == Position;
+            return obj is DottedRule other && Id.Equals(other.Id);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return Id;
         }
 
         public override string ToString()
         {
             var stringBuilder = new StringBuilder()
                 .AppendFormat("{0} ->", Production.LeftHandSide.Value);
-            const string Dot = "\u25CF";
+            const string dot = "\u25CF";
 
             for (var p = 0; p < Production.RightHandSide.Count; p++)
             {
                 stringBuilder.AppendFormat(
                     "{0}{1}",
-                    p == Position ? Dot : " ",
+                    p == Position ? dot : " ",
                     Production.RightHandSide[p]);
             }
 
             if (Position == Production.RightHandSide.Count)
             {
-                stringBuilder.Append(Dot);
+                stringBuilder.Append(dot);
             }
 
             return stringBuilder.ToString();
@@ -75,13 +73,13 @@ namespace Pliant.Grammars
 
         private static Symbol GetPostDotSymbol(Production production, int position)
         {
-            var productionRighHandSide = production.RightHandSide;
-            if (position >= productionRighHandSide.Count)
+            var productionRightHandSide = production.RightHandSide;
+            if (position >= productionRightHandSide.Count)
             {
                 return null;
             }
 
-            return productionRighHandSide[position];
+            return productionRightHandSide[position];
         }
 
         private static Symbol GetPreDotSymbol(Production production, int position)

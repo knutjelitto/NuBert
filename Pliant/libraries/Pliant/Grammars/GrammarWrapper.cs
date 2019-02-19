@@ -43,9 +43,9 @@ namespace Pliant.Grammars
             return this._innerGrammar.IsNullable(nonTerminal);
         }
 
-        public bool IsTransativeNullable(NonTerminal nonTerminal)
+        public bool IsTransitiveNullable(NonTerminal nonTerminal)
         {
-            return this._innerGrammar.IsTransativeNullable(nonTerminal);
+            return this._innerGrammar.IsTransitiveNullable(nonTerminal);
         }
 
         public IReadOnlyList<Production> RulesContainingSymbol(NonTerminal nonTerminal)

@@ -12,8 +12,6 @@
 
         public bool IsEscaped { get; }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClassCharacter;
-
         public override int GetHashCode()
         {
             return Value.GetHashCode();

@@ -71,8 +71,8 @@ namespace Pliant.Bnf
 
         private static LexerRule CreateNotSingleQuoteLexerRule()
         {
-            var start = new DfaState();
-            var final = new DfaState(true);
+            var start = DfaState.Inner();
+            var final = DfaState.Final();
             var terminal = new NegationTerminal(new CharacterTerminal('\''));
             var edge = new DfaTransition(terminal, final);
             start.AddTransition(edge);
@@ -83,9 +83,9 @@ namespace Pliant.Bnf
         private static LexerRule CreateNotDoubleQuoteLexerRule()
         {
             // ( [^"\\] | (\\ .) ) +
-            var start = new DfaState();
-            var escape = new DfaState();
-            var final = new DfaState(true);
+            var start = DfaState.Inner();
+            var escape = DfaState.Inner();
+            var final = DfaState.Final();
 
             var notQuoteTerminal = new NegationTerminal(
                 new SetTerminal('"', '\\'));
@@ -118,8 +118,8 @@ namespace Pliant.Bnf
 
         private static LexerRule CreateRuleNameLexerRule()
         {
-            var ruleNameState = new DfaState();
-            var zeroOrMoreLetterOrDigit = new DfaState(true);
+            var ruleNameState = DfaState.Inner();
+            var zeroOrMoreLetterOrDigit = DfaState.Final();
             ruleNameState.AddTransition(
                 new DfaTransition(
                     new CharacterClassTerminal(
@@ -141,8 +141,8 @@ namespace Pliant.Bnf
         private static LexerRule CreateWhitespaceLexerRule()
         {
             var whitespaceTerminal = new WhitespaceTerminal();
-            var startState = new DfaState();
-            var finalState = new DfaState(true);
+            var startState = DfaState.Inner();
+            var finalState = DfaState.Final();
             var whitespaceTransition = new DfaTransition(whitespaceTerminal, finalState);
             startState.AddTransition(whitespaceTransition);
             finalState.AddTransition(whitespaceTransition);

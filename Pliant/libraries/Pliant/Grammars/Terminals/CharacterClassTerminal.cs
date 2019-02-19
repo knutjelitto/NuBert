@@ -15,9 +15,9 @@ namespace Pliant.Grammars
         private static IReadOnlyList<Interval> CreateIntervals(IReadOnlyList<Terminal> terminals)
         {
             var intervalList = new List<Interval>();
-            for (var i = 0; i < terminals.Count; i++)
+            foreach (var terminal in terminals)
             {
-                var intervals = terminals[i].GetIntervals();
+                var intervals = terminal.GetIntervals();
                 intervalList.AddRange(intervals);
             }
             return Interval.Group(intervalList);
@@ -26,25 +26,20 @@ namespace Pliant.Grammars
         public override bool IsMatch(char character)
         {
             // PERF: Avoid LINQ Any due to Lambda allocation
-            for (var t = 0; t < this._terminals.Count; t++)
+            foreach (var terminal in this._terminals)
             {
-                var terminal = this._terminals[t];
                 if (terminal.IsMatch(character))
                 {
                     return true;
                 }
             }
+
             return false;
         }
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            if(this._intervals == null)
-            {
-                this._intervals = CreateIntervals(this._terminals);
-            }
-
-            return this._intervals;
+            return this._intervals ?? (this._intervals = CreateIntervals(this._terminals));
         }
     }
 }

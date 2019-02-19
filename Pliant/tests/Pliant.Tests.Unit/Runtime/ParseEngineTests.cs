@@ -529,8 +529,8 @@ namespace Pliant.Tests.Unit.Runtime
 
             var chart = GetChartFromParseEngine(recognizer);
             // -- 0 --
-            // A ->.a A		    (0)	 # Start
-            // A ->.			(0)	 # Start
+            // A ->.a A		    (0)	 # StartState
+            // A ->.			(0)	 # StartState
             //
             // ...
             // -- n --

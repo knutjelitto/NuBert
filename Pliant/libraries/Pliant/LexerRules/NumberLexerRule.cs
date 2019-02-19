@@ -6,17 +6,16 @@ namespace Pliant.LexerRules
 {
     public class NumberLexerRule : DfaLexerRule
     {
-        private const string _pattern = @"[-+]?[0-9]*[.]?[0-9]+";
-        private static readonly DfaState _start;
-        private static readonly TokenType _staticTokenType = new TokenType(_pattern);
-
         static NumberLexerRule()
         {
-            var states = new DfaState[5];
-            for (var i = 0; i < states.Length; i++)
+            var states = new DfaState[5]
             {
-                states[i] = new DfaState(i==4 || i== 2);
-            }
+                DfaState.Inner(),
+                DfaState.Inner(),
+                DfaState.Final(),
+                DfaState.Inner(),
+                DfaState.Final(),
+            };
 
             var zeroThroughNine = new RangeTerminal('0', '9');
 
@@ -39,12 +38,16 @@ namespace Pliant.LexerRules
 
             states[4].AddTransition(zeroThroughNineTo4);
 
-            _start = states[0];
+            Start = states[0];
         }
 
         public NumberLexerRule()
-            : base(_start, _staticTokenType)
+            : base(Start, StaticTokenType)
         {
         }
+
+        private const string _pattern = @"[-+]?[0-9]*[.]?[0-9]+";
+        private static readonly DfaState Start;
+        private static readonly TokenType StaticTokenType = new TokenType(_pattern);
     }
 }

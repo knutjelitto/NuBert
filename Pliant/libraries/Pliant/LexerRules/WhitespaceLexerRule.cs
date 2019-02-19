@@ -11,8 +11,8 @@ namespace Pliant.LexerRules
 
         static WhitespaceLexerRule()
         {
-            _start = new DfaState();
-            var end = new DfaState(true);
+            _start = DfaState.Inner();
+            var end = DfaState.Final();
             var transition = new DfaTransition(new WhitespaceTerminal(), end);
             _start.AddTransition(transition);
             end.AddTransition(transition);

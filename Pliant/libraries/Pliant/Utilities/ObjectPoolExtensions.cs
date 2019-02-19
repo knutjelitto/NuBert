@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Pliant.Collections;
+using Pliant.Grammars;
 
 namespace Pliant.Utilities
 {
@@ -36,6 +37,13 @@ namespace Pliant.Utilities
         }
 
         internal static SortedSet<TValue> AllocateAndClear<TValue>(this ObjectPool<SortedSet<TValue>> pool)
+        {
+            var hashSet = pool.Allocate();
+            hashSet.Clear();
+            return hashSet;
+        }
+
+        internal static DottedRuleSet AllocateAndClear(this ObjectPool<DottedRuleSet> pool)
         {
             var hashSet = pool.Allocate();
             hashSet.Clear();
@@ -82,6 +90,12 @@ namespace Pliant.Utilities
         }
 
         internal static void ClearAndFree<TValue>(this ObjectPool<SortedSet<TValue>> pool, SortedSet<TValue> hashSet)
+        {
+            hashSet.Clear();
+            pool.Free(hashSet);
+        }
+
+        internal static void ClearAndFree(this ObjectPool<DottedRuleSet> pool, DottedRuleSet hashSet)
         {
             hashSet.Clear();
             pool.Free(hashSet);

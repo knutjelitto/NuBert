@@ -10,7 +10,7 @@ namespace Pliant.Automata
             : base(dfaLexerRule, position)
         {
             this._stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
-            this._currentState = dfaLexerRule.Start;
+            this._currentState = dfaLexerRule.StartState;
         }
 
         public override string Value
@@ -39,7 +39,7 @@ namespace Pliant.Automata
                 this._stringBuilder.Clear();
             }
 
-            this._currentState = ConcreteLexerRule.Start;
+            this._currentState = ConcreteLexerRule.StartState;
         }
 
         public override bool Scan(char c)

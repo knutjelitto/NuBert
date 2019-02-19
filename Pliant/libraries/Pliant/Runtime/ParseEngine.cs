@@ -20,7 +20,8 @@ namespace Pliant.Runtime
 
         public ParseEngine(IGrammar grammar, ParseEngineOptions options)
         {
-            this._dottedRuleRegistry = new GrammarSeededDottedRuleRegistry(grammar);
+            //this._dottedRuleRegistry = new DottedRuleRegistry().Seed(grammar);
+            this._dottedRuleRegistry = grammar.DottedRules;
             StateFactory = new StateFactory(this._dottedRuleRegistry);
             Options = options;
             this._nodeSet = new ForestNodeSet();
@@ -406,8 +407,8 @@ namespace Pliant.Runtime
                 //  the grammar with a new start symbol S'.
                 //  this means adding the rule S'=>S as the start."
                 //
-                // to fix this, check if S can derive S. Basically if we are in the Start state
-                // and the Start state is found and is nullable, exit with false
+                // to fix this, check if S can derive S. Basically if we are in the StartState state
+                // and the StartState state is found and is nullable, exit with false
                 if (state.DottedRule.Production.LeftHandSide == Grammar.Start &&
                     nextSymbol == Grammar.Start)
                 {
@@ -442,7 +443,7 @@ namespace Pliant.Runtime
 
             if (symbol is NonTerminal nonTerminal)
             {
-                return Grammar.IsTransativeNullable(nonTerminal);
+                return Grammar.IsTransitiveNullable(nonTerminal);
             }
 
             return false;
@@ -598,7 +599,7 @@ namespace Pliant.Runtime
                 PredictProduction(j, production);
             }
 
-            var isNullable = Grammar.IsTransativeNullable(nonTerminal);
+            var isNullable = Grammar.IsTransitiveNullable(nonTerminal);
             if (isNullable)
             {
                 PredictAycockHorspool(evidence, j);
@@ -744,7 +745,7 @@ namespace Pliant.Runtime
         private readonly ForestNodeSet _nodeSet;
 
         private const string PredictionLogName = "Predict";
-        private const string StartLogName = "Start";
+        private const string StartLogName = "StartState";
         private const string CompleteLogName = "Complete";
         private const string TransitionLogName = "Transition";
     }

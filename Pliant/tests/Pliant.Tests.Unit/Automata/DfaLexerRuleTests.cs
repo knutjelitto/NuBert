@@ -11,9 +11,11 @@ namespace Pliant.Tests.Unit.Automata
         [TestMethod]
         public void DfaLexerRuleShouldApplyToCharacterIfFirstStateHasTransition()
         {
-            var states = new DfaState[2];
-            for (var i = 0; i < states.Length; i++)
-                states[i] = new DfaState(i == states.Length - 1);
+            var states = new DfaState[2]
+            {
+                DfaState.Inner(),
+                DfaState.Final()
+            };
 
             var whitespaceToFinal = new DfaTransition(new WhitespaceTerminal(), states[1]);
             states[0].AddTransition(whitespaceToFinal);

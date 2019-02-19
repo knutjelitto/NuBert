@@ -14,17 +14,17 @@ namespace Pliant.Automata
         public DfaLexerRule(DfaState state, TokenType tokenType)
             : base(DfaLexerRuleType, tokenType)
         {
-            Start = state;
+            StartState = state;
             this._hashCode = ComputeHashCode(DfaLexerRuleType, tokenType);
         }
 
-        public DfaState Start { get; }
+        public DfaState StartState { get; }
 
         public override bool CanApply(char c)
         {
-            for (var i = 0; i < Start.Transitions.Count; i++)
+            for (var i = 0; i < StartState.Transitions.Count; i++)
             {
-                var transition = Start.Transitions[i];
+                var transition = StartState.Transitions[i];
                 if (transition.Terminal.IsMatch(c))
                 {
                     return true;

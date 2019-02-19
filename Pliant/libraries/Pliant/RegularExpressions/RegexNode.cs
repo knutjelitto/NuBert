@@ -2,6 +2,5 @@
 {
     public abstract class RegexNode
     {
-        public abstract RegexNodeType NodeType { get; }
     }
 }

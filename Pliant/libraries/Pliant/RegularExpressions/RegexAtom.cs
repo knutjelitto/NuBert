@@ -2,13 +2,10 @@
 {
     public abstract class RegexAtom : RegexNode
     {
-        public override RegexNodeType NodeType => RegexNodeType.RegexAtom;
     }
 
     public sealed class RegexAtomAny : RegexAtom
     {
-        public override RegexNodeType NodeType => RegexNodeType.RegexAtomAny;
-
         public override string ToString()
         {
             return Dot;
@@ -36,8 +33,6 @@
 
         public RegexCharacter Character { get; }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexAtomCharacter;
-
         public override bool Equals(object obj)
         {
             return obj is RegexAtomCharacter other && 
@@ -64,8 +59,6 @@
 
         public RegexExpression Expression { get; }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexAtomExpression;
-
         public override bool Equals(object obj)
         {
             return obj is RegexAtomExpression other && 
@@ -91,8 +84,6 @@
         }
 
         public RegexSet Set { get; }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexAtomSet;
 
         public override bool Equals(object obj)
         {

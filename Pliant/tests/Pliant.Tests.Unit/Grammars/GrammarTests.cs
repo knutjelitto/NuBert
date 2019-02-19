@@ -48,9 +48,9 @@ namespace Pliant.Tests.Unit
             var expectedNotEmpty = new[] { S, A };
 
             foreach(var productionBuilder in expectedEmpty)
-                Assert.IsTrue(grammar.IsTransativeNullable(productionBuilder.ProductionModel.LeftHandSide.NonTerminal));
+                Assert.IsTrue(grammar.IsTransitiveNullable(productionBuilder.ProductionModel.LeftHandSide.NonTerminal));
             foreach (var productionBuilder in expectedNotEmpty)
-                Assert.IsFalse(grammar.IsTransativeNullable(productionBuilder.ProductionModel.LeftHandSide.NonTerminal));
+                Assert.IsFalse(grammar.IsTransitiveNullable(productionBuilder.ProductionModel.LeftHandSide.NonTerminal));
         }
 
         [TestMethod]

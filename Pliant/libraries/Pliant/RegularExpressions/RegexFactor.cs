@@ -12,12 +12,9 @@ namespace Pliant.RegularExpressions
         public RegexFactorAtom(RegexAtom atom)
         {
             Atom = atom;
-            this._hashCode = ComputeHashCode();
         }
 
         public RegexAtom Atom { get; }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexFactorAtom;
 
         public override bool Equals(object obj)
         {
@@ -26,21 +23,13 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return Atom.GetHashCode();
         }
 
         public override string ToString()
         {
             return Atom.ToString();
         }
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                Atom.GetHashCode());
-        }
-
-        private readonly int _hashCode;
     }
 
     public class RegexFactorIterator : RegexFactor
@@ -54,8 +43,6 @@ namespace Pliant.RegularExpressions
 
         public RegexAtom Atom { get; }
         public RegexIterator Iterator { get; }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexFactorIterator;
 
         public override bool Equals(object obj)
         {

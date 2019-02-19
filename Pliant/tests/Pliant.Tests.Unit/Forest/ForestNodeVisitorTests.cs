@@ -19,8 +19,8 @@ namespace Pliant.Tests.Common.Forest
 
         private static LexerRule CreateWhitespaceRule()
         {
-            var start = new DfaState();
-            var end = new DfaState(true);
+            var start = DfaState.Inner();
+            var end = DfaState.Final();
             var startToEnd = new DfaTransition(new WhitespaceTerminal(), end);
             var endToEnd = new DfaTransition(new WhitespaceTerminal(), end);
             start.AddTransition(startToEnd);

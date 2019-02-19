@@ -2,7 +2,6 @@
 {
     public abstract class RegexExpression : RegexNode
     {
-        public override RegexNodeType NodeType => RegexNodeType.RegexExpression;
     }
 
     public sealed class RegexExpressionTerm : RegexExpression
@@ -14,11 +13,9 @@
 
         public RegexTerm Term { get; }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexExpressionTerm;
-
         public override bool Equals(object obj)
         {
-            return obj is RegexExpressionTerm other && 
+            return obj is RegexExpressionTerm other &&
                    Term.Equals(other.Term);
         }
 
@@ -44,8 +41,6 @@
         public RegexTerm Term { get; }
         public RegexExpression Expression { get; }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexExpressionAlteration;
-
         public override int GetHashCode()
         {
             return (Term, Expression).GetHashCode();
@@ -53,7 +48,7 @@
 
         public override bool Equals(object obj)
         {
-            return obj is RegexExpressionAlteration other && 
+            return obj is RegexExpressionAlteration other &&
                    other.Expression.Equals(Expression);
         }
 

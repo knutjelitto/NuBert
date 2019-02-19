@@ -32,7 +32,7 @@ namespace Pliant.Grammars
             return state.Position == state.Production.RightHandSide.Count;
         }
 
-        private DottedRuleAssortment AddNewOrGetExistingDottedRuleSet(SortedSet<DottedRule> states)
+        private DottedRuleAssortment AddNewOrGetExistingDottedRuleSet(DottedRuleSet states)
         {
             var dottedRuleSet = new DottedRuleAssortment(states);
             if (this._dottedRuleSets.TryGetValue(dottedRuleSet, out var outDottedRuleSet))
@@ -46,12 +46,12 @@ namespace Pliant.Grammars
             return outDottedRuleSet;
         }
 
-        private SortedSet<DottedRule> GetConfirmedStates(SortedSet<DottedRule> states)
+        private DottedRuleSet GetConfirmedStates(SortedSet<DottedRule> states)
         {
             var pool = SharedPools.Default<Queue<DottedRule>>();
 
             var queue = pool.AllocateAndClear();
-            var closure = new SortedSet<DottedRule>();
+            var closure = new DottedRuleSet();
 
             foreach (var state in states)
             {
@@ -75,7 +75,7 @@ namespace Pliant.Grammars
                     var postDotSymbol = production.RightHandSide[s];
                     if (postDotSymbol is NonTerminal nonTerminalPostDotSymbol)
                     {
-                        if (!Grammar.IsTransativeNullable(nonTerminalPostDotSymbol))
+                        if (!Grammar.IsTransitiveNullable(nonTerminalPostDotSymbol))
                         {
                             break;
                         }
@@ -102,12 +102,12 @@ namespace Pliant.Grammars
             return Grammar.DottedRules.Get(production, position);
         }
 
-        private SortedSet<DottedRule> GetPredictedStates(DottedRuleAssortment frame)
+        private DottedRuleSet GetPredictedStates(DottedRuleAssortment frame)
         {
             var pool = SharedPools.Default<Queue<DottedRule>>();
 
             var queue = pool.AllocateAndClear();
-            var closure = new SortedSet<DottedRule>();
+            var closure = new DottedRuleSet();
 
             for (var i = 0; i < frame.Data.Count; i++)
             {
@@ -129,7 +129,7 @@ namespace Pliant.Grammars
                 var postDotSymbol = GetPostDotSymbol(state);
                 if (postDotSymbol is NonTerminal nonTerminalPostDotSymbol)
                 {
-                    if (Grammar.IsTransativeNullable(nonTerminalPostDotSymbol))
+                    if (Grammar.IsTransitiveNullable(nonTerminalPostDotSymbol))
                     {
                         var preComputedState = GetPreComputedState(state.Production, state.Position + 1);
                         if (!frame.Contains(preComputedState))
@@ -171,9 +171,9 @@ namespace Pliant.Grammars
             return closure;
         }
 
-        private SortedSet<DottedRule> Initialize(IGrammar grammar)
+        private DottedRuleSet Initialize(IGrammar grammar)
         {
-            var pool = SharedPools.Default<SortedSet<DottedRule>>();
+            var pool = SharedPools.Default<DottedRuleSet>();
 
             var startStates = pool.AllocateAndClear();
             var startProductions = grammar.StartProductions();
@@ -221,7 +221,7 @@ namespace Pliant.Grammars
 
         private void ProcessSymbolTransitions(DottedRuleAssortment frame)
         {
-            var pool = SharedPools.Default<Dictionary<Symbol, SortedSet<DottedRule>>>();
+            var pool = SharedPools.Default<Dictionary<Symbol, DottedRuleSet>>();
             var transitions = pool.AllocateAndClear();
 
             for (var i = 0; i < frame.Data.Count; i++)
@@ -249,7 +249,7 @@ namespace Pliant.Grammars
             pool.ClearAndFree(transitions);
         }
 
-        private bool TryGetOrCreateDottedRuleSet(SortedSet<DottedRule> states, out DottedRuleAssortment outDottedRuleSet)
+        private bool TryGetOrCreateDottedRuleSet(DottedRuleSet states, out DottedRuleAssortment outDottedRuleSet)
         {
             var dottedRuleSet = new DottedRuleAssortment(states);
             if (this._dottedRuleSets.TryGetValue(dottedRuleSet, out outDottedRuleSet))

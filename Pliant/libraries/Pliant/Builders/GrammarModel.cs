@@ -60,13 +60,13 @@ namespace Pliant.Builders
 
             if (Start == null)
             {
-                throw new Exception("Unable to generate Grammar. The grammar definition is missing a Start production");
+                throw new Exception("Unable to generate Grammar. The grammar definition is missing a StartState production");
             }
 
             if (Start.LeftHandSide == null)
             {
                 throw new Exception(
-                    "Unable to generate Grammar. The grammar definition is missing a Left Hand Symbol to the Start production.");
+                    "Unable to generate Grammar. The grammar definition is missing a Left Hand Symbol to the StartState production.");
             }
 
             return new Grammar(

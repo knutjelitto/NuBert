@@ -4,15 +4,25 @@ namespace Pliant.Automata
 {
     public class DfaState
     {
-        public DfaState()
+        private DfaState()
             : this(false)
         {
         }
 
-        public DfaState(bool isFinal)
+        private DfaState(bool isFinal)
         {
             IsFinal = isFinal;
             this._transitions = new List<DfaTransition>();
+        }
+
+        public static DfaState Inner()
+        {
+            return new DfaState(false);
+        }
+
+        public static DfaState Final()
+        {
+            return new DfaState(true);
         }
 
         public bool IsFinal { get; }

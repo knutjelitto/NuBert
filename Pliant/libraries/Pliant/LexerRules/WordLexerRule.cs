@@ -11,8 +11,8 @@ namespace Pliant.LexerRules
 
         static WordLexerRule()
         {
-            _start = new DfaState();
-            var end = new DfaState(isFinal: true);
+            _start = DfaState.Inner();
+            var end = DfaState.Final();
             var transition = new DfaTransition(
                 new WordTerminal(),
                 end);

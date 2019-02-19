@@ -26,7 +26,7 @@ namespace Pliant.Grammars
 
         bool IsNullable(NonTerminal nonTerminal);
 
-        bool IsTransativeNullable(NonTerminal nonTerminal);
+        bool IsTransitiveNullable(NonTerminal nonTerminal);
 
         bool IsRightRecursive(Symbol symbol);
     }

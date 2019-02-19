@@ -4,37 +4,22 @@ namespace Pliant.RegularExpressions
 {
     public class RegexSet : RegexNode
     {
-        public bool Negate { get; private set; }
-
-        public RegexCharacterClass CharacterClass { get; private set; }
-
-        public override RegexNodeType NodeType => RegexNodeType.RegexSet;
-
         public RegexSet(bool negate, RegexCharacterClass characterClass)
         {
             Negate = negate;
             CharacterClass = characterClass;
-            this._hashCode = ComputeHashCode();
+            this.hashCode = ComputeHashCode();
         }
+
+        public bool Negate { get; }
+        public RegexCharacterClass CharacterClass { get; }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var set = obj as RegexSet;
-            if (set == null)
-            {
-                return false;
-            }
-
-            return CharacterClass.Equals(set.CharacterClass)
-                && Negate.Equals(set.Negate);
+            return obj is RegexSet other &&
+                   Negate.Equals(other.Negate) &&
+                   CharacterClass.Equals(other.CharacterClass);
         }
-        
-        private readonly int _hashCode ;
 
         int ComputeHashCode()
         {
@@ -42,14 +27,17 @@ namespace Pliant.RegularExpressions
                 Negate.GetHashCode(),
                 CharacterClass.GetHashCode());
         }
+
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
         public override string ToString()
         {
             return $"[{(Negate ? "^" : string.Empty)}{CharacterClass}]";
         }
+
+        private readonly int hashCode;
     }
 }

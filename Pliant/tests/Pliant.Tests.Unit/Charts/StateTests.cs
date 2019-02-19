@@ -12,6 +12,7 @@ namespace Pliant.Tests.Unit
         {
             var state = new NormalState(
                 new DottedRule(
+                    0,
                     new Production(
                         new NonTerminal("A"), new NonTerminal("B"), new NonTerminal("C")),
                     1), 

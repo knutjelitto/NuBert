@@ -13,8 +13,8 @@ namespace Pliant.Tests.Unit.Automata
         public void DfaLexemeShouldMatchOneOrMoreRandomWhitespaceCharacters()
         {
             var randomWhitespace = "\t\f\v \r\n";
-            var dfa = new DfaState();
-            var final = new DfaState(true);
+            var dfa = DfaState.Inner();
+            var final = DfaState.Final();
             dfa.AddTransition(new DfaTransition(new WhitespaceTerminal(), final));
             final.AddTransition(new DfaTransition(new WhitespaceTerminal(), final));
 
@@ -28,8 +28,8 @@ namespace Pliant.Tests.Unit.Automata
         public void DfaLexemeShouldMatchMixedCaseWord()
         {
             var wordInput = "t90vAriabl3";
-            var dfa = new DfaState();
-            var final = new DfaState(true);
+            var dfa = DfaState.Inner();
+            var final = DfaState.Final();
             dfa.AddTransition(new DfaTransition(new RangeTerminal('a', 'z'), final));
             dfa.AddTransition(new DfaTransition(new RangeTerminal('A', 'Z'), final));
             final.AddTransition(new DfaTransition(new RangeTerminal('a', 'z'), final));
@@ -46,8 +46,8 @@ namespace Pliant.Tests.Unit.Automata
         public void DfaLexemeGivenCharacerLexemeNumberShouldFail()
         {
             var numberInput = "0";
-            var dfa = new DfaState();
-            var final = new DfaState(true);
+            var dfa = DfaState.Inner();
+            var final = DfaState.Final();
             dfa.AddTransition(new DfaTransition(new RangeTerminal('a', 'z'), final));
             final.AddTransition(new DfaTransition(new RangeTerminal('a', 'z'), final));
 

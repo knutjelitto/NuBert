@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Pliant.Collections;
 
 namespace Pliant.Grammars
@@ -11,27 +12,30 @@ namespace Pliant.Grammars
             IReadOnlyList<LexerRule> ignoreRules,
             IReadOnlyList<LexerRule> triviaRules)
         {
+            Debug.Assert(productions != null);
+
             this._productions = new IndexedList<Production>();
             this._ignores = new IndexedList<LexerRule>();
             this._trivia = new IndexedList<LexerRule>();
 
-            this._transativeNullableSymbols = new UniqueList<NonTerminal>();
+            this._transitiveNullableSymbols = new UniqueList<NonTerminal>();
             this._symbolsReverseLookup = new Dictionary<NonTerminal, UniqueList<Production>>();
             this._lexerRules = new IndexedList<LexerRule>();
             this._leftHandSideToProductions = new Dictionary<NonTerminal, List<Production>>();
-            this._dottedRuleRegistry = new DottedRuleRegistry();
+            DottedRules = new DottedRuleRegistry();
             this._symbolPaths = new Dictionary<Symbol, UniqueList<Symbol>>();
 
             Start = start;
-            AddProductions(productions ?? EmptyProductionArray);
+            AddProductions(productions);
             AddIgnoreRules(ignoreRules ?? EmptyLexerRuleArray);
             AddTriviaRules(triviaRules ?? EmptyLexerRuleArray);
+            DottedRules.Seed(this);
 
-            this._rightRecursiveSymbols = CreateRightRecursiveSymbols(this._dottedRuleRegistry, this._symbolPaths);
-            FindNullableSymbols(this._symbolsReverseLookup, this._transativeNullableSymbols);
+            this._rightRecursiveSymbols = CreateRightRecursiveSymbols(this._symbolPaths);
+            FindNullableSymbols(this._symbolsReverseLookup, this._transitiveNullableSymbols);
         }
 
-        public DottedRuleRegistry DottedRules => this._dottedRuleRegistry;
+        public DottedRuleRegistry DottedRules { get; }
 
         public IReadOnlyList<LexerRule> Ignores => this._ignores;
 
@@ -68,9 +72,9 @@ namespace Pliant.Grammars
             return this._rightRecursiveSymbols.Contains(symbol);
         }
 
-        public bool IsTransativeNullable(NonTerminal nonTerminal)
+        public bool IsTransitiveNullable(NonTerminal nonTerminal)
         {
-            return this._transativeNullableSymbols.Contains(nonTerminal);
+            return this._transitiveNullableSymbols.Contains(nonTerminal);
         }
 
         public IReadOnlyList<Production> RulesContainingSymbol(NonTerminal nonTerminal)
@@ -118,18 +122,16 @@ namespace Pliant.Grammars
                 var nonTerminal = nullableQueue.Dequeue();
                 if (reverseLookup.TryGetValue(nonTerminal, out var productionsContainingNonTerminal))
                 {
-                    for (var p = 0; p < productionsContainingNonTerminal.Count; p++)
+                    foreach (var production in productionsContainingNonTerminal)
                     {
-                        var production = productionsContainingNonTerminal[p];
                         if (!productionSizes.TryGetValue(production, out var size))
                         {
                             size = production.RightHandSide.Count;
                             productionSizes[production] = size;
                         }
 
-                        for (var s = 0; s < production.RightHandSide.Count; s++)
+                        foreach (var symbol in production.RightHandSide)
                         {
-                            var symbol = production.RightHandSide[s];
                             if (symbol is NonTerminal && nonTerminal.Equals(symbol))
                             {
                                 size--;
@@ -156,11 +158,10 @@ namespace Pliant.Grammars
             }
         }
 
-        private void AddIgnoreRules(IReadOnlyList<LexerRule> ignoreRules)
+        private void AddIgnoreRules(IEnumerable<LexerRule> ignoreRules)
         {
-            for (var i = 0; i < ignoreRules.Count; i++)
+            foreach (var ignoreRule in ignoreRules)
             {
-                var ignoreRule = ignoreRules[i];
                 this._ignores.Add(ignoreRule);
                 this._lexerRules.Add(ignoreRule);
             }
@@ -178,7 +179,7 @@ namespace Pliant.Grammars
 
             if (production.IsEmpty)
             {
-                this._transativeNullableSymbols.Add(production.LeftHandSide);
+                this._transitiveNullableSymbols.Add(production.LeftHandSide);
             }
 
             var leftHandSide = production.LeftHandSide;
@@ -192,19 +193,15 @@ namespace Pliant.Grammars
                     AddLexerRule(lexerRule);
                 }
 
-                RegisterDottedRule(production, s);
                 RegisterSymbolPath(production, symbolPath, s);
                 RegisterSymbolInReverseLookup(production, symbol);
             }
-
-            RegisterDottedRule(production, production.RightHandSide.Count);
         }
 
-        private void AddProductions(IReadOnlyList<Production> productions)
+        private void AddProductions(IEnumerable<Production> productions)
         {
-            for (var p = 0; p < productions.Count; p++)
+            foreach (var production in productions)
             {
-                var production = productions[p];
                 AddProduction(production);
             }
         }
@@ -216,41 +213,35 @@ namespace Pliant.Grammars
             indexedProductions.Add(production);
         }
 
-        private void AddTriviaRules(IReadOnlyList<LexerRule> triviaRules)
+        private void AddTriviaRules(IEnumerable<LexerRule> triviaRules)
         {
-            for (var i = 0; i < triviaRules.Count; i++)
+            foreach (var triviaRule in triviaRules)
             {
-                var triviaRule = triviaRules[i];
                 this._trivia.Add(triviaRule);
                 this._lexerRules.Add(triviaRule);
             }
         }
 
-        private HashSet<Symbol> CreateRightRecursiveSymbols(
-            DottedRuleRegistry dottedRuleRegistry,
-            Dictionary<Symbol, UniqueList<Symbol>> symbolPaths)
+        private HashSet<Symbol> CreateRightRecursiveSymbols(Dictionary<Symbol, UniqueList<Symbol>> symbolPaths)
         {
             var hashSet = new HashSet<Symbol>();
-            for (var p = 0; p < this._productions.Count; p++)
+            foreach (var production in Productions)
             {
-                var production = this._productions[p];
                 var position = production.RightHandSide.Count;
-                var completed = dottedRuleRegistry.Get(production, position);
                 var symbolPath = symbolPaths[production.LeftHandSide];
 
                 for (var s = position; s > 0; s--)
                 {
                     var preDotSymbol = production.RightHandSide[s - 1];
-                    if (preDotSymbol is NonTerminal)
+                    if (preDotSymbol is NonTerminal preDotNonTerminal)
                     {
-                        var preDotNonTerminal = preDotSymbol as NonTerminal;
                         if (symbolPath.Contains(preDotNonTerminal))
                         {
                             hashSet.Add(production.LeftHandSide);
                             break;
                         }
 
-                        if (!IsTransativeNullable(preDotNonTerminal))
+                        if (!IsTransitiveNullable(preDotNonTerminal))
                         {
                             break;
                         }
@@ -265,12 +256,6 @@ namespace Pliant.Grammars
             return hashSet;
         }
 
-        private void RegisterDottedRule(Production production, int s)
-        {
-            var dottedRule = new DottedRule(production, s);
-            this._dottedRuleRegistry.Register(dottedRule);
-        }
-
         private void RegisterSymbolInReverseLookup(Production production, Symbol symbol)
         {
             if (symbol is NonTerminal nonTerminal)
@@ -281,14 +266,12 @@ namespace Pliant.Grammars
         }
 
         private static readonly LexerRule[] EmptyLexerRuleArray = { };
-        private static readonly DottedRule[] EmptyPredictionArray = { };
         private static readonly Production[] EmptyProductionArray = { };
-        private readonly DottedRuleRegistry _dottedRuleRegistry;
         private readonly Dictionary<NonTerminal, List<Production>> _leftHandSideToProductions;
 
         private readonly HashSet<Symbol> _rightRecursiveSymbols;
         private readonly Dictionary<Symbol, UniqueList<Symbol>> _symbolPaths;
         private readonly Dictionary<NonTerminal, UniqueList<Production>> _symbolsReverseLookup;
-        private readonly UniqueList<NonTerminal> _transativeNullableSymbols;
+        private readonly UniqueList<NonTerminal> _transitiveNullableSymbols;
     }
 }

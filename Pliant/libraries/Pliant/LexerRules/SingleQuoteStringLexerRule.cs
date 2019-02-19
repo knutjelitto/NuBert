@@ -13,11 +13,12 @@ namespace Pliant.LexerRules
 
         static SingleQuoteStringLexerRule()
         {
-            var states = new DfaState[3];
-            for (var i = 0; i < states.Length; i++)
+            var states = new DfaState[3]
             {
-                states[i] = new DfaState(i == 2);
-            }
+                DfaState.Inner(),
+                DfaState.Inner(),
+                DfaState.Final(),
+            };
 
             var quote = new CharacterTerminal('\'');
             var notQuote = new NegationTerminal(quote);

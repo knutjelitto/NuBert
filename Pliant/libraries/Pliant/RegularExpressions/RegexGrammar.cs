@@ -5,7 +5,7 @@ namespace Pliant.RegularExpressions
 {
     public class RegexGrammar : GrammarWrapper
     {
-        private readonly static IGrammar _regexGrammar;
+        private static readonly IGrammar Grammar;
 
         /*  Regex                      ->   Expression |
          *                                  '^' Expression |
@@ -128,7 +128,7 @@ namespace Pliant.RegularExpressions
                 new Production(characterClassCharacter, escape)
             };
 
-            _regexGrammar = new Grammar(regex, productions, null, null);
+            Grammar = new Grammar(regex, productions, null, null);
         }
         
         private static LexerRule CreateNotMetaLexerRule()
@@ -149,16 +149,15 @@ namespace Pliant.RegularExpressions
 
         private static LexerRule CreateEscapeCharacterLexerRule()
         {
-            var start = new DfaState();
-            var escape = new DfaState();
-            var final = new DfaState(true);
+            var start = DfaState.Inner();
+            var escape = DfaState.Inner();
+            var final = DfaState.Final();
             start.AddTransition(new DfaTransition(new CharacterTerminal('\\'), escape));
             escape.AddTransition(new DfaTransition(new AnyTerminal(), final));
             return new DfaLexerRule(start, "escape");
         }
 
-        public RegexGrammar()
-            : base(_regexGrammar)
+        public RegexGrammar() : base(Grammar)
         {
         }
     }

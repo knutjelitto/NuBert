@@ -83,9 +83,14 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static LexerRule CreateMultiLineCommentLexerRule()
         {
-            var states = new DfaState[5];
-            for (int i = 0; i < states.Length; i++)
-                states[i] = new DfaState(i == 4);
+            var states = new DfaState[5]
+            {
+                DfaState.Inner(),
+                DfaState.Inner(),
+                DfaState.Inner(),
+                DfaState.Inner(),
+                DfaState.Final(),
+            };
 
             var slash = new CharacterTerminal('/');
             var star = new CharacterTerminal('*');

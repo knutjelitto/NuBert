@@ -4,9 +4,6 @@ namespace Pliant.RegularExpressions
 {
     public class RegexCompiler
     {
-        private readonly IRegexToNfa _regexToNfa;
-        private readonly INfaToDfa _nfaToDfa;
-
         public RegexCompiler()
             : this(new ThompsonConstructionAlgorithm(), new SubsetConstructionAlgorithm())
         {
@@ -14,15 +11,18 @@ namespace Pliant.RegularExpressions
 
         private RegexCompiler(IRegexToNfa regexToNfa, INfaToDfa nfaToDfa)
         {
-            this._regexToNfa = regexToNfa;
-            this._nfaToDfa = nfaToDfa;
+            this.regexToNfa = regexToNfa;
+            this.nfaToDfa = nfaToDfa;
         }
 
         public DfaState Compile(Regex regex)
         {
-            var nfa = this._regexToNfa.Transform(regex);
-            var dfa = this._nfaToDfa.Transform(nfa);
+            var nfa = this.regexToNfa.Transform(regex);
+            var dfa = this.nfaToDfa.Transform(nfa);
             return dfa;
         }
+
+        private readonly INfaToDfa nfaToDfa;
+        private readonly IRegexToNfa regexToNfa;
     }
 }

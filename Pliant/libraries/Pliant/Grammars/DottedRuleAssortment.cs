@@ -7,7 +7,7 @@ namespace Pliant.Grammars
 {
     public class DottedRuleAssortment
     {
-        public DottedRuleAssortment(SortedSet<DottedRule> set)
+        public DottedRuleAssortment(DottedRuleSet set)
         {
             this._set = set;
             this._cachedData = this._set.ToArray();
@@ -85,7 +85,7 @@ namespace Pliant.Grammars
             return this._hashCode;
         }
 
-        private static int ComputeHashCode(SortedSet<DottedRule> data)
+        private static int ComputeHashCode(DottedRuleSet data)
         {
             return HashCode.Compute(data);
         }
@@ -96,7 +96,7 @@ namespace Pliant.Grammars
         private readonly Dictionary<Symbol, DottedRuleAssortment> _reductions;
         private readonly List<LexerRule> _scanKeys;
         private readonly Dictionary<LexerRule, DottedRuleAssortment> _scans;
-        private readonly SortedSet<DottedRule> _set;
+        private readonly DottedRuleSet _set;
         private readonly Dictionary<TokenType, DottedRuleAssortment> _tokenTransitions;
     }
 }

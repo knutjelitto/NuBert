@@ -7,17 +7,17 @@ namespace Pliant.LexerRules
     public class DoubleQuoteStringLexerRule : DfaLexerRule
     {
         // ["][^"]*["]
-        private const string _pattern = @"[""][^""]*[""]";
-        public static readonly TokenType TokenTypeDescriptor = new TokenType(_pattern);
-        private static readonly DfaState _start;
+        public static readonly TokenType TokenTypeDescriptor = new TokenType(@"[""][^""]*[""]");
+        private static readonly DfaState Start;
 
         static DoubleQuoteStringLexerRule()
         {
-            var states = new DfaState[3];
-            for (var i = 0; i < states.Length; i++)
+            var states = new DfaState[3]
             {
-                states[i] = new DfaState(i == 2);
-            }
+                DfaState.Inner(),
+                DfaState.Inner(),
+                DfaState.Final()
+            };
 
             var quote = new CharacterTerminal('"');
             var notQuote = new NegationTerminal(quote);
@@ -30,11 +30,11 @@ namespace Pliant.LexerRules
             states[1].AddTransition(notQuoteToNotQuote);
             states[1].AddTransition(notQuoteToQuote);
 
-            _start = states[0];
+            Start = states[0];
         }
 
         public DoubleQuoteStringLexerRule()
-            : base(_start, TokenTypeDescriptor)
+            : base(Start, TokenTypeDescriptor)
         {
         }
     }
