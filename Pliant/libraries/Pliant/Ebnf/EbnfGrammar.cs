@@ -140,23 +140,23 @@ namespace Pliant.Ebnf
         }
 
         private static readonly string Namespace = "Ebnf";
-        public static readonly FullyQualifiedName Block = new FullyQualifiedName(Namespace, nameof(Block));
-        public static readonly FullyQualifiedName Definition = new FullyQualifiedName(Namespace, nameof(Definition));
-        public static readonly FullyQualifiedName Expression = new FullyQualifiedName(Namespace, nameof(Expression));
-        public static readonly FullyQualifiedName Factor = new FullyQualifiedName(Namespace, nameof(Factor));
-        public static readonly FullyQualifiedName Grouping = new FullyQualifiedName(Namespace, nameof(Grouping));
-        public static readonly FullyQualifiedName LexerRule = new FullyQualifiedName(Namespace, nameof(LexerRule));
-        public static readonly FullyQualifiedName LexerRuleExpression = new FullyQualifiedName(Namespace, nameof(LexerRuleExpression));
-        public static readonly FullyQualifiedName LexerRuleFactor = new FullyQualifiedName(Namespace, nameof(LexerRuleFactor));
-        public static readonly FullyQualifiedName LexerRuleTerm = new FullyQualifiedName(Namespace, nameof(LexerRuleTerm));
-        public static readonly FullyQualifiedName Literal = new FullyQualifiedName(Namespace, nameof(Literal));
+        public static readonly QualifiedName Block = new QualifiedName(Namespace, nameof(Block));
+        public static readonly QualifiedName Definition = new QualifiedName(Namespace, nameof(Definition));
+        public static readonly QualifiedName Expression = new QualifiedName(Namespace, nameof(Expression));
+        public static readonly QualifiedName Factor = new QualifiedName(Namespace, nameof(Factor));
+        public static readonly QualifiedName Grouping = new QualifiedName(Namespace, nameof(Grouping));
+        public static readonly QualifiedName LexerRule = new QualifiedName(Namespace, nameof(LexerRule));
+        public static readonly QualifiedName LexerRuleExpression = new QualifiedName(Namespace, nameof(LexerRuleExpression));
+        public static readonly QualifiedName LexerRuleFactor = new QualifiedName(Namespace, nameof(LexerRuleFactor));
+        public static readonly QualifiedName LexerRuleTerm = new QualifiedName(Namespace, nameof(LexerRuleTerm));
+        public static readonly QualifiedName Literal = new QualifiedName(Namespace, nameof(Literal));
 
-        public static readonly FullyQualifiedName Optional = new FullyQualifiedName(Namespace, nameof(Optional));
-        public static readonly FullyQualifiedName QualifiedIdentifier = new FullyQualifiedName(Namespace, nameof(QualifiedIdentifier));
-        public static readonly FullyQualifiedName Repetition = new FullyQualifiedName(Namespace, nameof(Repetition));
-        public static readonly FullyQualifiedName Rule = new FullyQualifiedName(Namespace, nameof(Rule));
-        public static readonly FullyQualifiedName Setting = new FullyQualifiedName(Namespace, nameof(Setting));
-        public static readonly FullyQualifiedName Term = new FullyQualifiedName(Namespace, nameof(Term));
+        public static readonly QualifiedName Optional = new QualifiedName(Namespace, nameof(Optional));
+        public static readonly QualifiedName QualifiedIdentifier = new QualifiedName(Namespace, nameof(QualifiedIdentifier));
+        public static readonly QualifiedName Repetition = new QualifiedName(Namespace, nameof(Repetition));
+        public static readonly QualifiedName Rule = new QualifiedName(Namespace, nameof(Rule));
+        public static readonly QualifiedName Setting = new QualifiedName(Namespace, nameof(Setting));
+        public static readonly QualifiedName Term = new QualifiedName(Namespace, nameof(Term));
 
         private static LexerRule CreateEscapeCharacterLexerRule()
         {

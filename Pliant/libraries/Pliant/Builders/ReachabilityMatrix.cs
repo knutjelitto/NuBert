@@ -6,13 +6,10 @@ namespace Pliant.Builders
 {
     internal class ReachabilityMatrix
     {
-        private readonly Dictionary<ISymbol, ProductionModel> _lookup;
-        private readonly Dictionary<ISymbol, UniqueList<NonTerminalModel>> _matrix;
-
         public ReachabilityMatrix()
         {
-            this._matrix = new Dictionary<ISymbol, UniqueList<NonTerminalModel>>();
-            this._lookup = new Dictionary<ISymbol, ProductionModel>();
+            this._matrix = new Dictionary<Symbol, UniqueList<NonTerminalModel>>();
+            this._lookup = new Dictionary<Symbol, ProductionModel>();
         }
 
         public void AddProduction(ProductionModel production)
@@ -36,25 +33,6 @@ namespace Pliant.Builders
                         AddProductionToNewOrExistingSymbolSet(production, symbol);
                     }
                 }
-            }
-        }
-
-        private void AddProductionToNewOrExistingSymbolSet(ProductionModel production, SymbolModel symbol)
-        {
-            var set = this._matrix.AddOrGetExisting(symbol.Symbol);
-            set.Add(production.LeftHandSide);
-        }
-
-        public void RemoveProduction(ProductionModel productionModel)
-        {
-            if (!this._matrix.ContainsKey(productionModel.LeftHandSide.NonTerminal))
-            {
-                this._matrix.Remove(productionModel.LeftHandSide.NonTerminal);
-            }
-
-            if (!this._lookup.ContainsKey(productionModel.LeftHandSide.NonTerminal))
-            {
-                this._lookup.Remove(productionModel.LeftHandSide.NonTerminal);
             }
         }
 
@@ -82,5 +60,27 @@ namespace Pliant.Builders
         {
             return this._matrix.ContainsKey(nonTerminalModel.NonTerminal);
         }
+
+        public void RemoveProduction(ProductionModel productionModel)
+        {
+            if (!this._matrix.ContainsKey(productionModel.LeftHandSide.NonTerminal))
+            {
+                this._matrix.Remove(productionModel.LeftHandSide.NonTerminal);
+            }
+
+            if (!this._lookup.ContainsKey(productionModel.LeftHandSide.NonTerminal))
+            {
+                this._lookup.Remove(productionModel.LeftHandSide.NonTerminal);
+            }
+        }
+
+        private void AddProductionToNewOrExistingSymbolSet(ProductionModel production, SymbolModel symbol)
+        {
+            var set = this._matrix.AddOrGetExisting(symbol.Symbol);
+            set.Add(production.LeftHandSide);
+        }
+
+        private readonly Dictionary<Symbol, ProductionModel> _lookup;
+        private readonly Dictionary<Symbol, UniqueList<NonTerminalModel>> _matrix;
     }
 }

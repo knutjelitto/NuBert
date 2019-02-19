@@ -4,7 +4,7 @@ namespace Pliant.Builders.Expressions
 {
     public class Expr : RuleExpression
     {
-        public Expr(BaseExpression baseExpression) 
+        private Expr(BaseExpression baseExpression) 
             : base(baseExpression)
         {
         }

@@ -7,6 +7,7 @@ namespace Pliant.Tokens
     public class TerminalLexemeFactory : ILexemeFactory
     {
         public LexerRuleType LexerRuleType => TerminalLexerRule.TerminalLexerRuleType;
+
         private readonly Queue<TerminalLexeme> _queue;
 
         public TerminalLexemeFactory()

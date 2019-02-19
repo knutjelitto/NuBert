@@ -9,13 +9,13 @@ namespace Pliant.Charts
     {        
         private readonly int _hashCode;
 
-        public NormalState(IDottedRule dottedRule, int origin)
+        public NormalState(DottedRule dottedRule, int origin)
             : base(dottedRule, origin)
         {
             this._hashCode = ComputeHashCode();
         }
 
-        public NormalState(IDottedRule dottedRule, int origin, IForestNode parseNode) 
+        public NormalState(DottedRule dottedRule, int origin, IForestNode parseNode) 
             : this(dottedRule, origin)
         {
             ParseNode = parseNode;
@@ -23,7 +23,7 @@ namespace Pliant.Charts
 
         public override StateType StateType => StateType.Normal;
 
-        public bool IsSource(ISymbol searchSymbol)
+        public bool IsSource(Symbol searchSymbol)
         {
             var dottedRule = DottedRule;
             if (dottedRule.IsComplete)

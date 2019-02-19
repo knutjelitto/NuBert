@@ -1,4 +1,5 @@
-﻿using Pliant.Grammars;
+﻿using System;
+using Pliant.Grammars;
 
 namespace Pliant.Builders
 {
@@ -6,6 +7,16 @@ namespace Pliant.Builders
     {
         public abstract SymbolModelType ModelType { get; }
 
-        public abstract ISymbol Symbol { get; }
+        public abstract Symbol Symbol { get; }
+
+        public override bool Equals(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -2,39 +2,25 @@
 
 namespace Pliant.RegularExpressions
 {
-    public class RegexTerm : RegexNode
+    public abstract class RegexTerm : RegexNode
     {
-        public RegexFactor Factor { get; private set; }
+    }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexTerm;
-
-        public RegexTerm(RegexFactor factor)
+    public sealed class RegexTermFactor : RegexTerm
+    {
+        public RegexTermFactor(RegexFactor factor)
         {
             Factor = factor;
             this._hashCode = ComputeHashCode();
         }
 
+        public RegexFactor Factor { get; }
+
+        public override RegexNodeType NodeType => RegexNodeType.RegexTerm;
+
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var term = obj as RegexTerm;
-            if (term == null)
-            {
-                return false;
-            }
-
-            return term.Factor.Equals(Factor);
-        }
-        
-        private readonly int _hashCode;
-        
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(Factor.GetHashCode());
+            return obj is RegexTermFactor other && other.Factor.Equals(Factor);
         }
 
         public override int GetHashCode()
@@ -46,43 +32,31 @@ namespace Pliant.RegularExpressions
         {
             return Factor.ToString();
         }
+
+        private int ComputeHashCode()
+        {
+            return HashCode.Compute(Factor.GetHashCode());
+        }
+
+        private readonly int _hashCode;
     }
 
-    public class RegexTermFactor : RegexTerm
+    public sealed class RegexTermFactorTerm : RegexTerm
     {
-        public RegexTerm Term { get; private set; }
-
-        public RegexTermFactor(RegexFactor factor, RegexTerm term)
-            : base(factor)
+        public RegexTermFactorTerm(RegexFactor factor, RegexTerm term)
         {
+            Factor = factor;
             Term = term;
             this._hashCode = ComputeHashCode();
         }
 
+        public override RegexNodeType NodeType => RegexNodeType.RegexTermFactor;
+        public RegexFactor Factor { get; }
+        public RegexTerm Term { get; }
+
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var termFactor = obj as RegexTermFactor;
-            if (termFactor == null)
-            {
-                return false;
-            }
-
-            return termFactor.Factor.Equals(Factor)
-                && termFactor.Term.Equals(Term);
-        }
-        
-        private readonly int _hashCode;
-
-        int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                    Term.GetHashCode(),
-                    Factor.GetHashCode());
+            return obj is RegexTermFactorTerm termFactor && termFactor.Factor.Equals(Factor) && termFactor.Term.Equals(Term);
         }
 
         public override int GetHashCode()
@@ -90,11 +64,18 @@ namespace Pliant.RegularExpressions
             return this._hashCode;
         }
 
-        public override RegexNodeType NodeType => RegexNodeType.RegexTermFactor;
-
         public override string ToString()
         {
             return $"{Factor}{Term}";
         }
+
+        private int ComputeHashCode()
+        {
+            return HashCode.Compute(
+                Term.GetHashCode(),
+                Factor.GetHashCode());
+        }
+
+        private readonly int _hashCode;
     }
 }

@@ -24,7 +24,7 @@ namespace Pliant.Ebnf
             return grammarModel.ToGrammar();
         }
 
-        private static FullyQualifiedName GetFullyQualifiedNameFromQualifiedIdentifier(
+        private static QualifiedName GetFullyQualifiedNameFromQualifiedIdentifier(
             EbnfQualifiedIdentifier qualifiedIdentifier)
         {
             var fully = new StringBuilder();
@@ -42,7 +42,7 @@ namespace Pliant.Ebnf
                 index++;
             }
 
-            return new FullyQualifiedName(fully.ToString(), currentQualifiedIdentifier.Identifier);
+            return new QualifiedName(fully.ToString(), currentQualifiedIdentifier.Identifier);
         }
 
         private void Block(EbnfBlock block, GrammarModel grammarModel)
@@ -207,7 +207,7 @@ namespace Pliant.Ebnf
         }
 
         private LexerRule LexerRuleExpression(
-            FullyQualifiedName fullyQualifiedName,
+            QualifiedName fullyQualifiedName,
             EbnfLexerRuleExpression ebnfLexerRule)
         {
             if (TryRecognizeSimpleLiteralExpression(fullyQualifiedName, ebnfLexerRule, out var lexerRule))
@@ -373,7 +373,7 @@ namespace Pliant.Ebnf
         }
 
         private bool TryRecognizeSimpleLiteralExpression(
-            FullyQualifiedName fullyQualifiedName,
+            QualifiedName fullyQualifiedName,
             EbnfLexerRuleExpression ebnfLexerRule,
             out LexerRule lexerRule)
         {

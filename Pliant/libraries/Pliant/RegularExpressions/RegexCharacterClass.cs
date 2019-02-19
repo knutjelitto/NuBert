@@ -1,15 +1,13 @@
-﻿using Pliant.Utilities;
-
-namespace Pliant.RegularExpressions
+﻿namespace Pliant.RegularExpressions
 {
     public class RegexCharacterClass : RegexNode
     {
-        public RegexCharacterClass(RegexCharacterUnitRange characterRange)
+        public RegexCharacterClass(RegexCharacters characterRange)
         {
             CharacterRange = characterRange;
         }
 
-        public RegexCharacterUnitRange CharacterRange { get; }
+        public RegexCharacters CharacterRange { get; }
 
         public override RegexNodeType NodeType => RegexNodeType.RegexCharacterClass;
 
@@ -33,7 +31,7 @@ namespace Pliant.RegularExpressions
     public class RegexCharacterClassAlteration : RegexCharacterClass
     {
         public RegexCharacterClassAlteration(
-            RegexCharacterUnitRange characterRange,
+            RegexCharacters characterRange,
             RegexCharacterClass characterClass)
             : base(characterRange)
         {

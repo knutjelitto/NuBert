@@ -1,9 +1,6 @@
 ﻿namespace Pliant.Grammars
 {
-    public abstract class Symbol : ISymbol
+    public abstract class Symbol
     {
-        protected Symbol()
-        {
-        }
     }
 }

@@ -10,13 +10,6 @@ namespace Pliant.Builders
             Alterations = new List<AlterationModel>();
         }
 
-        public ProductionModel(NonTerminalModel leftHandSide)
-            : this()
-        {
-            LeftHandSide = leftHandSide;
-            Alterations = new List<AlterationModel>();
-        }
-
         public ProductionModel(NonTerminal leftHandSide)
             : this(new NonTerminalModel(leftHandSide))
         {
@@ -27,9 +20,16 @@ namespace Pliant.Builders
         {
         }
 
-        public ProductionModel(FullyQualifiedName fullyQualifiedName)
+        public ProductionModel(QualifiedName fullyQualifiedName)
             : this(new NonTerminalModel(fullyQualifiedName))
         {
+        }
+
+        private ProductionModel(NonTerminalModel leftHandSide)
+            : this()
+        {
+            LeftHandSide = leftHandSide;
+            Alterations = new List<AlterationModel>();
         }
 
         public List<AlterationModel> Alterations { get; }
@@ -38,35 +38,7 @@ namespace Pliant.Builders
 
         public override SymbolModelType ModelType => SymbolModelType.Production;
 
-        public override ISymbol Symbol => LeftHandSide.NonTerminal;
-
-        public IEnumerable<IProduction> ToProductions()
-        {
-            if (Alterations == null || Alterations.Count == 0)
-            {
-                yield return new Production(LeftHandSide.NonTerminal);
-                yield break;
-            }
-
-            foreach (var alteration in Alterations)
-            {
-                var symbols = new List<ISymbol>();
-                foreach (var symbolModel in alteration.Symbols)
-                {
-                    symbols.Add(symbolModel.Symbol);
-
-                    if (symbolModel is ProductionReferenceModel productionReferenceModel)
-                    {
-                        foreach (var production in productionReferenceModel.Grammar.Productions)
-                        {
-                            yield return production;
-                        }
-                    }
-                }
-
-                yield return new Production(LeftHandSide.NonTerminal, symbols);
-            }
-        }
+        public override Symbol Symbol => LeftHandSide.NonTerminal;
 
         public void AddWithAnd(SymbolModel model)
         {
@@ -90,6 +62,35 @@ namespace Pliant.Builders
         public void Lambda()
         {
             Alterations.Add(new AlterationModel());
+        }
+
+        public IEnumerable<Production> ToProductions()
+        {
+            if (Alterations == null || Alterations.Count == 0)
+            {
+                yield return new Production(LeftHandSide.NonTerminal);
+
+                yield break;
+            }
+
+            foreach (var alteration in Alterations)
+            {
+                var symbols = new List<Symbol>();
+                foreach (var symbolModel in alteration.Symbols)
+                {
+                    symbols.Add(symbolModel.Symbol);
+
+                    if (symbolModel is ProductionReferenceModel productionReferenceModel)
+                    {
+                        foreach (var production in productionReferenceModel.Grammar.Productions)
+                        {
+                            yield return production;
+                        }
+                    }
+                }
+
+                yield return new Production(LeftHandSide.NonTerminal, symbols);
+            }
         }
     }
 }

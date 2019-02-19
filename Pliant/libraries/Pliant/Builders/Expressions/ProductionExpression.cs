@@ -10,7 +10,7 @@ namespace Pliant.Builders.Expressions
             ProductionModel = new ProductionModel(leftHandSide);
         }
 
-        public ProductionExpression(FullyQualifiedName fullyQualifiedName)
+        public ProductionExpression(QualifiedName fullyQualifiedName)
         {
             ProductionModel = new ProductionModel(fullyQualifiedName);
         }
@@ -40,7 +40,7 @@ namespace Pliant.Builders.Expressions
             return new ProductionExpression(new NonTerminal(leftHandSide));
         }
 
-        public static implicit operator ProductionExpression(FullyQualifiedName fullyQualifiedName)
+        public static implicit operator ProductionExpression(QualifiedName fullyQualifiedName)
         {
             return new ProductionExpression(fullyQualifiedName);
         }

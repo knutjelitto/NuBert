@@ -8,14 +8,11 @@ namespace Pliant.RegularExpressions
         private readonly INfaToDfa _nfaToDfa;
 
         public RegexCompiler()
-            : this(
-                new ThompsonConstructionAlgorithm(),
-                new SubsetConstructionAlgorithm())
-        {}
+            : this(new ThompsonConstructionAlgorithm(), new SubsetConstructionAlgorithm())
+        {
+        }
 
-        public RegexCompiler(
-            IRegexToNfa regexToNfa,
-            INfaToDfa nfaToDfa)
+        private RegexCompiler(IRegexToNfa regexToNfa, INfaToDfa nfaToDfa)
         {
             this._regexToNfa = regexToNfa;
             this._nfaToDfa = nfaToDfa;

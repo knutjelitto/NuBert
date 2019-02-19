@@ -1,50 +1,55 @@
 ﻿namespace Pliant.RegularExpressions
 {
-    public class RegexCharacterUnitRange : RegexNode
+    public abstract class RegexCharacters : RegexNode
     {
-        public RegexCharacterUnitRange(RegexCharacterClassCharacter startCharacter)
+    }
+
+    public sealed class RegexCharactersUnit : RegexCharacters
+    {
+        public RegexCharactersUnit(RegexCharacterClassCharacter character)
         {
-            StartCharacter = startCharacter;
+            Character = character;
         }
 
-        public RegexCharacterClassCharacter StartCharacter { get; }
+        public RegexCharacterClassCharacter Character { get; }
 
         public override RegexNodeType NodeType => RegexNodeType.RegexCharacterUnitRange;
 
         public override bool Equals(object obj)
         {
-            return obj is RegexCharacterUnitRange other &&
-                   other.StartCharacter.Equals(StartCharacter);
+            return obj is RegexCharactersUnit other &&
+                   other.Character.Equals(Character);
         }
 
         public override int GetHashCode()
         {
-            return StartCharacter.GetHashCode();
+            return Character.GetHashCode();
         }
 
         public override string ToString()
         {
-            return StartCharacter.ToString();
+            return Character.ToString();
         }
     }
 
-    public class RegexCharacterRange : RegexCharacterUnitRange
+    public sealed class RegexCharactersRange : RegexCharacters
     {
-        public RegexCharacterRange(
+        public RegexCharactersRange(
             RegexCharacterClassCharacter startCharacter,
             RegexCharacterClassCharacter endCharacter)
-            : base(startCharacter)
         {
+            StartCharacter = startCharacter;
             EndCharacter = endCharacter;
         }
 
+        public RegexCharacterClassCharacter StartCharacter { get; }
         public RegexCharacterClassCharacter EndCharacter { get; }
 
         public override RegexNodeType NodeType => RegexNodeType.RegexCharacterRange;
 
         public override bool Equals(object obj)
         {
-            return obj is RegexCharacterRange other && 
+            return obj is RegexCharactersRange other && 
                    StartCharacter.Equals(other.StartCharacter) && 
                    EndCharacter.Equals(other.EndCharacter);
         }

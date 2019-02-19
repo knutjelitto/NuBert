@@ -19,8 +19,8 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var expected = new Regex(
                 false,
                 new RegexExpressionTerm(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomCharacter(
                                 new RegexCharacter(
                                 'a'))))),
@@ -37,12 +37,12 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var expected = new Regex(
                 false,
                 new RegexExpressionTerm(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomSet(
                                 new RegexSet(false,
                                     new RegexCharacterClass(
-                                        new RegexCharacterUnitRange(
+                                        new RegexCharactersUnit(
                                             new RegexCharacterClassCharacter('a')))))))),
                 false);
             Assert.AreEqual(expected, actual);
@@ -57,12 +57,12 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var expected = new Regex(
                 false,
                 new RegexExpressionTerm(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomSet(
                                 new RegexSet(true,
                                     new RegexCharacterClass(
-                                        new RegexCharacterUnitRange(
+                                        new RegexCharactersUnit(
                                             new RegexCharacterClassCharacter('a')))))))),
                 false);
 
@@ -75,26 +75,26 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var regexParser = new RegexParser();
             var actual = regexParser.Parse("[a-zA-Z0-9]");
             var expected = new Regex(
-                startsWith: false,
+                false,
                 endsWith: false,
                 expression: new RegexExpressionTerm(
-                    term: new RegexTerm(
-                        factor: new RegexFactor(
-                            atom: new RegexAtomSet(
-                                set: new RegexSet(
-                                    negate: false,
-                                    characterClass: new RegexCharacterClassAlteration(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
+                            new RegexAtomSet(
+                                new RegexSet(
+                                    false,
+                                    new RegexCharacterClassAlteration(
                                         characterClass: new RegexCharacterClassAlteration(
                                             characterClass: new RegexCharacterClass(
-                                                characterRange: new RegexCharacterRange(
-                                                    startCharacter: new RegexCharacterClassCharacter(value: '0'),
-                                                    endCharacter: new RegexCharacterClassCharacter(value: '9'))),
-                                            characterRange: new RegexCharacterRange(
-                                                startCharacter: new RegexCharacterClassCharacter(value: 'A'),
-                                                endCharacter: new RegexCharacterClassCharacter(value: 'Z'))),
-                                        characterRange: new RegexCharacterRange(
-                                            startCharacter: new RegexCharacterClassCharacter(value: 'a'),
-                                            endCharacter: new RegexCharacterClassCharacter(value: 'z')))))))));
+                                                new RegexCharactersRange(
+                                                    new RegexCharacterClassCharacter('0'),
+                                                    new RegexCharacterClassCharacter('9'))),
+                                            characterRange: new RegexCharactersRange(
+                                                new RegexCharacterClassCharacter('A'),
+                                                new RegexCharacterClassCharacter('Z'))),
+                                        characterRange: new RegexCharactersRange(
+                                            new RegexCharacterClassCharacter('a'),
+                                            new RegexCharacterClassCharacter('z')))))))));
             Assert.AreEqual(expected, actual);
         }
 
@@ -104,18 +104,18 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var regexParser = new RegexParser();
             var actual = regexParser.Parse("a|b");
             var expected = new Regex(
-                startsWith: false,
+                false,
                 endsWith: false,
                 expression: new RegexExpressionAlteration(
-                    term: new RegexTerm(
-                        factor: new RegexFactor(
-                            atom: new RegexAtomCharacter(
-                                character: new RegexCharacter('a')))),
-                    expression: new RegexExpressionTerm(
-                        term: new RegexTerm(
-                            factor: new RegexFactor(
-                                atom: new RegexAtomCharacter(
-                                    character: new RegexCharacter('b')))))));
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
+                            new RegexAtomCharacter(
+                                new RegexCharacter('a')))),
+                    new RegexExpressionTerm(
+                        new RegexTermFactor(
+                            new RegexFactorAtom(
+                                new RegexAtomCharacter(
+                                    new RegexCharacter('b')))))));
             Assert.AreEqual(expected, actual);
         }
 
@@ -128,8 +128,8 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var expected = new Regex(
                 false, 
                 new RegexExpressionTerm(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomCharacter(
                                 new RegexCharacter('.', true))))), 
                 false);

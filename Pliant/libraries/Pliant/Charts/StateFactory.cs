@@ -5,20 +5,20 @@ namespace Pliant.Charts
 {
     public class StateFactory //: IStateFactory
     {
-        public StateFactory(IDottedRuleRegistry dottedRuleRegistry)
+        public StateFactory(DottedRuleRegistry dottedRuleRegistry)
         {
             DottedRuleRegistry = dottedRuleRegistry;
         }
 
-        public IDottedRuleRegistry DottedRuleRegistry { get; }
+        public DottedRuleRegistry DottedRuleRegistry { get; }
 
-        public State NewState(IProduction production, int position, int origin)
+        public State NewState(Production production, int position, int origin)
         {
             var dottedRule = DottedRuleRegistry.Get(production, position);
             return NewState(dottedRule, origin);
         }
 
-        public State NewState(IDottedRule dottedRule, int origin, IForestNode forestNode = null)
+        public State NewState(DottedRule dottedRule, int origin, IForestNode forestNode = null)
         {
             return forestNode == null
                        ? new NormalState(dottedRule, origin)

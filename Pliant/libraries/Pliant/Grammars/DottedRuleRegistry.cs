@@ -4,23 +4,23 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class DottedRuleRegistry : IDottedRuleRegistry
+    public class DottedRuleRegistry
     {
-        private readonly Dictionary<IProduction, Dictionary<int, IDottedRule>> _dottedRuleIndex;
+        private readonly Dictionary<Production, Dictionary<int, DottedRule>> _dottedRuleIndex;
 
         public DottedRuleRegistry()
         {
-            this._dottedRuleIndex = new Dictionary<IProduction, Dictionary<int, IDottedRule>>(
-                new HashCodeEqualityComparer<IProduction>());
+            this._dottedRuleIndex = new Dictionary<Production, Dictionary<int, DottedRule>>(
+                new HashCodeEqualityComparer<Production>());
         }
 
-        public void Register(IDottedRule dottedRule)
+        public void Register(DottedRule dottedRule)
         {
             var positionIndex = this._dottedRuleIndex.AddOrGetExisting(dottedRule.Production);
             positionIndex[dottedRule.Position] = dottedRule;
         }
 
-        public IDottedRule Get(IProduction production, int position)
+        public DottedRule Get(Production production, int position)
         {
             if (!this._dottedRuleIndex.TryGetValue(production, out var positionIndex))
             {
@@ -35,7 +35,7 @@ namespace Pliant.Grammars
             return dottedRule;
         }
 
-        public IDottedRule GetNext(IDottedRule dottedRule)
+        public DottedRule GetNext(DottedRule dottedRule)
         {
             return Get(dottedRule.Production, dottedRule.Position + 1);
         }        

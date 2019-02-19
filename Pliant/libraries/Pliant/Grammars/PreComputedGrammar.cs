@@ -1,90 +1,57 @@
-﻿using Pliant.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Pliant.Collections;
 using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
     public class PreComputedGrammar
     {
-        public IGrammar Grammar { get; private set; }
-
-        public DottedRuleSet Start { get; private set; }
-
-        private readonly ProcessOnceQueue<DottedRuleSet> _dottedRuleSetQueue;
-
-        private readonly Dictionary<DottedRuleSet, DottedRuleSet> _dottedRuleSets;
-        
         public PreComputedGrammar(IGrammar grammar)
         {
-            this._dottedRuleSetQueue = new ProcessOnceQueue<DottedRuleSet>();
-            this._dottedRuleSets = new Dictionary<DottedRuleSet, DottedRuleSet>();
+            this._dottedRuleSetQueue = new ProcessOnceQueue<DottedRuleAssortment>();
+            this._dottedRuleSets = new Dictionary<DottedRuleAssortment, DottedRuleAssortment>();
 
             Grammar = grammar;
-            
+
             var startStates = Initialize(Grammar);
             Start = AddNewOrGetExistingDottedRuleSet(startStates);
             ProcessDottedRuleSetQueue();
         }
-        
-        private void ProcessDottedRuleSetQueue()
+
+        public IGrammar Grammar { get; }
+
+        public DottedRuleAssortment Start { get; }
+
+        private static Symbol GetPostDotSymbol(DottedRule state)
         {
-            while (this._dottedRuleSetQueue.Count > 0)
-            {
-                // assume the closure has already been captured
-                var frame = this._dottedRuleSetQueue.Dequeue();
-                ProcessSymbolTransitions(frame);
-
-                // capture the predictions for the frame
-                var predictedStates = GetPredictedStates(frame);
-
-                // if no predictions, continue
-                if (predictedStates.Count == 0)
-                {
-                    continue;
-                }
-
-                // assign the null transition
-                // only process symbols on the null frame if it is new
-                if (!TryGetOrCreateDottedRuleSet(predictedStates, out var nullDottedRuleSet))
-                {
-                    ProcessSymbolTransitions(nullDottedRuleSet);
-                }
-
-                frame.NullTransition = nullDottedRuleSet;
-            }
+            return state.Production.RightHandSide[state.Position];
         }
 
-        private SortedSet<IDottedRule> Initialize(IGrammar grammar)
+        private static bool IsComplete(DottedRule state)
         {
-            var pool = SharedPools.Default<SortedSet<IDottedRule>>();
-            
-            var startStates = pool.AllocateAndClear();
-            var startProductions = grammar.StartProductions();
+            return state.Position == state.Production.RightHandSide.Count;
+        }
 
-            for (var p = 0; p < startProductions.Count; p++)
+        private DottedRuleAssortment AddNewOrGetExistingDottedRuleSet(SortedSet<DottedRule> states)
+        {
+            var dottedRuleSet = new DottedRuleAssortment(states);
+            if (this._dottedRuleSets.TryGetValue(dottedRuleSet, out var outDottedRuleSet))
             {
-                var production = startProductions[p];
-                var state = GetPreComputedState(production, 0);
-                startStates.Add(state);
+                return outDottedRuleSet;
             }
 
-            var confirmedStates = GetConfirmedStates(startStates);
-
-            pool.ClearAndFree(startStates);
-            return confirmedStates;
+            outDottedRuleSet = dottedRuleSet;
+            this._dottedRuleSets[dottedRuleSet] = outDottedRuleSet;
+            this._dottedRuleSetQueue.Enqueue(outDottedRuleSet);
+            return outDottedRuleSet;
         }
 
-        private IDottedRule GetPreComputedState(IProduction production, int position)
+        private SortedSet<DottedRule> GetConfirmedStates(SortedSet<DottedRule> states)
         {
-            return Grammar.DottedRules.Get(production, position);
-        }
-
-        private SortedSet<IDottedRule> GetConfirmedStates(SortedSet<IDottedRule> states)
-        {
-            var pool = SharedPools.Default<Queue<IDottedRule>>();
+            var pool = SharedPools.Default<Queue<DottedRule>>();
 
             var queue = pool.AllocateAndClear();
-            var closure = new SortedSet<IDottedRule>();
+            var closure = new SortedSet<DottedRule>();
 
             foreach (var state in states)
             {
@@ -125,16 +92,22 @@ namespace Pliant.Grammars
                     }
                 }
             }
+
             pool.ClearAndFree(queue);
             return closure;
         }
 
-        private SortedSet<IDottedRule> GetPredictedStates(DottedRuleSet frame)
+        private DottedRule GetPreComputedState(Production production, int position)
         {
-            var pool = SharedPools.Default<Queue<IDottedRule>>();
+            return Grammar.DottedRules.Get(production, position);
+        }
+
+        private SortedSet<DottedRule> GetPredictedStates(DottedRuleAssortment frame)
+        {
+            var pool = SharedPools.Default<Queue<DottedRule>>();
 
             var queue = pool.AllocateAndClear();
-            var closure = new SortedSet<IDottedRule>();
+            var closure = new SortedSet<DottedRule>();
 
             for (var i = 0; i < frame.Data.Count; i++)
             {
@@ -198,42 +171,62 @@ namespace Pliant.Grammars
             return closure;
         }
 
-        private DottedRuleSet AddNewOrGetExistingDottedRuleSet(SortedSet<IDottedRule> states)
+        private SortedSet<DottedRule> Initialize(IGrammar grammar)
         {
-            var dottedRuleSet = new DottedRuleSet(states);
-            if (this._dottedRuleSets.TryGetValue(dottedRuleSet, out var outDottedRuleSet))
+            var pool = SharedPools.Default<SortedSet<DottedRule>>();
+
+            var startStates = pool.AllocateAndClear();
+            var startProductions = grammar.StartProductions();
+
+            for (var p = 0; p < startProductions.Count; p++)
             {
-                return outDottedRuleSet;
+                var production = startProductions[p];
+                var state = GetPreComputedState(production, 0);
+                startStates.Add(state);
             }
 
-            outDottedRuleSet = dottedRuleSet;
-            this._dottedRuleSets[dottedRuleSet] = outDottedRuleSet;
-            this._dottedRuleSetQueue.Enqueue(outDottedRuleSet);
-            return outDottedRuleSet;
+            var confirmedStates = GetConfirmedStates(startStates);
+
+            pool.ClearAndFree(startStates);
+            return confirmedStates;
         }
 
-        private bool TryGetOrCreateDottedRuleSet(SortedSet<IDottedRule> states, out DottedRuleSet outDottedRuleSet)
+        private void ProcessDottedRuleSetQueue()
         {
-            var dottedRuleSet = new DottedRuleSet(states);
-            if (this._dottedRuleSets.TryGetValue(dottedRuleSet, out outDottedRuleSet))
+            while (this._dottedRuleSetQueue.Count > 0)
             {
-                return true;
-            }
+                // assume the closure has already been captured
+                var frame = this._dottedRuleSetQueue.Dequeue();
+                ProcessSymbolTransitions(frame);
 
-            outDottedRuleSet = dottedRuleSet;
-            this._dottedRuleSets[dottedRuleSet] = outDottedRuleSet;
-            this._dottedRuleSetQueue.Enqueue(outDottedRuleSet);
-            return false;
+                // capture the predictions for the frame
+                var predictedStates = GetPredictedStates(frame);
+
+                // if no predictions, continue
+                if (predictedStates.Count == 0)
+                {
+                    continue;
+                }
+
+                // assign the null transition
+                // only process symbols on the null frame if it is new
+                if (!TryGetOrCreateDottedRuleSet(predictedStates, out var nullDottedRuleSet))
+                {
+                    ProcessSymbolTransitions(nullDottedRuleSet);
+                }
+
+                frame.NullTransition = nullDottedRuleSet;
+            }
         }
 
-        private void ProcessSymbolTransitions(DottedRuleSet frame)
+        private void ProcessSymbolTransitions(DottedRuleAssortment frame)
         {
-            var pool = SharedPools.Default<Dictionary<ISymbol, SortedSet<IDottedRule>>>();
+            var pool = SharedPools.Default<Dictionary<Symbol, SortedSet<DottedRule>>>();
             var transitions = pool.AllocateAndClear();
 
             for (var i = 0; i < frame.Data.Count; i++)
             {
-                var nfaState = frame.Data[i];                
+                var nfaState = frame.Data[i];
                 if (IsComplete(nfaState))
                 {
                     continue;
@@ -256,14 +249,22 @@ namespace Pliant.Grammars
             pool.ClearAndFree(transitions);
         }
 
-        private static ISymbol GetPostDotSymbol(IDottedRule state)
+        private bool TryGetOrCreateDottedRuleSet(SortedSet<DottedRule> states, out DottedRuleAssortment outDottedRuleSet)
         {
-            return state.Production.RightHandSide[state.Position];
+            var dottedRuleSet = new DottedRuleAssortment(states);
+            if (this._dottedRuleSets.TryGetValue(dottedRuleSet, out outDottedRuleSet))
+            {
+                return true;
+            }
+
+            outDottedRuleSet = dottedRuleSet;
+            this._dottedRuleSets[dottedRuleSet] = outDottedRuleSet;
+            this._dottedRuleSetQueue.Enqueue(outDottedRuleSet);
+            return false;
         }
 
-        private static bool IsComplete(IDottedRule state)
-        {
-            return state.Position == state.Production.RightHandSide.Count;
-        }
+        private readonly ProcessOnceQueue<DottedRuleAssortment> _dottedRuleSetQueue;
+
+        private readonly Dictionary<DottedRuleAssortment, DottedRuleAssortment> _dottedRuleSets;
     }
 }

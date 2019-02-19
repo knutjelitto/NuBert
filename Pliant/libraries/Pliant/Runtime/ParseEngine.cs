@@ -233,7 +233,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private IForestNode CreateNullParseNode(ISymbol symbol, int location)
+        private IForestNode CreateNullParseNode(Symbol symbol, int location)
         {
             var symbolNode = this._nodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
             var token = new Token(string.Empty, location, EmptyTokenType);
@@ -243,7 +243,7 @@ namespace Pliant.Runtime
         }
 
         private IForestNode CreateParseNode(
-            IDottedRule nextDottedRule,
+            DottedRule nextDottedRule,
             int origin,
             IForestNode w,
             IForestNode v,
@@ -418,7 +418,7 @@ namespace Pliant.Runtime
             return true;
         }
 
-        private bool IsSymbolNullable(ISymbol symbol)
+        private bool IsSymbolNullable(Symbol symbol)
         {
             if (symbol == null)
             {
@@ -433,7 +433,7 @@ namespace Pliant.Runtime
             return false;
         }
 
-        private bool IsSymbolTransativeNullable(ISymbol symbol)
+        private bool IsSymbolTransativeNullable(Symbol symbol)
         {
             if (symbol == null)
             {
@@ -489,7 +489,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void OptimizeReductionPath(ISymbol searchSymbol, int k)
+        private void OptimizeReductionPath(Symbol searchSymbol, int k)
         {
             State t_rule = null;
             TransitionState previousTransitionState = null;
@@ -500,7 +500,7 @@ namespace Pliant.Runtime
         }
 
         private void OptimizeReductionPathRecursive(
-            ISymbol searchSymbol,
+            Symbol searchSymbol,
             int k,
             ref State t_rule,
             ref TransitionState previousTransitionState,
@@ -644,7 +644,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void PredictProduction(int j, IProduction production)
+        private void PredictProduction(int j, Production production)
         {
             var dottedRule = this._dottedRuleRegistry.Get(production, 0);
             if (Chart.Contains(j, dottedRule, 0))
@@ -737,7 +737,7 @@ namespace Pliant.Runtime
 
         private static readonly TokenType EmptyTokenType = new TokenType(string.Empty);
 
-        private readonly IDottedRuleRegistry _dottedRuleRegistry;
+        private readonly DottedRuleRegistry _dottedRuleRegistry;
 
         private Dictionary<int, LexerRule[]> _expectedLexerRuleCache;
         private BitArray _expectedLexerRuleIndicies;

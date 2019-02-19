@@ -35,7 +35,7 @@ namespace Pliant.RegularExpressions
             throw new Exception("Invalid Regex Character Class Character.");
         }
 
-        private static RegexCharacterUnitRange VisitCharacterRangeNode(IInternalTreeNode internalNode)
+        private static RegexCharacters VisitCharacterRangeNode(IInternalTreeNode internalNode)
         {
             RegexCharacterClassCharacter start = null;
             RegexCharacterClassCharacter end = null;
@@ -44,8 +44,7 @@ namespace Pliant.RegularExpressions
             {
                 if (child is IInternalTreeNode childInternalNode)
                 {
-                    var childInternalNodeSymbolValue = childInternalNode.Symbol.Value;
-                    if (RegexGrammar.CharacterClassCharacter == childInternalNodeSymbolValue)
+                    if (RegexGrammar.CharacterClassCharacter == childInternalNode.Symbol.Value)
                     {
                         if (start == null)
                         {
@@ -60,13 +59,13 @@ namespace Pliant.RegularExpressions
             }
 
             return end == null 
-                       ? new RegexCharacterUnitRange(start)
-                       : new RegexCharacterRange(start, end);
+                       ? (RegexCharacters)new RegexCharactersUnit(start)
+                       : (RegexCharacters)new RegexCharactersRange(start, end);
         }
 
         private RegexCharacterClass VisitCharacterClassNode(IInternalTreeNode internalNode)
         {
-            RegexCharacterUnitRange characterRange = null;
+            RegexCharacters characterRange = null;
             RegexCharacterClass characterClass = null;
 
             foreach (var child in internalNode.Children)
@@ -97,8 +96,7 @@ namespace Pliant.RegularExpressions
             {
                 if (child is IInternalTreeNode childInternalNode)
                 {
-                    var childInternalNodeSymbolValue = childInternalNode.Symbol.Value;
-                    if (RegexGrammar.CharacterClass == childInternalNodeSymbolValue)
+                    if (RegexGrammar.CharacterClass == childInternalNode.Symbol.Value)
                     {
                         var characterClass = VisitCharacterClassNode(childInternalNode);
                         return new RegexSet(negate, characterClass);
@@ -226,8 +224,8 @@ namespace Pliant.RegularExpressions
             }
 
             return iterator.HasValue
-                       ? new RegexFactorIterator(atom, iterator.Value)
-                       : new RegexFactor(atom);
+                       ? (RegexFactor)new RegexFactorIterator(atom, iterator.Value)
+                       : (RegexFactor)new RegexFactorAtom(atom);
         }
 
         private RegexIterator VisitRegexIteratorNode(IInternalTreeNode internalNode)
@@ -312,7 +310,7 @@ namespace Pliant.RegularExpressions
 
         private RegexTerm VisitRegexTermNode(IInternalTreeNode internalNode)
         {
-            RegexFactor factor = null;
+            RegexFactor factorAtom = null;
             RegexTerm term = null;
 
             foreach (var child in internalNode.Children)
@@ -323,7 +321,7 @@ namespace Pliant.RegularExpressions
 
                     if (RegexGrammar.Factor == symbolValue)
                     {
-                        factor = VisitRegexFactorNode(childInternalNode);
+                        factorAtom = VisitRegexFactorNode(childInternalNode);
                     }
                     else if (RegexGrammar.Term == symbolValue)
                     {
@@ -332,7 +330,9 @@ namespace Pliant.RegularExpressions
                 }
             }
 
-            return term == null ? new RegexTerm(factor) : new RegexTermFactor(factor, term);
+            return term == null 
+                       ? (RegexTerm)new RegexTermFactor(factorAtom) 
+                       : (RegexTerm)new RegexTermFactorTerm(factorAtom, term);
         }
     }
 }

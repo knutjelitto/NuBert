@@ -5,33 +5,33 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class DottedRuleSet
+    public class DottedRuleAssortment
     {
-        public DottedRuleSet(SortedSet<IDottedRule> set)
+        public DottedRuleAssortment(SortedSet<DottedRule> set)
         {
             this._set = set;
             this._cachedData = this._set.ToArray();
-            this._reductions = new Dictionary<ISymbol, DottedRuleSet>();
-            this._tokenTransitions = new Dictionary<TokenType, DottedRuleSet>();
-            this._scans = new Dictionary<LexerRule, DottedRuleSet>();
+            this._reductions = new Dictionary<Symbol, DottedRuleAssortment>();
+            this._tokenTransitions = new Dictionary<TokenType, DottedRuleAssortment>();
+            this._scans = new Dictionary<LexerRule, DottedRuleAssortment>();
             this._scanKeys = new List<LexerRule>();
 
             this._hashCode = ComputeHashCode(set);
         }
 
-        public IReadOnlyList<IDottedRule> Data => this._cachedData;
+        public IReadOnlyList<DottedRule> Data => this._cachedData;
 
-        public DottedRuleSet NullTransition { get; set; }
+        public DottedRuleAssortment NullTransition { get; set; }
 
-        public IReadOnlyDictionary<ISymbol, DottedRuleSet> Reductions => this._reductions;
+        public IReadOnlyDictionary<Symbol, DottedRuleAssortment> Reductions => this._reductions;
 
         public IReadOnlyList<LexerRule> ScanKeys => this._scanKeys;
 
-        public IReadOnlyDictionary<LexerRule, DottedRuleSet> Scans => this._scans;
+        public IReadOnlyDictionary<LexerRule, DottedRuleAssortment> Scans => this._scans;
 
-        public IReadOnlyDictionary<TokenType, DottedRuleSet> TokenTransitions => this._tokenTransitions;
+        public IReadOnlyDictionary<TokenType, DottedRuleAssortment> TokenTransitions => this._tokenTransitions;
 
-        public void AddTransistion(ISymbol symbol, DottedRuleSet target)
+        public void AddTransistion(Symbol symbol, DottedRuleAssortment target)
         {
             if (symbol is NonTerminal)
             {
@@ -51,7 +51,7 @@ namespace Pliant.Grammars
             }
         }
 
-        public bool Contains(IDottedRule state)
+        public bool Contains(DottedRule state)
         {
             return this._set.Contains(state);
         }
@@ -63,7 +63,7 @@ namespace Pliant.Grammars
                 return false;
             }
 
-            var dottedRuleSet = obj as DottedRuleSet;
+            var dottedRuleSet = obj as DottedRuleAssortment;
             if (dottedRuleSet == null)
             {
                 return false;
@@ -85,18 +85,18 @@ namespace Pliant.Grammars
             return this._hashCode;
         }
 
-        private static int ComputeHashCode(SortedSet<IDottedRule> data)
+        private static int ComputeHashCode(SortedSet<DottedRule> data)
         {
             return HashCode.Compute(data);
         }
 
-        private readonly IDottedRule[] _cachedData;
+        private readonly DottedRule[] _cachedData;
 
         private readonly int _hashCode;
-        private readonly Dictionary<ISymbol, DottedRuleSet> _reductions;
+        private readonly Dictionary<Symbol, DottedRuleAssortment> _reductions;
         private readonly List<LexerRule> _scanKeys;
-        private readonly Dictionary<LexerRule, DottedRuleSet> _scans;
-        private readonly SortedSet<IDottedRule> _set;
-        private readonly Dictionary<TokenType, DottedRuleSet> _tokenTransitions;
+        private readonly Dictionary<LexerRule, DottedRuleAssortment> _scans;
+        private readonly SortedSet<DottedRule> _set;
+        private readonly Dictionary<TokenType, DottedRuleAssortment> _tokenTransitions;
     }
 }

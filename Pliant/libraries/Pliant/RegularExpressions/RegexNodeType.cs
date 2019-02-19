@@ -17,7 +17,7 @@
         RegexExpression,
         RegexExpressionTerm,
         RegexExpressionAlteration,
-        RegexFactor,
+        RegexFactorAtom,
         RegexFactorIterator,
         RegexSet,
         RegexTerm,

@@ -3,7 +3,7 @@
     public sealed class NonTerminal : Symbol
     {
         public NonTerminal(string @namespace, string name)
-            : this(new FullyQualifiedName(@namespace, name))
+            : this(new QualifiedName(@namespace, name))
         {
         }
 
@@ -12,12 +12,12 @@
         {
         }
 
-        public NonTerminal(FullyQualifiedName fullyQualifiedName)
+        public NonTerminal(QualifiedName fullyQualifiedName)
         {
             FullyQualifiedName = fullyQualifiedName;
         }
 
-        public FullyQualifiedName FullyQualifiedName { get; }
+        public QualifiedName FullyQualifiedName { get; }
 
         public string Value => FullyQualifiedName.FullName;
 

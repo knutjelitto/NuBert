@@ -161,22 +161,22 @@ namespace Pliant.Runtime
             Initialize();
         }
 
-        private static DottedRuleSet Goto(DottedRuleSet fromAH)
+        private static DottedRuleAssortment Goto(DottedRuleAssortment fromAH)
         {
             return fromAH.NullTransition;
         }
 
-        private static DottedRuleSet Goto(DottedRuleSet fromAH, ISymbol symbol)
+        private static DottedRuleAssortment Goto(DottedRuleAssortment fromAH, Symbol symbol)
         {
             return fromAH.Reductions.GetOrReturnNull(symbol);
         }
 
-        private static DottedRuleSet Goto(DottedRuleSet fromAH, IToken token)
+        private static DottedRuleAssortment Goto(DottedRuleAssortment fromAH, IToken token)
         {
             return fromAH.TokenTransitions.GetOrReturnNull(token.TokenType);
         }
 
-        private void AddEimPair(int iLoc, DottedRuleSet confirmedAH, int origLoc)
+        private void AddEimPair(int iLoc, DottedRuleAssortment confirmedAH, int origLoc)
         {
             var confirmedEIM = new DeterministicState(confirmedAH, origLoc);
             var predictedAH = Goto(confirmedAH);
@@ -211,7 +211,7 @@ namespace Pliant.Runtime
             return false;
         }
 
-        private bool AnyPreComputedStateAccepted(IReadOnlyList<IDottedRule> states)
+        private bool AnyPreComputedStateAccepted(IReadOnlyList<DottedRule> states)
         {
             for (var j = 0; j < states.Count; j++)
             {
@@ -235,7 +235,7 @@ namespace Pliant.Runtime
 
         private CachedDottedRuleSetTransition CreateTopCachedItem(
             DeterministicState stateFrame,
-            ISymbol postDotSymbol)
+            Symbol postDotSymbol)
         {
             var origin = stateFrame.Origin;
             CachedDottedRuleSetTransition topCacheItem = null;
@@ -264,7 +264,7 @@ namespace Pliant.Runtime
                 topCacheItem == null ? stateFrame.Origin : origin);
         }
 
-        private void EarleyReductionOperation(int iLoc, DeterministicState fromEim, ISymbol transSym)
+        private void EarleyReductionOperation(int iLoc, DeterministicState fromEim, Symbol transSym)
         {
             var fromAH = fromEim.DottedRuleSet;
             var originLoc = fromEim.Origin;
@@ -285,7 +285,7 @@ namespace Pliant.Runtime
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool IsStartState(IDottedRule state)
+        private bool IsStartState(DottedRule state)
         {
             var start = this._preComputedGrammar.Grammar.Start;
             return state.Production.LeftHandSide.Equals(start);
@@ -311,9 +311,9 @@ namespace Pliant.Runtime
             var frameSet = Chart.Sets[iLoc];
             // leo eligibility needs to be cached before creating the cached transition
             // if the size of the list is != 1, do not enter the cached frame transition
-            var cachedTransitionsPool = SharedPools.Default<Dictionary<ISymbol, CachedDottedRuleSetTransition>>();
+            var cachedTransitionsPool = SharedPools.Default<Dictionary<Symbol, CachedDottedRuleSetTransition>>();
             var cachedTransitions = cachedTransitionsPool.AllocateAndClear();
-            var cachedCountPool = SharedPools.Default<Dictionary<ISymbol, int>>();
+            var cachedCountPool = SharedPools.Default<Dictionary<Symbol, int>>();
             var cachedCount = cachedCountPool.AllocateAndClear();
 
             for (var i = 0; i < frameSet.States.Count; i++)
@@ -392,7 +392,7 @@ namespace Pliant.Runtime
         private void ReductionPass(int iLoc)
         {
             var iES = Chart.Sets[iLoc];
-            var processed = SharedPools.Default<HashSet<ISymbol>>().AllocateAndClear();
+            var processed = SharedPools.Default<HashSet<Symbol>>().AllocateAndClear();
             for (var i = 0; i < iES.States.Count; i++)
             {
                 var workEIM = iES.States[i];
@@ -419,7 +419,7 @@ namespace Pliant.Runtime
                 processed.Clear();
             }
 
-            SharedPools.Default<HashSet<ISymbol>>().ClearAndFree(processed);
+            SharedPools.Default<HashSet<Symbol>>().ClearAndFree(processed);
             MemoizeTransitions(iLoc);
         }
 

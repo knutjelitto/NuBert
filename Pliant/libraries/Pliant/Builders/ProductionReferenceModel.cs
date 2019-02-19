@@ -12,10 +12,10 @@ namespace Pliant.Builders
 
         public IGrammar Grammar { get; }
 
-        public NonTerminal Reference { get; }
-
         public override SymbolModelType ModelType => SymbolModelType.Reference;
 
-        public override ISymbol Symbol => Reference;
+        public override Symbol Symbol => Reference;
+
+        private NonTerminal Reference { get; }
     }
 }

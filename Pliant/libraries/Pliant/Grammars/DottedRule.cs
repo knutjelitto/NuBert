@@ -1,62 +1,49 @@
-﻿using Pliant.Utilities;
+﻿using System;
 using System.Text;
-using System;
 using Pliant.Diagnostics;
+using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class DottedRule : IComparable<DottedRule>, IDottedRule
+    public class DottedRule : IComparable<DottedRule>
     {
-        private readonly int _hashCode;
-        
-        public IProduction Production { get; private set; }
-
-        public int Position { get; private set; }
-
-        public ISymbol PreDotSymbol { get; private set; }
-
-        public ISymbol PostDotSymbol { get; private set; }
-
-        public bool IsComplete { get; private set; }
-
-        public DottedRule(IProduction production, int position)
+        public DottedRule(Production production, int position)
         {
             Assert.IsNotNull(production, nameof(production));
             Assert.IsGreaterThanEqualToZero(position, nameof(position));
 
             Production = production;
             Position = position;
-            this._hashCode = ComputeHashCode(Production, Position);
-            PostDotSymbol = GetPostDotSymbol(position, production);
-            PreDotSymbol = GetPreDotSymbol(position, production);
+            PostDotSymbol = GetPostDotSymbol(production, position);
+            PreDotSymbol = GetPreDotSymbol(production, position);
             IsComplete = IsCompleted(position, production);
+
+            this._hashCode = ComputeHashCode(Production, Position);
         }
-        
-        private static int ComputeHashCode(IProduction production, int position)
+
+        public bool IsComplete { get; }
+
+        public int Position { get; }
+
+        public Symbol PostDotSymbol { get; }
+
+        public Symbol PreDotSymbol { get; }
+
+        public Production Production { get; }
+
+        public int CompareTo(DottedRule other)
         {
-            return HashCode.Compute(production.GetHashCode(), position.GetHashCode());
+            return GetHashCode().CompareTo(other.GetHashCode());
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is DottedRule other && other.Production.Equals(Production) && other.Position == Position;
         }
 
         public override int GetHashCode()
         {
             return this._hashCode;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var preComputedState = obj as DottedRule;
-            if (preComputedState == null)
-            {
-                return false;
-            }
-
-            return preComputedState.Production.Equals(Production)
-                && preComputedState.Position == Position;
         }
 
         public override string ToString()
@@ -80,33 +67,13 @@ namespace Pliant.Grammars
 
             return stringBuilder.ToString();
         }
-        
-        private static bool IsCompleted(int position, IProduction production)
+
+        private static int ComputeHashCode(Production production, int position)
         {
-            return position == production.RightHandSide.Count;
+            return HashCode.Compute(production.GetHashCode(), position.GetHashCode());
         }
 
-        public int CompareTo(DottedRule other)
-        {
-            return GetHashCode().CompareTo(other.GetHashCode());
-        }
-
-        public int CompareTo(IDottedRule other)
-        {
-            return GetHashCode().CompareTo(other.GetHashCode());
-        }
-
-        private static ISymbol GetPreDotSymbol(int position, IProduction production)
-        {
-            if (position == 0 || production.IsEmpty)
-            {
-                return null;
-            }
-
-            return production.RightHandSide[position - 1];
-        }
-        
-        private static ISymbol GetPostDotSymbol(int position, IProduction production)
+        private static Symbol GetPostDotSymbol(Production production, int position)
         {
             var productionRighHandSide = production.RightHandSide;
             if (position >= productionRighHandSide.Count)
@@ -115,6 +82,23 @@ namespace Pliant.Grammars
             }
 
             return productionRighHandSide[position];
-        }        
+        }
+
+        private static Symbol GetPreDotSymbol(Production production, int position)
+        {
+            if (position == 0 || production.IsEmpty)
+            {
+                return null;
+            }
+
+            return production.RightHandSide[position - 1];
+        }
+
+        private static bool IsCompleted(int position, Production production)
+        {
+            return position == production.RightHandSide.Count;
+        }
+
+        private readonly int _hashCode;
     }
 }

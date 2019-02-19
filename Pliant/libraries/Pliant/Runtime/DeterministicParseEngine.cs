@@ -125,7 +125,7 @@ namespace Pliant.Runtime
             return false;
         }
 
-        private bool AnyPreComputedStateAccepted(IReadOnlyList<IDottedRule> states)
+        private bool AnyPreComputedStateAccepted(IReadOnlyList<DottedRule> states)
         {
             for (var j = 0; j < states.Count; j++)
             {
@@ -163,7 +163,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void ReduceDottedRuleSet(int i, int parent, DottedRuleSet dottedRuleSet)
+        private void ReduceDottedRuleSet(int i, int parent, DottedRuleAssortment dottedRuleSet)
         {
             var parentSet = this._chart.Sets[parent];
             var parentSetDeterministicStates = parentSet.States;
@@ -223,7 +223,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void ScanDottedRuleSet(int location, IToken token, int parent, DottedRuleSet dottedRuleSet)
+        private void ScanDottedRuleSet(int location, IToken token, int parent, DottedRuleAssortment dottedRuleSet)
         {
 
             //PERF: This could perhaps be improved with an int array and direct index lookup based on "token.TokenType.Id"?...
@@ -334,20 +334,20 @@ namespace Pliant.Runtime
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool IsStartState(IDottedRule state)
+        private bool IsStartState(DottedRule state)
         {
             var start = Grammar.Start;
             return state.Production.LeftHandSide.Equals(start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsComplete(IDottedRule preComputedState)
+        private static bool IsComplete(DottedRule preComputedState)
         {
             return preComputedState.Position == preComputedState.Production.RightHandSide.Count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static ISymbol GetPostDotSymbol(IDottedRule preComputedState)
+        private static Symbol GetPostDotSymbol(DottedRule preComputedState)
         {
             return preComputedState.Production.RightHandSide[preComputedState.Position];
         }

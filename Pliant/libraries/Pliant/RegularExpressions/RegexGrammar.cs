@@ -48,19 +48,19 @@ namespace Pliant.RegularExpressions
          */
 
         public static readonly string Namespace = nameof(RegularExpressions);
-        public static readonly FullyQualifiedName Regex = new FullyQualifiedName(Namespace, nameof(Regex));
-        public static readonly FullyQualifiedName Expression = new FullyQualifiedName(Namespace, nameof(Expression));
-        public static readonly FullyQualifiedName Term = new FullyQualifiedName(Namespace, nameof(Term));
-        public static readonly FullyQualifiedName Factor = new FullyQualifiedName(Namespace, nameof(Factor));
-        public static readonly FullyQualifiedName Atom = new FullyQualifiedName(Namespace, nameof(Atom));
-        public static readonly FullyQualifiedName Iterator = new FullyQualifiedName(Namespace, nameof(Iterator));
-        public static readonly FullyQualifiedName Set = new FullyQualifiedName(Namespace, nameof(Set));
-        public static readonly FullyQualifiedName PositiveSet = new FullyQualifiedName(Namespace, nameof(PositiveSet));
-        public static readonly FullyQualifiedName NegativeSet = new FullyQualifiedName(Namespace, nameof(NegativeSet));
-        public static readonly FullyQualifiedName CharacterClass = new FullyQualifiedName(Namespace, nameof(CharacterClass));
-        public static readonly FullyQualifiedName CharacterRange = new FullyQualifiedName(Namespace, nameof(CharacterRange));
-        public static readonly FullyQualifiedName Character = new FullyQualifiedName(Namespace, nameof(Character));
-        public static readonly FullyQualifiedName CharacterClassCharacter = new FullyQualifiedName(Namespace, nameof(CharacterClassCharacter));
+        public static readonly QualifiedName Regex = new QualifiedName(Namespace, nameof(Regex));
+        public static readonly QualifiedName Expression = new QualifiedName(Namespace, nameof(Expression));
+        public static readonly QualifiedName Term = new QualifiedName(Namespace, nameof(Term));
+        public static readonly QualifiedName Factor = new QualifiedName(Namespace, nameof(Factor));
+        public static readonly QualifiedName Atom = new QualifiedName(Namespace, nameof(Atom));
+        public static readonly QualifiedName Iterator = new QualifiedName(Namespace, nameof(Iterator));
+        public static readonly QualifiedName Set = new QualifiedName(Namespace, nameof(Set));
+        public static readonly QualifiedName PositiveSet = new QualifiedName(Namespace, nameof(PositiveSet));
+        public static readonly QualifiedName NegativeSet = new QualifiedName(Namespace, nameof(NegativeSet));
+        public static readonly QualifiedName CharacterClass = new QualifiedName(Namespace, nameof(CharacterClass));
+        public static readonly QualifiedName CharacterRange = new QualifiedName(Namespace, nameof(CharacterRange));
+        public static readonly QualifiedName Character = new QualifiedName(Namespace, nameof(Character));
+        public static readonly QualifiedName CharacterClassCharacter = new QualifiedName(Namespace, nameof(CharacterClassCharacter));
         
         static RegexGrammar()
         {

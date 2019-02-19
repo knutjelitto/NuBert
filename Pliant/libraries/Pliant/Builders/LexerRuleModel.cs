@@ -2,27 +2,27 @@
 
 namespace Pliant.Builders
 {
-    public class LexerRuleModel : SymbolModel
+    public sealed class LexerRuleModel : SymbolModel
     {
         public LexerRuleModel(LexerRule value)
         {
             Value = value;
         }
 
-        public override ISymbol Symbol => Value;
+        public override SymbolModelType ModelType => SymbolModelType.LexerRule;
+
+        public override Symbol Symbol => Value;
 
         public LexerRule Value { get; }
 
-        public override SymbolModelType ModelType => SymbolModelType.LexerRule;
+        public override bool Equals(object obj)
+        {
+            return obj is LexerRuleModel other && Value.Equals(other.Value);
+        }
 
         public override int GetHashCode()
         {
             return Value.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is LexerRuleModel lexerRuleModel && Value.Equals(lexerRuleModel.Value);
         }
     }
 }

@@ -101,17 +101,17 @@ namespace Pliant.Tests.Unit.Ebnf
                                 new EbnfTerm(
                                     new EbnfFactorRegex(
                                         new Regex(
-                                            startsWith: false, 
-                                            expression: new RegexExpressionTerm(
-                                                new RegexTerm(
-                                                    new RegexFactor(
+                                            false, 
+                                            new RegexExpressionTerm(
+                                                new RegexTermFactor(
+                                                    new RegexFactorAtom(
                                                         new RegexAtomSet(
                                                             new RegexSet(false, 
                                                                 new RegexCharacterClass(
-                                                                    new RegexCharacterRange(
+                                                                    new RegexCharactersRange(
                                                                         new RegexCharacterClassCharacter('a'),
                                                                         new RegexCharacterClassCharacter('z')))))))), 
-                                            endsWith: false)))))));
+                                            false)))))));
 
             var actual = Parse(@"Rule = /[a-z]/;");
 
@@ -256,12 +256,12 @@ namespace Pliant.Tests.Unit.Ebnf
             Assert.IsNotNull(actual);
 
             var expected = new EbnfDefinition(
-                block: new EbnfBlockLexerRule(
-                   lexerRule: new EbnfLexerRule(
-                       qualifiedIdentifier: new EbnfQualifiedIdentifier("b"),
-                       expression:  new EbnfLexerRuleExpression(
-                            term: new EbnfLexerRuleTerm(
-                                factor: new EbnfLexerRuleFactorLiteral("b"))))));
+                new EbnfBlockLexerRule(
+                   new EbnfLexerRule(
+                       new EbnfQualifiedIdentifier("b"),
+                       new EbnfLexerRuleExpression(
+                            new EbnfLexerRuleTerm(
+                                new EbnfLexerRuleFactorLiteral("b"))))));
 
             Assert.AreEqual(expected, actual);
         }
@@ -278,7 +278,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var actual = Parse(stringBuilder.ToString());
 
             var grammar = new EbnfGrammar();
-            var parseEngine = new ParseEngine(grammar, new ParseEngineOptions(optimizeRightRecursion: false));
+            var parseEngine = new ParseEngine(grammar, new ParseEngineOptions(false));
             var parseRunner = new ParseRunner(parseEngine, stringBuilder.ToString());
             while (!parseRunner.EndOfStream())
             {

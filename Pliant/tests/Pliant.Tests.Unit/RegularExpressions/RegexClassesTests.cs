@@ -12,8 +12,8 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var regex = new Regex(
                 false, 
                 new RegexExpressionTerm(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomCharacter(
                                 new RegexCharacter('a'))))), 
                 false);
@@ -27,12 +27,12 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var regex = new Regex(
                 false,
                 new RegexExpressionTerm(
-                    new RegexTermFactor(                        
-                            new RegexFactor(
+                    new RegexTermFactorTerm(                        
+                            new RegexFactorAtom(
                                 new RegexAtomCharacter(
                                     new RegexCharacter('a'))),
-                            new RegexTerm(
-                                new RegexFactor(
+                            new RegexTermFactor(
+                                new RegexFactorAtom(
                                     new RegexAtomCharacter(
                                         new RegexCharacter('b')))))),
                 false);
@@ -45,13 +45,13 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var regex = new Regex(
                 false,
                 new RegexExpressionAlteration(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomCharacter(
                                 new RegexCharacter('a')))),
                     new RegexExpressionTerm(
-                        new RegexTerm(
-                            new RegexFactor(
+                        new RegexTermFactor(
+                            new RegexFactorAtom(
                                 new RegexAtomCharacter(
                                     new RegexCharacter('b')))))),
                 false);
@@ -64,13 +64,13 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var regex = new Regex(
                 false,
                 new RegexExpressionTerm(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomSet(
                                 new RegexSet(
                                     false, 
                                     new RegexCharacterClass(
-                                        new RegexCharacterUnitRange(
+                                        new RegexCharactersUnit(
                                             new RegexCharacterClassCharacter('a')))))))),
                 false);
             Assert.AreEqual("[a]", regex.ToString());
@@ -82,13 +82,13 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var regex = new Regex(
                 false, 
                 new RegexExpressionTerm(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomSet(
                                 new RegexSet(
                                     false, 
                                     new RegexCharacterClass(
-                                        new RegexCharacterRange(
+                                        new RegexCharactersRange(
                                             new RegexCharacterClassCharacter('a'),
                                             new RegexCharacterClassCharacter('z')))))))), 
                 false);
@@ -102,13 +102,13 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var regex = new Regex(
                 false,
                 new RegexExpressionTerm(
-                    new RegexTerm(
-                        new RegexFactor(
+                    new RegexTermFactor(
+                        new RegexFactorAtom(
                             new RegexAtomSet(
                                 new RegexSet(
                                     true,
                                     new RegexCharacterClass(
-                                        new RegexCharacterRange(
+                                        new RegexCharactersRange(
                                             new RegexCharacterClassCharacter('a'),
                                             new RegexCharacterClassCharacter('z')))))))),
                 false);

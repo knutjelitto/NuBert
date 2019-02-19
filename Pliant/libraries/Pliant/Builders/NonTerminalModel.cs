@@ -2,8 +2,7 @@
 
 namespace Pliant.Builders
 {
-    public class NonTerminalModel
-        : SymbolModel
+    public sealed class NonTerminalModel : SymbolModel
     {
         public NonTerminalModel(NonTerminal value)
         {
@@ -15,26 +14,25 @@ namespace Pliant.Builders
         {
         }
 
-        public NonTerminalModel(FullyQualifiedName fullyQualifiedName)
-            : this(new NonTerminal(fullyQualifiedName.Namespace, fullyQualifiedName.Name))
+        public NonTerminalModel(QualifiedName fullyQualifiedName)
+            : this(new NonTerminal(fullyQualifiedName.Qualifier, fullyQualifiedName.Name))
         {
         }
 
         public override SymbolModelType ModelType => SymbolModelType.NonTerminal;
 
-        public override ISymbol Symbol => NonTerminal;
-
         public NonTerminal NonTerminal { get; }
+
+        public override Symbol Symbol => NonTerminal;
+
+        public override bool Equals(object obj)
+        {
+            return obj is NonTerminalModel other && NonTerminal.Equals(other.NonTerminal);
+        }
 
         public override int GetHashCode()
         {
             return NonTerminal.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is NonTerminalModel nonTerminalModel &&
-                   NonTerminal.Equals(nonTerminalModel.NonTerminal);
         }
 
         public override string ToString()

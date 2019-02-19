@@ -11,9 +11,9 @@ namespace Pliant.Builders.Expressions
 
         public string Namespace { get; }
 
-        public static FullyQualifiedName operator +(NamespaceExpression @namespace, string name)
+        public static QualifiedName operator +(NamespaceExpression @namespace, string name)
         {
-            return new FullyQualifiedName(@namespace.Namespace, name);
+            return new QualifiedName(@namespace.Namespace, name);
         }
 
         public static implicit operator NamespaceExpression(string @namespace)

@@ -11,7 +11,7 @@ namespace Pliant.Builders
         {
         }
 
-        public TriviaSettingModel(FullyQualifiedName fullyQualifiedName)
+        public TriviaSettingModel(QualifiedName fullyQualifiedName)
             : base(SettingKey, fullyQualifiedName.FullName)
         {
         }

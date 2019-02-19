@@ -17,8 +17,8 @@ namespace Pliant.Charts
 
         int Location { get; }
 
-        TransitionState FindTransitionState(ISymbol searchSymbol);
+        TransitionState FindTransitionState(Symbol searchSymbol);
         
-        NormalState FindSourceState(ISymbol searchSymbol);
+        NormalState FindSourceState(Symbol searchSymbol);
     }
 }

@@ -5,13 +5,13 @@ namespace Pliant.Charts
 {
     public class DeterministicState
     {
-        public DottedRuleSet DottedRuleSet { get; private set; }
+        public DottedRuleAssortment DottedRuleSet { get; private set; }
 
         public int Origin { get; private set; }
 
         private readonly int _hashCode;
                 
-        public DeterministicState(DottedRuleSet dottedRuleSet, int origin)
+        public DeterministicState(DottedRuleAssortment dottedRuleSet, int origin)
         {
             DottedRuleSet = dottedRuleSet;
             Origin = origin;
@@ -40,12 +40,12 @@ namespace Pliant.Charts
             return this._hashCode;
         }
         
-        private static int ComputeHashCode(DottedRuleSet dottedRuleSet)
+        private static int ComputeHashCode(DottedRuleAssortment dottedRuleSet)
         {
             return dottedRuleSet.GetHashCode();
         }
 
-        private static int ComputeHashCode(DottedRuleSet dottedRuleSet, int origin)
+        private static int ComputeHashCode(DottedRuleAssortment dottedRuleSet, int origin)
         {
             return HashCode.Compute(dottedRuleSet.GetHashCode(), origin.GetHashCode());
         }

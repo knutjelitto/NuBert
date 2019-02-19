@@ -5,7 +5,7 @@ namespace Pliant.Charts
 {
     static class NormalStateHashCodeAlgorithm
     {
-        public static int Compute(IDottedRule dottedRule, int origin)
+        public static int Compute(DottedRule dottedRule, int origin)
         {
             return HashCode.Compute(
                 dottedRule.Position.GetHashCode(),

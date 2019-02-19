@@ -4,15 +4,15 @@ namespace Pliant.Charts
 {
     public class CachedDottedRuleSetTransition
     {
-        public ISymbol Symbol { get; private set; }
-        public DottedRuleSet DottedRuleSet { get; private set; }
-        public int Origin { get;  private set;}
-
-        public CachedDottedRuleSetTransition(ISymbol symbol, DottedRuleSet dottedRuleSet, int origin)
+        public CachedDottedRuleSetTransition(Symbol symbol, DottedRuleAssortment dottedRuleSet, int origin)
         {
             Symbol = symbol;
             DottedRuleSet = dottedRuleSet;
             Origin = origin;
         }
+
+        public DottedRuleAssortment DottedRuleSet { get; }
+        public int Origin { get; }
+        public Symbol Symbol { get; }
     }
 }

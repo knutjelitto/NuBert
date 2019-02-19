@@ -12,7 +12,7 @@ namespace Pliant.Builders
         {
         }
 
-        public StartProductionSettingModel(FullyQualifiedName fullyQualifiedName)
+        public StartProductionSettingModel(QualifiedName fullyQualifiedName)
             : base(SettingKey, fullyQualifiedName.FullName)
         {
         }

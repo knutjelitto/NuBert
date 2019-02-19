@@ -7,20 +7,20 @@ namespace Pliant.Grammars
     {
         public Grammar(
             NonTerminal start,
-            IReadOnlyList<IProduction> productions,
+            IReadOnlyList<Production> productions,
             IReadOnlyList<LexerRule> ignoreRules,
             IReadOnlyList<LexerRule> triviaRules)
         {
-            this._productions = new IndexedList<IProduction>();
+            this._productions = new IndexedList<Production>();
             this._ignores = new IndexedList<LexerRule>();
             this._trivia = new IndexedList<LexerRule>();
 
             this._transativeNullableSymbols = new UniqueList<NonTerminal>();
-            this._symbolsReverseLookup = new Dictionary<NonTerminal, UniqueList<IProduction>>();
+            this._symbolsReverseLookup = new Dictionary<NonTerminal, UniqueList<Production>>();
             this._lexerRules = new IndexedList<LexerRule>();
-            this._leftHandSideToProductions = new Dictionary<NonTerminal, List<IProduction>>();
+            this._leftHandSideToProductions = new Dictionary<NonTerminal, List<Production>>();
             this._dottedRuleRegistry = new DottedRuleRegistry();
-            this._symbolPaths = new Dictionary<ISymbol, UniqueList<ISymbol>>();
+            this._symbolPaths = new Dictionary<Symbol, UniqueList<Symbol>>();
 
             Start = start;
             AddProductions(productions ?? EmptyProductionArray);
@@ -31,13 +31,13 @@ namespace Pliant.Grammars
             FindNullableSymbols(this._symbolsReverseLookup, this._transativeNullableSymbols);
         }
 
-        public IReadOnlyDottedRuleRegistry DottedRules => this._dottedRuleRegistry;
+        public DottedRuleRegistry DottedRules => this._dottedRuleRegistry;
 
         public IReadOnlyList<LexerRule> Ignores => this._ignores;
 
         public IReadOnlyList<LexerRule> LexerRules => this._lexerRules;
 
-        public IReadOnlyList<IProduction> Productions => this._productions;
+        public IReadOnlyList<Production> Productions => this._productions;
 
         public NonTerminal Start { get; }
 
@@ -63,7 +63,7 @@ namespace Pliant.Grammars
             return productionList[0].RightHandSide.Count == 0;
         }
 
-        public bool IsRightRecursive(ISymbol symbol)
+        public bool IsRightRecursive(Symbol symbol)
         {
             return this._rightRecursiveSymbols.Contains(symbol);
         }
@@ -73,7 +73,7 @@ namespace Pliant.Grammars
             return this._transativeNullableSymbols.Contains(nonTerminal);
         }
 
-        public IReadOnlyList<IProduction> RulesContainingSymbol(NonTerminal nonTerminal)
+        public IReadOnlyList<Production> RulesContainingSymbol(NonTerminal nonTerminal)
         {
             if (!this._symbolsReverseLookup.TryGetValue(nonTerminal, out var list))
             {
@@ -83,7 +83,7 @@ namespace Pliant.Grammars
             return list;
         }
 
-        public IReadOnlyList<IProduction> RulesFor(NonTerminal nonTerminal)
+        public IReadOnlyList<Production> RulesFor(NonTerminal nonTerminal)
         {
             if (!this._leftHandSideToProductions.TryGetValue(nonTerminal, out var list))
             {
@@ -93,25 +93,25 @@ namespace Pliant.Grammars
             return list;
         }
 
-        public IReadOnlyList<IProduction> StartProductions()
+        public IReadOnlyList<Production> StartProductions()
         {
             return RulesFor(Start);
         }
 
         protected readonly IndexedList<LexerRule> _ignores;
         protected readonly IndexedList<LexerRule> _lexerRules;
-        protected readonly IndexedList<IProduction> _productions;
+        protected readonly IndexedList<Production> _productions;
         protected readonly IndexedList<LexerRule> _trivia;
 
         private static void FindNullableSymbols(
-            Dictionary<NonTerminal, UniqueList<IProduction>> reverseLookup,
+            Dictionary<NonTerminal, UniqueList<Production>> reverseLookup,
             UniqueList<NonTerminal> nullable)
         {
             // trace nullability through productions: http://cstheory.stackexchange.com/questions/2479/quickly-finding-empty-string-producing-nonterminals-in-a-cfg
             // I think this is Dijkstra's algorithm
             var nullableQueue = new Queue<NonTerminal>(nullable);
 
-            var productionSizes = new Dictionary<IProduction, int>();
+            var productionSizes = new Dictionary<Production, int>();
             // foreach nullable symbol discovered in forming the reverse lookup
             while (nullableQueue.Count > 0)
             {
@@ -147,7 +147,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private static void RegisterSymbolPath(IProduction production, UniqueList<ISymbol> symbolPath, int s)
+        private static void RegisterSymbolPath(Production production, UniqueList<Symbol> symbolPath, int s)
         {
             if (s < production.RightHandSide.Count)
             {
@@ -171,7 +171,7 @@ namespace Pliant.Grammars
             this._lexerRules.Add(lexerRule);
         }
 
-        private void AddProduction(IProduction production)
+        private void AddProduction(Production production)
         {
             this._productions.Add(production);
             AddProductionToLeftHandSideLookup(production);
@@ -200,7 +200,7 @@ namespace Pliant.Grammars
             RegisterDottedRule(production, production.RightHandSide.Count);
         }
 
-        private void AddProductions(IReadOnlyList<IProduction> productions)
+        private void AddProductions(IReadOnlyList<Production> productions)
         {
             for (var p = 0; p < productions.Count; p++)
             {
@@ -209,7 +209,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private void AddProductionToLeftHandSideLookup(IProduction production)
+        private void AddProductionToLeftHandSideLookup(Production production)
         {
             var leftHandSide = production.LeftHandSide;
             var indexedProductions = this._leftHandSideToProductions.AddOrGetExisting(leftHandSide);
@@ -226,11 +226,11 @@ namespace Pliant.Grammars
             }
         }
 
-        private HashSet<ISymbol> CreateRightRecursiveSymbols(
-            IDottedRuleRegistry dottedRuleRegistry,
-            Dictionary<ISymbol, UniqueList<ISymbol>> symbolPaths)
+        private HashSet<Symbol> CreateRightRecursiveSymbols(
+            DottedRuleRegistry dottedRuleRegistry,
+            Dictionary<Symbol, UniqueList<Symbol>> symbolPaths)
         {
-            var hashSet = new HashSet<ISymbol>();
+            var hashSet = new HashSet<Symbol>();
             for (var p = 0; p < this._productions.Count; p++)
             {
                 var production = this._productions[p];
@@ -265,13 +265,13 @@ namespace Pliant.Grammars
             return hashSet;
         }
 
-        private void RegisterDottedRule(IProduction production, int s)
+        private void RegisterDottedRule(Production production, int s)
         {
             var dottedRule = new DottedRule(production, s);
             this._dottedRuleRegistry.Register(dottedRule);
         }
 
-        private void RegisterSymbolInReverseLookup(IProduction production, ISymbol symbol)
+        private void RegisterSymbolInReverseLookup(Production production, Symbol symbol)
         {
             if (symbol is NonTerminal nonTerminal)
             {
@@ -282,13 +282,13 @@ namespace Pliant.Grammars
 
         private static readonly LexerRule[] EmptyLexerRuleArray = { };
         private static readonly DottedRule[] EmptyPredictionArray = { };
-        private static readonly IProduction[] EmptyProductionArray = { };
-        private readonly IDottedRuleRegistry _dottedRuleRegistry;
-        private readonly Dictionary<NonTerminal, List<IProduction>> _leftHandSideToProductions;
+        private static readonly Production[] EmptyProductionArray = { };
+        private readonly DottedRuleRegistry _dottedRuleRegistry;
+        private readonly Dictionary<NonTerminal, List<Production>> _leftHandSideToProductions;
 
-        private readonly HashSet<ISymbol> _rightRecursiveSymbols;
-        private readonly Dictionary<ISymbol, UniqueList<ISymbol>> _symbolPaths;
-        private readonly Dictionary<NonTerminal, UniqueList<IProduction>> _symbolsReverseLookup;
+        private readonly HashSet<Symbol> _rightRecursiveSymbols;
+        private readonly Dictionary<Symbol, UniqueList<Symbol>> _symbolPaths;
+        private readonly Dictionary<NonTerminal, UniqueList<Production>> _symbolsReverseLookup;
         private readonly UniqueList<NonTerminal> _transativeNullableSymbols;
     }
 }

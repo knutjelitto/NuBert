@@ -11,7 +11,7 @@ namespace Pliant.Builders
         {
         }
 
-        public IgnoreSettingModel(FullyQualifiedName fullyQualifiedName)
+        public IgnoreSettingModel(QualifiedName fullyQualifiedName)
             : base(SettingKey, fullyQualifiedName.FullName)
         {
         }

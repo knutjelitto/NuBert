@@ -253,13 +253,13 @@ namespace Pliant.Tests.Unit.Ebnf
             var whiteSpaceRegex = new Regex(
                 false, 
                 new RegexExpressionTerm(
-                    new RegexTerm(
+                    new RegexTermFactor(
                         new RegexFactorIterator(                            
                             new RegexAtomSet(
                                 new RegexSet(
                                     false,
                                     new RegexCharacterClass(
-                                        new RegexCharacterUnitRange(
+                                        new RegexCharactersUnit(
                                             new RegexCharacterClassCharacter(' '))))),
                             RegexIterator.OneOrMany))),
                 false);
@@ -295,13 +295,13 @@ namespace Pliant.Tests.Unit.Ebnf
             var whiteSpaceRegex = new Regex(
                 false,
                 new RegexExpressionTerm(
-                    new RegexTerm(
+                    new RegexTermFactor(
                         new RegexFactorIterator(
                             new RegexAtomSet(
                                 new RegexSet(
                                     false,
                                     new RegexCharacterClass(
-                                        new RegexCharacterUnitRange(
+                                        new RegexCharactersUnit(
                                             new RegexCharacterClassCharacter(' '))))),
                             RegexIterator.OneOrMany))),
                 false);

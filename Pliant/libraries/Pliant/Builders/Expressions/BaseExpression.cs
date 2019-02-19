@@ -2,7 +2,7 @@
 
 namespace Pliant.Builders.Expressions
 {
-    public class BaseExpression
+    public abstract class BaseExpression
     {
         public static RuleExpression operator +(BaseExpression lhs, BaseExpression rhs)
         {
