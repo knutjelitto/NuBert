@@ -36,8 +36,6 @@ namespace Pliant.Builders
 
         public NonTerminalModel LeftHandSide { get; set; }
 
-        public override SymbolModelType ModelType => SymbolModelType.Production;
-
         public override Symbol Symbol => LeftHandSide.NonTerminal;
 
         public void AddWithAnd(SymbolModel model)

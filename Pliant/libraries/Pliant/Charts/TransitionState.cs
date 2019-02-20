@@ -25,8 +25,6 @@ namespace Pliant.Charts
 
         public NormalState Reduction { get; }
 
-        public override StateType StateType => StateType.Transitive;
-
         public override bool Equals(object obj)
         {
             return obj is TransitionState transitionState && 

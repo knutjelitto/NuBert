@@ -20,8 +20,10 @@ namespace Pliant.Tests.Unit.Automata
 
             var dfaLexerRule = new DfaLexerRule(dfa, new TokenType("whitespace"));
             var whitespaceLexeme = new DfaLexeme(dfaLexerRule, 0);
-            for (int i = 0; i < randomWhitespace.Length; i++)
-                Assert.IsTrue(whitespaceLexeme.Scan(randomWhitespace[i]));
+            foreach (var character in randomWhitespace)
+            {
+                Assert.IsTrue(whitespaceLexeme.Scan(character));
+            }
         }
 
         [TestMethod]
@@ -38,8 +40,10 @@ namespace Pliant.Tests.Unit.Automata
 
             var dfaLexerRule = new DfaLexerRule(dfa, new TokenType("Identifier"));
             var indentifierLexeme = new DfaLexeme(dfaLexerRule, 0);
-            for (int i = 0; i < wordInput.Length; i++)
-                Assert.IsTrue(indentifierLexeme.Scan(wordInput[i]));
+            foreach (var character in wordInput)
+            {
+                Assert.IsTrue(indentifierLexeme.Scan(character));
+            }
         }
 
         [TestMethod]
@@ -65,18 +69,14 @@ namespace Pliant.Tests.Unit.Automata
 
             var lexeme = new DfaLexeme(numberLexerRule, 0);
             const string numberInput = "0123456";
-            for (var i = 0; i < numberInput.Length; i++)
+            foreach (var character in numberInput)
             {
-                var result = lexeme.Scan(numberInput[i]);
+                var result = lexeme.Scan(character);
                 if (!result)
-                    Assert.Fail($"Did not recognize number {numberInput[i]}");
+                {
+                    Assert.Fail($"Did not recognize number {character}");
+                }
             }
-            
-            lexeme.Reset(whitespaceLexerRule, 50);
-            Assert.AreEqual(string.Empty, lexeme.Value);
-            Assert.AreEqual(50, lexeme.Position);
-            Assert.AreEqual(whitespaceLexerRule.LexerRuleType, lexeme.LexerRule.LexerRuleType);
-            Assert.AreEqual(whitespaceLexerRule.TokenType, lexeme.TokenType);
         }
     }
 }

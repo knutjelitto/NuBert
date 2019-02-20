@@ -7,7 +7,7 @@ namespace Pliant.Tests.Common.Forest
     public class FakeTokenForestNode : ITokenForestNode
     {
         public FakeTokenForestNode(string token, int origin, int location)
-            : this(new Token(token, origin, new TokenType(token)), origin, location)
+            : this(new Token(origin, token, new TokenType(token)), origin, location)
         {
         }
 

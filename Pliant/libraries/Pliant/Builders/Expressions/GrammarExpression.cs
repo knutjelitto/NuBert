@@ -3,7 +3,7 @@ using Pliant.Grammars;
 
 namespace Pliant.Builders.Expressions
 {
-    public class GrammarExpression
+    public sealed class GrammarExpression
     {
         public GrammarExpression(
             ProductionExpression start,
@@ -28,6 +28,11 @@ namespace Pliant.Builders.Expressions
 
         public GrammarModel GrammarModel { get; private set; }
 
+        public IGrammar ToGrammar()
+        {
+            return GrammarModel.ToGrammar();
+        }
+
         private static List<LexerRuleModel> ToLexerRuleModelList(IReadOnlyList<LexerRule> lexerRuleList)
         {
             if (lexerRuleList == null || lexerRuleList.Count == 0)
@@ -45,8 +50,10 @@ namespace Pliant.Builders.Expressions
             return modelList;
         }
 
-        private void Initialize(ProductionExpression start, IReadOnlyList<ProductionExpression> productions,
-            IReadOnlyList<LexerRuleModel> ignore, IReadOnlyList<LexerRuleModel> trivia)
+        private void Initialize(ProductionExpression start,
+                                IReadOnlyList<ProductionExpression> productions,
+                                IReadOnlyList<LexerRuleModel> ignore,
+                                IReadOnlyList<LexerRuleModel> trivia)
         {
             GrammarModel = new GrammarModel
             {
@@ -83,11 +90,6 @@ namespace Pliant.Builders.Expressions
                         triviaRule);
                 }
             }
-        }
-
-        public IGrammar ToGrammar()
-        {
-            return GrammarModel.ToGrammar();
         }
     }
 }

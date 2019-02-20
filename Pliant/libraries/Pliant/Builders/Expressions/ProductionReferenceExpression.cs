@@ -2,7 +2,7 @@
 
 namespace Pliant.Builders.Expressions
 {
-    public class ProductionReferenceExpression : BaseExpression
+    public sealed class ProductionReferenceExpression : BaseExpression
     {
         public ProductionReferenceExpression(IGrammar grammar)
         {

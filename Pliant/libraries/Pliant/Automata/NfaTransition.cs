@@ -8,7 +8,5 @@
         }
 
         public NfaState Target { get; }
-
-        public abstract NfaTransitionType TransitionType { get; }
     }
 }

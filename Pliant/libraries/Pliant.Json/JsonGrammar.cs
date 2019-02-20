@@ -32,7 +32,7 @@ namespace Pliant.Json
 
             PairRepeat.Rule =
                 Pair
-                | Pair + ',' + PairRepeat
+                | (Pair + ',' + PairRepeat)
                 | (Expr)null;
 
             Pair.Rule =
@@ -43,7 +43,7 @@ namespace Pliant.Json
 
             ValueRepeat.Rule =
                 Value
-                | Value + ',' + ValueRepeat
+                | (Value + ',' + ValueRepeat)
                 | (Expr)null;
 
             Value.Rule = (Expr)
@@ -63,8 +63,9 @@ namespace Pliant.Json
             .ToGrammar();
         }
 
-        public JsonGrammar() 
-            : base(InnerGrammar) { }
+        public JsonGrammar() : base(InnerGrammar)
+        {
+        }
         
         private static LexerRule String()
         {

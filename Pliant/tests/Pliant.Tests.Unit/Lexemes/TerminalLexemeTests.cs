@@ -37,11 +37,6 @@ namespace Pliant.Tests.Unit
                 new TokenType("c"),
                 0);
             Assert.IsTrue(terminalLexeme.Scan('c'));
-            terminalLexeme.Reset(
-                new TerminalLexerRule(new CharacterTerminal('a'), new TokenType("a")),
-                10);
-
-            Assert.AreEqual(10, terminalLexeme.Position);            
         }
     }
 }

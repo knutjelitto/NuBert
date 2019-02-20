@@ -6,17 +6,15 @@ namespace Pliant.Utilities
     internal class ObjectPool<T> where T : class
     {
         private readonly Queue<T> _queue;
-        private readonly ObjectPoolFactory _factory;
+        private readonly Func<T> _factory;
 
-        internal delegate T ObjectPoolFactory();
-        
-        internal ObjectPool(int size, ObjectPoolFactory factory)
+        private ObjectPool(int size, Func<T> factory)
         {
             this._factory = factory;
             this._queue = new Queue<T>(size);
         }
 
-        internal ObjectPool(ObjectPoolFactory factory)
+        internal ObjectPool(Func<T> factory)
             : this(20, factory)
         {
         }

@@ -1,19 +1,13 @@
-﻿using Pliant.Grammars;
-
+﻿using System.Collections.Generic;
+using System.Text;
+using Pliant.Grammars;
 using Pliant.Tokens;
 using Pliant.Utilities;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Pliant.Runtime
 {
     public class ParseEngineLexeme : LexemeBase<GrammarLexerRule>
     {
-        public override string Value => this._capture.ToString();
-
-        private readonly StringBuilder _capture;
-        private IParseEngine _parseEngine;
-
         public ParseEngineLexeme(GrammarLexerRule lexerRule)
             : base(lexerRule, 0)
         {
@@ -21,11 +15,25 @@ namespace Pliant.Runtime
             this._parseEngine = new ParseEngine(lexerRule.Grammar);
         }
 
+        public override string Value => this._capture.ToString();
+
+        public override bool IsAccepted()
+        {
+            return this._parseEngine.IsAccepted();
+        }
+
+        public override void Reset()
+        {
+            this._capture.Clear();
+            this._parseEngine = new ParseEngine(ConcreteLexerRule.Grammar);
+        }
+
         public override bool Scan(char c)
         {
+            var pool = SharedPools.Default<List<TerminalLexeme>>();
             // get expected lexems
             // PERF: Avoid Linq where, let and select expressions due to lambda allocation
-            var expectedLexemes = SharedPools.Default<List<TerminalLexeme>>().AllocateAndClear();
+            var expectedLexemes = pool.AllocateAndClear();
             var expectedLexerRules = this._parseEngine.GetExpectedLexerRules();
 
             foreach (var rule in expectedLexerRules)
@@ -48,8 +56,7 @@ namespace Pliant.Runtime
                 }
             }
 
-            SharedPools.Default<List<TerminalLexeme>>()
-                .ClearAndFree(expectedLexemes);
+            pool.ClearAndFree(expectedLexemes);
 
             if (firstPassingRule == null)
             {
@@ -65,15 +72,7 @@ namespace Pliant.Runtime
             return result;
         }
 
-        public override bool IsAccepted()
-        {
-            return this._parseEngine.IsAccepted();
-        }
-
-        public override void Reset()
-        {
-            this._capture.Clear();
-            this._parseEngine = new ParseEngine(ConcreteLexerRule.Grammar);
-        }
+        private readonly StringBuilder _capture;
+        private IParseEngine _parseEngine;
     }
 }

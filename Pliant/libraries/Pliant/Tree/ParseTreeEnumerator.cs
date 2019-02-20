@@ -164,10 +164,9 @@ namespace Pliant.Tree
 
             public override void Visit(ITerminalForestNode terminalNode)
             {
-                var token = new Token(
+                var token = new Token(terminalNode.Origin,
                     terminalNode.Capture.ToString(),
-                    terminalNode.Origin,
-                    new TokenType(terminalNode.ToString()));
+                                      new TokenType(terminalNode.ToString()));
                 VisitToken(terminalNode.Origin, terminalNode.Location, token);
             }
 

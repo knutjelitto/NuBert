@@ -57,7 +57,7 @@ namespace Pliant.Json
                         builder.Append(c);
                     }
 
-                    yield return new Token(builder.ToString(), position, Number);
+                    yield return new Token(position, builder.ToString(), Number);
                     position += builder.Length;
                     builder.Clear();
                     continue;
@@ -65,22 +65,22 @@ namespace Pliant.Json
                 switch (c)
                 {
                     case '[':
-                        yield return new Token(OpenBracket.Id, position, OpenBracket);
+                        yield return new Token(position, OpenBracket.Id, OpenBracket);
                         break;
                     case ']':
-                        yield return new Token(CloseBracket.Id, position, CloseBracket);
+                        yield return new Token(position, CloseBracket.Id, CloseBracket);
                         break;
                     case '{':
-                        yield return new Token(OpenBrace.Id, position, OpenBrace);
+                        yield return new Token(position, OpenBrace.Id, OpenBrace);
                         break;
                     case '}':
-                        yield return new Token(CloseBrace.Id, position, CloseBrace);
+                        yield return new Token(position, CloseBrace.Id, CloseBrace);
                         break;
                     case ',':
-                        yield return new Token(Comma.Id, position, Comma);
+                        yield return new Token(position, Comma.Id, Comma);
                         break;
                     case ':':
-                        yield return new Token(Colon.Id, position, Colon);
+                        yield return new Token(position, Colon.Id, Colon);
                         break;
                     case '"':
                         builder.Append(c);
@@ -89,7 +89,7 @@ namespace Pliant.Json
                         if (!Accept(input, '"'))
                             yield break;
                         builder.Append('"');
-                        yield return new Token(builder.ToString(), position, String);
+                        yield return new Token(position, builder.ToString(), String);
                         position += builder.Length;
                         builder.Clear();
                         break;
@@ -100,7 +100,7 @@ namespace Pliant.Json
                         builder.Append(c);
                         while (Accept(input, char.IsWhiteSpace, ref c))
                             builder.Append(c);
-                        yield return new Token(builder.ToString(), position, Whitespace);
+                        yield return new Token(position, builder.ToString(), Whitespace);
                         position += builder.Length;
                         builder.Clear();
                         break;
@@ -112,7 +112,7 @@ namespace Pliant.Json
                             yield break;
                         if (!Accept(input, 'l'))
                             yield break;
-                        yield return new Token(Null.Id, position, Null);
+                        yield return new Token(position, Null.Id, Null);
                         position += 3;
                         break;
 
@@ -123,7 +123,7 @@ namespace Pliant.Json
                             yield break;
                         if (!Accept(input, 'e'))
                             yield break;
-                        yield return new Token(True.Id, position, True);
+                        yield return new Token(position, True.Id, True);
                         position += 3;
                         break;
 
@@ -136,7 +136,7 @@ namespace Pliant.Json
                             yield break;
                         if (!Accept(input, 'e'))
                             yield break;
-                        yield return new Token(False.Id, position, False);
+                        yield return new Token(position, False.Id, False);
                         position += 4;
                         break;
                 }

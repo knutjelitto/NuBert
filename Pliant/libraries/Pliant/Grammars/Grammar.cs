@@ -179,7 +179,7 @@ namespace Pliant.Grammars
 
             if (production.IsEmpty)
             {
-                this._transitiveNullableSymbols.Add(production.LeftHandSide);
+                this._transitiveNullableSymbols.AddUnique(production.LeftHandSide);
             }
 
             var leftHandSide = production.LeftHandSide;
@@ -261,7 +261,7 @@ namespace Pliant.Grammars
             if (symbol is NonTerminal nonTerminal)
             {
                 var hashSet = this._symbolsReverseLookup.AddOrGetExisting(nonTerminal);
-                hashSet.Add(production);
+                hashSet.AddUnique(production);
             }
         }
 

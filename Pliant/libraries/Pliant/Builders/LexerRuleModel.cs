@@ -9,8 +9,6 @@ namespace Pliant.Builders
             Value = value;
         }
 
-        public override SymbolModelType ModelType => SymbolModelType.LexerRule;
-
         public override Symbol Symbol => Value;
 
         public LexerRule Value { get; }

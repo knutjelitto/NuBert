@@ -9,7 +9,7 @@
 
         private static class DefaultPool<T> where T : class, new()
         {
-            public static readonly ObjectPool<T> Instance = new ObjectPool<T>(20, () => new T());
+            public static readonly ObjectPool<T> Instance = new ObjectPool<T>(() => new T());
         }
     }
 }

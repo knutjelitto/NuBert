@@ -1,20 +1,31 @@
-﻿using Pliant.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Pliant.Grammars
 {
     public class RangeTerminal : Terminal
     {
-        public char Start { get; private set; }
-
-        public char End { get; private set; }
-
-        private Interval[] _intervals;
-
         public RangeTerminal(char start, char end)
         {
             Start = start;
             End = end;
+        }
+
+        public char End { get; }
+        public char Start { get; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is RangeTerminal other && Start.Equals(other.Start) && End.Equals(other.End);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Start, End).GetHashCode();
+        }
+
+        public override IReadOnlyList<Interval> GetIntervals()
+        {
+            return this._intervals ?? (this._intervals = new[] {new Interval(Start, End)});
         }
 
         public override bool IsMatch(char character)
@@ -27,33 +38,6 @@ namespace Pliant.Grammars
             return $"[{Start}-{End}]";
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Compute(
-                Start.GetHashCode(),
-                End.GetHashCode());
-        }
-
-        public override bool Equals(object obj)
-        {
-            var rangeTerminal = obj as RangeTerminal;
-            if (rangeTerminal == null)
-            {
-                return false;
-            }
-
-            return rangeTerminal.End == End
-                && rangeTerminal.Start == Start;
-        }
-
-        public override IReadOnlyList<Interval> GetIntervals()
-        {
-            if(this._intervals == null)
-            {
-                this._intervals = new[] { new Interval(Start, End) };
-            }
-
-            return this._intervals;
-        }
+        private Interval[] _intervals;
     }
 }

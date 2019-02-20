@@ -66,9 +66,8 @@ namespace Pliant.Runtime
             // compute the lexer rule hash for caching the list of lexer rules
             // compute the unique lexer rule count 
             // set bits in the rule index bit array corresponding to the position of the lexer rule in the list of rules
-            for (var s = 0; s < scanStates.Count; s++)
+            foreach (var scanState in scanStates)
             {
-                var scanState = scanStates[s];
                 var postDotSymbol = scanState.DottedRule.PostDotSymbol;
                 if (postDotSymbol != null && postDotSymbol is LexerRule lexerRule)
                 {
@@ -237,7 +236,7 @@ namespace Pliant.Runtime
         private IForestNode CreateNullParseNode(Symbol symbol, int location)
         {
             var symbolNode = this._nodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
-            var token = new Token(string.Empty, location, EmptyTokenType);
+            var token = new Token(location, string.Empty, EmptyTokenType);
             var nullNode = new TokenForestNode(token, location, location);
             symbolNode.AddUniqueFamily(nullNode);
             return symbolNode;
@@ -286,7 +285,7 @@ namespace Pliant.Runtime
             // if w != null and y doesn't have a family of children (w, v)            
             else
             {
-                internalNode.AddUniqueFamily(w, v);
+                internalNode.AddUniqueFamily(v, w);
             }
 
             return internalNode;
@@ -727,9 +726,8 @@ namespace Pliant.Runtime
         private void ScanPass(int location, IToken token)
         {
             var earleySet = Chart.EarleySets[location];
-            for (var s = 0; s < earleySet.Scans.Count; s++)
+            foreach (var scanState in earleySet.Scans)
             {
-                var scanState = earleySet.Scans[s];
                 Scan(scanState, location, token);
             }
         }

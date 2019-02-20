@@ -22,7 +22,7 @@ namespace Pliant.Tests.Unit.Runtime
             var tokens = input.Select((a, i) => 
             {
                 var value = a.ToString();
-                return new Token(value, i, new TokenType(value));
+                return new Token(i, value, new TokenType(value));
             }).ToArray();
 
             for (var t = 0; t < tokens.Length; t++)
@@ -80,7 +80,7 @@ namespace Pliant.Tests.Unit.Runtime
                             tokenType = notMeta;
                         break;
                 }
-                var token = new Token(pattern[i].ToString(), i, tokenType);
+                var token = new Token(i, pattern[i].ToString(), tokenType);
                 var result = parseEngine.Pulse(token);
                 Assert.IsTrue(result, $"Error at position {i}");
             }
@@ -113,11 +113,11 @@ namespace Pliant.Tests.Unit.Runtime
 
             var tokens = new [] 
             {
-                new Token("[", 0, openBracket.TokenType),
-                new Token("1", 1, number.TokenType),
-                new Token(",", 2, comma.TokenType),
-                new Token("2", 3, number.TokenType),
-                new Token("]", 4, closeBracket.TokenType)
+                new Token(0, "[", openBracket.TokenType),
+                new Token(1, "1", number.TokenType),
+                new Token(2, ",", comma.TokenType),
+                new Token(3, "2", number.TokenType),
+                new Token(4, "]", closeBracket.TokenType)
             };
 
             for (var i = 0; i < tokens.Length; i++)
@@ -149,8 +149,8 @@ namespace Pliant.Tests.Unit.Runtime
             var bTokenType = new TokenType("b");
             var tokens = new[] 
             {
-                new Token("b", 0, bTokenType),
-                new Token("b", 1, bTokenType)
+                new Token(0, "b", bTokenType),
+                new Token(1, "b", bTokenType)
             };
             
             for (var i = 0; i < tokens.Length; i++)

@@ -2,11 +2,15 @@
 
 namespace Pliant.Tokens
 {
-    public class StringLiteralLexeme : LexemeBase<StringLiteralLexerRule>, ILexeme
+    public class StringLiteralLexeme : LexemeBase<StringLiteralLexerRule>
     {
-        private string _capture;
-        private int _index;
-        
+        public StringLiteralLexeme(StringLiteralLexerRule lexerRule, int position)
+            : base(lexerRule, position)
+        {
+            this._index = 0;
+            this._capture = null;
+        }
+
         public string Literal => ConcreteLexerRule.Literal;
 
         public override string Value
@@ -20,33 +24,17 @@ namespace Pliant.Tokens
 
                 return this._capture;
             }
-        }        
-        
-        public StringLiteralLexeme(StringLiteralLexerRule lexerRule, int position)
-            : base(lexerRule, position)
-        {
-            this._index = 0;
-            this._capture = null;
-        }
-
-        private bool IsSubStringAllocated()
-        {
-            if (this._capture == null)
-            {
-                return false;
-            }
-
-            return this._index == this._capture.Length;
-        }
-
-        private string AllocateSubString()
-        {
-            return Literal.Substring(0, this._index);
         }
 
         public override bool IsAccepted()
         {
             return this._index >= Literal.Length;
+        }
+
+        public override void Reset()
+        {
+            this._index = 0;
+            this._capture = null;
         }
 
         public override bool Scan(char c)
@@ -65,10 +53,17 @@ namespace Pliant.Tokens
             return true;
         }
 
-        public override void Reset()
+        private string AllocateSubString()
         {
-            this._index = 0;
-            this._capture = null;
-        }      
+            return Literal.Substring(0, this._index);
+        }
+
+        private bool IsSubStringAllocated()
+        {
+            return this._index == this._capture?.Length;
+        }
+
+        private string _capture;
+        private int _index;
     }
 }

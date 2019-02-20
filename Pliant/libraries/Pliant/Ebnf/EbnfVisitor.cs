@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
 using Pliant.Tree;
@@ -157,45 +158,40 @@ namespace Pliant.Ebnf
 
         private EbnfFactor VisitFactorNode(IInternalTreeNode node)
         {
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                var symbolValue = internalNode.Symbol.Value;
+
+                if (EbnfGrammar.QualifiedIdentifier == symbolValue)
                 {
-                    var symbolValue = internalNode.Symbol.Value;
+                    return new EbnfFactorIdentifier(VisitQualifiedIdentifierNode(internalNode));
+                }
 
-                    if (EbnfGrammar.QualifiedIdentifier == symbolValue)
-                    {
-                        return new EbnfFactorIdentifier(
-                            VisitQualifiedIdentifierNode(internalNode));
-                    }
+                if (EbnfGrammar.Literal == symbolValue)
+                {
+                    return new EbnfFactorLiteral(VisitLiteralNode(internalNode));
+                }
 
-                    if (EbnfGrammar.Literal == symbolValue)
-                    {
-                        return new EbnfFactorLiteral(
-                            VisitLiteralNode(internalNode));
-                    }
+                if (EbnfGrammar.Repetition == symbolValue)
+                {
+                    return VisitRepetitionNode(internalNode);
+                }
 
-                    if (EbnfGrammar.Repetition == symbolValue)
-                    {
-                        return VisitRepetitionNode(internalNode);
-                    }
+                if (EbnfGrammar.Optional == symbolValue)
+                {
+                    return VisitOptionalNode(internalNode);
+                }
 
-                    if (EbnfGrammar.Optional == symbolValue)
-                    {
-                        return VisitOptionalNode(internalNode);
-                    }
+                if (EbnfGrammar.Grouping == symbolValue)
+                {
+                    return VisitGroupingNode(internalNode);
+                }
 
-                    if (EbnfGrammar.Grouping == symbolValue)
-                    {
-                        return VisitGroupingNode(internalNode);
-                    }
-
-                    if (RegexGrammar.Regex == symbolValue)
-                    {
-                        var regexVisitor = new RegexVisitor();
-                        internalNode.Accept(regexVisitor);
-                        return new EbnfFactorRegex(regexVisitor.Regex);
-                    }
+                if (RegexGrammar.Regex == symbolValue)
+                {
+                    var regexVisitor = new RegexVisitor();
+                    internalNode.Accept(regexVisitor);
+                    return new EbnfFactorRegex(regexVisitor.Regex);
                 }
             }
 
@@ -242,8 +238,10 @@ namespace Pliant.Ebnf
             }
 
             return expression == null
-                       ? new EbnfLexerRuleExpression(term)
-                       : new EbnfLexerRuleExpressionAlteration(term, expression);
+                       // ReSharper disable once RedundantCast
+                       ? (EbnfLexerRuleExpression) new EbnfLexerRuleExpressionSimple(term)
+                       // ReSharper disable once RedundantCast
+                       : (EbnfLexerRuleExpression) new EbnfLexerRuleExpressionAlteration(term, expression);
         }
 
         private EbnfBlockLexerRule VisitLexerRuleNode(IInternalTreeNode node)
@@ -293,8 +291,10 @@ namespace Pliant.Ebnf
             }
 
             return term == null
-                       ? new EbnfLexerRuleTerm(factor)
-                       : new EbnfLexerRuleTermConcatenation(factor, term);
+                       // ReSharper disable once RedundantCast
+                       ? (EbnfLexerRuleTerm) new EbnfLexerRuleTermSimple(factor)
+                       // ReSharper disable once RedundantCast
+                       : (EbnfLexerRuleTerm) new EbnfLexerRuleTermConcatenation(factor, term);
         }
 
         private EbnfFactorOptional VisitOptionalNode(IInternalTreeNode node)
@@ -343,8 +343,10 @@ namespace Pliant.Ebnf
             }
 
             return repetitionIdentifier == null
-                       ? new EbnfQualifiedIdentifier(identifier)
-                       : new EbnfQualifiedIdentifierConcatenation(identifier, repetitionIdentifier);
+                       // ReSharper disable once RedundantCast
+                       ? (EbnfQualifiedIdentifier) new EbnfQualifiedIdentifierSimple(identifier)
+                       // ReSharper disable once RedundantCast
+                       : (EbnfQualifiedIdentifier) new EbnfQualifiedIdentifierConcatenation(identifier, repetitionIdentifier);
         }
 
         private EbnfFactorRepetition VisitRepetitionNode(IInternalTreeNode node)

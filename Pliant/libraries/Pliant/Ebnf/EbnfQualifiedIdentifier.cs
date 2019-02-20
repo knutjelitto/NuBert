@@ -1,17 +1,25 @@
 ﻿namespace Pliant.Ebnf
 {
-    public class EbnfQualifiedIdentifier : EbnfNode
+    public abstract class EbnfQualifiedIdentifier : EbnfNode
     {
-        public EbnfQualifiedIdentifier(string identifier)
+        protected EbnfQualifiedIdentifier(string identifier)
         {
             Identifier = identifier;
         }
 
         public string Identifier { get; }
+    }
+
+    public sealed class EbnfQualifiedIdentifierSimple : EbnfQualifiedIdentifier
+    {
+        public EbnfQualifiedIdentifierSimple(string identifier)
+            : base(identifier)
+        {
+        }
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfQualifiedIdentifier other &&
+            return obj is EbnfQualifiedIdentifierSimple other &&
                    other.Identifier.Equals(Identifier);
         }
 
@@ -26,7 +34,7 @@
         }
     }
 
-    public class EbnfQualifiedIdentifierConcatenation : EbnfQualifiedIdentifier
+    public sealed class EbnfQualifiedIdentifierConcatenation : EbnfQualifiedIdentifier
     {
         public EbnfQualifiedIdentifierConcatenation(
             string identifier,
@@ -41,8 +49,8 @@
         public override bool Equals(object obj)
         {
             return obj is EbnfQualifiedIdentifierConcatenation other &&
-                   other.Identifier.Equals(Identifier) &&
-                   other.QualifiedIdentifier.Equals(QualifiedIdentifier);
+                   Identifier.Equals(other.Identifier) &&
+                   QualifiedIdentifier.Equals(other.QualifiedIdentifier);
         }
 
         public override int GetHashCode()

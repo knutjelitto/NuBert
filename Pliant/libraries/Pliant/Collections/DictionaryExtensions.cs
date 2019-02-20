@@ -8,36 +8,11 @@ namespace Pliant.Collections
         public static TValue AddOrGetExisting<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
             where TValue : new()
         {
-            return dictionary.AddOrGetExisting(key, new TValue());
-        }
-
-        public static TValue AddOrGetExisting<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> generator)
-        {
-            if (generator == null)
+            if (!dictionary.TryGetValue(key, out var value))
             {
-                throw new ArgumentNullException(nameof(generator));
+                value = new TValue();
+                dictionary.Add(key, value);
             }
-
-            if (dictionary.TryGetValue(key, out var value))
-            {
-                return value;
-            }
-
-            value = generator();
-            dictionary.Add(key, value);
-
-            return value;
-        }
-
-        public static TValue AddOrGetExisting<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue instance)
-        {
-            if (dictionary.TryGetValue(key, out var value))
-            {
-                return value;
-            }
-
-            value = instance;
-            dictionary.Add(key, value);
 
             return value;
         }

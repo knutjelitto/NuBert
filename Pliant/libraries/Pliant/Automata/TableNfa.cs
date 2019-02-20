@@ -29,7 +29,7 @@ namespace Pliant.Automata
         {
             this._nullTransitions
                 .AddOrGetExisting(source)
-                .Add(target);
+                .AddUnique(target);
         }
 
         public int Start { get; private set; }

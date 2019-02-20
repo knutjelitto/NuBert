@@ -24,6 +24,7 @@ namespace Pliant.Builders
                 this._lookup[production.LeftHandSide.NonTerminal] = production;
             }
 
+#if false
             foreach (var alteration in production.Alterations)
             {
                 foreach (var symbol in alteration.Symbols)
@@ -34,6 +35,7 @@ namespace Pliant.Builders
                     }
                 }
             }
+#endif
         }
 
         public void ClearProductions()
@@ -77,7 +79,7 @@ namespace Pliant.Builders
         private void AddProductionToNewOrExistingSymbolSet(ProductionModel production, SymbolModel symbol)
         {
             var set = this._matrix.AddOrGetExisting(symbol.Symbol);
-            set.Add(production.LeftHandSide);
+            set.AddUnique(production.LeftHandSide);
         }
 
         private readonly Dictionary<Symbol, ProductionModel> _lookup;

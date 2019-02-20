@@ -60,5 +60,10 @@ namespace Pliant.Grammars
         {
             return Terminal.IsMatch(c);
         }
+
+        public override ILexeme CreateLexeme(int position)
+        {
+            return new TerminalLexeme(this, position);
+        }
     }
 }

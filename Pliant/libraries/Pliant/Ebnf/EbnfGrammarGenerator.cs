@@ -13,8 +13,8 @@ namespace Pliant.Ebnf
     {
         public EbnfGrammarGenerator()
         {
-            this._regexToNfaAlgorithm = new ThompsonConstructionAlgorithm();
-            this._nfaToDfaAlgorithm = new SubsetConstructionAlgorithm();
+            this.regexToNfaAlgorithm = new ThompsonConstructionAlgorithm();
+            this.nfaToDfaAlgorithm = new SubsetConstructionAlgorithm();
         }
 
         public IGrammar Generate(EbnfDefinition ebnf)
@@ -24,8 +24,7 @@ namespace Pliant.Ebnf
             return grammarModel.ToGrammar();
         }
 
-        private static QualifiedName GetFullyQualifiedNameFromQualifiedIdentifier(
-            EbnfQualifiedIdentifier qualifiedIdentifier)
+        private static QualifiedName GetFullyQualifiedNameFromQualifiedIdentifier(EbnfQualifiedIdentifier qualifiedIdentifier)
         {
             var fully = new StringBuilder();
             var currentQualifiedIdentifier = qualifiedIdentifier;
@@ -71,18 +70,18 @@ namespace Pliant.Ebnf
 
                         case IgnoreSettingModel.SettingKey:
                             var ignoreSettings = IgnoreSettings(blockSetting);
-                            for (var i = 0; i < ignoreSettings.Count; i++)
+                            foreach (var ignore in ignoreSettings)
                             {
-                                grammarModel.IgnoreSettings.Add(ignoreSettings[i]);
+                                grammarModel.IgnoreSettings.Add(ignore);
                             }
 
                             break;
 
                         case TriviaSettingModel.SettingKey:
                             var triviaSettings = TriviaSettings(blockSetting);
-                            for (var i = 0; i < triviaSettings.Count; i++)
+                            foreach (var trivia in triviaSettings)
                             {
-                                grammarModel.TriviaSettings.Add(triviaSettings[i]);
+                                grammarModel.TriviaSettings.Add(trivia);
                             }
 
                             break;
@@ -159,8 +158,8 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfFactorRegex regex:
-                    var nfa = this._regexToNfaAlgorithm.Transform(regex.Regex);
-                    var dfa = this._nfaToDfaAlgorithm.Transform(nfa);
+                    var nfa = this.regexToNfaAlgorithm.Transform(regex.Regex);
+                    var dfa = this.nfaToDfaAlgorithm.Transform(nfa);
                     var dfaLexerRule = new DfaLexerRule(dfa, regex.Regex.ToString());
                     currentProduction.AddWithAnd(new LexerRuleModel(dfaLexerRule));
                     break;
@@ -216,7 +215,7 @@ namespace Pliant.Ebnf
             }
 
             var nfa = LexerRuleExpression(ebnfLexerRule);
-            var dfa = this._nfaToDfaAlgorithm.Transform(nfa);
+            var dfa = this.nfaToDfaAlgorithm.Transform(nfa);
 
             return new DfaLexerRule(dfa, fullyQualifiedName.FullName);
         }
@@ -264,10 +263,7 @@ namespace Pliant.Ebnf
                 }
 
                 var previous = states[i - 1];
-                previous.AddTransistion(
-                    new TerminalNfaTransition(
-                        new CharacterTerminal(literal[i - 1]),
-                        current));
+                previous.AddTransition(new CharacterTerminal(literal[i - 1]), current);
             }
 
             return new Nfa(states[0], states[states.Length - 1]);
@@ -276,7 +272,7 @@ namespace Pliant.Ebnf
         private Nfa LexerRuleFactorRegex(EbnfLexerRuleFactorRegex ebnfLexerRuleFactorRegex)
         {
             var regex = ebnfLexerRuleFactorRegex.Regex;
-            return this._regexToNfaAlgorithm.Transform(regex);
+            return this.regexToNfaAlgorithm.Transform(regex);
         }
 
         private Nfa LexerRuleTerm(EbnfLexerRuleTerm term)
@@ -379,31 +375,27 @@ namespace Pliant.Ebnf
         {
             lexerRule = null;
 
-            if (ebnfLexerRule is EbnfLexerRuleExpressionAlteration)
+            if (ebnfLexerRule is EbnfLexerRuleExpressionSimple)
             {
-                return false;
-            }
+                var term = ebnfLexerRule.Term;
+                if (term is EbnfLexerRuleTermConcatenation)
+                {
+                    return false;
+                }
 
-            var term = ebnfLexerRule.Term;
-            if (term is EbnfLexerRuleTermConcatenation)
-            {
-                return false;
-            }
+                var factor = term.Factor;
+                if (factor is EbnfLexerRuleFactorLiteral literal)
+                {
+                    lexerRule = new StringLiteralLexerRule(literal.Value, new TokenType(fullyQualifiedName.FullName));
 
-            var factor = term.Factor;
-            if (factor is EbnfLexerRuleFactorLiteral literal)
-            {
-                lexerRule = new StringLiteralLexerRule(
-                    literal.Value,
-                    new TokenType(fullyQualifiedName.FullName));
-
-                return true;
+                    return true;
+                }
             }
 
             return false;
         }
 
-        private readonly INfaToDfa _nfaToDfaAlgorithm;
-        private readonly IRegexToNfa _regexToNfaAlgorithm;
+        private readonly INfaToDfa nfaToDfaAlgorithm;
+        private readonly IRegexToNfa regexToNfaAlgorithm;
     }
 }

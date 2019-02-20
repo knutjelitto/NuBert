@@ -1,59 +1,28 @@
 ﻿using System.Collections.Generic;
-using Pliant.Diagnostics;
 using Pliant.Utilities;
 
 namespace Pliant.Tokens
 {
-    public class Token : IToken
+    public class Token : Trivia, IToken
     {
-        public Token(string value, int position, TokenType tokenType)
+        public Token(int position, string value, TokenType tokenType)
+            : base(position, value, tokenType)
         {
-            Value = value;
-            Position = position;
-            TokenType = tokenType;
+            LeadingTrivia = null;
+            TrailingTrivia = null;
             this._hashCode = ComputeHashCode();
         }
 
-        public Token(string value,
-                     int position,
-                     TokenType tokenType,
-                     IReadOnlyList<ITrivia> leadingTrivia,
-                     IReadOnlyList<ITrivia> trailingTrivia)
-            : this(value, position, tokenType)
-        {
-            Assert.IsNotNull(leadingTrivia, nameof(leadingTrivia));
-            Assert.IsNotNull(trailingTrivia, nameof(trailingTrivia));
+        public virtual IReadOnlyList<ITrivia> LeadingTrivia { get; }
 
-            LeadingTrivia = new List<ITrivia>(leadingTrivia);
-            TrailingTrivia = new List<ITrivia>(trailingTrivia);
-        }
-
-        public IReadOnlyList<ITrivia> LeadingTrivia { get; }
-
-        public int Position { get; }
-
-        public TokenType TokenType { get; }
-
-        public IReadOnlyList<ITrivia> TrailingTrivia { get; }
-
-        public string Value { get; }
+        public virtual IReadOnlyList<ITrivia> TrailingTrivia { get; }
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var token = obj as Token;
-            if (token == null)
-            {
-                return false;
-            }
-
-            return Value == token.Value
-                   && Position == token.Position
-                   && TokenType.Equals(token.TokenType);
+            return obj is Token other &&
+                   Position.Equals(other.Position) &&
+                   Value.Equals(other.Value) && 
+                   TokenType.Equals(other.TokenType);
         }
 
         public override int GetHashCode()
@@ -64,12 +33,10 @@ namespace Pliant.Tokens
         private int ComputeHashCode()
         {
             return HashCode.Compute(
-                TokenType.GetHashCode(),
                 Position.GetHashCode(),
-                Value.GetHashCode());
+                Value.GetHashCode(),
+                TokenType.GetHashCode());
         }
-
-        private static readonly ITrivia[] EmptyTriviaArray = { };
 
         private readonly int _hashCode;
     }

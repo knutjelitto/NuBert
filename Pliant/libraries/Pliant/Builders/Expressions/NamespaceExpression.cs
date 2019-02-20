@@ -2,7 +2,7 @@
 
 namespace Pliant.Builders.Expressions
 {
-    public class NamespaceExpression
+    public sealed class NamespaceExpression
     {
         public NamespaceExpression(string @namespace)
         {

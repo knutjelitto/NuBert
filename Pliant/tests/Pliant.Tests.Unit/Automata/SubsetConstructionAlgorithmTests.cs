@@ -13,7 +13,7 @@ namespace Pliant.Tests.Unit.Automata
             var a = new CharacterTerminal('a');
             var states = CreateStates(2);
 
-            states[0].AddTransistion(new TerminalNfaTransition(a, states[1]));
+            states[0].AddTransition(a, states[1]);
 
             var nfa = new Nfa(states[0], states[1]);
             var dfa = ConvertNfaToDfa(nfa);
@@ -29,13 +29,13 @@ namespace Pliant.Tests.Unit.Automata
             var c = new CharacterTerminal('c');
             var states = CreateStates(4);
 
-            states[0].AddTransistion(new TerminalNfaTransition(a, states[1]));
-            states[0].AddTransistion(new TerminalNfaTransition(c, states[3]));
-            states[1].AddTransistion(new NullNfaTransition(states[0]));
-            states[1].AddTransistion(new TerminalNfaTransition(b, states[2]));
-            states[2].AddTransistion(new TerminalNfaTransition(a, states[1]));
-            states[3].AddTransistion(new TerminalNfaTransition(c, states[2]));
-            states[3].AddTransistion(new NullNfaTransition(states[2]));
+            states[0].AddTransition(a, states[1]);
+            states[0].AddTransition(c, states[3]);
+            states[1].AddEpsilon(states[0]);
+            states[1].AddTransition(b, states[2]);
+            states[2].AddTransition(a, states[1]);
+            states[3].AddTransition(c, states[2]);
+            states[3].AddEpsilon(states[2]);
 
             var dfa_0 = ConvertNfaToDfa(new Nfa(states[0], states[2]));
 

@@ -1,15 +1,14 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Pliant.Collections;
 
 namespace Pliant.Tests.Unit.Collections
 {
     [TestClass]
     public class FastLookupDictionaryTests
     {
-        private class Element
+        private sealed class Element
         {
-            public int Value { get; private set; }
+            private int Value { get; }
 
             public Element(int value)
             {
@@ -18,10 +17,7 @@ namespace Pliant.Tests.Unit.Collections
 
             public override bool Equals(object obj)
             {
-                if (obj == null)
-                    return false;
-                var element = obj as Element;
-                return Value.Equals(element.Value);
+                return obj is Element other && Value.Equals(other.Value);
             }
 
             public override int GetHashCode()
@@ -37,23 +33,20 @@ namespace Pliant.Tests.Unit.Collections
             var first = new Element(1);
             var second = new Element(1);
 
-            var fastLookupDictionary = new FastLookupDictionary<Element, Element>();
-            fastLookupDictionary[first] = second;
+            var fastLookupDictionary = new Dictionary<Element, Element> {[first] = second};
 
-            Element third = null;
-            Assert.IsTrue(fastLookupDictionary.TryGetValue(second, out third));
+            Assert.IsTrue(fastLookupDictionary.TryGetValue(second, out var third));
             Assert.IsTrue(ReferenceEquals(third, second));
         }
 
         [TestMethod]
         public void FastLookupDictionaryTryGetValueShouldContainAllValuesOfLargeList()
         {
-            var fastLookupDictionary = new FastLookupDictionary<int, int>();
-            for (int i = 0; i < 50; i++)
+            var fastLookupDictionary = new Dictionary<int, int>();
+            for (var i = 0; i < 50; i++)
             {
                 fastLookupDictionary.Add(i, i);
-                int value;
-                Assert.IsTrue(fastLookupDictionary.TryGetValue(i, out value));            
+                Assert.IsTrue(fastLookupDictionary.TryGetValue(i, out var _));
             }
         }
 
@@ -61,8 +54,8 @@ namespace Pliant.Tests.Unit.Collections
         [TestMethod]
         public void FastLookupDictionaryGetValueShouldContainAllValuesOfLargeList()
         {
-            var fastLookupDictionary = new FastLookupDictionary<int, int>();
-            for (int i = 0; i < 50; i++)
+            var fastLookupDictionary = new Dictionary<int, int>();
+            for (var i = 0; i < 50; i++)
             {
                 fastLookupDictionary.Add(i, i);
                 var value = fastLookupDictionary[i];
@@ -73,8 +66,8 @@ namespace Pliant.Tests.Unit.Collections
         [TestMethod]
         public void FastLookupDictionaryGetValueShouldContainAllValuesOfSmallList()
         {
-            var fastLookupDictionary = new FastLookupDictionary<int, int>();
-            for (int i = 0; i < 2; i++)
+            var fastLookupDictionary = new Dictionary<int, int>();
+            for (var i = 0; i < 2; i++)
             {
                 fastLookupDictionary.Add(i, i);
                 var value = fastLookupDictionary[i];

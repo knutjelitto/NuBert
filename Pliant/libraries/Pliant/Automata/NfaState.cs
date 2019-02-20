@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Pliant.Collections;
 using System;
+using Pliant.Grammars;
 
 namespace Pliant.Automata
 {
@@ -15,7 +16,17 @@ namespace Pliant.Automata
 
         public IReadOnlyList<NfaTransition> Transitions => this._transitions;
 
-        public void AddTransistion(NfaTransition transition)
+        public void AddEpsilon(NfaState target)
+        {
+            AddTransition(new NullNfaTransition(target));
+        }
+
+        public void AddTransition(Terminal terminal, NfaState target)
+        {
+            AddTransition(new TerminalNfaTransition(terminal, target));
+        }
+
+        private void AddTransition(NfaTransition transition)
         {
             this._transitions.Add(transition);
         }
@@ -33,9 +44,8 @@ namespace Pliant.Automata
             while (queue.Count > 0)
             {
                 var state = queue.Dequeue();
-                for (var t = 0; t < state.Transitions.Count; t++)
+                foreach (var transition in state.Transitions)
                 {
-                    var transition = state.Transitions[t];
                     if (transition is NullNfaTransition)
                     {
                         queue.Enqueue(transition.Target);

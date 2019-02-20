@@ -3,7 +3,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
-    public class SymbolForestNode : InternalForestNode, ISymbolForestNode
+    public sealed class SymbolForestNode : InternalForestNode, ISymbolForestNode
     {
         public SymbolForestNode(Symbol symbol, int origin, int location)
             : base(origin, location)

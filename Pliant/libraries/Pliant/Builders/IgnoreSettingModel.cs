@@ -2,7 +2,7 @@
 
 namespace Pliant.Builders
 {
-    public class IgnoreSettingModel : SettingModel
+    public sealed class IgnoreSettingModel : SettingModel
     {
         public const string SettingKey = "ignore";
 

@@ -19,16 +19,17 @@ namespace Pliant.Tests.Common.Grammars
                 F = nameof(F);
 
             S.Rule = E;
-            E.Rule = E + '+' + T
-                | E + '-' + T
+            E.Rule = (E + '+' + T)
+                | (E + '-' + T)
                 | T;
-            T.Rule = T + '*' + F
-                | T + '/' + F
+            T.Rule = (T + '*' + F)
+                | (T + '/' + F)
                 | F;
-            F.Rule = '+' + F
-                | '-' + F
+            F.Rule =
+                ('+' + F)
+                | ('-' + F)
                 | number
-                | '(' + E + ')';
+                | ('(' + E + ')');
 
             _grammar = new GrammarExpression(S).ToGrammar();
         }

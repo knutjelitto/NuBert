@@ -2,7 +2,7 @@
 
 namespace Pliant.Builders
 {
-    public class TriviaSettingModel : SettingModel
+    public sealed class TriviaSettingModel : SettingModel
     {
         public const string SettingKey = "trivia";
 

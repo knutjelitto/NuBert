@@ -24,10 +24,14 @@ namespace Pliant.Tests.Unit.Runtime
             // example 1 section 3, Elizabeth Scott
             var tokens = Tokenize("aa");
 
-            ProductionExpression S = "S", T = "T", B = "B";
-            S.Rule = S + T | "a";
+            ProductionExpression
+                S = "S", 
+                T = "T", 
+                B = "B";
+
+            S.Rule = (S + T) | "a";
             B.Rule = null;
-            T.Rule = "a" + B | "a";
+            T.Rule = ("a" + B) | "a";
 
             var grammar = new GrammarExpression(S, new[] { S, T, B }).ToGrammar();
             var parseEngine = new ParseEngine(grammar, new ParseEngineOptions(optimizeRightRecursion: false));
@@ -534,12 +538,12 @@ namespace Pliant.Tests.Unit.Runtime
             //
             // ...
             // -- n --
-            // n	A -> a.A		(n-1)	 # Scan a
-            // n	A ->.a A		(n)	 # Predict
-            // n	A ->.			(n)	 # Predict
-            // n	A -> a A.		(n)	 # Predict
-            // n	A : A -> a A.	(0)	 # Transition
-            // n	A -> a A.		(0)	 # Complete
+            // n	A -> a.A		(n-1) # Scan a
+            // n	A ->.a A		(n)	  # Predict
+            // n	A ->.			(n)	  # Predict
+            // n	A -> a A.		(n)	  # Predict
+            // n	A : A -> a A.	(0)	  # Transition
+            // n	A -> a A.		(0)	  # Complete
             Assert.AreEqual(input.Count() + 1, chart.Count);
             var lastEarleySet = chart.EarleySets[chart.EarleySets.Count - 1];
             Assert.AreEqual(3, lastEarleySet.Completions.Count);
@@ -950,18 +954,18 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static IToken CreateDigitToken(int value, int position)
         {
-            return new Token(value.ToString(), position, new TokenType("digit"));
+            return new Token(position, value.ToString(), new TokenType("digit"));
         }
 
         private static IToken CreateCharacterToken(char character, int position)
         {
-            return new Token(character.ToString(), position, new TokenType(character.ToString()));
+            return new Token(position, character.ToString(), new TokenType(character.ToString()));
         }
 
         private static IReadOnlyList<IToken> Tokenize(string input)
         {
             return input.Select((x, i) =>
-                new Token(x.ToString(), i, new TokenType(x.ToString())))
+                new Token(i, x.ToString(), new TokenType(x.ToString())))
                 .ToArray();
         }
         

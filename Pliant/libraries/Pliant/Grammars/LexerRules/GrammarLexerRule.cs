@@ -1,4 +1,5 @@
-﻿using Pliant.Tokens;
+﻿using Pliant.Runtime;
+using Pliant.Tokens;
 
 namespace Pliant.Grammars
 {
@@ -31,6 +32,11 @@ namespace Pliant.Grammars
             }
 
             return false;
+        }
+
+        public override ILexeme CreateLexeme(int position)
+        {
+            return new ParseEngineLexeme(this);
         }
 
         public override string ToString()

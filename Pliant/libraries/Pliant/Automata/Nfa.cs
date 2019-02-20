@@ -9,13 +9,11 @@
         }
 
         public NfaState End { get; }
-
         public NfaState Start { get; }
 
-        public Nfa Concatenation(Nfa nfa)
+        public Nfa Concatenation(Nfa other)
         {
-            End.AddTransistion(
-                new NullNfaTransition(nfa.Start));
+            End.AddEpsilon(other.Start);
             return this;
         }
 
@@ -24,25 +22,25 @@
             var newStart = new NfaState();
             var newEnd = new NfaState();
 
-            newStart.AddTransistion(new NullNfaTransition(Start));
-            newStart.AddTransistion(new NullNfaTransition(newEnd));
+            newStart.AddEpsilon(Start);
+            newStart.AddEpsilon(newEnd);
 
-            newEnd.AddTransistion(new NullNfaTransition(Start));
-            End.AddTransistion(new NullNfaTransition(newEnd));
+            newEnd.AddEpsilon(Start);
+            End.AddEpsilon(newEnd);
 
             return new Nfa(newStart, newEnd);
         }
 
-        public Nfa Union(Nfa nfa)
+        public Nfa Union(Nfa other)
         {
             var newStart = new NfaState();
             var newEnd = new NfaState();
 
-            newStart.AddTransistion(new NullNfaTransition(Start));
-            newStart.AddTransistion(new NullNfaTransition(nfa.Start));
+            newStart.AddEpsilon(Start);
+            newStart.AddEpsilon(other.Start);
 
-            End.AddTransistion(new NullNfaTransition(newEnd));
-            nfa.End.AddTransistion(new NullNfaTransition(newEnd));
+            End.AddEpsilon(newEnd);
+            other.End.AddEpsilon(newEnd);
 
             return new Nfa(newStart, newEnd);
         }

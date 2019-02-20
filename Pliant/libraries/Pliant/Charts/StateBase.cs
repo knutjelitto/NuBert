@@ -4,7 +4,7 @@ using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public abstract class State //: IState
+    public abstract class State
     {
         protected State(DottedRule dottedRule, int origin)
         {
@@ -19,7 +19,5 @@ namespace Pliant.Charts
         public int Origin { get; }
 
         public IForestNode ParseNode { get; set; }
-
-        public abstract StateType StateType { get; }
     }
 }

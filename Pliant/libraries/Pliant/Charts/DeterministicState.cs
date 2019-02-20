@@ -3,43 +3,32 @@ using Pliant.Utilities;
 
 namespace Pliant.Charts
 {
-    public class DeterministicState
+    public sealed class DeterministicState
     {
-        public DottedRuleAssortment DottedRuleSet { get; private set; }
-
-        public int Origin { get; private set; }
-
-        private readonly int _hashCode;
-                
         public DeterministicState(DottedRuleAssortment dottedRuleSet, int origin)
         {
             DottedRuleSet = dottedRuleSet;
             Origin = origin;
 
-            this._hashCode = ComputeHashCode(DottedRuleSet, Origin);  
+            this._hashCode = ComputeHashCode(DottedRuleSet, Origin);
         }
-        
+
+        public DottedRuleAssortment DottedRuleSet { get; }
+
+        public int Origin { get; }
+
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var deterministicState = obj as DeterministicState;
-            if (deterministicState == null)
-            {
-                return false;
-            }
-
-            return deterministicState.Origin == Origin && DottedRuleSet.Equals(deterministicState.DottedRuleSet);
+            return obj is DeterministicState other && 
+                   Origin.Equals(other.Origin) && 
+                   DottedRuleSet.Equals(other.DottedRuleSet);
         }
 
         public override int GetHashCode()
         {
             return this._hashCode;
         }
-        
+
         private static int ComputeHashCode(DottedRuleAssortment dottedRuleSet)
         {
             return dottedRuleSet.GetHashCode();
@@ -49,5 +38,7 @@ namespace Pliant.Charts
         {
             return HashCode.Compute(dottedRuleSet.GetHashCode(), origin.GetHashCode());
         }
+
+        private readonly int _hashCode;
     }
 }

@@ -19,8 +19,6 @@ namespace Pliant.Builders
         {
         }
 
-        public override SymbolModelType ModelType => SymbolModelType.NonTerminal;
-
         public NonTerminal NonTerminal { get; }
 
         public override Symbol Symbol => NonTerminal;

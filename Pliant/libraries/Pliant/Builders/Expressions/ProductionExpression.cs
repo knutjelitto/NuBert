@@ -3,7 +3,7 @@ using Pliant.Grammars;
 
 namespace Pliant.Builders.Expressions
 {
-    public class ProductionExpression : BaseExpression
+    public sealed class ProductionExpression : BaseExpression
     {
         public ProductionExpression(NonTerminal leftHandSide)
         {
@@ -29,8 +29,7 @@ namespace Pliant.Builders.Expressions
 
                 foreach (var alteration in value.Alterations)
                 {
-                    ProductionModel.Alterations.Add(
-                        GetAlterationModelFromAlterationExpression(alteration));
+                    ProductionModel.Alterations.Add(GetAlterationModelFromAlterationExpression(alteration));
                 }
             }
         }
@@ -45,32 +44,29 @@ namespace Pliant.Builders.Expressions
             return new ProductionExpression(fullyQualifiedName);
         }
 
-        private static AlterationModel GetAlterationModelFromAlterationExpression(List<BaseExpression> symbols)
+        private static AlterationModel GetAlterationModelFromAlterationExpression(IEnumerable<BaseExpression> symbols)
         {
             var alterationModel = new AlterationModel();
             foreach (var symbol in symbols)
             {
-                if (symbol is ProductionExpression productionExpression)
+                switch (symbol)
                 {
-                    alterationModel.Symbols.Add(
-                        productionExpression.ProductionModel);
-                }
-                else if (symbol is SymbolExpression symbolExpression)
-                {
-                    alterationModel.Symbols.Add(
-                        symbolExpression.SymbolModel);
-                }
-                else if (symbol is ProductionReferenceExpression productionReferenceExpression)
-                {
-                    alterationModel.Symbols.Add(
-                        productionReferenceExpression.ProductionReferenceModel);
-                }
-                else if (symbol is Expr expr)
-                {
-                    foreach (var symbolModel in GetSymbolModelListFromExpr(expr))
-                    {
-                        alterationModel.Symbols.Add(symbolModel);
-                    }
+                    case ProductionExpression productionExpression:
+                        alterationModel.Symbols.Add(productionExpression.ProductionModel);
+                        break;
+                    case SymbolExpression symbolExpression:
+                        alterationModel.Symbols.Add(symbolExpression.SymbolModel);
+                        break;
+                    case ProductionReferenceExpression productionReferenceExpression:
+                        alterationModel.Symbols.Add(productionReferenceExpression.ProductionReferenceModel);
+                        break;
+                    case Expr expr:
+                        foreach (var symbolModel in GetSymbolModelListFromExpr(expr))
+                        {
+                            alterationModel.Symbols.Add(symbolModel);
+                        }
+
+                        break;
                 }
             }
 

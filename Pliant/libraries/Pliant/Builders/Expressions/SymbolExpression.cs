@@ -1,6 +1,6 @@
 ﻿namespace Pliant.Builders.Expressions
 {
-    public class SymbolExpression : BaseExpression
+    public sealed class SymbolExpression : BaseExpression
     {
         public SymbolExpression(SymbolModel symbolModel)
         {

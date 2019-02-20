@@ -6,7 +6,7 @@ using Pliant.Grammars;
 
 namespace Pliant.Builders
 {
-    public class GrammarModel
+    public sealed class GrammarModel
     {
         public GrammarModel()
         {

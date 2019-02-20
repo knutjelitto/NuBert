@@ -5,7 +5,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
-    public class VirtualForestNode : InternalForestNode, ISymbolForestNode
+    public sealed class VirtualForestNode : InternalForestNode, ISymbolForestNode
     {
         public VirtualForestNode(
             int location,
@@ -95,10 +95,9 @@ namespace Pliant.Forest
             var transitionState = path.TransitionState;
             var completedParseNode = path.ForestNode;
 
-            return transitionState.Reduction.ParseNode != null
-                   && Equals(completedParseNode, transitionState.Reduction.ParseNode)
-                   && (completedParseNode.NodeType == ForestNodeType.Intermediate
-                       || completedParseNode.NodeType == ForestNodeType.Symbol);
+            return transitionState.Reduction.ParseNode != null &&
+                   Equals(completedParseNode, transitionState.Reduction.ParseNode) && 
+                   (completedParseNode.NodeType == ForestNodeType.Intermediate || completedParseNode.NodeType == ForestNodeType.Symbol);
         }
 
         private void CloneUniqueChildSubTree(IInternalForestNode internalCompletedParseNode)
@@ -162,12 +161,12 @@ namespace Pliant.Forest
                 }
                 else
                 {
-                    AddUniqueFamily(transitionState.Reduction.ParseNode, virtualNode);
+                    AddUniqueFamily(virtualNode, transitionState.Reduction.ParseNode);
                 }
             }
             else if (transitionState.Reduction.ParseNode != null)
             {
-                AddUniqueFamily(transitionState.Reduction.ParseNode, completedParseNode);
+                AddUniqueFamily(completedParseNode, transitionState.Reduction.ParseNode);
             }
             else
             {

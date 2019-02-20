@@ -19,7 +19,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinition(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("S"),
+                        new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpression(
                             new EbnfTerm(
                                 new EbnfFactorLiteral("a"))))));
@@ -38,14 +38,14 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinitionConcatenation(                
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("S"),
+                        new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpression(
                             new EbnfTerm(
                                 new EbnfFactorLiteral("a"))))),
                 new EbnfDefinition(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifier("S"),
+                            new EbnfQualifiedIdentifierSimple("S"),
                             new EbnfExpression(
                                 new EbnfTerm(
                                     new EbnfFactorLiteral("b")))))));
@@ -62,7 +62,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinition(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("S"),
+                        new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpressionAlteration(
                             new EbnfTerm(
                                 new EbnfFactorLiteral("a")),
@@ -83,7 +83,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinitionConcatenation(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("S"),
+                        new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpressionAlteration(
                             new EbnfTerm(
                                 new EbnfFactorLiteral("a")),
@@ -93,7 +93,7 @@ namespace Pliant.Tests.Unit.Ebnf
                 new EbnfDefinition(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifier("S"),
+                            new EbnfQualifiedIdentifierSimple("S"),
                             new EbnfExpressionAlteration(
                                 new EbnfTerm(
                                     new EbnfFactorLiteral("b")),
@@ -113,7 +113,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinition(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("R"),
+                        new EbnfQualifiedIdentifierSimple("R"),
                         new EbnfExpression(
                             new EbnfTerm(
                                 new EbnfFactorRepetition(
@@ -138,7 +138,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinition(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("R"),
+                        new EbnfQualifiedIdentifierSimple("R"),
                         new EbnfExpression(
                             new EbnfTerm(
                                 new EbnfFactorGrouping(
@@ -162,7 +162,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinition(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("R"),
+                        new EbnfQualifiedIdentifierSimple("R"),
                         new EbnfExpression(
                             new EbnfTerm(
                                 new EbnfFactorOptional(
@@ -193,7 +193,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinition(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("R"),
+                        new EbnfQualifiedIdentifierSimple("R"),
                         new EbnfExpression(
                             new EbnfTermConcatenation(
                                 new EbnfFactorLiteral("b"),
@@ -266,23 +266,23 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinitionConcatenation(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("S"),
+                        new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpression(
                             new EbnfTerm(
                                 new EbnfFactorLiteral("a"))))),
                 new EbnfDefinitionConcatenation(
                     new EbnfBlockLexerRule(
                         new EbnfLexerRule(
-                            new EbnfQualifiedIdentifier("whitespace"), 
-                            new EbnfLexerRuleExpression(
-                                new EbnfLexerRuleTerm(
+                            new EbnfQualifiedIdentifierSimple("whitespace"), 
+                            new EbnfLexerRuleExpressionSimple(
+                                new EbnfLexerRuleTermSimple(
                                     new EbnfLexerRuleFactorRegex(
                                         whiteSpaceRegex))))),
                     new EbnfDefinition(
                         new EbnfBlockSetting(
                             new EbnfSetting(
                                 new EbnfSettingIdentifier("ignore"),
-                                new EbnfQualifiedIdentifier("whitespace"))))));
+                                new EbnfQualifiedIdentifierSimple("whitespace"))))));
             
             var grammar = GenerateGrammar(definition);
             Assert.IsNotNull(grammar.Ignores);
@@ -308,23 +308,23 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinitionConcatenation(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("S"),
+                        new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpression(
                             new EbnfTerm(
                                 new EbnfFactorLiteral("a"))))),
                 new EbnfDefinitionConcatenation(
                     new EbnfBlockLexerRule(
                         new EbnfLexerRule(
-                            new EbnfQualifiedIdentifier("whitespace"),
-                            new EbnfLexerRuleExpression(
-                                new EbnfLexerRuleTerm(
+                            new EbnfQualifiedIdentifierSimple("whitespace"),
+                            new EbnfLexerRuleExpressionSimple(
+                                new EbnfLexerRuleTermSimple(
                                     new EbnfLexerRuleFactorRegex(
                                         whiteSpaceRegex))))),
                     new EbnfDefinition(
                         new EbnfBlockSetting(
                             new EbnfSetting(
                                 new EbnfSettingIdentifier("trivia"),
-                                new EbnfQualifiedIdentifier("whitespace"))))));
+                                new EbnfQualifiedIdentifierSimple("whitespace"))))));
 
             var grammar = GenerateGrammar(definition);
             Assert.IsNotNull(grammar.Trivia);
@@ -340,11 +340,11 @@ namespace Pliant.Tests.Unit.Ebnf
                 new EbnfBlockSetting(
                     new EbnfSetting(
                         new EbnfSettingIdentifier("start"),
-                        new EbnfQualifiedIdentifier("S"))), 
+                        new EbnfQualifiedIdentifierSimple("S"))), 
                 new EbnfDefinition(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifier("S"),
+                        new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpression(
                             new EbnfTerm(
                                 new EbnfFactorLiteral("a")))))));

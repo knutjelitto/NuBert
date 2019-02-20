@@ -1,27 +1,33 @@
-﻿using Pliant.Forest;
+﻿using System.Text;
+using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Utilities;
-using System.Text;
 
 namespace Pliant.Charts
 {
-    public class NormalState : State
-    {        
-        private readonly int _hashCode;
-
+    public sealed class NormalState : State
+    {
         public NormalState(DottedRule dottedRule, int origin)
             : base(dottedRule, origin)
         {
             this._hashCode = ComputeHashCode();
         }
 
-        public NormalState(DottedRule dottedRule, int origin, IForestNode parseNode) 
+        public NormalState(DottedRule dottedRule, int origin, IForestNode parseNode)
             : this(dottedRule, origin)
         {
             ParseNode = parseNode;
         }
 
-        public override StateType StateType => StateType.Normal;
+        public override bool Equals(object obj)
+        {
+            return obj is NormalState other && GetHashCode() == other.GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return this._hashCode;
+        }
 
         public bool IsSource(Symbol searchSymbol)
         {
@@ -32,35 +38,6 @@ namespace Pliant.Charts
             }
 
             return dottedRule.PostDotSymbol.Equals(searchSymbol);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var state = obj as NormalState;
-            if (state == null)
-            {
-                return false;
-            }
-            // PERF: Hash Codes are Cached, so equality performance is cached as well
-            return GetHashCode() == state.GetHashCode();
-        }
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                DottedRule.Position.GetHashCode(),
-                Origin.GetHashCode(),
-                DottedRule.Production.GetHashCode());
-        }
-
-        public override int GetHashCode()
-        {
-            return this._hashCode;
         }
 
         public override string ToString()
@@ -84,6 +61,16 @@ namespace Pliant.Charts
 
             stringBuilder.Append($"\t\t({Origin})");
             return stringBuilder.ToString();
-        }        
+        }
+
+        private int ComputeHashCode()
+        {
+            return HashCode.Compute(
+                DottedRule.Position.GetHashCode(),
+                Origin.GetHashCode(),
+                DottedRule.Production.GetHashCode());
+        }
+
+        private readonly int _hashCode;
     }
 }

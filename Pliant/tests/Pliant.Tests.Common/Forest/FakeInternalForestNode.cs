@@ -31,7 +31,7 @@ namespace Pliant.Tests.Common.Forest
             throw new NotImplementedException();
         }
 
-        public void AddUniqueFamily(IForestNode source, IForestNode trigger)
+        public void AddUniqueFamily(IForestNode trigger, IForestNode source)
         {
             throw new NotImplementedException();
         }

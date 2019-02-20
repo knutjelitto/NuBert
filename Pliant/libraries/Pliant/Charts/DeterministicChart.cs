@@ -4,18 +4,21 @@ namespace Pliant.Charts
 {
     public class DeterministicChart
     {
-        private readonly List<DeterministicSet> _preComputedSets;
-
-        public IReadOnlyList<DeterministicSet> Sets => this._preComputedSets;
-
         public DeterministicChart()
         {
             this._preComputedSets = new List<DeterministicSet>();
         }
 
+        public IReadOnlyList<DeterministicSet> Sets => this._preComputedSets;
+
+        public void Clear()
+        {
+            this._preComputedSets.Clear();
+        }
+
         public bool Enqueue(int index, DeterministicState state)
         {
-            DeterministicSet preComputedSet = null;
+            DeterministicSet preComputedSet;
             if (this._preComputedSets.Count <= index)
             {
                 preComputedSet = new DeterministicSet(index);
@@ -29,9 +32,6 @@ namespace Pliant.Charts
             return preComputedSet.Enqueue(state);
         }
 
-        public void Clear()
-        {
-            this._preComputedSets.Clear();
-        }
+        private readonly List<DeterministicSet> _preComputedSets;
     }
 }

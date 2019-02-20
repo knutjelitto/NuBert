@@ -14,40 +14,25 @@ namespace Pliant.Utilities
             return queue;
         }
 
-        internal static UniqueList<T> AllocateAndClear<T>(this ObjectPool<UniqueList<T>> pool)
-        {
-            var list = pool.Allocate();
-            list.Clear();
-            return list;
-        }
-
-        internal static FastLookupDictionary<TKey, TValue> AllocateAndClear<TKey, TValue>(
-            this ObjectPool<FastLookupDictionary<TKey, TValue>> pool)
-        {
-            var dictionary = pool.Allocate();
-            dictionary.Clear();
-            return dictionary;
-        }
-
         internal static HashSet<TValue> AllocateAndClear<TValue>(this ObjectPool<HashSet<TValue>> pool)
         {
-            var hashSet = pool.Allocate();
-            hashSet.Clear();
-            return hashSet;
+            var set = pool.Allocate();
+            set.Clear();
+            return set;
         }
 
         internal static SortedSet<TValue> AllocateAndClear<TValue>(this ObjectPool<SortedSet<TValue>> pool)
         {
-            var hashSet = pool.Allocate();
-            hashSet.Clear();
-            return hashSet;
+            var set = pool.Allocate();
+            set.Clear();
+            return set;
         }
 
         internal static DottedRuleSet AllocateAndClear(this ObjectPool<DottedRuleSet> pool)
         {
-            var hashSet = pool.Allocate();
-            hashSet.Clear();
-            return hashSet;
+            var set = pool.Allocate();
+            set.Clear();
+            return set;
         }
 
         internal static Dictionary<TKey, TValue> AllocateAndClear<TKey, TValue>(this ObjectPool<Dictionary<TKey, TValue>> pool)
@@ -77,32 +62,25 @@ namespace Pliant.Utilities
             pool.Free(queue);
         }
 
-        internal static void ClearAndFree<T>(this ObjectPool<UniqueList<T>> pool, UniqueList<T> list)
+        internal static void ClearAndFree<TValue>(this ObjectPool<HashSet<TValue>> pool, HashSet<TValue> set)
         {
-            list.Clear();
-            pool.Free(list);
+            set.Clear();
+            pool.Free(set);
         }
 
-        internal static void ClearAndFree<TValue>(this ObjectPool<HashSet<TValue>> pool, HashSet<TValue> hashSet)
+        internal static void ClearAndFree<TValue>(this ObjectPool<SortedSet<TValue>> pool, SortedSet<TValue> set)
         {
-            hashSet.Clear();
-            pool.Free(hashSet);
+            set.Clear();
+            pool.Free(set);
         }
 
-        internal static void ClearAndFree<TValue>(this ObjectPool<SortedSet<TValue>> pool, SortedSet<TValue> hashSet)
+        internal static void ClearAndFree(this ObjectPool<DottedRuleSet> pool, DottedRuleSet set)
         {
-            hashSet.Clear();
-            pool.Free(hashSet);
+            set.Clear();
+            pool.Free(set);
         }
 
-        internal static void ClearAndFree(this ObjectPool<DottedRuleSet> pool, DottedRuleSet hashSet)
-        {
-            hashSet.Clear();
-            pool.Free(hashSet);
-        }
-
-        internal static void ClearAndFree<TKey, TValue>(this ObjectPool<Dictionary<TKey, TValue>> pool,
-                                                        Dictionary<TKey, TValue> dictionary)
+        internal static void ClearAndFree<TKey, TValue>(this ObjectPool<Dictionary<TKey, TValue>> pool, Dictionary<TKey, TValue> dictionary)
         {
             dictionary.Clear();
             pool.Free(dictionary);

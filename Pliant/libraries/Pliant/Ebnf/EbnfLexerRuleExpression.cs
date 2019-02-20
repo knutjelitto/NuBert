@@ -1,18 +1,26 @@
 ﻿namespace Pliant.Ebnf
 {
-    public class EbnfLexerRuleExpression : EbnfNode
+    public abstract class EbnfLexerRuleExpression : EbnfNode
     {
-        public EbnfLexerRuleExpression(EbnfLexerRuleTerm term)
+        protected EbnfLexerRuleExpression(EbnfLexerRuleTerm term)
         {
             Term = term;
         }
 
         public EbnfLexerRuleTerm Term { get; }
+    }
+
+    public sealed class EbnfLexerRuleExpressionSimple : EbnfLexerRuleExpression
+    {
+        public EbnfLexerRuleExpressionSimple(EbnfLexerRuleTerm term)
+            : base(term)
+        {
+        }
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfLexerRuleExpression expression && 
-                   expression.Term.Equals(Term);
+            return obj is EbnfLexerRuleExpressionSimple other &&
+                   other.Term.Equals(Term);
         }
 
         public override int GetHashCode()
@@ -21,7 +29,7 @@
         }
     }
 
-    public class EbnfLexerRuleExpressionAlteration : EbnfLexerRuleExpression
+    public sealed class EbnfLexerRuleExpressionAlteration : EbnfLexerRuleExpression
     {
         public EbnfLexerRuleExpressionAlteration(EbnfLexerRuleTerm term, EbnfLexerRuleExpression expression)
             : base(term)
@@ -33,9 +41,9 @@
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfLexerRuleExpressionAlteration expression && 
-                   expression.Term.Equals(Term) && 
-                   expression.Expression.Equals(Expression);
+            return obj is EbnfLexerRuleExpressionAlteration other &&
+                   Term.Equals(other.Term) &&
+                   Expression.Equals(other.Expression);
         }
 
         public override int GetHashCode()

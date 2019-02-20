@@ -5,14 +5,9 @@ namespace Pliant.Builders.Expressions
 {
     public class RuleExpression : BaseExpression
     {
-        public RuleExpression()
+        public RuleExpression(BaseExpression baseExpression)
         {
             Alterations = new List<List<BaseExpression>>();
-        }
-
-        public RuleExpression(BaseExpression baseExpression)
-            : this()
-        {
             AddWithAnd(baseExpression);
         }
 

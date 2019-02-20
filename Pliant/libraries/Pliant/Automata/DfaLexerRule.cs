@@ -22,9 +22,8 @@ namespace Pliant.Automata
 
         public override bool CanApply(char c)
         {
-            for (var i = 0; i < StartState.Transitions.Count; i++)
+            foreach (var transition in StartState.Transitions)
             {
-                var transition = StartState.Transitions[i];
                 if (transition.Terminal.IsMatch(c))
                 {
                     return true;
@@ -32,6 +31,11 @@ namespace Pliant.Automata
             }
 
             return false;
+        }
+
+        public override ILexeme CreateLexeme(int position)
+        {
+            return new DfaLexeme(this, position);
         }
 
         public override bool Equals(object obj)

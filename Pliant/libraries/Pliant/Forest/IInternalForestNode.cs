@@ -11,6 +11,6 @@ namespace Pliant.Forest
 
         void AddUniqueFamily(IForestNode trigger);
 
-        void AddUniqueFamily(IForestNode source, IForestNode trigger);
+        void AddUniqueFamily(IForestNode trigger, IForestNode source);
     }
 }

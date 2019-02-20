@@ -15,7 +15,7 @@ namespace Pliant.RegularExpressions
         {
             var start = new NfaState();
             var end = new NfaState();
-            start.AddTransistion(new TerminalNfaTransition(new AnyTerminal(), end));
+            start.AddTransition(new AnyTerminal(), end);
             return new Nfa(start, end);
         }
 
@@ -45,11 +45,7 @@ namespace Pliant.RegularExpressions
             var end = new NfaState();
             var terminal = CreateTerminalForCharacter(character.Value, character.IsEscaped, negate);
 
-            var transition = new TerminalNfaTransition(
-                terminal,
-                end);
-
-            start.AddTransistion(transition);
+            start.AddTransition(terminal, end);
 
             return new Nfa(start, end);
         }
@@ -61,11 +57,7 @@ namespace Pliant.RegularExpressions
 
             var terminal = CreateTerminalForCharacter(character.Value, character.IsEscaped, false);
 
-            var transition = new TerminalNfaTransition(
-                terminal,
-                end);
-
-            start.AddTransistion(transition);
+            start.AddTransition(terminal, end);
 
             return new Nfa(start, end);
         }
@@ -88,7 +80,7 @@ namespace Pliant.RegularExpressions
 
         private static Nfa Concatenation(Nfa first, Nfa second)
         {
-            first.End.AddTransistion(new NullNfaTransition(second.Start));
+            first.End.AddEpsilon(second.Start);
             return new Nfa(first.Start, second.End);
         }
 
@@ -142,7 +134,7 @@ namespace Pliant.RegularExpressions
         {
             var start = new NfaState();
             var end = new NfaState();
-            start.AddTransistion(new NullNfaTransition(end));
+            start.AddEpsilon(end);
             return new Nfa(start, end);
         }
 
@@ -150,13 +142,13 @@ namespace Pliant.RegularExpressions
         {
             switch (expression)
             {
-                case RegexExpressionAlteration regexExpressionAlteration:
-                    var termNfa = Term(regexExpressionAlteration.Term);
-                    var expressionNfa = Expression(regexExpressionAlteration.Expression);
+                case RegexExpressionAlteration alteration:
+                    var termNfa = Term(alteration.Term);
+                    var expressionNfa = Expression(alteration.Expression);
                     return Union(termNfa, expressionNfa);
 
-                case RegexExpressionTerm regexExpressionTerm:
-                    return Term(regexExpressionTerm.Term);
+                case RegexExpressionTerm term:
+                    return Term(term.Term);
 
                 case RegexExpression _:
                     return Empty();
@@ -193,24 +185,22 @@ namespace Pliant.RegularExpressions
         private static Nfa KleenePlus(Nfa nfa)
         {
             var end = new NfaState();
-            nfa.End.AddTransistion(new NullNfaTransition(end));
-            nfa.End.AddTransistion(new NullNfaTransition(nfa.Start));
+            nfa.End.AddEpsilon(end);
+            nfa.End.AddEpsilon(nfa.Start);
             return new Nfa(nfa.Start, end);
         }
 
         private static Nfa KleeneStar(Nfa nfa)
         {
             var start = new NfaState();
-            var nullToNfaStart = new NullNfaTransition(nfa.Start);
 
-            start.AddTransistion(nullToNfaStart);
-            nfa.End.AddTransistion(nullToNfaStart);
+            start.AddEpsilon(nfa.Start);
+            nfa.End.AddEpsilon(nfa.Start);
 
             var end = new NfaState();
-            var nullToNewEnd = new NullNfaTransition(end);
 
-            start.AddTransistion(nullToNewEnd);
-            nfa.End.AddTransistion(nullToNewEnd);
+            start.AddEpsilon(end);
+            nfa.End.AddEpsilon(end);
 
             return new Nfa(start, end);
         }
@@ -219,9 +209,9 @@ namespace Pliant.RegularExpressions
         {
             var start = new NfaState();
             var end = new NfaState();
-            start.AddTransistion(new NullNfaTransition(nfa.Start));
-            start.AddTransistion(new NullNfaTransition(end));
-            nfa.End.AddTransistion(new NullNfaTransition(end));
+            start.AddEpsilon(nfa.Start);
+            start.AddEpsilon(end);
+            nfa.End.AddEpsilon(end);
             return new Nfa(start, end);
         }
 
@@ -238,7 +228,7 @@ namespace Pliant.RegularExpressions
                 terminal = new NegationTerminal(terminal);
             }
 
-            nfaStartState.AddTransistion(new TerminalNfaTransition(terminal, nfaEndState));
+            nfaStartState.AddTransition(terminal, nfaEndState);
             return new Nfa(nfaStartState, nfaEndState);
         }
 
@@ -271,13 +261,12 @@ namespace Pliant.RegularExpressions
         private static Nfa Union(Nfa first, Nfa second)
         {
             var start = new NfaState();
-            start.AddTransistion(new NullNfaTransition(first.Start));
-            start.AddTransistion(new NullNfaTransition(second.Start));
-
             var end = new NfaState();
-            var endTransition = new NullNfaTransition(end);
-            first.End.AddTransistion(endTransition);
-            second.End.AddTransistion(endTransition);
+            start.AddEpsilon(first.Start);
+            start.AddEpsilon(second.Start);
+
+            first.End.AddEpsilon(end);
+            second.End.AddEpsilon(end);
 
             return new Nfa(start, end);
         }

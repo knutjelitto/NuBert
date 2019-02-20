@@ -3,14 +3,12 @@ using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public class StateFactory //: IStateFactory
+    public class StateFactory
     {
         public StateFactory(DottedRuleRegistry dottedRuleRegistry)
         {
             DottedRuleRegistry = dottedRuleRegistry;
         }
-
-        public DottedRuleRegistry DottedRuleRegistry { get; }
 
         public State NewState(Production production, int position, int origin)
         {
@@ -32,12 +30,12 @@ namespace Pliant.Charts
                 return null;
             }
 
-            var dottedRule = DottedRuleRegistry.Get(
-                state.DottedRule.Production,
-                state.DottedRule.Position + 1);
+            var dottedRule = DottedRuleRegistry.GetNext(state.DottedRule);
             return parseNode == null
                        ? new NormalState(dottedRule, state.Origin)
                        : new NormalState(dottedRule, state.Origin, parseNode);
         }
+
+        private DottedRuleRegistry DottedRuleRegistry { get; }
     }
 }

@@ -108,7 +108,6 @@ namespace Pliant.Ebnf
         {
             return $"{{{Expression}}}";
         }
-
     }
 
     public sealed class EbnfFactorOptional : EbnfFactor

@@ -2,7 +2,7 @@
 
 namespace Pliant.Tokens
 {
-    public class TerminalLexeme : LexemeBase<TerminalLexerRule>, ILexeme
+    public class TerminalLexeme : LexemeBase<TerminalLexerRule>
     {
         public TerminalLexeme(TerminalLexerRule lexerRule, int position)
             : base(lexerRule, position)

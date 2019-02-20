@@ -22,19 +22,7 @@
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var other = obj as LexerRuleType;
-
-            if ((object) other == null)
-            {
-                return false;
-            }
-
-            return other.Id == Id;
+            return obj is LexerRuleType other && Id.Equals(other.Id);
         }
 
         public override int GetHashCode()

@@ -3,7 +3,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
-    public class IntermediateForestNode : InternalForestNode, IIntermediateForestNode
+    public sealed class IntermediateForestNode : InternalForestNode, IIntermediateForestNode
     {
         public IntermediateForestNode(DottedRule dottedRule, int origin, int location)
             : base(origin, location)
@@ -23,21 +23,11 @@ namespace Pliant.Forest
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var intermediateNode = obj as IIntermediateForestNode;
-            if (intermediateNode == null)
-            {
-                return false;
-            }
-
-            return Location == intermediateNode.Location
-                   && NodeType == intermediateNode.NodeType
-                   && Origin == intermediateNode.Origin
-                   && DottedRule.Equals(intermediateNode.DottedRule);
+            return obj is IIntermediateForestNode other && 
+                   Location == other.Location && 
+                   NodeType == other.NodeType && 
+                   Origin == other.Origin && 
+                   DottedRule.Equals(other.DottedRule);
         }
 
         public override int GetHashCode()

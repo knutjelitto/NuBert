@@ -87,8 +87,7 @@
 
         public override bool Equals(object obj)
         {
-            return obj is RegexAtomSet other && 
-                   Set.Equals(other.Set);
+            return obj is RegexAtomSet other && Set.Equals(other.Set);
         }
 
         public override int GetHashCode()

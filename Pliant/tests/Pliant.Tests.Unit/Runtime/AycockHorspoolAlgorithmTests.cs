@@ -35,7 +35,7 @@ namespace Pliant.Tests.Unit.Runtime
             var grammar = expression.ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
-            parseEngine.Pulse(new Token("a", 0, a.TokenType));
+            parseEngine.Pulse(new Token(0, "a", a.TokenType));
 
             //var privateObject = new PrivateObject(parseEngine);
             //var chart = privateObject.GetField("_chart") as Chart;
