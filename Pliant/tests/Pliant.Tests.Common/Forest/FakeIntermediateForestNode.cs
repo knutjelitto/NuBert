@@ -1,4 +1,5 @@
-﻿using Pliant.Forest;
+﻿#if false
+using Pliant.Forest;
 using Pliant.Grammars;
 
 namespace Pliant.Tests.Common.Forest
@@ -14,5 +15,10 @@ namespace Pliant.Tests.Common.Forest
         public DottedRule DottedRule { get; }
 
         public override ForestNodeType NodeType => ForestNodeType.Intermediate;
+        public override void Accept(IForestNodeVisitor visitor)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
+#endif

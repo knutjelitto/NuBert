@@ -1,14 +1,16 @@
-﻿using Pliant.Grammars;
+﻿using Pliant.Forest;
+using Pliant.Grammars;
 
 namespace Pliant.Tokens
 {
-    public class TerminalLexeme : LexemeBase<TerminalLexerRule>
+    public class TerminalLexeme : Lexeme
     {
         public TerminalLexeme(TerminalLexerRule lexerRule, int position)
             : base(lexerRule, position)
         {
             this._captureRendered = false;
             this._isAccepted = false;
+            Terminal = lexerRule.Terminal;
         }
 
         public TerminalLexeme(Terminal terminal, TokenType tokenType, int position)
@@ -16,7 +18,7 @@ namespace Pliant.Tokens
         {
         }
 
-        public Terminal Terminal => ConcreteLexerRule.Terminal;
+        public Terminal Terminal { get; }
 
         public override string Value
         {
@@ -42,12 +44,6 @@ namespace Pliant.Tokens
         public override bool IsAccepted()
         {
             return this._isAccepted;
-        }
-
-        public override void Reset()
-        {
-            this._captureRendered = false;
-            this._isAccepted = false;
         }
 
         public override bool Scan(char c)

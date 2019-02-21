@@ -65,9 +65,8 @@ namespace Pliant.Automata
 
             while (queue.Count > 0)
             {
-                var transitions = SharedPools
-                       .Default<Dictionary<char, SortedSet<int>>>()
-                       .AllocateAndClear();
+                var transitions = ObjectPoolExtensions.Allocate(SharedPools
+                           .Default<Dictionary<char, SortedSet<int>>>());
 
                 var nfaClosure = queue.Dequeue();
                 var nfaClosureId = nfaClosure.GetHashCode();
@@ -85,7 +84,7 @@ namespace Pliant.Automata
                     {
                         if (!transitions.TryGetValue(characterTransition.Key, out var targets))
                         {
-                            targets = SharedPools.Default<SortedSet<int>>().AllocateAndClear();
+                            targets = ObjectPoolExtensions.Allocate(SharedPools.Default<SortedSet<int>>());
                             transitions.Add(characterTransition.Key, targets);
                         }
 

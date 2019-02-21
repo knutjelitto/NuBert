@@ -7,10 +7,10 @@ namespace Pliant.Forest
         protected InternalForestNode(int origin, int location)
             : base(origin, location)
         {
-            this._children = new List<IAndForestNode>();
+            this.children = new List<IAndForestNode>();
         }
 
-        public virtual IReadOnlyList<IAndForestNode> Children => this._children;
+        public virtual IReadOnlyList<IAndForestNode> Children => this.children;
 
         public void AddUniqueFamily(IForestNode trigger)
         {
@@ -26,8 +26,6 @@ namespace Pliant.Forest
 
             AddUniqueAndNode(source, trigger);
         }
-
-        protected readonly List<IAndForestNode> _children;
 
         private static bool IsMatchedSubTree(IForestNode firstChild, IForestNode secondChild, IAndForestNode andNode)
         {
@@ -61,9 +59,9 @@ namespace Pliant.Forest
         {
             var childCount = 1 + (secondChild == null ? 0 : 1);
 
-            for (var c = 0; c < this._children.Count; c++)
+            for (var c = 0; c < this.children.Count; c++)
             {
-                var andNode = this._children[c];
+                var andNode = this.children[c];
 
                 if (andNode.Children.Count != childCount)
                 {
@@ -84,7 +82,9 @@ namespace Pliant.Forest
                 newAndNode.AddChild(secondChild);
             }
 
-            this._children.Add(newAndNode);
+            this.children.Add(newAndNode);
         }
+
+        protected readonly List<IAndForestNode> children;
     }
 }

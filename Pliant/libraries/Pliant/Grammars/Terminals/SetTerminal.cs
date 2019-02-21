@@ -3,58 +3,46 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class SetTerminal : Terminal
+    public sealed class SetTerminal : Terminal
     {
         public SetTerminal(params char[] characters)
             : this(new HashSet<char>(characters))
         {
         }
 
-        public SetTerminal(char first)
-        {
-            this._characterSet = new HashSet<char>();
-            this._characterSet.Add(first);
-        }
-
         public SetTerminal(char first, char second)
-            : this(first)
         {
-            this._characterSet.Add(second);
+            this.characterSet = new HashSet<char> {first, second};
         }
 
-        public SetTerminal(ISet<char> characterSet)
+        public SetTerminal(IEnumerable<char> characterSet)
         {
-            this._characterSet = new HashSet<char>(characterSet);
-            this._intervals = CreateIntervals(this._characterSet);
+            this.characterSet = new HashSet<char>(characterSet);
+            this.intervals = CreateIntervals(this.characterSet);
         }
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            if (this._intervals == null)
-            {
-                this._intervals = CreateIntervals(this._characterSet);
-            }
-
-            return this._intervals;
+            return this.intervals ?? (this.intervals = CreateIntervals(this.characterSet));
         }
 
         public override bool IsMatch(char character)
         {
-            return this._characterSet.Contains(character);
+            return this.characterSet.Contains(character);
         }
 
         public override string ToString()
         {
-            return $"[{string.Join(string.Empty, this._characterSet)}]";
+            return $"[{string.Join(string.Empty, this.characterSet)}]";
         }
 
-        private static IReadOnlyList<Interval> CreateIntervals(HashSet<char> characterSet)
+        private static IReadOnlyList<Interval> CreateIntervals(IEnumerable<char> characters)
         {
             var intervalListPool = SharedPools.Default<List<Interval>>();
-            var intervalList = intervalListPool.AllocateAndClear();
+            var intervalList = ObjectPoolExtensions.Allocate(intervalListPool);
 
             // create a initial set of intervals
-            foreach (var character in characterSet)
+            foreach (var character in characters)
             {
                 intervalList.Add(new Interval(character));
             }
@@ -65,7 +53,7 @@ namespace Pliant.Grammars
             return groupedIntervals;
         }
 
-        private readonly HashSet<char> _characterSet;
-        private IReadOnlyList<Interval> _intervals;
+        private readonly HashSet<char> characterSet;
+        private IReadOnlyList<Interval> intervals;
     }
 }

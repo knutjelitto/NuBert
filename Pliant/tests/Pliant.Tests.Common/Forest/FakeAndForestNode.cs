@@ -4,26 +4,11 @@ using System.Collections.Generic;
 
 namespace Pliant.Tests.Common.Forest
 {
-    public class FakeAndForestNode : IAndForestNode
+    public class FakeAndForestNode : AndForestNode
     {
-        private List<IForestNode> _children;
-
         public FakeAndForestNode(params IForestNode[] children)
+            : base(children)
         {
-            _children = new List<IForestNode>(children);
-        }
-
-        public IReadOnlyList<IForestNode> Children
-        {
-            get
-            {
-                return _children;
-            }
-        }
-
-        public void Add(IForestNode child)
-        {
-            _children.Add(child);
         }
     }
 }

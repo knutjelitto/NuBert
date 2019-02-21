@@ -16,6 +16,6 @@ namespace Pliant.Grammars
 
         public abstract bool CanApply(char c);
 
-        public abstract ILexeme CreateLexeme(int position);
+        public abstract Lexeme CreateLexeme(int position);
     }
 }

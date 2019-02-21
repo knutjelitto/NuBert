@@ -58,20 +58,14 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var dottedRuleSet = obj as DottedRuleAssortment;
-            if (dottedRuleSet == null)
+            if (!(obj is DottedRuleAssortment other))
             {
                 return false;
             }
 
             foreach (var item in this._cachedData)
             {
-                if (!dottedRuleSet.Contains(item))
+                if (!other.Contains(item))
                 {
                     return false;
                 }

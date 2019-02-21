@@ -21,6 +21,11 @@ namespace Pliant.Tests.Common.Forest
             get { return ForestNodeType.Symbol; }
         }
 
+        public override void Accept(IForestNodeVisitor visitor)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Symbol Symbol { get; private set; }
     }
 }

@@ -6,26 +6,20 @@ using Pliant.Utilities;
 
 namespace Pliant.Runtime
 {
-    public class ParseEngineLexeme : LexemeBase<GrammarLexerRule>
+    public class ParseEngineLexeme : Lexeme
     {
         public ParseEngineLexeme(GrammarLexerRule lexerRule)
             : base(lexerRule, 0)
         {
-            this._capture = new StringBuilder();
-            this._parseEngine = new ParseEngine(lexerRule.Grammar);
+            this.capture = new StringBuilder();
+            this.parseEngine = new ParseEngine(lexerRule.Grammar);
         }
 
-        public override string Value => this._capture.ToString();
+        public override string Value => this.capture.ToString();
 
         public override bool IsAccepted()
         {
-            return this._parseEngine.IsAccepted();
-        }
-
-        public override void Reset()
-        {
-            this._capture.Clear();
-            this._parseEngine = new ParseEngine(ConcreteLexerRule.Grammar);
+            return this.parseEngine.IsAccepted();
         }
 
         public override bool Scan(char c)
@@ -33,8 +27,8 @@ namespace Pliant.Runtime
             var pool = SharedPools.Default<List<TerminalLexeme>>();
             // get expected lexems
             // PERF: Avoid Linq where, let and select expressions due to lambda allocation
-            var expectedLexemes = pool.AllocateAndClear();
-            var expectedLexerRules = this._parseEngine.GetExpectedLexerRules();
+            var expectedLexemes = ObjectPoolExtensions.Allocate(pool);
+            var expectedLexerRules = this.parseEngine.GetExpectedLexerRules();
 
             foreach (var rule in expectedLexerRules)
             {
@@ -63,16 +57,16 @@ namespace Pliant.Runtime
                 return false;
             }
 
-            var result = this._parseEngine.Pulse(firstPassingRule);
+            var result = this.parseEngine.Pulse(firstPassingRule);
             if (result)
             {
-                this._capture.Append(c);
+                this.capture.Append(c);
             }
 
             return result;
         }
 
-        private readonly StringBuilder _capture;
-        private IParseEngine _parseEngine;
+        private readonly StringBuilder capture;
+        private readonly IParseEngine parseEngine;
     }
 }

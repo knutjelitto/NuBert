@@ -33,7 +33,7 @@ namespace Pliant.Automata
             return false;
         }
 
-        public override ILexeme CreateLexeme(int position)
+        public override Lexeme CreateLexeme(int position)
         {
             return new DfaLexeme(this, position);
         }

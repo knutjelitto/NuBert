@@ -4,7 +4,6 @@ using Pliant.Ebnf;
 using Pliant.Grammars;
 using Pliant.Runtime;
 using Pliant.Tests.Unit.Runtime;
-using System.Linq;
 
 namespace Pliant.Tests.Unit.Ebnf
 {
@@ -14,7 +13,7 @@ namespace Pliant.Tests.Unit.Ebnf
     [TestClass]
     public class EbnfTests
     {
-        private static readonly string _ebnfText = @"
+        private const string ebnfText = @"
         Grammar
             = { Rule } ;
         Rule
@@ -101,18 +100,12 @@ namespace Pliant.Tests.Unit.Ebnf
             ebnfGrammar = new EbnfGrammar();
         }
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext { get; set; }
-
-        private IParseEngine _parseEngine;
+        private IParseEngine parseEngine;
 
         [TestInitialize]
         public void Initialize_EbnfTests()
         {
-            _parseEngine = new ParseEngine(
+            this.parseEngine = new ParseEngine(
                 ebnfGrammar, 
                 new ParseEngineOptions(loggingEnabled:true)
             );
@@ -121,7 +114,7 @@ namespace Pliant.Tests.Unit.Ebnf
         [TestMethod]
         public void EbnfShouldParseSelfDefinedGrammar()
         {
-            var input = _ebnfText;
+            var input = ebnfText;
             ParseInput(input);
         }
 
@@ -270,20 +263,26 @@ namespace Pliant.Tests.Unit.Ebnf
 
         private IForestNode ParseInput(string input)
         {
-            var parseRunner = new ParseRunner(_parseEngine, input);
+            var parseRunner = new ParseRunner(this.parseEngine, input);
             while (!parseRunner.EndOfStream())
+            {
                 if(!parseRunner.Read())
+                {
                     Assert.Fail($"Error found in on line {parseRunner.Line}, column {parseRunner.Column}");
-            
+                }
+            }
+
             if(!parseRunner.ParseEngine.IsAccepted())
+            {
                 Assert.Fail("Parse was not accepted.");
+            }
 
             return parseRunner.ParseEngine.GetParseForestRootNode();
         }
 
         private void FailParseInput(string input)
         {
-            var parseRunner = new ParseRunner(_parseEngine, input);
+            var parseRunner = new ParseRunner(this.parseEngine, input);
             Assert.IsFalse(parseRunner.ParseEngine.IsAccepted());
         }
     }

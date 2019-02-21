@@ -43,7 +43,7 @@ namespace Pliant.Forest
                     LazyLoadChildren();
                 }
 
-                return this._children;
+                return this.children;
             }
         }
 
@@ -112,7 +112,7 @@ namespace Pliant.Forest
                     newAndNode.AddChild(child);
                 }
 
-                this._children.Add(newAndNode);
+                this.children.Add(newAndNode);
             }
         }
 
@@ -176,7 +176,7 @@ namespace Pliant.Forest
 
         private bool ShouldLoadChildren()
         {
-            return this._children.Count == 0;
+            return this.children.Count == 0;
         }
 
         private readonly int _hashCode;

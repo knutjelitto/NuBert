@@ -494,7 +494,7 @@ namespace Pliant.Runtime
             State t_rule = null;
             TransitionState previousTransitionState = null;
 
-            var visited = SharedPools.Default<HashSet<State>>().AllocateAndClear();
+            var visited = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<State>>());
             OptimizeReductionPathRecursive(searchSymbol, k, ref t_rule, ref previousTransitionState, visited);
             SharedPools.Default<HashSet<State>>().ClearAndFree(visited);
         }

@@ -4,15 +4,15 @@ namespace Pliant.Utilities
 {
     internal static class HashCode
     {
-        private const uint SEED = 2166136261;
-        private const int INCREMENTAL = 16777619;
+        private const uint Seed = 2166136261;
+        private const int Incremental = 16777619;
         
         public static int Compute(int first)
         {
             unchecked
             {
-                var hash = (int)SEED;
-                hash = hash * INCREMENTAL ^ first;
+                var hash = (int)Seed;
+                hash = hash * Incremental ^ first;
                 return hash;
             }
         }
@@ -21,9 +21,9 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)SEED;
-                hash = hash * INCREMENTAL ^ first;
-                hash = hash * INCREMENTAL ^ second;
+                var hash = (int)Seed;
+                hash = hash * Incremental ^ first;
+                hash = hash * Incremental ^ second;
                 return hash;
             }
         }
@@ -32,10 +32,10 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)SEED;
-                hash = hash * INCREMENTAL ^ first;
-                hash = hash * INCREMENTAL ^ second;
-                hash = hash * INCREMENTAL ^ third;
+                var hash = (int)Seed;
+                hash = hash * Incremental ^ first;
+                hash = hash * Incremental ^ second;
+                hash = hash * Incremental ^ third;
                 return hash;
             }
         }
@@ -44,25 +44,11 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)SEED;
-                hash = hash * INCREMENTAL ^ first;
-                hash = hash * INCREMENTAL ^ second;
-                hash = hash * INCREMENTAL ^ third;
-                hash = hash * INCREMENTAL ^ fourth;
-                return hash;
-            }
-        }
-
-        public static int Compute(int first, int second, int third, int fourth, int fifth)
-        {
-            unchecked
-            {
-                var hash = (int)SEED;
-                hash = hash * INCREMENTAL ^ first;
-                hash = hash * INCREMENTAL ^ second;
-                hash = hash * INCREMENTAL ^ third;
-                hash = hash * INCREMENTAL ^ fourth;
-                hash = hash * INCREMENTAL ^ fifth;
+                var hash = (int)Seed;
+                hash = hash * Incremental ^ first;
+                hash = hash * Incremental ^ second;
+                hash = hash * Incremental ^ third;
+                hash = hash * Incremental ^ fourth;
                 return hash;
             }
         }
@@ -71,13 +57,13 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)SEED;
-                hash = hash * INCREMENTAL ^ first;
-                hash = hash * INCREMENTAL ^ second;
-                hash = hash * INCREMENTAL ^ third;
-                hash = hash * INCREMENTAL ^ fourth;
-                hash = hash * INCREMENTAL ^ fifth;
-                hash = hash * INCREMENTAL ^ sixth;
+                var hash = (int)Seed;
+                hash = hash * Incremental ^ first;
+                hash = hash * Incremental ^ second;
+                hash = hash * Incremental ^ third;
+                hash = hash * Incremental ^ fourth;
+                hash = hash * Incremental ^ fifth;
+                hash = hash * Incremental ^ sixth;
                 return hash;
             }
         }
@@ -86,10 +72,10 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)SEED;
+                var hash = (int)Seed;
                 foreach (var item in items)
                 {
-                    hash = hash * INCREMENTAL ^ item.GetHashCode();
+                    hash = hash * Incremental ^ item.GetHashCode();
                 }
                 return hash;
             }
@@ -101,9 +87,9 @@ namespace Pliant.Utilities
             {
                 if (isFirstValue)
                 {
-                    accumulator = (int)SEED;
+                    accumulator = (int)Seed;
                 }
-                accumulator = accumulator * INCREMENTAL ^ hashCode;
+                accumulator = accumulator * Incremental ^ hashCode;
                 return accumulator;
             }
         }

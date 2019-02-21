@@ -34,7 +34,7 @@ namespace Pliant.Grammars
             return false;
         }
 
-        public override ILexeme CreateLexeme(int position)
+        public override Lexeme CreateLexeme(int position)
         {
             return new ParseEngineLexeme(this);
         }

@@ -4,18 +4,18 @@ namespace Pliant.Forest
 {
     public class AndForestNode : IAndForestNode
     {
-        public AndForestNode()
+        public AndForestNode(params IForestNode[] nodes)
         {
-            this._children = new List<IForestNode>();
+            this.children = new List<IForestNode>(nodes);
         }
 
-        public IReadOnlyList<IForestNode> Children => this._children;
+        public IReadOnlyList<IForestNode> Children => this.children;
 
         public void AddChild(IForestNode orNode)
         {
-            this._children.Add(orNode);
+            this.children.Add(orNode);
         }
 
-        private readonly List<IForestNode> _children;
+        private readonly List<IForestNode> children;
     }
 }

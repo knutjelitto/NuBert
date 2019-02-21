@@ -1,9 +1,18 @@
-﻿using Pliant.Forest;
-using System;
+﻿using System;
+using Pliant.Forest;
 using Pliant.Tokens;
 
 namespace Pliant.Tests.Common.Forest
 {
+#if true
+    public class FakeTokenForestNode : TokenForestNode
+    {
+        public FakeTokenForestNode(string token, int origin, int location)
+            : base(new Token(origin, token, new TokenType(token)), origin, location)
+        {
+        }
+    }
+#else
     public class FakeTokenForestNode : ITokenForestNode
     {
         public FakeTokenForestNode(string token, int origin, int location)
@@ -18,20 +27,18 @@ namespace Pliant.Tests.Common.Forest
             Location = location;
         }
 
-        public int Location { get; private set; }
+        public int Location { get; }
 
-        public ForestNodeType NodeType
-        {
-            get { return ForestNodeType.Token; }
-        }
+        public ForestNodeType NodeType => ForestNodeType.Token;
 
-        public int Origin { get; private set; }
+        public int Origin { get; }
 
-        public IToken Token { get; private set; }
+        public IToken Token { get; }
 
         public void Accept(IForestNodeVisitor visitor)
         {
             throw new NotImplementedException();
         }
     }
+#endif
 }

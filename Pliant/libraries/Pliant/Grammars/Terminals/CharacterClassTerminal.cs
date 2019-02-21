@@ -2,14 +2,14 @@
 
 namespace Pliant.Grammars
 {
-    public class CharacterClassTerminal : Terminal
+    public sealed class CharacterClassTerminal : Terminal
     {
-        private readonly List<Terminal> _terminals;
-        private IReadOnlyList<Interval> _intervals;
+        private readonly List<Terminal> terminals;
+        private IReadOnlyList<Interval> intervals;
 
         public CharacterClassTerminal(params Terminal[] terminals)
         {
-            this._terminals = new List<Terminal>(terminals);
+            this.terminals = new List<Terminal>(terminals);
         }
 
         private static IReadOnlyList<Interval> CreateIntervals(IReadOnlyList<Terminal> terminals)
@@ -26,7 +26,7 @@ namespace Pliant.Grammars
         public override bool IsMatch(char character)
         {
             // PERF: Avoid LINQ Any due to Lambda allocation
-            foreach (var terminal in this._terminals)
+            foreach (var terminal in this.terminals)
             {
                 if (terminal.IsMatch(character))
                 {
@@ -39,7 +39,7 @@ namespace Pliant.Grammars
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            return this._intervals ?? (this._intervals = CreateIntervals(this._terminals));
+            return this.intervals ?? (this.intervals = CreateIntervals(this.terminals));
         }
     }
 }

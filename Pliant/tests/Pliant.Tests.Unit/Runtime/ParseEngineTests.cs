@@ -43,16 +43,16 @@ namespace Pliant.Tests.Unit.Runtime
             var a_1_2 = new FakeTokenForestNode("a", 1, 2);
             var expected = 
                 new FakeSymbolForestNode(S.ProductionModel.LeftHandSide.NonTerminal, 0, 2, 
-                    new FakeAndForestNode(
+                    new AndForestNode(
                         new FakeSymbolForestNode(S.ProductionModel.LeftHandSide.NonTerminal, 0, 1, 
-                            new FakeAndForestNode(
+                            new AndForestNode(
                                 new FakeTokenForestNode("a", 0, 1))),
                         new FakeSymbolForestNode(T.ProductionModel.LeftHandSide.NonTerminal, 1, 2,
-                            new FakeAndForestNode(
+                            new AndForestNode(
                                 a_1_2),
-                            new FakeAndForestNode(
+                            new AndForestNode(
                                 a_1_2,
-                                new FakeSymbolForestNode(B.ProductionModel.LeftHandSide.NonTerminal, 2, 2, new FakeAndForestNode(
+                                new FakeSymbolForestNode(B.ProductionModel.LeftHandSide.NonTerminal, 2, 2, new AndForestNode(
                                     new FakeTokenForestNode("", 2,2)))))));
             AssertForestsAreEqual(expected, actual);
         }

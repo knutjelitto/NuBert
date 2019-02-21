@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Pliant.Diagnostics;
-using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
@@ -19,9 +18,6 @@ namespace Pliant.Grammars
             PostDotSymbol = GetPostDotSymbol(production, position);
             PreDotSymbol = GetPreDotSymbol(production, position);
             IsComplete = IsCompleted(position, production);
-
-            //this._hashCode = ComputeHashCode(Production, Position);
-            this._hashCode = Id.GetHashCode();
         }
 
         public bool IsComplete { get; }
@@ -66,11 +62,6 @@ namespace Pliant.Grammars
             return stringBuilder.ToString();
         }
 
-        private static int ComputeHashCode(Production production, int position)
-        {
-            return HashCode.Compute(production.GetHashCode(), position.GetHashCode());
-        }
-
         private static Symbol GetPostDotSymbol(Production production, int position)
         {
             var productionRightHandSide = production.RightHandSide;
@@ -96,7 +87,5 @@ namespace Pliant.Grammars
         {
             return position == production.RightHandSide.Count;
         }
-
-        private readonly int _hashCode;
     }
 }

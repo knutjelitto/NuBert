@@ -312,9 +312,9 @@ namespace Pliant.Runtime
             // leo eligibility needs to be cached before creating the cached transition
             // if the size of the list is != 1, do not enter the cached frame transition
             var cachedTransitionsPool = SharedPools.Default<Dictionary<Symbol, CachedDottedRuleSetTransition>>();
-            var cachedTransitions = cachedTransitionsPool.AllocateAndClear();
+            var cachedTransitions = ObjectPoolExtensions.Allocate(cachedTransitionsPool);
             var cachedCountPool = SharedPools.Default<Dictionary<Symbol, int>>();
-            var cachedCount = cachedCountPool.AllocateAndClear();
+            var cachedCount = ObjectPoolExtensions.Allocate(cachedCountPool);
 
             for (var i = 0; i < frameSet.States.Count; i++)
             {
@@ -392,7 +392,7 @@ namespace Pliant.Runtime
         private void ReductionPass(int iLoc)
         {
             var iES = Chart.Sets[iLoc];
-            var processed = SharedPools.Default<HashSet<Symbol>>().AllocateAndClear();
+            var processed = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<Symbol>>());
             for (var i = 0; i < iES.States.Count; i++)
             {
                 var workEIM = iES.States[i];

@@ -50,7 +50,7 @@ namespace Pliant.Grammars
         {
             var pool = SharedPools.Default<Queue<DottedRule>>();
 
-            var queue = pool.AllocateAndClear();
+            var queue = ObjectPoolExtensions.Allocate(pool);
             var closure = new DottedRuleSet();
 
             foreach (var state in states)
@@ -106,7 +106,7 @@ namespace Pliant.Grammars
         {
             var pool = SharedPools.Default<Queue<DottedRule>>();
 
-            var queue = pool.AllocateAndClear();
+            var queue = ObjectPoolExtensions.Allocate(pool);
             var closure = new DottedRuleSet();
 
             for (var i = 0; i < frame.Data.Count; i++)
@@ -175,7 +175,7 @@ namespace Pliant.Grammars
         {
             var pool = SharedPools.Default<DottedRuleSet>();
 
-            var startStates = pool.AllocateAndClear();
+            var startStates = ObjectPoolExtensions.Allocate(pool);
             var startProductions = grammar.StartProductions();
 
             for (var p = 0; p < startProductions.Count; p++)
@@ -222,7 +222,7 @@ namespace Pliant.Grammars
         private void ProcessSymbolTransitions(DottedRuleAssortment frame)
         {
             var pool = SharedPools.Default<Dictionary<Symbol, DottedRuleSet>>();
-            var transitions = pool.AllocateAndClear();
+            var transitions = ObjectPoolExtensions.Allocate(pool);
 
             for (var i = 0; i < frame.Data.Count; i++)
             {

@@ -1,58 +1,57 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Pliant.Collections;
 using Pliant.Grammars;
 
 namespace Pliant.Utilities
 {
     public static class ObjectPoolExtensions
     {
-        internal static Queue<T> AllocateAndClear<T>(this ObjectPool<Queue<T>> pool)
+        internal static Queue<T> Allocate<T>(this ObjectPool<Queue<T>> pool)
         {
             var queue = pool.Allocate();
-            queue.Clear();
+            //queue.Clear();
             return queue;
         }
 
-        internal static HashSet<TValue> AllocateAndClear<TValue>(this ObjectPool<HashSet<TValue>> pool)
+        internal static HashSet<TValue> Allocate<TValue>(this ObjectPool<HashSet<TValue>> pool)
         {
             var set = pool.Allocate();
-            set.Clear();
+            //set.Clear();
             return set;
         }
 
-        internal static SortedSet<TValue> AllocateAndClear<TValue>(this ObjectPool<SortedSet<TValue>> pool)
+        internal static SortedSet<TValue> Allocate<TValue>(this ObjectPool<SortedSet<TValue>> pool)
         {
             var set = pool.Allocate();
-            set.Clear();
+            //set.Clear();
             return set;
         }
 
-        internal static DottedRuleSet AllocateAndClear(this ObjectPool<DottedRuleSet> pool)
+        internal static DottedRuleSet Allocate(this ObjectPool<DottedRuleSet> pool)
         {
             var set = pool.Allocate();
-            set.Clear();
+            //set.Clear();
             return set;
         }
 
-        internal static Dictionary<TKey, TValue> AllocateAndClear<TKey, TValue>(this ObjectPool<Dictionary<TKey, TValue>> pool)
+        internal static Dictionary<TKey, TValue> Allocate<TKey, TValue>(this ObjectPool<Dictionary<TKey, TValue>> pool)
         {
             var dictionary = pool.Allocate();
-            dictionary.Clear();
+            //dictionary.Clear();
             return dictionary;
         }
 
-        internal static List<T> AllocateAndClear<T>(this ObjectPool<List<T>> pool)
+        internal static List<T> Allocate<T>(this ObjectPool<List<T>> pool)
         {
             var list = pool.Allocate();
-            list.Clear();
+            //list.Clear();
             return list;
         }
 
-        internal static StringBuilder AllocateAndClear(this ObjectPool<StringBuilder> pool)
+        internal static StringBuilder Allocate(this ObjectPool<StringBuilder> pool)
         {
             var builder = pool.Allocate();
-            builder.Clear();
+            //builder.Clear();
             return builder;
         }
 

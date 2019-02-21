@@ -1,25 +1,21 @@
 ﻿using System;
-using Pliant.Forest;
 using System.Collections.Generic;
 using System.IO;
+using Pliant.Forest;
 
 namespace Pliant.Tests.Common.Forest
 {
     public class LoggingForestNodeVisitor : IForestNodeVisitor
     {
-        private HashSet<IForestNode> _visited;
-        private TextWriter _writer;
-
         public LoggingForestNodeVisitor(TextWriter streamWriter)
         {
-            _visited = new HashSet<IForestNode>();
-            _writer = streamWriter;
+            this._visited = new HashSet<IForestNode>();
+            this._writer = streamWriter;
         }
 
         public void Visit(ITokenForestNode tokenNode)
         {
-            _visited.Add(tokenNode);
-            return;
+            this._visited.Add(tokenNode);
         }
 
         public void Visit(IAndForestNode andNode)
@@ -33,8 +29,10 @@ namespace Pliant.Tests.Common.Forest
 
         public void Visit(IIntermediateForestNode node)
         {
-            if (!_visited.Add(node))
+            if (!this._visited.Add(node))
+            {
                 return;
+            }
 
             for (var i = 0; i < node.Children.Count; i++)
             {
@@ -45,20 +43,23 @@ namespace Pliant.Tests.Common.Forest
 
         public void Visit(ISymbolForestNode node)
         {
-            if (!_visited.Add(node))
+            if (!this._visited.Add(node))
+            {
                 return;
-            
+            }
+
             for (var a = 0; a < node.Children.Count; a++)
             {
                 PrintNode(node);
-                _writer.Write(" ->");
+                this._writer.Write(" ->");
                 var andNode = node.Children[a];
                 for (var c = 0; c < andNode.Children.Count; c++)
                 {
                     var child = andNode.Children[c];
                     PrintNode(child);
                 }
-                _writer.WriteLine();
+
+                this._writer.WriteLine();
             }
 
             for (var i = 0; i < node.Children.Count; i++)
@@ -68,6 +69,11 @@ namespace Pliant.Tests.Common.Forest
             }
         }
 
+        public void Visit(ITerminalForestNode node)
+        {
+            throw new NotImplementedException();
+        }
+
         private void PrintNode(IForestNode node)
         {
             switch (node.NodeType)
@@ -75,31 +81,35 @@ namespace Pliant.Tests.Common.Forest
                 case ForestNodeType.Intermediate:
                     var intermediate = node as IIntermediateForestNode;
                     if (intermediate.Children.Count > 1)
+                    {
                         throw new Exception("Intermediate node has more children than expected. ");
+                    }
+
                     var flatList = GetFlattenedList(intermediate);
                     for (var i = 0; i < flatList.Count; i++)
                     {
-                        _writer.Write(" ");
+                        this._writer.Write(" ");
                         PrintNode(flatList[i]);
                     }
+
                     break;
 
                 case ForestNodeType.Symbol:
                     var symbolForestNode = node as ISymbolForestNode;
                     var symbolForestNodeString = GetSymbolNodeString(symbolForestNode);
-                    _writer.Write(" ");
-                    _writer.Write(symbolForestNodeString);
+                    this._writer.Write(" ");
+                    this._writer.Write(symbolForestNodeString);
                     break;
-                    
+
                 case ForestNodeType.Token:
                     var tokenForestNode = node as ITokenForestNode;
                     var tokenForestNodeString = GetTokenNodeString(tokenForestNode);
-                    _writer.Write(" ");
-                    _writer.Write(tokenForestNodeString);
+                    this._writer.Write(" ");
+                    this._writer.Write(tokenForestNodeString);
                     break;
             }
         }
-    
+
 
         private static IList<IForestNode> GetFlattenedList(IIntermediateForestNode intermediate)
         {
@@ -122,6 +132,7 @@ namespace Pliant.Tests.Common.Forest
                     }
                 }
             }
+
             return children;
         }
 
@@ -139,10 +150,8 @@ namespace Pliant.Tests.Common.Forest
         {
             return $"('{node.Token.Value}', {node.Origin}, {node.Location})";
         }
-        
-        public void Visit(ITerminalForestNode node)
-        {
-            throw new NotImplementedException();
-        }
+
+        private readonly HashSet<IForestNode> _visited;
+        private readonly TextWriter _writer;
     }
 }

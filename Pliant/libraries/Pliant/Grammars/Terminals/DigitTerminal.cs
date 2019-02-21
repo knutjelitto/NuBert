@@ -2,7 +2,7 @@
 
 namespace Pliant.Grammars
 {
-    public class DigitTerminal : Terminal
+    public sealed class DigitTerminal : Terminal
     {
         public override bool Equals(object obj)
         {
@@ -16,12 +16,12 @@ namespace Pliant.Grammars
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            return _intervals;
+            return Intervals;
         }
 
         public override bool IsMatch(char character)
         {
-            return char.IsDigit(character);
+            return '0' <= character && character <= '9';
         }
 
         public override string ToString()
@@ -29,6 +29,6 @@ namespace Pliant.Grammars
             return "[0-9]";
         }
 
-        private static readonly Interval[] _intervals = {new Interval('0', '9')};
+        private static readonly Interval[] Intervals = {new Interval('0', '9')};
     }
 }

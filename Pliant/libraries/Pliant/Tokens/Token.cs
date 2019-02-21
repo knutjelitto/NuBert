@@ -10,12 +10,12 @@ namespace Pliant.Tokens
         {
             LeadingTrivia = null;
             TrailingTrivia = null;
-            this._hashCode = ComputeHashCode();
+            this.hashCode = (position, value, tokenType).GetHashCode();
         }
 
-        public virtual IReadOnlyList<ITrivia> LeadingTrivia { get; }
+        public IReadOnlyList<ITrivia> LeadingTrivia { get; }
 
-        public virtual IReadOnlyList<ITrivia> TrailingTrivia { get; }
+        public IReadOnlyList<ITrivia> TrailingTrivia { get; }
 
         public override bool Equals(object obj)
         {
@@ -27,17 +27,9 @@ namespace Pliant.Tokens
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                Position.GetHashCode(),
-                Value.GetHashCode(),
-                TokenType.GetHashCode());
-        }
-
-        private readonly int _hashCode;
+        private readonly int hashCode;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Pliant.Grammars
 {
-    public class AnyTerminal : Terminal
+    public sealed class AnyTerminal : Terminal
     {
         public override bool Equals(object obj)
         {

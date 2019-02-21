@@ -1,29 +1,25 @@
-﻿using Pliant.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class NegationTerminal : Terminal
+    public sealed class NegationTerminal : Terminal
     {
-        public Terminal InnerTerminal { get; private set; }
-
-        private IReadOnlyList<Interval> _intervals;
-
-        private readonly int _hashCode = 0;
-
         public NegationTerminal(Terminal innerTerminal)
         {
             InnerTerminal = innerTerminal;
             this._hashCode = ComputeHashCode();
         }
 
+        public Terminal InnerTerminal { get; }
+
         private static IReadOnlyList<Interval> CreateIntervals(Terminal innerTerminal)
         {
             var inverseIntervalList = new List<Interval>();
             var intervals = innerTerminal.GetIntervals();
-            for (var i = 0; i < intervals.Count; i++)
+            foreach (var interval in intervals)
             {
-                var inverseIntervals = Interval.Inverse(intervals[i]);
+                var inverseIntervals = Interval.Inverse(interval);
                 inverseIntervalList.AddRange(inverseIntervals);
             }
 
@@ -37,12 +33,7 @@ namespace Pliant.Grammars
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            if(this._intervals == null)
-            {
-                this._intervals = CreateIntervals(InnerTerminal);
-            }
-
-            return this._intervals;
+            return this._intervals ?? (this._intervals = CreateIntervals(InnerTerminal));
         }
 
         public override int GetHashCode()
@@ -52,23 +43,17 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var negationTerminal = obj as NegationTerminal;
-            if (negationTerminal == null)
-            {
-                return false;
-            }
-
-            return negationTerminal.InnerTerminal.Equals(InnerTerminal);
+            return obj is NegationTerminal other && 
+                   InnerTerminal.Equals(other.InnerTerminal);
         }
 
         private int ComputeHashCode()
         {
             return HashCode.Compute(InnerTerminal.GetHashCode(), "!".GetHashCode());
         }
+
+        private readonly int _hashCode;
+
+        private IReadOnlyList<Interval> _intervals;
     }
 }

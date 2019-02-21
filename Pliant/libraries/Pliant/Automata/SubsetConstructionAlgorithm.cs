@@ -13,7 +13,7 @@ namespace Pliant.Automata
         {
             var processOnceQueue = new ProcessOnceQueue<NfaClosure>();
 
-            var set = SharedPools.Default<SortedSet<NfaState>>().AllocateAndClear();
+            var set = ObjectPoolExtensions.Allocate(SharedPools.Default<SortedSet<NfaState>>());
             foreach (var state in nfa.Start.Closure())
             {
                 set.Add(state);
@@ -26,9 +26,8 @@ namespace Pliant.Automata
             while (processOnceQueue.Count > 0)
             {
                 var nfaClosure = processOnceQueue.Dequeue();
-                var transitions = SharedPools
-                                  .Default<Dictionary<Terminal, SortedSet<NfaState>>>()
-                                  .AllocateAndClear();
+                var transitions = ObjectPoolExtensions.Allocate(SharedPools
+                                      .Default<Dictionary<Terminal, SortedSet<NfaState>>>());
 
                 for (var i = 0; i < nfaClosure.Closure.Length; i++)
                 {
@@ -43,7 +42,7 @@ namespace Pliant.Automata
 
                                 if (!transitions.ContainsKey(terminalTransition.Terminal))
                                 {
-                                    transitions[terminal] = SharedPools.Default<SortedSet<NfaState>>().AllocateAndClear();
+                                    transitions[terminal] = ObjectPoolExtensions.Allocate(SharedPools.Default<SortedSet<NfaState>>());
                                 }
 
                                 transitions[terminal].Add(transition.Target);
@@ -75,7 +74,7 @@ namespace Pliant.Automata
 
         private static NfaClosure Closure(SortedSet<NfaState> states, NfaState endState)
         {
-            var set = SharedPools.Default<SortedSet<NfaState>>().AllocateAndClear();
+            var set = ObjectPoolExtensions.Allocate(SharedPools.Default<SortedSet<NfaState>>());
             var isFinal = false;
             foreach (var state in states)
             {

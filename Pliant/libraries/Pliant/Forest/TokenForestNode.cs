@@ -9,7 +9,7 @@ namespace Pliant.Forest
             : base(origin, location)
         {
             Token = token;
-            this._hashCode = ComputeHashCode();
+            this.hashCode = ComputeHashCode();
         }
 
         public override ForestNodeType NodeType => ForestNodeType.Token;
@@ -23,15 +23,15 @@ namespace Pliant.Forest
         public override bool Equals(object obj)
         {
             return obj is TokenForestNode other && 
-                   Location == other.Location && 
-                   NodeType == other.NodeType && 
-                   Origin == other.Origin && 
+                   Location.Equals(other.Location) && 
+                   NodeType.Equals(other.NodeType) && 
+                   Origin.Equals(other.Origin) && 
                    Token.Equals(other.Token);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
         private int ComputeHashCode()
@@ -43,6 +43,6 @@ namespace Pliant.Forest
                 Token.GetHashCode());
         }
 
-        private readonly int _hashCode;
+        private readonly int hashCode;
     }
 }

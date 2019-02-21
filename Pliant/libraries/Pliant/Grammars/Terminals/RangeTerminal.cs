@@ -2,7 +2,7 @@
 
 namespace Pliant.Grammars
 {
-    public class RangeTerminal : Terminal
+    public sealed class RangeTerminal : Terminal
     {
         public RangeTerminal(char start, char end)
         {
@@ -25,7 +25,7 @@ namespace Pliant.Grammars
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            return this._intervals ?? (this._intervals = new[] {new Interval(Start, End)});
+            return this.intervals ?? (this.intervals = new[] {new Interval(Start, End)});
         }
 
         public override bool IsMatch(char character)
@@ -38,6 +38,6 @@ namespace Pliant.Grammars
             return $"[{Start}-{End}]";
         }
 
-        private Interval[] _intervals;
+        private Interval[] intervals;
     }
 }

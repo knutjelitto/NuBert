@@ -408,7 +408,7 @@ namespace Pliant.Tests.Unit.Runtime
             Assert.AreEqual(0, secondToken.TrailingTrivia.Count);
         }
 
-        private static Tuple<IToken, IToken> RunTriviaTestRepeatingWordGrammarParse(string input)
+        private static (IToken, IToken) RunTriviaTestRepeatingWordGrammarParse(string input)
         {
             var parseTester = new ParseTester(_repeatingWordGrammar);
             parseTester.RunParse(input);
@@ -427,7 +427,7 @@ namespace Pliant.Tests.Unit.Runtime
                 .AssertInBoundsAndNavigate(andNode => andNode.Children, 0)
                 .AssertIsInstanceOfTypeAndCast<ITokenForestNode>();
 
-            return new Tuple<IToken, IToken>(firstTokenForestNode.Token, secondTokenForestNode.Token);
+            return (firstTokenForestNode.Token, secondTokenForestNode.Token);
         }
 
         private static Chart GetParseEngineChart(ParseEngine parseEngine)

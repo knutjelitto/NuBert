@@ -2,16 +2,17 @@
 
 namespace Pliant.Tokens
 {
-    public class StringLiteralLexeme : LexemeBase<StringLiteralLexerRule>
+    public class StringLiteralLexeme : Lexeme
     {
         public StringLiteralLexeme(StringLiteralLexerRule lexerRule, int position)
             : base(lexerRule, position)
         {
-            this._index = 0;
-            this._capture = null;
+            this.index = 0;
+            this.capture = null;
+            Literal = lexerRule.Literal;
         }
 
-        public string Literal => ConcreteLexerRule.Literal;
+        public string Literal { get; }
 
         public override string Value
         {
@@ -19,51 +20,45 @@ namespace Pliant.Tokens
             {
                 if (!IsSubStringAllocated())
                 {
-                    this._capture = AllocateSubString();
+                    this.capture = AllocateSubString();
                 }
 
-                return this._capture;
+                return this.capture;
             }
         }
 
         public override bool IsAccepted()
         {
-            return this._index >= Literal.Length;
-        }
-
-        public override void Reset()
-        {
-            this._index = 0;
-            this._capture = null;
+            return this.index >= Literal.Length;
         }
 
         public override bool Scan(char c)
         {
-            if (this._index >= Literal.Length)
+            if (this.index >= Literal.Length)
             {
                 return false;
             }
 
-            if (Literal[this._index] != c)
+            if (Literal[this.index] != c)
             {
                 return false;
             }
 
-            this._index++;
+            this.index++;
             return true;
         }
 
         private string AllocateSubString()
         {
-            return Literal.Substring(0, this._index);
+            return Literal.Substring(0, this.index);
         }
 
         private bool IsSubStringAllocated()
         {
-            return this._index == this._capture?.Length;
+            return this.index == this.capture?.Length;
         }
 
-        private string _capture;
-        private int _index;
+        private string capture;
+        private int index;
     }
 }

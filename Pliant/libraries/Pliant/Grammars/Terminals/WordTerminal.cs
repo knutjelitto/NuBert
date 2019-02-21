@@ -6,7 +6,7 @@ namespace Pliant.Grammars
     {
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            return _intervals;
+            return intervals;
         }
 
         public override bool IsMatch(char character)
@@ -17,7 +17,7 @@ namespace Pliant.Grammars
                    '_' == character;
         }
 
-        private static readonly Interval[] _intervals =
+        private static readonly Interval[] intervals =
         {
             new Interval('A', 'Z'),
             new Interval('a', 'z'),

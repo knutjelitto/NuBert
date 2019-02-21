@@ -8,12 +8,12 @@ namespace Pliant.Runtime
 {
     public class ParseRunner : IParseRunner
     {
-        private readonly TextReader _reader;
-        private readonly List<ILexeme> _tokenLexemes;
-        private readonly List<ILexeme> _ignoreLexemes;
-        private List<ILexeme> _previousTokenLexemes;
-        private readonly List<ILexeme> _triviaAccumulator;
-        private readonly List<ILexeme> _triviaLexemes;
+        private readonly TextReader reader;
+        private readonly List<Lexeme> tokenLexemes;
+        private readonly List<Lexeme> ignoreLexemes;
+        private List<Lexeme> previousTokenLexemes;
+        private readonly List<Lexeme> triviaAccumulator;
+        private readonly List<Lexeme> triviaLexemes;
 
         public int Position { get; private set; }
 
@@ -31,11 +31,11 @@ namespace Pliant.Runtime
         public ParseRunner(IParseEngine parseEngine, TextReader reader)
         {
             ParseEngine = parseEngine;
-            this._reader = reader;
-            this._tokenLexemes = new List<ILexeme>();
-            this._ignoreLexemes = new List<ILexeme>();
-            this._triviaLexemes = new List<ILexeme>();
-            this._triviaAccumulator = new List<ILexeme>();
+            this.reader = reader;
+            this.tokenLexemes = new List<Lexeme>();
+            this.ignoreLexemes = new List<Lexeme>();
+            this.triviaLexemes = new List<Lexeme>();
+            this.triviaAccumulator = new List<Lexeme>();
             Position = 0;
         }
 
@@ -128,27 +128,26 @@ namespace Pliant.Runtime
 
         private bool AnyExistingTriviaLexemes()
         {
-            return this._triviaLexemes.Count > 0;
+            return this.triviaLexemes.Count > 0;
         }
 
         private void AddTrailingTriviaToPreviousToken()
         {
-            if (this._previousTokenLexemes == null
-                || this._previousTokenLexemes.Count == 0)
+            if (this.previousTokenLexemes == null || this.previousTokenLexemes.Count == 0)
             {
                 return;
             }
 
-            for (var a = 0; a < this._triviaAccumulator.Count; a++)
+            foreach (var trivia in this.triviaAccumulator)
             {
-                for (var l = 0; l < this._previousTokenLexemes.Count; l++)
+                foreach (var lexeme in this.previousTokenLexemes)
                 {
-                    this._previousTokenLexemes[l].AddTrailingTrivia(this._triviaAccumulator[a]);
+                    lexeme.AddTrailingTrivia(trivia);
                 }
             }
 
-            this._triviaLexemes.Clear();
-            this._triviaAccumulator.Clear();
+            this.triviaLexemes.Clear();
+            this.triviaAccumulator.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -180,7 +179,7 @@ namespace Pliant.Runtime
 
         public bool EndOfStream()
         {
-            return this._reader.Peek() == -1;
+            return this.reader.Peek() == -1;
         }
 
         public bool RunToEnd()
@@ -198,62 +197,62 @@ namespace Pliant.Runtime
 
         private char ReadCharacter()
         {
-            var character = (char) this._reader.Read();
+            var character = (char) this.reader.Read();
             return character;
         }
 
         private bool MatchesNewTriviaLexemes(char character)
         {
-            return MatchLexerRules(character, ParseEngine.Grammar.Trivia, this._triviaLexemes);
+            return MatchLexerRules(character, ParseEngine.Grammar.Trivia, this.triviaLexemes);
         }
 
         private bool MatchesExistingIncompleteTriviaLexemes(char character)
         {
-            return MatchesExistingIncompleteLexemes(character, this._triviaLexemes);
+            return MatchesExistingIncompleteLexemes(character, this.triviaLexemes);
         }
 
         private bool MatchesExistingTriviaLexemes(char character)
         {
-            return MatchesExistingLexemes(character, this._triviaLexemes);
+            return MatchesExistingLexemes(character, this.triviaLexemes);
         }
 
         private void AccumulateAcceptedTrivia()
         {
-            foreach (var trivia in this._triviaLexemes)
+            foreach (var trivia in this.triviaLexemes)
             {
                 if (trivia.IsAccepted())
                 {
-                    this._triviaAccumulator.Add(trivia);
+                    this.triviaAccumulator.Add(trivia);
                 }
             }
 
-            this._triviaLexemes.Clear();
+            this.triviaLexemes.Clear();
         }
 
         private bool MatchesExistingIncompleteIgnoreLexemes(char character)
         {
-            return MatchesExistingIncompleteLexemes(character, this._ignoreLexemes);
+            return MatchesExistingIncompleteLexemes(character, this.ignoreLexemes);
         }
 
         private bool MatchExistingTokenLexemes(char character)
         {
-            return MatchesExistingLexemes(character, this._tokenLexemes);
+            return MatchesExistingLexemes(character, this.tokenLexemes);
         }
 
         private bool TryParseExistingToken()
         {
-            var anyLexemes = this._tokenLexemes.Count > 0;
+            var anyLexemes = this.tokenLexemes.Count > 0;
             if (!anyLexemes)
             {
                 return false;
             }
 
             var i = 0;
-            var size = this._tokenLexemes.Count;
+            var size = this.tokenLexemes.Count;
 
             while (i < size)
             {
-                var lexeme = this._tokenLexemes[i];
+                var lexeme = this.tokenLexemes[i];
                 if (lexeme.IsAccepted())
                 {
                     i++;
@@ -262,8 +261,8 @@ namespace Pliant.Runtime
                 {
                     if (i < size - 1)
                     {
-                        this._tokenLexemes[i] = this._tokenLexemes[size - 1];
-                        this._tokenLexemes[size - 1] = lexeme;
+                        this.tokenLexemes[i] = this.tokenLexemes[size - 1];
+                        this.tokenLexemes[size - 1] = lexeme;
                     }
                     size--;
                 }
@@ -275,63 +274,63 @@ namespace Pliant.Runtime
                 return false;
             }
 
-            i = this._tokenLexemes.Count - 1;
+            i = this.tokenLexemes.Count - 1;
             while (i >= size)
             {
-                this._tokenLexemes.RemoveAt(i);
+                this.tokenLexemes.RemoveAt(i);
                 i--;
             }
 
-            if (!ParseEngine.Pulse(this._tokenLexemes))
+            if (!ParseEngine.Pulse(this.tokenLexemes))
             {
                 return false;
             }
 
-            for (i = 0; i < this._triviaAccumulator.Count; i++)
+            for (i = 0; i < this.triviaAccumulator.Count; i++)
             {
-                foreach (var tokenLexeme in this._tokenLexemes)
+                foreach (var tokenLexeme in this.tokenLexemes)
                 {
-                    tokenLexeme.AddLeadingTrivia(this._triviaAccumulator[i]);
+                    tokenLexeme.AddLeadingTrivia(this.triviaAccumulator[i]);
                 }
             }
 
-            this._triviaAccumulator.Clear();
-            if (this._previousTokenLexemes != null)
+            this.triviaAccumulator.Clear();
+            if (this.previousTokenLexemes != null)
             {
-                this._previousTokenLexemes.Clear();
-                this._previousTokenLexemes.AddRange(this._tokenLexemes);
+                this.previousTokenLexemes.Clear();
+                this.previousTokenLexemes.AddRange(this.tokenLexemes);
             }
             else
             {
-                this._previousTokenLexemes = new List<ILexeme>(this._tokenLexemes);
+                this.previousTokenLexemes = new List<Lexeme>(this.tokenLexemes);
             }
 
-            this._tokenLexemes.Clear();
+            this.tokenLexemes.Clear();
 
             return true;
         }
 
         private bool MatchesNewTokenLexemes(char character)
         {
-            return MatchLexerRules(character, ParseEngine.GetExpectedLexerRules(), this._tokenLexemes);
+            return MatchLexerRules(character, ParseEngine.GetExpectedLexerRules(), this.tokenLexemes);
         }
 
         private bool MatchesExistingIgnoreLexemes(char character)
         {
-            return MatchesExistingLexemes(character, this._ignoreLexemes);
+            return MatchesExistingLexemes(character, this.ignoreLexemes);
         }
 
         private void ClearExistingIgnoreLexemes()
         {
-            this._ignoreLexemes.Clear();
+            this.ignoreLexemes.Clear();
         }
 
         private bool MatchesNewIgnoreLexemes(char character)
         {
-            return MatchLexerRules(character, ParseEngine.Grammar.Ignores, this._ignoreLexemes);
+            return MatchLexerRules(character, ParseEngine.Grammar.Ignores, this.ignoreLexemes);
         }
 
-        private bool MatchLexerRules(char character, IReadOnlyList<LexerRule> lexerRules, List<ILexeme> lexemes)
+        private bool MatchLexerRules(char character, IEnumerable<LexerRule> lexerRules, List<Lexeme> lexemes)
         {
             var anyMatches = false;
             foreach (var lexerRule in lexerRules)
@@ -360,7 +359,7 @@ namespace Pliant.Runtime
             return anyMatches;
         }
 
-        private bool MatchesExistingLexemes(char character, List<ILexeme> lexemes)
+        private bool MatchesExistingLexemes(char character, List<Lexeme> lexemes)
         {
             var anyLexemes = lexemes != null && lexemes.Count > 0;
             if (!anyLexemes)
@@ -404,7 +403,7 @@ namespace Pliant.Runtime
             return true;
         }
 
-        private bool MatchesExistingIncompleteLexemes(char character, List<ILexeme> lexemes)
+        private bool MatchesExistingIncompleteLexemes(char character, List<Lexeme> lexemes)
         {
             if (lexemes == null || lexemes.Count == 0)
             {
@@ -449,7 +448,7 @@ namespace Pliant.Runtime
 
         private bool AnyExistingTokenLexemes()
         {
-            return this._tokenLexemes.Count > 0;
+            return this.tokenLexemes.Count > 0;
         }
     }
 }

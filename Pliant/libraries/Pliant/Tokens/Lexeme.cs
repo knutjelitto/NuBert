@@ -4,7 +4,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Tokens
 {
-    public abstract class Lexeme : ILexeme
+    public abstract class Lexeme : IToken
     {
         protected Lexeme(LexerRule lexerRule, int position)
         {
@@ -17,12 +17,12 @@ namespace Pliant.Tokens
         {
             get
             {
-                if (this._leadingTrivia == null)
+                if (this.leadingTrivia == null)
                 {
-                    return EmptyTriviaArray;
+                    return emptyTriviaArray;
                 }
 
-                return this._leadingTrivia;
+                return this.leadingTrivia;
             }
         }
 
@@ -36,12 +36,12 @@ namespace Pliant.Tokens
         {
             get
             {
-                if (this._trailingTrivia == null)
+                if (this.trailingTrivia == null)
                 {
-                    return EmptyTriviaArray;
+                    return emptyTriviaArray;
                 }
 
-                return this._trailingTrivia;
+                return this.trailingTrivia;
             }
         }
 
@@ -49,33 +49,31 @@ namespace Pliant.Tokens
 
         public void AddLeadingTrivia(ITrivia trivia)
         {
-            if (this._leadingTrivia == null)
+            if (this.leadingTrivia == null)
             {
                 var pool = SharedPools.Default<List<ITrivia>>();
-                this._leadingTrivia = pool.AllocateAndClear();
+                this.leadingTrivia = ObjectPoolExtensions.Allocate(pool);
             }
 
-            this._leadingTrivia.Add(trivia);
+            this.leadingTrivia.Add(trivia);
         }
 
         public void AddTrailingTrivia(ITrivia trivia)
         {
-            if (this._trailingTrivia == null)
+            if (this.trailingTrivia == null)
             {
                 var pool = SharedPools.Default<List<ITrivia>>();
-                this._trailingTrivia = pool.AllocateAndClear();
+                this.trailingTrivia = ObjectPoolExtensions.Allocate(pool);
             }
 
-            this._trailingTrivia.Add(trivia);
+            this.trailingTrivia.Add(trivia);
         }
 
         public abstract bool IsAccepted();
-
-        public abstract void Reset();
-
         public abstract bool Scan(char c);
-        private static readonly ITrivia[] EmptyTriviaArray = { };
-        protected List<ITrivia> _leadingTrivia;
-        protected List<ITrivia> _trailingTrivia;
+
+        private static readonly ITrivia[] emptyTriviaArray = { };
+        private List<ITrivia> leadingTrivia;
+        private List<ITrivia> trailingTrivia;
     }
 }

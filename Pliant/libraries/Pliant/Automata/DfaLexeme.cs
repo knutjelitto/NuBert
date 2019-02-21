@@ -4,13 +4,13 @@ using Pliant.Utilities;
 
 namespace Pliant.Automata
 {
-    public class DfaLexeme : LexemeBase<DfaLexerRule>
+    public class DfaLexeme : Lexeme
     {
         public DfaLexeme(DfaLexerRule dfaLexerRule, int position)
             : base(dfaLexerRule, position)
         {
-            this._stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
-            this._currentState = dfaLexerRule.StartState;
+            this.captureBuilder = ObjectPoolExtensions.Allocate(SharedPools.Default<StringBuilder>());
+            this.currentState = dfaLexerRule.StartState;
         }
 
         public override string Value
@@ -22,31 +22,19 @@ namespace Pliant.Automata
                     DeallocateStringBuilderAndAssignCapture();
                 }
 
-                return this._capture;
+                return this.capture;
             }
         }
 
         public override bool IsAccepted()
         {
-            return this._currentState.IsFinal;
-        }
-
-        public override void Reset()
-        {
-            this._capture = null;
-            if (IsStringBuilderAllocated())
-            {
-                this._stringBuilder.Clear();
-            }
-
-            this._currentState = ConcreteLexerRule.StartState;
+            return this.currentState.IsFinal;
         }
 
         public override bool Scan(char c)
         {
-            for (var e = 0; e < this._currentState.Transitions.Count; e++)
+            foreach (var edge in this.currentState.Transitions)
             {
-                var edge = this._currentState.Transitions[e];
                 if (edge.Terminal.IsMatch(c))
                 {
                     if (!IsStringBuilderAllocated())
@@ -54,8 +42,8 @@ namespace Pliant.Automata
                         ReallocateStringBuilderFromCapture();
                     }
 
-                    this._currentState = edge.Target;
-                    this._stringBuilder.Append(c);
+                    this.currentState = edge.Target;
+                    this.captureBuilder.Append(c);
                     return true;
                 }
             }
@@ -65,28 +53,28 @@ namespace Pliant.Automata
 
         private void DeallocateStringBuilderAndAssignCapture()
         {
-            this._capture = this._stringBuilder.ToString();
-            SharedPools.Default<StringBuilder>().ClearAndFree(this._stringBuilder);
-            this._stringBuilder = null;
+            this.capture = this.captureBuilder.ToString();
+            SharedPools.Default<StringBuilder>().ClearAndFree(this.captureBuilder);
+            this.captureBuilder = null;
         }
 
         private bool IsStringBuilderAllocated()
         {
-            return this._stringBuilder != null;
+            return this.captureBuilder != null;
         }
 
         private void ReallocateStringBuilderFromCapture()
         {
-            this._stringBuilder = SharedPools.Default<StringBuilder>().AllocateAndClear();
-            if (!string.IsNullOrWhiteSpace(this._capture))
+            this.captureBuilder = ObjectPoolExtensions.Allocate(SharedPools.Default<StringBuilder>());
+            if (!string.IsNullOrWhiteSpace(this.capture))
             {
-                this._stringBuilder.Append(this._capture);
+                this.captureBuilder.Append(this.capture);
             }
         }
 
-        private string _capture;
+        private string capture;
+        private StringBuilder captureBuilder;
 
-        private DfaState _currentState;
-        private StringBuilder _stringBuilder;
+        private DfaState currentState;
     }
 }

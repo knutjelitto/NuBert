@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class CharacterTerminal : Terminal
+    public sealed class CharacterTerminal : Terminal
     {
         public CharacterTerminal(char character)
         {
