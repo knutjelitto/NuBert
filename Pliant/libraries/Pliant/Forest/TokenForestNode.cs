@@ -12,6 +12,11 @@ namespace Pliant.Forest
             this.hashCode = ComputeHashCode();
         }
 
+        public TokenForestNode(string token, int origin, int location)
+            : this(new Token(origin, token, new TokenType(token)), origin, location)
+        {
+        }
+
         public override ForestNodeType NodeType => ForestNodeType.Token;
         public IToken Token { get; }
 

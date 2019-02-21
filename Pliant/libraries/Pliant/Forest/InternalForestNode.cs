@@ -4,10 +4,10 @@ namespace Pliant.Forest
 {
     public abstract class InternalForestNode : ForestNodeBase, IInternalForestNode
     {
-        protected InternalForestNode(int origin, int location)
+        protected InternalForestNode(int origin, int location, params IAndForestNode[] children)
             : base(origin, location)
         {
-            this.children = new List<IAndForestNode>();
+            this.children = new List<IAndForestNode>(children);
         }
 
         public virtual IReadOnlyList<IAndForestNode> Children => this.children;

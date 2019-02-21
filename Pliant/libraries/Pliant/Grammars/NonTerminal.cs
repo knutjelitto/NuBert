@@ -15,6 +15,7 @@
         public NonTerminal(QualifiedName fullyQualifiedName)
         {
             FullyQualifiedName = fullyQualifiedName;
+            this.hashCode = Value.GetHashCode();
         }
 
         public QualifiedName FullyQualifiedName { get; }
@@ -28,12 +29,14 @@
 
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return this.hashCode;
         }
 
         public override string ToString()
         {
             return Value;
         }
+
+        private readonly int hashCode;
     }
 }

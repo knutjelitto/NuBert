@@ -11,6 +11,8 @@ namespace Pliant.Collections
             this.hash = new HashSet<T>();
         }
 
+        public T this[int index] => this.list[index];
+
         public int Count => this.list.Count;
 
         public bool AddUnique(T item)
@@ -41,7 +43,5 @@ namespace Pliant.Collections
 
         private readonly HashSet<T> hash;
         private readonly List<T> list;
-
-        public T this[int index] => this.list[index];
     }
 }

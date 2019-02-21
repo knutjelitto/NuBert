@@ -30,9 +30,7 @@ namespace Pliant.Ebnf
 
             var parseForest = parseEngine.GetParseForestRootNode();
 
-            var parseTree = new InternalTreeNode(
-                    parseForest,
-                    new SelectFirstChildDisambiguationAlgorithm());
+            var parseTree = new InternalTreeNode(parseForest);
 
             var ebnfVisitor = new EbnfVisitor();
             parseTree.Accept(ebnfVisitor);

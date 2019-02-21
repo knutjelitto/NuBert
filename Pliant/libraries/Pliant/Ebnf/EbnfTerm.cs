@@ -1,13 +1,21 @@
 ﻿namespace Pliant.Ebnf
 {
-    public class EbnfTerm : EbnfNode
+    public abstract class EbnfTerm : EbnfNode
     {
-        public EbnfTerm(EbnfFactor factor)
+        protected EbnfTerm(EbnfFactor factor)
         {
             Factor = factor;
         }
 
         public EbnfFactor Factor { get; }
+    }
+
+    public sealed class EbnfTermSimple : EbnfTerm
+    {
+        public EbnfTermSimple(EbnfFactor factor)
+            : base(factor)
+        {
+        }
 
         public override int GetHashCode()
         {
@@ -16,8 +24,7 @@
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfTerm other &&
-                   other.Factor.Equals(Factor);
+            return obj is EbnfTermSimple other && other.Factor.Equals(Factor);
         }
 
         public override string ToString()
@@ -26,7 +33,7 @@
         }
     }
 
-    public class EbnfTermConcatenation : EbnfTerm
+    public sealed class EbnfTermConcatenation : EbnfTerm
     {
         public EbnfTermConcatenation(EbnfFactor factor, EbnfTerm term)
             : base(factor)
@@ -43,9 +50,9 @@
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfTermConcatenation term && 
-                   term.Factor.Equals(Factor) && 
-                   term.Term.Equals(Term);
+            return obj is EbnfTermConcatenation other && 
+                   Factor.Equals(other.Factor) && 
+                   Term.Equals(other.Term);
         }
 
         public override string ToString()

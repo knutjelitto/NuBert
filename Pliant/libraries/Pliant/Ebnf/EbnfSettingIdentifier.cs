@@ -1,6 +1,6 @@
 ﻿namespace Pliant.Ebnf
 {
-    public class EbnfSettingIdentifier : EbnfNode
+    public sealed class EbnfSettingIdentifier : EbnfNode
     {
         public EbnfSettingIdentifier(string value)
         {

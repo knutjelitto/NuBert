@@ -64,7 +64,7 @@ namespace Pliant.Builders.Expressions
             {
                 foreach (var production in productions)
                 {
-                    GrammarModel.Productions.Add(production.ProductionModel);
+                    GrammarModel.AddProduction(production.ProductionModel);
                 }
             }
 

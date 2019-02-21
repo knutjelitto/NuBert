@@ -8,7 +8,6 @@ namespace Pliant.Tokens
     {
         protected Lexeme(LexerRule lexerRule, int position)
         {
-            LexerRule = lexerRule;
             TokenType = lexerRule.TokenType;
             Position = position;
         }
@@ -26,11 +25,9 @@ namespace Pliant.Tokens
             }
         }
 
-        public LexerRule LexerRule { get; protected set; }
+        public int Position { get; }
 
-        public int Position { get; protected set; }
-
-        public TokenType TokenType { get; protected set; }
+        public TokenType TokenType { get; }
 
         public IReadOnlyList<ITrivia> TrailingTrivia
         {

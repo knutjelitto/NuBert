@@ -1,24 +1,17 @@
 ﻿using System;
-using Pliant.Tokens;
-using Pliant.Charts;
-using Pliant.Grammars;
-using Pliant.Forest;
-using System.Collections.Generic;
-using Pliant.Utilities;
-using System.Runtime.CompilerServices;
 using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Pliant.Charts;
+using Pliant.Forest;
+using Pliant.Grammars;
+using Pliant.Tokens;
+using Pliant.Utilities;
 
 namespace Pliant.Runtime
 {
     public class DeterministicParseEngine : IParseEngine
     {
-        private readonly PreComputedGrammar _precomputedGrammar;
-        private DeterministicChart _chart;
-
-        public int Location { get; private set; }
-
-        public IGrammar Grammar => this._precomputedGrammar.Grammar;
-
         public DeterministicParseEngine(IGrammar grammar)
             : this(new PreComputedGrammar(grammar))
         {
@@ -26,42 +19,111 @@ namespace Pliant.Runtime
 
         public DeterministicParseEngine(PreComputedGrammar preComputedGrammar)
         {
-            this._precomputedGrammar = preComputedGrammar;
+            this.precomputedGrammar = preComputedGrammar;
             Initialize();
         }
-        
-        private void Initialize()
+
+        public IGrammar Grammar => this.precomputedGrammar.Grammar;
+
+        public int Location { get; private set; }
+
+        public IReadOnlyList<LexerRule> GetExpectedLexerRules()
         {
-            Location = 0;
-            this._chart = new DeterministicChart();
-            var kernelDottedRuleSet = this._precomputedGrammar.Start;
-            Enqueue(Location, new DeterministicState(kernelDottedRuleSet, 0));
-            Reduce(Location);
+            var frameSets = this.chart.Sets;
+            var frameSetCount = frameSets.Count;
+
+            if (frameSetCount == 0)
+            {
+                return EmptyLexerRules;
+            }
+
+            var hashCode = 0;
+            var count = 0;
+
+            if (this.expectedLexerRuleIndicies == null)
+            {
+                this.expectedLexerRuleIndicies = new BitArray(Grammar.LexerRules.Count);
+            }
+            else
+            {
+                this.expectedLexerRuleIndicies.SetAll(false);
+            }
+
+            var frameSet = frameSets[frameSets.Count - 1];
+            for (var i = 0; i < frameSet.States.Count; i++)
+            {
+                var stateFrame = frameSet.States[i];
+                for (var j = 0; j < stateFrame.DottedRuleSet.ScanKeys.Count; j++)
+                {
+                    var lexerRule = stateFrame.DottedRuleSet.ScanKeys[j];
+                    var index = Grammar.GetLexerRuleIndex(lexerRule);
+                    if (index < 0)
+                    {
+                        continue;
+                    }
+
+                    if (this.expectedLexerRuleIndicies[index])
+                    {
+                        continue;
+                    }
+
+                    this.expectedLexerRuleIndicies[index] = true;
+                    hashCode = HashCode.ComputeIncrementalHash(lexerRule.GetHashCode(), hashCode, count == 0);
+                    count++;
+                }
+            }
+
+            if (this.expectedLexerRuleCache == null)
+            {
+                this.expectedLexerRuleCache = new Dictionary<int, LexerRule[]>();
+            }
+
+            // if the hash is found in the cached lexer rule lists, return the cached array
+            if (this.expectedLexerRuleCache.TryGetValue(hashCode, out var cachedLexerRules))
+            {
+                return cachedLexerRules;
+            }
+
+            // compute the new lexer rule array and add it to the cache
+            var array = new LexerRule[count];
+            var returnItemIndex = 0;
+            for (var i = 0; i < Grammar.LexerRules.Count; i++)
+            {
+                if (this.expectedLexerRuleIndicies[i])
+                {
+                    array[returnItemIndex] = Grammar.LexerRules[i];
+                    returnItemIndex++;
+                }
+            }
+
+            this.expectedLexerRuleCache.Add(hashCode, array);
+
+            return array;
         }
 
-        private bool Enqueue(int location, DeterministicState deterministicState)
+        public IInternalForestNode GetParseForestRootNode()
         {
-            if (!this._chart.Enqueue(location, deterministicState))
+            throw new NotImplementedException();
+        }
+
+        public bool IsAccepted()
+        {
+            var anyEarleySets = this.chart.Sets.Count > 0;
+            if (!anyEarleySets)
             {
                 return false;
             }
 
-            if (deterministicState.DottedRuleSet.NullTransition == null)
-            {
-                return true;
-            }
+            var lastDeterministicSetIndex = this.chart.Sets.Count - 1;
+            var lastDeterministicSet = this.chart.Sets[lastDeterministicSetIndex];
 
-            var nullTransitionDeterministicState = new DeterministicState(
-                deterministicState.DottedRuleSet.NullTransition,
-                location);
-
-            return this._chart.Enqueue(location, nullTransitionDeterministicState);
+            return AnyDeterministicSetAccepted(lastDeterministicSet);
         }
 
         public bool Pulse(IToken token)
         {
             Scan(Location, token);
-            var tokenRecognized = this._chart.Sets.Count > Location + 1;
+            var tokenRecognized = this.chart.Sets.Count > Location + 1;
             if (!tokenRecognized)
             {
                 return false;
@@ -74,12 +136,12 @@ namespace Pliant.Runtime
 
         public bool Pulse(IReadOnlyList<IToken> tokens)
         {
-            for(var i=0;i<tokens.Count;i++)
+            for (var i = 0; i < tokens.Count; i++)
             {
                 Scan(Location, tokens[i]);
             }
 
-            var tokenRecognized = this._chart.Sets.Count > Location + 1;
+            var tokenRecognized = this.chart.Sets.Count > Location + 1;
             if (!tokenRecognized)
             {
                 return false;
@@ -90,19 +152,6 @@ namespace Pliant.Runtime
             return true;
         }
 
-        public bool IsAccepted()
-        {
-            var anyEarleySets = this._chart.Sets.Count > 0;
-            if (!anyEarleySets)
-            {
-                return false;
-            }
-
-            var lastDeterministicSetIndex = this._chart.Sets.Count - 1;
-            var lastDeterministicSet = this._chart.Sets[lastDeterministicSetIndex];
-            
-            return AnyDeterministicSetAccepted(lastDeterministicSet);
-        }
 
         private bool AnyDeterministicSetAccepted(DeterministicSet lastDeterministicSet)
         {
@@ -125,12 +174,11 @@ namespace Pliant.Runtime
             return false;
         }
 
-        private bool AnyPreComputedStateAccepted(IReadOnlyList<DottedRule> states)
+        private bool AnyPreComputedStateAccepted(IEnumerable<DottedRule> states)
         {
-            for (var j = 0; j < states.Count; j++)
+            foreach (var preComputedState in states)
             {
-                var preComputedState = states[j];
-                if (!IsComplete(preComputedState))
+                if (!preComputedState.IsComplete)
                 {
                     continue;
                 }
@@ -142,12 +190,41 @@ namespace Pliant.Runtime
 
                 return true;
             }
+
             return false;
+        }
+
+        private void Enqueue(int location, DeterministicState deterministicState)
+        {
+            if (this.chart.Enqueue(location, deterministicState) && deterministicState.DottedRuleSet.NullTransition != null)
+            {
+                var nullTransitionDeterministicState = new DeterministicState(
+                    deterministicState.DottedRuleSet.NullTransition,
+                    location);
+
+                this.chart.Enqueue(location, nullTransitionDeterministicState);
+            }
+        }
+
+        private void Initialize()
+        {
+            Location = 0;
+            this.chart = new DeterministicChart();
+            var kernelDottedRuleSet = this.precomputedGrammar.Start;
+            Enqueue(Location, new DeterministicState(kernelDottedRuleSet, 0));
+            Reduce(Location);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool IsStartState(DottedRule state)
+        {
+            var start = Grammar.Start;
+            return state.Production.LeftHandSide.Equals(start);
         }
 
         private void Reduce(int i)
         {
-            var set = this._chart.Sets[i];
+            var set = this.chart.Sets[i];
             for (var f = 0; f < set.States.Count; f++)
             {
                 var state = set.States[f];
@@ -165,16 +242,14 @@ namespace Pliant.Runtime
 
         private void ReduceDottedRuleSet(int i, int parent, DottedRuleAssortment dottedRuleSet)
         {
-            var parentSet = this._chart.Sets[parent];
+            var parentSet = this.chart.Sets[parent];
             var parentSetDeterministicStates = parentSet.States;
             var parentSetDeterministicStateCount = parentSetDeterministicStates.Count;
 
-            for (var d = 0; d < dottedRuleSet.Data.Count; ++d)
+            foreach (var preComputedState in dottedRuleSet.Data)
             {
-                var preComputedState = dottedRuleSet.Data[d];
-
                 var production = preComputedState.Production;
-                
+
                 if (!preComputedState.IsComplete)
                 {
                     continue;
@@ -192,7 +267,7 @@ namespace Pliant.Runtime
                         continue;
                     }
 
-                    if (!this._chart.Enqueue(i, new DeterministicState(target, pParent)))
+                    if (!this.chart.Enqueue(i, new DeterministicState(target, pParent)))
                     {
                         continue;
                     }
@@ -202,17 +277,17 @@ namespace Pliant.Runtime
                         continue;
                     }
 
-                    this._chart.Enqueue(i, new DeterministicState(target.NullTransition, i));
+                    this.chart.Enqueue(i, new DeterministicState(target.NullTransition, i));
                 }
             }
         }
 
         private void Scan(int location, IToken token)
         {
-            var set = this._chart.Sets[location];
+            var set = this.chart.Sets[location];
             var states = set.States;
             var stateCount = states.Count;
-            
+
             for (var f = 0; f < stateCount; f++)
             {
                 var deterministicState = states[f];
@@ -225,14 +300,13 @@ namespace Pliant.Runtime
 
         private void ScanDottedRuleSet(int location, IToken token, int parent, DottedRuleAssortment dottedRuleSet)
         {
-
             //PERF: This could perhaps be improved with an int array and direct index lookup based on "token.TokenType.Id"?...
             if (!dottedRuleSet.TokenTransitions.TryGetValue(token.TokenType, out var target))
             {
                 return;
             }
 
-            if (!this._chart.Enqueue(location + 1, new DeterministicState(target, parent)))
+            if (!this.chart.Enqueue(location + 1, new DeterministicState(target, parent)))
             {
                 return;
             }
@@ -242,114 +316,14 @@ namespace Pliant.Runtime
                 return;
             }
 
-            this._chart.Enqueue(location + 1, new DeterministicState(target.NullTransition, location + 1));
-        }
-        
-        public void Reset()
-        {
-            this._chart.Clear();
+            this.chart.Enqueue(location + 1, new DeterministicState(target.NullTransition, location + 1));
         }
 
-        public IInternalForestNode GetParseForestRootNode()
-        {
-            throw new NotImplementedException();
-        }
-
-        private Dictionary<int, LexerRule[]> _expectedLexerRuleCache;
         private static readonly LexerRule[] EmptyLexerRules = { };
-        private BitArray _expectedLexerRuleIndicies;
+        private DeterministicChart chart;
 
-        public IReadOnlyList<LexerRule> GetExpectedLexerRules()
-        {
-            var frameSets = this._chart.Sets;
-            var frameSetCount = frameSets.Count;
-
-            if (frameSetCount == 0)
-            {
-                return EmptyLexerRules;
-            }
-
-            var hashCode = 0;
-            var count = 0;
-
-            if (this._expectedLexerRuleIndicies == null)
-            {
-                this._expectedLexerRuleIndicies = new BitArray(Grammar.LexerRules.Count);
-            }
-            else
-            {
-                this._expectedLexerRuleIndicies.SetAll(false);
-            }
-
-            var frameSet = frameSets[frameSets.Count - 1];
-            for (var i = 0; i < frameSet.States.Count; i++)
-            {
-                var stateFrame = frameSet.States[i];
-                for (var j = 0; j < stateFrame.DottedRuleSet.ScanKeys.Count; j++)
-                {
-                    var lexerRule = stateFrame.DottedRuleSet.ScanKeys[j];
-                    var index = Grammar.GetLexerRuleIndex(lexerRule);
-                    if (index < 0)
-                    {
-                        continue;
-                    }
-
-                    if (this._expectedLexerRuleIndicies[index])
-                    {
-                        continue;
-                    }
-
-                    this._expectedLexerRuleIndicies[index] = true;
-                    hashCode = HashCode.ComputeIncrementalHash(lexerRule.GetHashCode(), hashCode, count == 0);
-                    count++;
-                }
-            }
-
-            if (this._expectedLexerRuleCache == null)
-            {
-                this._expectedLexerRuleCache = new Dictionary<int, LexerRule[]>();
-            }
-
-            // if the hash is found in the cached lexer rule lists, return the cached array
-            if (this._expectedLexerRuleCache.TryGetValue(hashCode, out var cachedLexerRules))
-            {
-                return cachedLexerRules;
-            }
-
-            // compute the new lexer rule array and add it to the cache
-            var array = new LexerRule[count];
-            var returnItemIndex = 0;
-            for (var i = 0; i < Grammar.LexerRules.Count; i++)
-            {
-                if (this._expectedLexerRuleIndicies[i])
-                {
-                    array[returnItemIndex] = Grammar.LexerRules[i];
-                    returnItemIndex++;
-                }
-            }
-
-            this._expectedLexerRuleCache.Add(hashCode, array);
-
-            return array;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool IsStartState(DottedRule state)
-        {
-            var start = Grammar.Start;
-            return state.Production.LeftHandSide.Equals(start);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsComplete(DottedRule preComputedState)
-        {
-            return preComputedState.Position == preComputedState.Production.RightHandSide.Count;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Symbol GetPostDotSymbol(DottedRule preComputedState)
-        {
-            return preComputedState.Production.RightHandSide[preComputedState.Position];
-        }
+        private Dictionary<int, LexerRule[]> expectedLexerRuleCache;
+        private BitArray expectedLexerRuleIndicies;
+        private readonly PreComputedGrammar precomputedGrammar;
     }
 }

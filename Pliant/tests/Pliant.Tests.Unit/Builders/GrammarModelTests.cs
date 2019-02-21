@@ -11,8 +11,7 @@ namespace Pliant.Tests.Unit.Builders
         public void GrammarModelShouldAddProductionModel()
         {
             var grammar = new GrammarModel();
-            grammar.Productions.Add(
-                new ProductionModel(""));
+            grammar.AddProduction(new ProductionModel(""));
             Assert.AreEqual(1, grammar.Productions.Count);
         }
 
@@ -48,9 +47,9 @@ namespace Pliant.Tests.Unit.Builders
             A.AddWithAnd(new LexerRuleModel(a));
             B.AddWithAnd(new LexerRuleModel(b));
 
-            grammarModel.Productions.Add(S);
-            grammarModel.Productions.Add(A);
-            grammarModel.Productions.Add(B);
+            grammarModel.AddProduction(S);
+            grammarModel.AddProduction(A);
+            grammarModel.AddProduction(B);
 
             var lexerRuleModel = new LexerRuleModel(space);
             grammarModel.LexerRules.Add(lexerRuleModel);
@@ -81,8 +80,8 @@ namespace Pliant.Tests.Unit.Builders
             {
                 Start = S
             };
-            ns1GrammarModel.Productions.Add(S);
-            ns1GrammarModel.Productions.Add(A);
+            ns1GrammarModel.AddProduction(S);
+            ns1GrammarModel.AddProduction(A);
 
             var ns1ProductionReference = new ProductionReferenceModel(ns1GrammarModel.ToGrammar());
 
@@ -99,8 +98,8 @@ namespace Pliant.Tests.Unit.Builders
             {
                 Start = Z
             };
-            ns2GrammarModel.Productions.Add(Z);
-            ns2GrammarModel.Productions.Add(X);
+            ns2GrammarModel.AddProduction(Z);
+            ns2GrammarModel.AddProduction(X);
 
             var ns2Grammar = ns2GrammarModel.ToGrammar();
 
@@ -164,9 +163,9 @@ namespace Pliant.Tests.Unit.Builders
             B.AddWithAnd(new LexerRuleModel(new StringLiteralLexerRule("b")));
 
             var grammarModel = new GrammarModel();
-            grammarModel.Productions.Add(S);
-            grammarModel.Productions.Add(A);
-            grammarModel.Productions.Add(B);
+            grammarModel.AddProduction(S);
+            grammarModel.AddProduction(A);
+            grammarModel.AddProduction(B);
 
             var grammar = grammarModel.ToGrammar();
             Assert.AreEqual(3, grammar.Productions.Count);

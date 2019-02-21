@@ -22,12 +22,12 @@ namespace Pliant.Tests.Unit.Ebnf
         [TestMethod]
         public void EbnfParserShouldParseCharacterProduction()
         {
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierSimple("Rule"),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("a"))))));
 
             var actual = Parse(@"Rule = 'a';");
@@ -38,14 +38,14 @@ namespace Pliant.Tests.Unit.Ebnf
         [TestMethod]
         public void EbnfParserShouldParseConcatenation()
         {
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("Rule"),
-                        new EbnfExpression(
+                        new EbnfExpressionSimple(
                             new EbnfTermConcatenation(
                                 new EbnfFactorLiteral("a"),
-                                new EbnfTerm(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("b")))))));
 
             var actual =  Parse(@"Rule = 'a' 'b';");
@@ -56,15 +56,15 @@ namespace Pliant.Tests.Unit.Ebnf
         [TestMethod]
         public void EbnfParserShouldParseAlteration()
         {
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("Rule"),
                         new EbnfExpressionAlteration(
-                            new EbnfTerm(
+                            new EbnfTermSimple(
                                 new EbnfFactorLiteral("a")),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("b")))))));
             var actual =  Parse(@"Rule = 'a' | 'b';");
             Assert.AreEqual(expected, actual);
@@ -74,17 +74,17 @@ namespace Pliant.Tests.Unit.Ebnf
         [TestMethod]
         public void EbnfParserShouldParseAlterationAndConcatenation()
         {
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("Rule"),
                         new EbnfExpressionAlteration(
                             new EbnfTermConcatenation(
                                 new EbnfFactorLiteral("a"),
-                                new EbnfTerm(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("b"))),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("c")))))));
             var actual =  Parse(@"Rule = 'a' 'b' | 'c';");
             Assert.AreEqual(expected, actual);
@@ -93,12 +93,12 @@ namespace Pliant.Tests.Unit.Ebnf
         [TestMethod]
         public void EbnfParserShouldParseRegularExpression()
         {
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierSimple("Rule"),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorRegex(
                                         new Regex(
                                             false, 
@@ -123,15 +123,15 @@ namespace Pliant.Tests.Unit.Ebnf
         {
             var actual =  Parse(@"Rule = { 'a' };");
 
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierSimple("Rule"),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorRepetition(
-                                        new EbnfExpression(
-                                            new EbnfTerm(
+                                        new EbnfExpressionSimple(
+                                            new EbnfTermSimple(
                                                 new EbnfFactorLiteral("a")))))))));
 
             Assert.AreEqual(expected, actual);
@@ -142,15 +142,15 @@ namespace Pliant.Tests.Unit.Ebnf
         {
             var actual =  Parse(@"Rule = [ 'a' ];");
 
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierSimple("Rule"),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorOptional(
-                                        new EbnfExpression(
-                                            new EbnfTerm(
+                                        new EbnfExpressionSimple(
+                                            new EbnfTermSimple(
                                                 new EbnfFactorLiteral("a")))))))));
 
             Assert.AreEqual(expected, actual);
@@ -161,15 +161,15 @@ namespace Pliant.Tests.Unit.Ebnf
         {
             var actual =  Parse(@"Rule = ('a');");
 
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierSimple("Rule"),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorGrouping(
-                                        new EbnfExpression(
-                                            new EbnfTerm(
+                                        new EbnfExpressionSimple(
+                                            new EbnfTermSimple(
                                                 new EbnfFactorLiteral("a")))))))));
 
             Assert.AreEqual(expected, actual);
@@ -178,7 +178,7 @@ namespace Pliant.Tests.Unit.Ebnf
         [TestMethod]
         public void EbnfParserShouldParseNamespace()
         {
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierConcatenation("This",
@@ -186,8 +186,8 @@ namespace Pliant.Tests.Unit.Ebnf
                                     new EbnfQualifiedIdentifierConcatenation("A",
                                         new EbnfQualifiedIdentifierConcatenation("Namespace",
                                         new EbnfQualifiedIdentifierSimple("Rule"))))),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("a"))))));
 
             var actual = Parse(@"This.Is.A.Namespace.Rule = 'a'; ");
@@ -201,27 +201,27 @@ namespace Pliant.Tests.Unit.Ebnf
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("S"),
-                        new EbnfExpression(
+                        new EbnfExpressionSimple(
                             new EbnfTermConcatenation(
                                 new EbnfFactorIdentifier(
                                     new EbnfQualifiedIdentifierSimple("A")),
-                                new EbnfTerm(
+                                new EbnfTermSimple(
                                     new EbnfFactorIdentifier(
                                         new EbnfQualifiedIdentifierSimple("B"))))))),
                 new EbnfDefinitionConcatenation(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierSimple("A"),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("a"))))),
-                    new EbnfDefinition(
+                    new EbnfDefinitionSimple(
                         new EbnfBlockRule(
                             new EbnfRule(
                                 new EbnfQualifiedIdentifierSimple(
                                     "B"),
-                                new EbnfExpression(
-                                    new EbnfTerm(
+                                new EbnfExpressionSimple(
+                                    new EbnfTermSimple(
                                         new EbnfFactorLiteral("b"))))))));
             var actual = Parse(@"
                 S = A B;
@@ -238,7 +238,7 @@ namespace Pliant.Tests.Unit.Ebnf
                 :ignore = whitespace; ");
             Assert.IsNotNull(actual);
 
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                 new EbnfBlockSetting(
                     new EbnfSetting(
                         new EbnfSettingIdentifier(":ignore"),
@@ -255,7 +255,7 @@ namespace Pliant.Tests.Unit.Ebnf
                 b ~ 'b' ;");
             Assert.IsNotNull(actual);
 
-            var expected = new EbnfDefinition(
+            var expected = new EbnfDefinitionSimple(
                 new EbnfBlockLexerRule(
                    new EbnfLexerRule(
                        new EbnfQualifiedIdentifierSimple("b"),

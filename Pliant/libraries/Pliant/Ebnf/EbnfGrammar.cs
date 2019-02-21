@@ -18,9 +18,7 @@ namespace Pliant.Ebnf
                 notSingleQuote = CreateNotSingleQuoteLexerRule(),
                 identifier = CreateIdentifierLexerRule(),
                 any = new TerminalLexerRule(new AnyTerminal(), "."),
-                notCloseBracket = new TerminalLexerRule(
-                    new NegationTerminal(new CharacterTerminal(']')),
-                    "[^\\]]"),
+                notCloseBracket = new TerminalLexerRule(new NegationTerminal(new CharacterTerminal(']')), "[^\\]]"),
                 escapeCharacter = CreateEscapeCharacterLexerRule(),
                 whitespace = CreateWhitespaceLexerRule(),
                 multiLineComment = CreateMultiLineCommentLexerRule();

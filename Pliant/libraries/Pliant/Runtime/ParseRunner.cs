@@ -1,28 +1,13 @@
-﻿using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
-using Pliant.Tokens;
 using Pliant.Grammars;
+using Pliant.Tokens;
 
 namespace Pliant.Runtime
 {
     public class ParseRunner : IParseRunner
     {
-        private readonly TextReader reader;
-        private readonly List<Lexeme> tokenLexemes;
-        private readonly List<Lexeme> ignoreLexemes;
-        private List<Lexeme> previousTokenLexemes;
-        private readonly List<Lexeme> triviaAccumulator;
-        private readonly List<Lexeme> triviaLexemes;
-
-        public int Position { get; private set; }
-
-        public int Line { get; private set; }
-
-        public int Column { get; private set; }
-
-        public IParseEngine ParseEngine { get; }
-
         public ParseRunner(IParseEngine parseEngine, string input)
             : this(parseEngine, new StringReader(input))
         {
@@ -36,7 +21,21 @@ namespace Pliant.Runtime
             this.ignoreLexemes = new List<Lexeme>();
             this.triviaLexemes = new List<Lexeme>();
             this.triviaAccumulator = new List<Lexeme>();
+            this.previousTokenLexemes = new List<Lexeme>();
             Position = 0;
+        }
+
+        public int Column { get; private set; }
+
+        public int Line { get; private set; }
+
+        public IParseEngine ParseEngine { get; }
+
+        public int Position { get; private set; }
+
+        public bool EndOfStream()
+        {
+            return this.reader.Peek() == -1;
         }
 
         public bool Read()
@@ -88,6 +87,7 @@ namespace Pliant.Runtime
 
                     return true;
                 }
+
                 return TryParseExistingToken();
             }
 
@@ -98,6 +98,7 @@ namespace Pliant.Runtime
                     AccumulateAcceptedTrivia();
                     AddTrailingTriviaToPreviousToken();
                 }
+
                 return true;
             }
 
@@ -120,20 +121,54 @@ namespace Pliant.Runtime
                     AccumulateAcceptedTrivia();
                     AddTrailingTriviaToPreviousToken();
                 }
+
                 return true;
             }
 
             return MatchesNewIgnoreLexemes(character);
         }
 
-        private bool AnyExistingTriviaLexemes()
+        public bool RunToEnd()
         {
-            return this.triviaLexemes.Count > 0;
+            while (!EndOfStream())
+            {
+                if (!Read())
+                {
+                    return false;
+                }
+            }
+
+            return ParseEngine.IsAccepted();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsEndOfLineCharacter(char character)
+        {
+            switch (character)
+            {
+                case '\n':
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private void AccumulateAcceptedTrivia()
+        {
+            foreach (var trivia in this.triviaLexemes)
+            {
+                if (trivia.IsAccepted())
+                {
+                    this.triviaAccumulator.Add(trivia);
+                }
+            }
+
+            this.triviaLexemes.Clear();
         }
 
         private void AddTrailingTriviaToPreviousToken()
         {
-            if (this.previousTokenLexemes == null || this.previousTokenLexemes.Count == 0)
+            if (this.previousTokenLexemes.Count == 0)
             {
                 return;
             }
@@ -150,83 +185,24 @@ namespace Pliant.Runtime
             this.triviaAccumulator.Clear();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void UpdatePositionMetrics(char character)
+        private bool AnyExistingTokenLexemes()
         {
-            Position++;
-            if (IsEndOfLineCharacter(character))
-            {
-                Column = 0;
-                Line++;
-            }
-            else
-            {
-                Column++;
-            }
+            return this.tokenLexemes.Count > 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsEndOfLineCharacter(char character)
+        private bool AnyExistingTriviaLexemes()
         {
-            switch (character)
-            {
-                case '\n':
-                    return true;
-                default:
-                    return false;
-            }
+            return this.triviaLexemes.Count > 0;
         }
 
-        public bool EndOfStream()
+        private void ClearExistingIgnoreLexemes()
         {
-            return this.reader.Peek() == -1;
+            this.ignoreLexemes.Clear();
         }
 
-        public bool RunToEnd()
+        private bool MatchesExistingIgnoreLexemes(char character)
         {
-            while (!EndOfStream())
-            {
-                if (!Read())
-                {
-                    return false;
-                }
-            }
-
-            return ParseEngine.IsAccepted();
-        }
-
-        private char ReadCharacter()
-        {
-            var character = (char) this.reader.Read();
-            return character;
-        }
-
-        private bool MatchesNewTriviaLexemes(char character)
-        {
-            return MatchLexerRules(character, ParseEngine.Grammar.Trivia, this.triviaLexemes);
-        }
-
-        private bool MatchesExistingIncompleteTriviaLexemes(char character)
-        {
-            return MatchesExistingIncompleteLexemes(character, this.triviaLexemes);
-        }
-
-        private bool MatchesExistingTriviaLexemes(char character)
-        {
-            return MatchesExistingLexemes(character, this.triviaLexemes);
-        }
-
-        private void AccumulateAcceptedTrivia()
-        {
-            foreach (var trivia in this.triviaLexemes)
-            {
-                if (trivia.IsAccepted())
-                {
-                    this.triviaAccumulator.Add(trivia);
-                }
-            }
-
-            this.triviaLexemes.Clear();
+            return MatchesExistingLexemes(character, this.ignoreLexemes);
         }
 
         private bool MatchesExistingIncompleteIgnoreLexemes(char character)
@@ -234,26 +210,20 @@ namespace Pliant.Runtime
             return MatchesExistingIncompleteLexemes(character, this.ignoreLexemes);
         }
 
-        private bool MatchExistingTokenLexemes(char character)
+        private bool MatchesExistingIncompleteLexemes(char character, List<Lexeme> lexemes)
         {
-            return MatchesExistingLexemes(character, this.tokenLexemes);
-        }
-
-        private bool TryParseExistingToken()
-        {
-            var anyLexemes = this.tokenLexemes.Count > 0;
-            if (!anyLexemes)
+            if (lexemes == null || lexemes.Count == 0)
             {
                 return false;
             }
 
             var i = 0;
-            var size = this.tokenLexemes.Count;
+            var size = lexemes.Count;
 
             while (i < size)
             {
-                var lexeme = this.tokenLexemes[i];
-                if (lexeme.IsAccepted())
+                var lexeme = lexemes[i];
+                if (!lexeme.IsAccepted() && lexeme.Scan(character))
                 {
                     i++;
                 }
@@ -261,9 +231,10 @@ namespace Pliant.Runtime
                 {
                     if (i < size - 1)
                     {
-                        this.tokenLexemes[i] = this.tokenLexemes[size - 1];
-                        this.tokenLexemes[size - 1] = lexeme;
+                        lexemes[i] = lexemes[size - 1];
+                        lexemes[size - 1] = lexeme;
                     }
+
                     size--;
                 }
             }
@@ -274,40 +245,75 @@ namespace Pliant.Runtime
                 return false;
             }
 
-            i = this.tokenLexemes.Count - 1;
+            i = lexemes.Count - 1;
             while (i >= size)
             {
-                this.tokenLexemes.RemoveAt(i);
+                lexemes.RemoveAt(i);
                 i--;
             }
 
-            if (!ParseEngine.Pulse(this.tokenLexemes))
+            return true;
+        }
+
+        private bool MatchesExistingIncompleteTriviaLexemes(char character)
+        {
+            return MatchesExistingIncompleteLexemes(character, this.triviaLexemes);
+        }
+
+        private bool MatchesExistingLexemes(char character, List<Lexeme> lexemes)
+        {
+            var anyLexemes = lexemes != null && lexemes.Count > 0;
+            if (!anyLexemes)
             {
                 return false;
             }
 
-            for (i = 0; i < this.triviaAccumulator.Count; i++)
+            var i = 0;
+            var size = lexemes.Count;
+
+            while (i < size)
             {
-                foreach (var tokenLexeme in this.tokenLexemes)
+                var lexeme = lexemes[i];
+                if (lexeme.Scan(character))
                 {
-                    tokenLexeme.AddLeadingTrivia(this.triviaAccumulator[i]);
+                    i++;
+                }
+                else
+                {
+                    if (i < size - 1)
+                    {
+                        lexemes[i] = lexemes[size - 1];
+                        lexemes[size - 1] = lexeme;
+                    }
+
+                    size--;
                 }
             }
 
-            this.triviaAccumulator.Clear();
-            if (this.previousTokenLexemes != null)
+            var anyMatches = size > 0;
+            if (!anyMatches)
             {
-                this.previousTokenLexemes.Clear();
-                this.previousTokenLexemes.AddRange(this.tokenLexemes);
-            }
-            else
-            {
-                this.previousTokenLexemes = new List<Lexeme>(this.tokenLexemes);
+                return false;
             }
 
-            this.tokenLexemes.Clear();
+            i = lexemes.Count - 1;
+            while (i >= size)
+            {
+                lexemes.RemoveAt(i);
+                i--;
+            }
 
             return true;
+        }
+
+        private bool MatchesExistingTriviaLexemes(char character)
+        {
+            return MatchesExistingLexemes(character, this.triviaLexemes);
+        }
+
+        private bool MatchesNewIgnoreLexemes(char character)
+        {
+            return MatchLexerRules(character, ParseEngine.Grammar.Ignores, this.ignoreLexemes);
         }
 
         private bool MatchesNewTokenLexemes(char character)
@@ -315,19 +321,14 @@ namespace Pliant.Runtime
             return MatchLexerRules(character, ParseEngine.GetExpectedLexerRules(), this.tokenLexemes);
         }
 
-        private bool MatchesExistingIgnoreLexemes(char character)
+        private bool MatchesNewTriviaLexemes(char character)
         {
-            return MatchesExistingLexemes(character, this.ignoreLexemes);
+            return MatchLexerRules(character, ParseEngine.Grammar.Trivia, this.triviaLexemes);
         }
 
-        private void ClearExistingIgnoreLexemes()
+        private bool MatchExistingTokenLexemes(char character)
         {
-            this.ignoreLexemes.Clear();
-        }
-
-        private bool MatchesNewIgnoreLexemes(char character)
-        {
-            return MatchLexerRules(character, ParseEngine.Grammar.Ignores, this.ignoreLexemes);
+            return MatchesExistingLexemes(character, this.tokenLexemes);
         }
 
         private bool MatchLexerRules(char character, IEnumerable<LexerRule> lexerRules, List<Lexeme> lexemes)
@@ -359,21 +360,27 @@ namespace Pliant.Runtime
             return anyMatches;
         }
 
-        private bool MatchesExistingLexemes(char character, List<Lexeme> lexemes)
+        private char ReadCharacter()
         {
-            var anyLexemes = lexemes != null && lexemes.Count > 0;
+            var character = (char) this.reader.Read();
+            return character;
+        }
+
+        private bool TryParseExistingToken()
+        {
+            var anyLexemes = this.tokenLexemes.Count > 0;
             if (!anyLexemes)
             {
                 return false;
             }
 
             var i = 0;
-            var size = lexemes.Count;
+            var size = this.tokenLexemes.Count;
 
             while (i < size)
             {
-                var lexeme = lexemes[i];
-                if (lexeme.Scan(character))
+                var lexeme = this.tokenLexemes[i];
+                if (lexeme.IsAccepted())
                 {
                     i++;
                 }
@@ -381,9 +388,10 @@ namespace Pliant.Runtime
                 {
                     if (i < size - 1)
                     {
-                        lexemes[i] = lexemes[size - 1];
-                        lexemes[size - 1] = lexeme;
+                        this.tokenLexemes[i] = this.tokenLexemes[size - 1];
+                        this.tokenLexemes[size - 1] = lexeme;
                     }
+
                     size--;
                 }
             }
@@ -394,61 +402,55 @@ namespace Pliant.Runtime
                 return false;
             }
 
-            i = lexemes.Count - 1;
+            i = this.tokenLexemes.Count - 1;
             while (i >= size)
             {
-                lexemes.RemoveAt(i);
+                this.tokenLexemes.RemoveAt(i);
                 i--;
             }
-            return true;
-        }
 
-        private bool MatchesExistingIncompleteLexemes(char character, List<Lexeme> lexemes)
-        {
-            if (lexemes == null || lexemes.Count == 0)
+            if (!ParseEngine.Pulse(this.tokenLexemes))
             {
                 return false;
             }
 
-            var i = 0;
-            var size = lexemes.Count;
-
-            while (i < size)
+            for (i = 0; i < this.triviaAccumulator.Count; i++)
             {
-                var lexeme = lexemes[i];
-                if (!lexeme.IsAccepted() && lexeme.Scan(character))
+                foreach (var tokenLexeme in this.tokenLexemes)
                 {
-                    i++;
-                }
-                else
-                {
-                    if (i < size - 1)
-                    {
-                        lexemes[i] = lexemes[size - 1];
-                        lexemes[size - 1] = lexeme;
-                    }
-                    size--;
+                    tokenLexeme.AddLeadingTrivia(this.triviaAccumulator[i]);
                 }
             }
 
-            var anyMatches = size > 0;
-            if (!anyMatches)
-            {
-                return false;
-            }
+            this.triviaAccumulator.Clear();
+            this.previousTokenLexemes.Clear();
+            this.previousTokenLexemes.AddRange(this.tokenLexemes);
 
-            i = lexemes.Count - 1;
-            while (i >= size)
-            {
-                lexemes.RemoveAt(i);
-                i--;
-            }
+            this.tokenLexemes.Clear();
+
             return true;
         }
 
-        private bool AnyExistingTokenLexemes()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void UpdatePositionMetrics(char character)
         {
-            return this.tokenLexemes.Count > 0;
+            Position++;
+            if (IsEndOfLineCharacter(character))
+            {
+                Column = 0;
+                Line++;
+            }
+            else
+            {
+                Column++;
+            }
         }
+
+        private readonly List<Lexeme> ignoreLexemes;
+        private readonly List<Lexeme> previousTokenLexemes;
+        private readonly TextReader reader;
+        private readonly List<Lexeme> tokenLexemes;
+        private readonly List<Lexeme> triviaAccumulator;
+        private readonly List<Lexeme> triviaLexemes;
     }
 }

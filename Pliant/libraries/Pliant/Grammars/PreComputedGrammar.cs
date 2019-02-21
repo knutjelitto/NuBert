@@ -46,7 +46,7 @@ namespace Pliant.Grammars
             return outDottedRuleSet;
         }
 
-        private DottedRuleSet GetConfirmedStates(SortedSet<DottedRule> states)
+        private DottedRuleSet GetConfirmedStates(DottedRuleSet states)
         {
             var pool = SharedPools.Default<Queue<DottedRule>>();
 
@@ -109,9 +109,8 @@ namespace Pliant.Grammars
             var queue = ObjectPoolExtensions.Allocate(pool);
             var closure = new DottedRuleSet();
 
-            for (var i = 0; i < frame.Data.Count; i++)
+            foreach (var state in frame.Data)
             {
-                var state = frame.Data[i];
                 if (!IsComplete(state))
                 {
                     queue.Enqueue(state);
@@ -224,9 +223,8 @@ namespace Pliant.Grammars
             var pool = SharedPools.Default<Dictionary<Symbol, DottedRuleSet>>();
             var transitions = ObjectPoolExtensions.Allocate(pool);
 
-            for (var i = 0; i < frame.Data.Count; i++)
+            foreach (var nfaState in frame.Data)
             {
-                var nfaState = frame.Data[i];
                 if (IsComplete(nfaState))
                 {
                     continue;

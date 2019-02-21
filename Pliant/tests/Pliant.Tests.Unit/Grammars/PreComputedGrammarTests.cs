@@ -1,12 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Automata;
 using Pliant.Builders.Expressions;
-using Pliant.Collections;
 using Pliant.Grammars;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
 using Pliant.Tests.Common.Grammars;
-using Pliant.Tokens;
 
 namespace Pliant.Tests.Unit.Grammars
 {
@@ -24,26 +22,29 @@ namespace Pliant.Tests.Unit.Grammars
         [TestMethod]
         public void PreComputedGrammarShouldLoadExpressionGrammar()
         {
-            var preComputedGrammar = new PreComputedGrammar(new ExpressionGrammar());
-            
+            // ReSharper disable once ObjectCreationAsStatement
+            new PreComputedGrammar(new ExpressionGrammar());
         }
 
         [TestMethod]
         public void PreComputedGrammarShouldLoadNullableGrammar()
         {
-            var preComputedGrammar = new PreComputedGrammar(new NullableGrammar());
+            // ReSharper disable once ObjectCreationAsStatement
+            new PreComputedGrammar(new NullableGrammar());
         }        
 
         [TestMethod]
         public void PreComputedGrammarShouldLoadJsonGrammar()
         {
-            var preComputedGrammar = new PreComputedGrammar(_jsonGrammar);
+            // ReSharper disable once ObjectCreationAsStatement
+            new PreComputedGrammar(_jsonGrammar);
         }
 
         [TestMethod]
         public void PreComputedGrammarIsRightRecursiveShouldFindSimpleRecursion()
         {
-            var preComputedGrammar = new PreComputedGrammar(new RightRecursionGrammar());
+            // ReSharper disable once ObjectCreationAsStatement
+            new PreComputedGrammar(new RightRecursionGrammar());
         }
 
         [TestMethod]
@@ -52,10 +53,8 @@ namespace Pliant.Tests.Unit.Grammars
             var grammar = new HiddenRightRecursionGrammar();
             var preComputedGrammar = new PreComputedGrammar(grammar);
 
-            var leftHandSides = new UniqueList<NonTerminal>();
-            for (var p = 0; p < grammar.Productions.Count; p++)
+            foreach (var production in grammar.Productions)
             {
-                var production = grammar.Productions[p];
                 Assert.IsTrue(preComputedGrammar.Grammar.IsRightRecursive(production.LeftHandSide));
             }
         }
@@ -69,10 +68,11 @@ namespace Pliant.Tests.Unit.Grammars
                 C = "C",
                 D = "D",
                 E = "E";
+
             A.Rule = B + C;
             B.Rule = 'b';
             C.Rule = A | D;
-            D.Rule = E + D | 'd';
+            D.Rule = (E + D) | 'd';
             E.Rule = 'e';
 
             var grammar = new GrammarExpression(A).ToGrammar();
@@ -116,7 +116,7 @@ namespace Pliant.Tests.Unit.Grammars
 
             PairRepeat.Rule =
                 Pair
-                | Pair + ',' + PairRepeat
+                | (Pair + ',' + PairRepeat)
                 | (Expr)null;
 
             Pair.Rule =
@@ -127,7 +127,7 @@ namespace Pliant.Tests.Unit.Grammars
 
             ValueRepeat.Rule =
                 Value
-                | Value + ',' + ValueRepeat
+                | (Value + ',' + ValueRepeat)
                 | (Expr)null;
 
             Value.Rule = (Expr)

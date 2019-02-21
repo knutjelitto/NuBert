@@ -6,23 +6,23 @@ namespace Pliant.Tests.Common.Grammars
 {
     public class SimpleExpressionGrammar : GrammarWrapper
     {
-        private static readonly IGrammar _innerGrammar;
+        private static readonly IGrammar grammar;
 
         static SimpleExpressionGrammar()
         {
             var number = new NumberLexerRule();
             ProductionExpression E = "E";
             E.Rule =
-                E + "+" + E
-                | E + "*" + E
-                | E + "/" + E
-                | E + "-" + E
+                (E + "+" + E)
+                | (E + "*" + E)
+                | (E + "/" + E)
+                | (E + "-" + E)
                 | number;
-            _innerGrammar = new GrammarExpression(E, new[] { E }).ToGrammar();
+            grammar = new GrammarExpression(E, new[] { E }).ToGrammar();
         }
 
         public SimpleExpressionGrammar()
-            : base(_innerGrammar)
+            : base(grammar)
         { }
     }
 }

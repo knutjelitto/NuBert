@@ -5,20 +5,20 @@ namespace Pliant.Tests.Common.Grammars
 {
     public class RightRecursionGrammar : GrammarWrapper
     {
-        private static IGrammar _grammar;
+        private static readonly IGrammar grammar;
 
         static RightRecursionGrammar()
         {
             ProductionExpression A = "A";
             A.Rule =
-                'a' + A
+                ('a' + A)
                 | (Expr)null;
 
-            _grammar = new GrammarExpression(A, new[] { A })
+            grammar = new GrammarExpression(A, new[] { A })
                 .ToGrammar();
         }
 
-        public RightRecursionGrammar() : base(_grammar)
+        public RightRecursionGrammar() : base(grammar)
         {
         }
     }

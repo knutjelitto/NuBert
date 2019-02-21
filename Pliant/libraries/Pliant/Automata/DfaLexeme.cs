@@ -33,16 +33,16 @@ namespace Pliant.Automata
 
         public override bool Scan(char c)
         {
-            foreach (var edge in this.currentState.Transitions)
+            foreach (var transition in this.currentState.Transitions)
             {
-                if (edge.Terminal.IsMatch(c))
+                if (transition.Terminal.IsMatch(c))
                 {
                     if (!IsStringBuilderAllocated())
                     {
                         ReallocateStringBuilderFromCapture();
                     }
 
-                    this.currentState = edge.Target;
+                    this.currentState = transition.Target;
                     this.captureBuilder.Append(c);
                     return true;
                 }

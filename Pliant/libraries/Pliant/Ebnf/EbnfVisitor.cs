@@ -126,8 +126,10 @@ namespace Pliant.Ebnf
             }
 
             return definition == null
-                       ? new EbnfDefinition(block)
-                       : new EbnfDefinitionConcatenation(block, definition);
+                       // ReSharper disable once RedundantCast
+                       ? (EbnfDefinition) new EbnfDefinitionSimple(block)
+                       // ReSharper disable once RedundantCast
+                       : (EbnfDefinition)new EbnfDefinitionConcatenation(block, definition);
         }
 
         private EbnfExpression VisitExpressionNode(IInternalTreeNode node)
@@ -152,8 +154,10 @@ namespace Pliant.Ebnf
             }
 
             return expression == null
-                       ? new EbnfExpression(term)
-                       : new EbnfExpressionAlteration(term, expression);
+                       // ReSharper disable once RedundantCast
+                       ? (EbnfExpression) new EbnfExpressionSimple(term)
+                       // ReSharper disable once RedundantCast
+                       : (EbnfExpression)new EbnfExpressionAlteration(term, expression);
         }
 
         private EbnfFactor VisitFactorNode(IInternalTreeNode node)
@@ -444,8 +448,10 @@ namespace Pliant.Ebnf
             }
 
             return term == null
-                       ? new EbnfTerm(factor)
-                       : new EbnfTermConcatenation(factor, term);
+                       // ReSharper disable once RedundantCast
+                       ? (EbnfTerm) new EbnfTermSimple(factor)
+                       // ReSharper disable once RedundantCast
+                       : (EbnfTerm)new EbnfTermConcatenation(factor, term);
         }
     }
 }

@@ -20,7 +20,6 @@ namespace Pliant.Runtime
 
         public ParseEngine(IGrammar grammar, ParseEngineOptions options)
         {
-            //this._dottedRuleRegistry = new DottedRuleRegistry().Seed(grammar);
             this._dottedRuleRegistry = grammar.DottedRules;
             StateFactory = new StateFactory(this._dottedRuleRegistry);
             Options = options;
@@ -355,9 +354,8 @@ namespace Pliant.Runtime
             this._expectedLexerRuleCache = null;
             this._expectedLexerRuleIndicies = null;
             var startProductions = Grammar.StartProductions();
-            for (var s = 0; s < startProductions.Count; s++)
+            foreach (var startProduction in startProductions)
             {
-                var startProduction = startProductions[s];
                 var startState = StateFactory.NewState(startProduction, 0, 0);
                 if (Chart.Enqueue(0, startState))
                 {

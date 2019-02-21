@@ -14,13 +14,13 @@ namespace Pliant.Grammars
         {
             Debug.Assert(productions != null);
 
-            this._productions = new IndexedList<Production>();
-            this._ignores = new IndexedList<LexerRule>();
-            this._trivia = new IndexedList<LexerRule>();
+            this.productions = new IndexedList<Production>();
+            this.ignores = new IndexedList<LexerRule>();
+            this.trivia = new IndexedList<LexerRule>();
 
             this._transitiveNullableSymbols = new UniqueList<NonTerminal>();
             this._symbolsReverseLookup = new Dictionary<NonTerminal, UniqueList<Production>>();
-            this._lexerRules = new IndexedList<LexerRule>();
+            this.lexerRules = new IndexedList<LexerRule>();
             this._leftHandSideToProductions = new Dictionary<NonTerminal, List<Production>>();
             DottedRules = new DottedRuleRegistry();
             this._symbolPaths = new Dictionary<Symbol, UniqueList<Symbol>>();
@@ -37,19 +37,19 @@ namespace Pliant.Grammars
 
         public DottedRuleRegistry DottedRules { get; }
 
-        public IReadOnlyList<LexerRule> Ignores => this._ignores;
+        public IReadOnlyList<LexerRule> Ignores => this.ignores;
 
-        public IReadOnlyList<LexerRule> LexerRules => this._lexerRules;
+        public IReadOnlyList<LexerRule> LexerRules => this.lexerRules;
 
-        public IReadOnlyList<Production> Productions => this._productions;
+        public IReadOnlyList<Production> Productions => this.productions;
 
         public NonTerminal Start { get; }
 
-        public IReadOnlyList<LexerRule> Trivia => this._trivia;
+        public IReadOnlyList<LexerRule> Trivia => this.trivia;
 
         public int GetLexerRuleIndex(LexerRule lexerRule)
         {
-            return this._lexerRules.IndexOf(lexerRule);
+            return this.lexerRules.IndexOf(lexerRule);
         }
 
         public bool IsNullable(NonTerminal nonTerminal)
@@ -102,25 +102,25 @@ namespace Pliant.Grammars
             return RulesFor(Start);
         }
 
-        protected readonly IndexedList<LexerRule> _ignores;
-        protected readonly IndexedList<LexerRule> _lexerRules;
-        protected readonly IndexedList<Production> _productions;
-        protected readonly IndexedList<LexerRule> _trivia;
+        private readonly IndexedList<LexerRule> ignores;
+        private readonly IndexedList<LexerRule> lexerRules;
+        private readonly IndexedList<Production> productions;
+        private readonly IndexedList<LexerRule> trivia;
 
         private static void FindNullableSymbols(
             Dictionary<NonTerminal, UniqueList<Production>> reverseLookup,
-            UniqueList<NonTerminal> nullable)
+            UniqueList<NonTerminal> nullables)
         {
             // trace nullability through productions: http://cstheory.stackexchange.com/questions/2479/quickly-finding-empty-string-producing-nonterminals-in-a-cfg
             // I think this is Dijkstra's algorithm
-            var nullableQueue = new Queue<NonTerminal>(nullable);
+            var nullableQueue = new Queue<NonTerminal>(nullables);
 
             var productionSizes = new Dictionary<Production, int>();
             // foreach nullable symbol discovered in forming the reverse lookup
             while (nullableQueue.Count > 0)
             {
-                var nonTerminal = nullableQueue.Dequeue();
-                if (reverseLookup.TryGetValue(nonTerminal, out var productionsContainingNonTerminal))
+                var nullable = nullableQueue.Dequeue();
+                if (reverseLookup.TryGetValue(nullable, out var productionsContainingNonTerminal))
                 {
                     foreach (var production in productionsContainingNonTerminal)
                     {
@@ -132,13 +132,13 @@ namespace Pliant.Grammars
 
                         foreach (var symbol in production.RightHandSide)
                         {
-                            if (symbol is NonTerminal && nonTerminal.Equals(symbol))
+                            if (nullable.Equals(symbol))
                             {
                                 size--;
                             }
                         }
 
-                        if (size == 0 && nullable.AddUnique(production.LeftHandSide))
+                        if (size == 0 && nullables.AddUnique(production.LeftHandSide))
                         {
                             nullableQueue.Enqueue(production.LeftHandSide);
                         }
@@ -162,19 +162,19 @@ namespace Pliant.Grammars
         {
             foreach (var ignoreRule in ignoreRules)
             {
-                this._ignores.Add(ignoreRule);
-                this._lexerRules.Add(ignoreRule);
+                this.ignores.Add(ignoreRule);
+                this.lexerRules.Add(ignoreRule);
             }
         }
 
         private void AddLexerRule(LexerRule lexerRule)
         {
-            this._lexerRules.Add(lexerRule);
+            this.lexerRules.Add(lexerRule);
         }
 
         private void AddProduction(Production production)
         {
-            this._productions.Add(production);
+            this.productions.Add(production);
             AddProductionToLeftHandSideLookup(production);
 
             if (production.IsEmpty)
@@ -217,8 +217,8 @@ namespace Pliant.Grammars
         {
             foreach (var triviaRule in triviaRules)
             {
-                this._trivia.Add(triviaRule);
-                this._lexerRules.Add(triviaRule);
+                this.trivia.Add(triviaRule);
+                this.lexerRules.Add(triviaRule);
             }
         }
 

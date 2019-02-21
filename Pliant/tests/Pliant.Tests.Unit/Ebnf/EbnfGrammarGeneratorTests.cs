@@ -16,18 +16,41 @@ namespace Pliant.Tests.Unit.Ebnf
         public void EbnfGrammarGeneratorShouldCreateGrammarForSimpleRule()
         {
             // S = 'a';
-            var definition = new EbnfDefinition(
+            var definition = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("S"),
-                        new EbnfExpression(
-                            new EbnfTerm(
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
                                 new EbnfFactorLiteral("a"))))));
             var grammar = GenerateGrammar(definition);
             Assert.IsNotNull(grammar);
             Assert.IsNotNull(grammar.Start);
             Assert.AreEqual(1, grammar.Productions.Count);
             Assert.AreEqual(1, grammar.Productions[0].RightHandSide.Count);
+        }
+
+        [TestMethod]
+        public void EbnfGrammarGeneratorShouldCreateQualifiedName()
+        {
+            // X.Y.Z = 'a';
+            var definition = new EbnfDefinitionSimple(
+                new EbnfBlockRule(
+                    new EbnfRule(
+                        new EbnfQualifiedIdentifierConcatenation(
+                            "X", 
+                            new EbnfQualifiedIdentifierConcatenation(
+                                "Y",
+                                new EbnfQualifiedIdentifierSimple("Z"))),
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
+                                new EbnfFactorLiteral("a"))))));
+            var grammar = GenerateGrammar(definition);
+            Assert.IsNotNull(grammar);
+            Assert.IsNotNull(grammar.Start);
+            Assert.AreEqual(1, grammar.Productions.Count);
+            Assert.AreEqual(1, grammar.Productions[0].RightHandSide.Count);
+            Assert.AreEqual("X.Y.Z", grammar.Productions[0].LeftHandSide.Value);
         }
 
         [TestMethod]
@@ -39,15 +62,15 @@ namespace Pliant.Tests.Unit.Ebnf
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("S"),
-                        new EbnfExpression(
-                            new EbnfTerm(
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
                                 new EbnfFactorLiteral("a"))))),
-                new EbnfDefinition(
+                new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierSimple("S"),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("b")))))));
             var grammar = GenerateGrammar(definition);
             Assert.IsNotNull(grammar);
@@ -59,15 +82,15 @@ namespace Pliant.Tests.Unit.Ebnf
         public void EbnfGrammarGeneratorShouldCreateGrammarForProductionAlteration()
         {
             // S = 'a' | 'b';
-            var definition = new EbnfDefinition(
+            var definition = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpressionAlteration(
-                            new EbnfTerm(
+                            new EbnfTermSimple(
                                 new EbnfFactorLiteral("a")),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("d")))))));
             var grammar = GenerateGrammar(definition);
             Assert.IsNotNull(grammar);
@@ -85,20 +108,20 @@ namespace Pliant.Tests.Unit.Ebnf
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("S"),
                         new EbnfExpressionAlteration(
-                            new EbnfTerm(
+                            new EbnfTermSimple(
                                 new EbnfFactorLiteral("a")),
-                            new EbnfExpression(
-                                new EbnfTerm(
+                            new EbnfExpressionSimple(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("d")))))),
-                new EbnfDefinition(
+                new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
                             new EbnfQualifiedIdentifierSimple("S"),
                             new EbnfExpressionAlteration(
-                                new EbnfTerm(
+                                new EbnfTermSimple(
                                     new EbnfFactorLiteral("b")),
-                                new EbnfExpression(
-                                    new EbnfTerm(
+                                new EbnfExpressionSimple(
+                                    new EbnfTermSimple(
                                         new EbnfFactorLiteral("c"))))))));
             var grammar = GenerateGrammar(definition);
             Assert.IsNotNull(grammar);
@@ -110,15 +133,15 @@ namespace Pliant.Tests.Unit.Ebnf
         public void EbnfGrammarGeneratorShouldCreateGrammarForRepetition()
         {
             // R = { 'a' } ;
-            var definition = new EbnfDefinition(
+            var definition = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("R"),
-                        new EbnfExpression(
-                            new EbnfTerm(
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
                                 new EbnfFactorRepetition(
-                                    new EbnfExpression(
-                                        new EbnfTerm(
+                                    new EbnfExpressionSimple(
+                                        new EbnfTermSimple(
                                             new EbnfFactorLiteral("a")))))))));
 
             var grammar = GenerateGrammar(definition);
@@ -135,15 +158,15 @@ namespace Pliant.Tests.Unit.Ebnf
         public void EbnfGrammarGeneratorShouldCreateGrammarForGrouping()
         {
             // R = ( 'a' );
-            var definition = new EbnfDefinition(
+            var definition = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("R"),
-                        new EbnfExpression(
-                            new EbnfTerm(
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
                                 new EbnfFactorGrouping(
-                                    new EbnfExpression(
-                                        new EbnfTerm(
+                                    new EbnfExpressionSimple(
+                                        new EbnfTermSimple(
                                             new EbnfFactorLiteral("a")))))))));
 
             var grammar = GenerateGrammar(definition);
@@ -159,15 +182,15 @@ namespace Pliant.Tests.Unit.Ebnf
         public void EbnfGrammarGeneratorShouldCreateGrammarForOptional()
         {
             // R = ['a']
-            var definition = new EbnfDefinition(
+            var definition = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("R"),
-                        new EbnfExpression(
-                            new EbnfTerm(
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
                                 new EbnfFactorOptional(
-                                    new EbnfExpression(
-                                        new EbnfTerm(
+                                    new EbnfExpressionSimple(
+                                        new EbnfTermSimple(
                                             new EbnfFactorLiteral("a")))))))));
 
             var grammar = GenerateGrammar(definition);
@@ -190,24 +213,24 @@ namespace Pliant.Tests.Unit.Ebnf
         public void EbnfGrammarGeneratorShouldCreateGrammarForMultipleOptionals()
         {
             // R = 'b' ['a'] 'c' ['d']
-            var definition = new EbnfDefinition(
+            var definition = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("R"),
-                        new EbnfExpression(
+                        new EbnfExpressionSimple(
                             new EbnfTermConcatenation(
                                 new EbnfFactorLiteral("b"),
                                 new EbnfTermConcatenation(
                                     new EbnfFactorOptional(
-                                        new EbnfExpression(
-                                            new EbnfTerm(
+                                        new EbnfExpressionSimple(
+                                            new EbnfTermSimple(
                                                 new EbnfFactorLiteral("a")))),
                                     new EbnfTermConcatenation(
                                         new EbnfFactorLiteral("c"),
-                                        new EbnfTerm(
+                                        new EbnfTermSimple(
                                             new EbnfFactorOptional(
-                                                new EbnfExpression(
-                                                    new EbnfTerm(
+                                                new EbnfExpressionSimple(
+                                                    new EbnfTermSimple(
                                                         new EbnfFactorLiteral("d"))))))))))));
             var grammar = GenerateGrammar(definition);
             Assert.IsNotNull(grammar);
@@ -267,8 +290,8 @@ namespace Pliant.Tests.Unit.Ebnf
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("S"),
-                        new EbnfExpression(
-                            new EbnfTerm(
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
                                 new EbnfFactorLiteral("a"))))),
                 new EbnfDefinitionConcatenation(
                     new EbnfBlockLexerRule(
@@ -278,7 +301,7 @@ namespace Pliant.Tests.Unit.Ebnf
                                 new EbnfLexerRuleTermSimple(
                                     new EbnfLexerRuleFactorRegex(
                                         whiteSpaceRegex))))),
-                    new EbnfDefinition(
+                    new EbnfDefinitionSimple(
                         new EbnfBlockSetting(
                             new EbnfSetting(
                                 new EbnfSettingIdentifier("ignore"),
@@ -309,8 +332,8 @@ namespace Pliant.Tests.Unit.Ebnf
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("S"),
-                        new EbnfExpression(
-                            new EbnfTerm(
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
                                 new EbnfFactorLiteral("a"))))),
                 new EbnfDefinitionConcatenation(
                     new EbnfBlockLexerRule(
@@ -320,7 +343,7 @@ namespace Pliant.Tests.Unit.Ebnf
                                 new EbnfLexerRuleTermSimple(
                                     new EbnfLexerRuleFactorRegex(
                                         whiteSpaceRegex))))),
-                    new EbnfDefinition(
+                    new EbnfDefinitionSimple(
                         new EbnfBlockSetting(
                             new EbnfSetting(
                                 new EbnfSettingIdentifier("trivia"),
@@ -341,12 +364,12 @@ namespace Pliant.Tests.Unit.Ebnf
                     new EbnfSetting(
                         new EbnfSettingIdentifier("start"),
                         new EbnfQualifiedIdentifierSimple("S"))), 
-                new EbnfDefinition(
+                new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
                         new EbnfQualifiedIdentifierSimple("S"),
-                        new EbnfExpression(
-                            new EbnfTerm(
+                        new EbnfExpressionSimple(
+                            new EbnfTermSimple(
                                 new EbnfFactorLiteral("a")))))));
 
 

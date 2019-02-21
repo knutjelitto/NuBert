@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using Pliant.Grammars;
 
 namespace Pliant.Builders
@@ -12,8 +10,7 @@ namespace Pliant.Builders
         {
             this._reachabilityMatrix = new ReachabilityMatrix();
 
-            this._productions = new ObservableCollection<ProductionModel>();
-            this._productions.CollectionChanged += ProductionsCollectionChanged;
+            this._productions = new List<ProductionModel>();
             this._lexerRules = new List<LexerRuleModel>();
 
             this._ignoreSettings = new List<IgnoreSettingModel>();
@@ -30,7 +27,14 @@ namespace Pliant.Builders
 
         public ICollection<LexerRuleModel> LexerRules => this._lexerRules;
 
-        public ICollection<ProductionModel> Productions => this._productions;
+        public IReadOnlyCollection<ProductionModel> Productions => this._productions;
+
+        public void AddProduction(ProductionModel productionModel)
+        {
+            this._productions.Add(productionModel);
+            this._reachabilityMatrix.AddProduction(productionModel);
+
+        }
 
         public ProductionModel Start
         {
@@ -163,22 +167,6 @@ namespace Pliant.Builders
             return GetLexerRulesFromSettings(this._triviaSettings);
         }
 
-        private void OnAddProduction(ProductionModel productionModel)
-        {
-            this._reachabilityMatrix.AddProduction(productionModel);
-        }
-
-        private void OnRemoveProduction(ProductionModel productionModel)
-        {
-            this._reachabilityMatrix.RemoveProduction(productionModel);
-        }
-
-        private void OnResetProductions()
-        {
-            Start = null;
-            this._reachabilityMatrix.ClearProductions();
-        }
-
         private void PopulateMissingProductionsFromStart(ProductionModel start)
         {
             var visited = new HashSet<NonTerminal>();
@@ -189,7 +177,7 @@ namespace Pliant.Builders
         {
             if (visited.Add(production.LeftHandSide.NonTerminal))
             {
-                Productions.Add(production);
+                AddProduction(production);
                 foreach (var alteration in production.Alterations)
                 {
                     foreach (var symbol in alteration.Symbols)
@@ -206,44 +194,6 @@ namespace Pliant.Builders
         private bool ProductionsAreEmpty()
         {
             return Productions.Count == 0;
-        }
-
-        private void ProductionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        if (item is ProductionModel model)
-                        {
-                            OnAddProduction(model);
-                        }
-                    }
-
-                    break;
-
-                case NotifyCollectionChangedAction.Move:
-                    break;
-
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.NewItems)
-                    {
-                        if (item is ProductionModel model)
-                        {
-                            OnRemoveProduction(model);
-                        }
-                    }
-
-                    break;
-
-                case NotifyCollectionChangedAction.Replace:
-                    break;
-
-                case NotifyCollectionChangedAction.Reset:
-                    OnResetProductions();
-                    break;
-            }
         }
 
         private void SetStartProduction()
@@ -286,7 +236,7 @@ namespace Pliant.Builders
 
         private readonly List<IgnoreSettingModel> _ignoreSettings;
         private readonly List<LexerRuleModel> _lexerRules;
-        private readonly ObservableCollection<ProductionModel> _productions;
+        private readonly List<ProductionModel> _productions;
 
         // ReSharper disable once IdentifierTypo
         private readonly ReachabilityMatrix _reachabilityMatrix;

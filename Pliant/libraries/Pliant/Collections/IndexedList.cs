@@ -6,21 +6,41 @@ namespace Pliant.Collections
 {
     public class IndexedList<T> : IList<T>, IReadOnlyList<T>
     {
-        private readonly Dictionary<T, int> _indexOfDictionary;
-        private readonly List<T> _innerList;
+        public IndexedList()
+        {
+            this._indexOfDictionary = new Dictionary<T, int>();
+            this._innerList = new List<T>();
+        }
 
-        public int Count => this._innerList.Count;
-
-        public bool IsReadOnly => false;
+        public IndexedList(IEnumerable<T> enumerable)
+            : this()
+        {
+            if (enumerable is IReadOnlyList<T>)
+            {
+                var list = enumerable as IReadOnlyList<T>;
+                for (var i = 0; i < list.Count; i++)
+                {
+                    Add(list[i]);
+                }
+            }
+            else
+            {
+                foreach (var item in enumerable)
+                {
+                    Add(item);
+                }
+            }
+        }
 
         public T this[int index]
         {
             get => this._innerList[index];
-            set
-            {
-                Insert(index, value);
-            }
+            set => Insert(index, value);
         }
+
+        public int Count => this._innerList.Count;
+
+        public bool IsReadOnly => false;
 
         public void Add(T item)
         {
@@ -62,32 +82,6 @@ namespace Pliant.Collections
             }
 
             return value;
-        }
-
-        public IndexedList()
-        {
-            this._indexOfDictionary = new Dictionary<T, int>();
-            this._innerList = new List<T>();
-        }
-
-        public IndexedList(IEnumerable<T> enumerable)
-            : this()
-        {
-            if (enumerable is IReadOnlyList<T>)
-            {
-                var list = enumerable as IReadOnlyList<T>;
-                for (var i = 0; i < list.Count; i++)
-                {
-                    Add(list[i]);
-                }
-            }
-            else
-            {
-                foreach (var item in enumerable)
-                {
-                    Add(item);
-                }
-            }
         }
 
         public void Insert(int index, T item)
@@ -144,5 +138,8 @@ namespace Pliant.Collections
                 this._indexOfDictionary[this._innerList[i]] = i;
             }
         }
+
+        private readonly Dictionary<T, int> _indexOfDictionary;
+        private readonly List<T> _innerList;
     }
 }

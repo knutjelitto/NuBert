@@ -1,31 +1,26 @@
 ﻿namespace Pliant.Ebnf
 {
-    public class EbnfExpressionEmpty : EbnfNode
+    public abstract class EbnfExpression : EbnfNode
     {
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfExpressionEmpty;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetType().GetHashCode();
-        }
-    }
-
-    public class EbnfExpression : EbnfExpressionEmpty
-    {
-        public EbnfExpression(EbnfTerm term)
+        protected EbnfExpression(EbnfTerm term)
         {
             Term = term;
         }
 
         public EbnfTerm Term { get; }
+    }
+
+    public sealed class EbnfExpressionSimple : EbnfExpression
+    {
+        public EbnfExpressionSimple(EbnfTerm term)
+            : base(term)
+        {
+        }
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfExpression other && 
-                   other.Term.Equals(Term);
+            return obj is EbnfExpressionSimple other && 
+                   Term.Equals(other.Term);
         }
 
         public override int GetHashCode()
@@ -39,7 +34,7 @@
         }
     }
 
-    public class EbnfExpressionAlteration : EbnfExpression
+    public sealed class EbnfExpressionAlteration : EbnfExpression
     {
         public EbnfExpressionAlteration(EbnfTerm term, EbnfExpression expression)
             : base(term)

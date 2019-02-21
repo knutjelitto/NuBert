@@ -5,8 +5,8 @@ namespace Pliant.Forest
 {
     public sealed class SymbolForestNode : InternalForestNode, ISymbolForestNode
     {
-        public SymbolForestNode(Symbol symbol, int origin, int location)
-            : base(origin, location)
+        public SymbolForestNode(Symbol symbol, int origin, int location, params IAndForestNode[] children)
+            : base(origin, location, children)
         {
             Symbol = symbol;
             this._hashCode = ComputeHashCode();

@@ -5,7 +5,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public class Production
+    public sealed class Production
     {
         public Production(NonTerminal leftHandSide, IEnumerable<Symbol> rightHandSide)
         {

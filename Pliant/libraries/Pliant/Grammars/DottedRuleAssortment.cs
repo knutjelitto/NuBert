@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Pliant.Tokens;
-using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
@@ -10,7 +8,6 @@ namespace Pliant.Grammars
         public DottedRuleAssortment(DottedRuleSet set)
         {
             this._set = set;
-            this._cachedData = this._set.ToArray();
             this._reductions = new Dictionary<Symbol, DottedRuleAssortment>();
             this._tokenTransitions = new Dictionary<TokenType, DottedRuleAssortment>();
             this._scans = new Dictionary<LexerRule, DottedRuleAssortment>();
@@ -19,15 +16,13 @@ namespace Pliant.Grammars
             this._hashCode = ComputeHashCode(set);
         }
 
-        public IReadOnlyList<DottedRule> Data => this._cachedData;
+        public IEnumerable<DottedRule> Data => this._set;
 
         public DottedRuleAssortment NullTransition { get; set; }
 
         public IReadOnlyDictionary<Symbol, DottedRuleAssortment> Reductions => this._reductions;
 
         public IReadOnlyList<LexerRule> ScanKeys => this._scanKeys;
-
-        public IReadOnlyDictionary<LexerRule, DottedRuleAssortment> Scans => this._scans;
 
         public IReadOnlyDictionary<TokenType, DottedRuleAssortment> TokenTransitions => this._tokenTransitions;
 
@@ -58,20 +53,7 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            if (!(obj is DottedRuleAssortment other))
-            {
-                return false;
-            }
-
-            foreach (var item in this._cachedData)
-            {
-                if (!other.Contains(item))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return obj is DottedRuleAssortment other && this._set.Equals(other._set);
         }
 
         public override int GetHashCode()
@@ -79,12 +61,12 @@ namespace Pliant.Grammars
             return this._hashCode;
         }
 
+        private IReadOnlyDictionary<LexerRule, DottedRuleAssortment> Scans => this._scans;
+
         private static int ComputeHashCode(DottedRuleSet data)
         {
-            return HashCode.Compute(data);
+            return data.GetHashCode();
         }
-
-        private readonly DottedRule[] _cachedData;
 
         private readonly int _hashCode;
         private readonly Dictionary<Symbol, DottedRuleAssortment> _reductions;

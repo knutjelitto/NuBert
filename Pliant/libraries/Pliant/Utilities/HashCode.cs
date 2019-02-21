@@ -12,7 +12,7 @@ namespace Pliant.Utilities
             unchecked
             {
                 var hash = (int)Seed;
-                hash = hash * Incremental ^ first;
+                hash = (hash * Incremental) ^ first;
                 return hash;
             }
         }
@@ -22,8 +22,8 @@ namespace Pliant.Utilities
             unchecked
             {
                 var hash = (int)Seed;
-                hash = hash * Incremental ^ first;
-                hash = hash * Incremental ^ second;
+                hash = (hash * Incremental) ^ first;
+                hash = (hash * Incremental) ^ second;
                 return hash;
             }
         }
@@ -33,9 +33,9 @@ namespace Pliant.Utilities
             unchecked
             {
                 var hash = (int)Seed;
-                hash = hash * Incremental ^ first;
-                hash = hash * Incremental ^ second;
-                hash = hash * Incremental ^ third;
+                hash = (hash * Incremental) ^ first;
+                hash = (hash * Incremental) ^ second;
+                hash = (hash * Incremental) ^ third;
                 return hash;
             }
         }
@@ -45,10 +45,10 @@ namespace Pliant.Utilities
             unchecked
             {
                 var hash = (int)Seed;
-                hash = hash * Incremental ^ first;
-                hash = hash * Incremental ^ second;
-                hash = hash * Incremental ^ third;
-                hash = hash * Incremental ^ fourth;
+                hash = (hash * Incremental) ^ first;
+                hash = (hash * Incremental) ^ second;
+                hash = (hash * Incremental) ^ third;
+                hash = (hash * Incremental) ^ fourth;
                 return hash;
             }
         }
@@ -58,12 +58,12 @@ namespace Pliant.Utilities
             unchecked
             {
                 var hash = (int)Seed;
-                hash = hash * Incremental ^ first;
-                hash = hash * Incremental ^ second;
-                hash = hash * Incremental ^ third;
-                hash = hash * Incremental ^ fourth;
-                hash = hash * Incremental ^ fifth;
-                hash = hash * Incremental ^ sixth;
+                hash = (hash * Incremental) ^ first;
+                hash = (hash * Incremental) ^ second;
+                hash = (hash * Incremental) ^ third;
+                hash = (hash * Incremental) ^ fourth;
+                hash = (hash * Incremental) ^ fifth;
+                hash = (hash * Incremental) ^ sixth;
                 return hash;
             }
         }
@@ -75,7 +75,7 @@ namespace Pliant.Utilities
                 var hash = (int)Seed;
                 foreach (var item in items)
                 {
-                    hash = hash * Incremental ^ item.GetHashCode();
+                    hash = (hash * Incremental) ^ item.GetHashCode();
                 }
                 return hash;
             }
@@ -89,7 +89,7 @@ namespace Pliant.Utilities
                 {
                     accumulator = (int)Seed;
                 }
-                accumulator = accumulator * Incremental ^ hashCode;
+                accumulator = (accumulator * Incremental) ^ hashCode;
                 return accumulator;
             }
         }

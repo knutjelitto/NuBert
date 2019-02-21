@@ -15,8 +15,7 @@
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfBlockRule blockRule &&
-                   blockRule.Rule.Equals(Rule);
+            return obj is EbnfBlockRule other && Rule.Equals(other.Rule);
         }
 
         public override int GetHashCode()

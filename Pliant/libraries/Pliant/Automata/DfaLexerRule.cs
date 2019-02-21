@@ -40,8 +40,7 @@ namespace Pliant.Automata
 
         public override bool Equals(object obj)
         {
-            return obj is DfaLexerRule dfaLexerRule && 
-                   TokenType.Equals(dfaLexerRule.TokenType);
+            return obj is DfaLexerRule other &&  TokenType.Equals(other.TokenType);
         }
 
         public override int GetHashCode()

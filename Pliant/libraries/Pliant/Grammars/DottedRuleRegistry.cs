@@ -10,8 +10,8 @@ namespace Pliant.Grammars
 
         public DottedRuleRegistry()
         {
-            this._dottedRuleIndex = new Dictionary<Production, Dictionary<int, DottedRule>>(
-                new HashCodeEqualityComparer<Production>());
+            //this._dottedRuleIndex = new Dictionary<Production, Dictionary<int, DottedRule>>(new HashCodeEqualityComparer<Production>());
+            this._dottedRuleIndex = new Dictionary<Production, Dictionary<int, DottedRule>>();
         }
 
         public void Seed(IGrammar grammar)

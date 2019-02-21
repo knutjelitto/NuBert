@@ -10,7 +10,7 @@ namespace Pliant.Charts
             DottedRuleSet = dottedRuleSet;
             Origin = origin;
 
-            this._hashCode = ComputeHashCode(DottedRuleSet, Origin);
+            this.hashCode = HashCode.Compute(DottedRuleSet.GetHashCode(), Origin.GetHashCode());
         }
 
         public DottedRuleAssortment DottedRuleSet { get; }
@@ -19,26 +19,16 @@ namespace Pliant.Charts
 
         public override bool Equals(object obj)
         {
-            return obj is DeterministicState other && 
-                   Origin.Equals(other.Origin) && 
+            return obj is DeterministicState other &&
+                   Origin.Equals(other.Origin) &&
                    DottedRuleSet.Equals(other.DottedRuleSet);
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
-        private static int ComputeHashCode(DottedRuleAssortment dottedRuleSet)
-        {
-            return dottedRuleSet.GetHashCode();
-        }
-
-        private static int ComputeHashCode(DottedRuleAssortment dottedRuleSet, int origin)
-        {
-            return HashCode.Compute(dottedRuleSet.GetHashCode(), origin.GetHashCode());
-        }
-
-        private readonly int _hashCode;
+        private readonly int hashCode;
     }
 }

@@ -1,16 +1,11 @@
 ﻿using Pliant.Builders.Expressions;
 using Pliant.Grammars;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pliant.Tests.Common.Grammars
 {
     public class HiddenRightRecursionGrammar : GrammarWrapper
     {
-        private static IGrammar _grammar;
+        private static readonly IGrammar grammar;
 
         static HiddenRightRecursionGrammar()
         {
@@ -19,15 +14,15 @@ namespace Pliant.Tests.Common.Grammars
                 B = nameof(B),
                 C = nameof(C);
 
-            A.Rule = 'a' + B | 'a';
-            B.Rule = 'b' + C | 'b';
-            C.Rule = 'c' + A | 'c';
+            A.Rule = ('a' + B) | 'a';
+            B.Rule = ('b' + C) | 'b';
+            C.Rule = ('c' + A) | 'c';
 
-            _grammar = new GrammarExpression(A, new[] { A, B, C })
+            grammar = new GrammarExpression(A, new[] { A, B, C })
                 .ToGrammar();
         }
 
-        public HiddenRightRecursionGrammar() : base(_grammar)
+        public HiddenRightRecursionGrammar() : base(grammar)
         {
         }
     }

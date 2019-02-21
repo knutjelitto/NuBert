@@ -211,11 +211,10 @@ namespace Pliant.Runtime
             return false;
         }
 
-        private bool AnyPreComputedStateAccepted(IReadOnlyList<DottedRule> states)
+        private bool AnyPreComputedStateAccepted(IEnumerable<DottedRule> states)
         {
-            for (var j = 0; j < states.Count; j++)
+            foreach (var preComputedState in states)
             {
-                var preComputedState = states[j];
                 var isCompleted = preComputedState.Position == preComputedState.Production.RightHandSide.Count;
                 if (!preComputedState.IsComplete)
                 {
@@ -320,12 +319,9 @@ namespace Pliant.Runtime
             {
                 var stateFrame = frameSet.States[i];
                 var frame = stateFrame.DottedRuleSet;
-                var frameData = frame.Data;
-                var stateFrameDataCount = frameData.Count;
 
-                for (var j = 0; j < stateFrameDataCount; j++)
+                foreach (var preComputedState in frame.Data)
                 {
-                    var preComputedState = frameData[j];
                     if (preComputedState.IsComplete)
                     {
                         continue;
@@ -350,8 +346,6 @@ namespace Pliant.Runtime
                             cachedCount[postDotSymbol] = count + 1;
                         }
                     }
-
-                    // leo eligibile items are right recursive directly or indirectly                    
                 }
             }
 
@@ -399,9 +393,8 @@ namespace Pliant.Runtime
                 var workAH = workEIM.DottedRuleSet;
                 var origLoc = workEIM.Origin;
 
-                for (var j = 0; j < workAH.Data.Count; j++)
+                foreach (var dottedRule in workAH.Data)
                 {
-                    var dottedRule = workAH.Data[j];
                     if (!dottedRule.IsComplete)
                     {
                         continue;

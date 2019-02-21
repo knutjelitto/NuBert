@@ -1,17 +1,25 @@
 ﻿namespace Pliant.Ebnf
 {
-    public class EbnfDefinition : EbnfNode
+    public abstract class EbnfDefinition : EbnfNode
     {
-        public EbnfDefinition(EbnfBlock block)
+        protected EbnfDefinition(EbnfBlock block)
         {
             Block = block;
         }
 
         public EbnfBlock Block { get; }
+    }
+
+    public sealed class EbnfDefinitionSimple : EbnfDefinition
+    {
+        public EbnfDefinitionSimple(EbnfBlock block)
+            : base(block)
+        {
+        }
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfDefinition other && 
+            return obj is EbnfDefinitionSimple other && 
                    other.Block.Equals(Block);
         }
 
@@ -34,8 +42,8 @@
         public override bool Equals(object obj)
         {
             return obj is EbnfDefinitionConcatenation other && 
-                   other.Block.Equals(Block) && 
-                   other.Definition.Equals(Definition);
+                   Block.Equals(other.Block) && 
+                   Definition.Equals(other.Definition);
         }
 
         public override int GetHashCode()

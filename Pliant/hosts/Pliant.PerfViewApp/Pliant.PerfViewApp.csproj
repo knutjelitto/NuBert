@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Pliant.Json\Pliant.Json.csproj" />
     <ProjectReference Include="..\..\libraries\Pliant\Pliant.csproj" />
   </ItemGroup>

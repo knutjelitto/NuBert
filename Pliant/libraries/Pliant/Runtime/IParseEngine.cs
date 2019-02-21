@@ -11,11 +11,6 @@ namespace Pliant.Runtime
     public interface IParseEngine
     {
         /// <summary>
-        /// Resets the parse engine clearing out any current state.
-        /// </summary>
-        void Reset();
-
-        /// <summary>
         /// Gets the current accepted status of the parse.
         /// </summary>
         /// <returns>true if the parse is in a accepted state / false otherwise. </returns>

@@ -26,7 +26,7 @@ namespace Pliant.Tests.Common.Grammars
                 | (T + '/' + F)
                 | F;
             F.Rule =
-                ('+' + F)
+                  ('+' + F)
                 | ('-' + F)
                 | number
                 | ('(' + E + ')');

@@ -55,7 +55,7 @@ namespace Pliant.Ebnf
                 case EbnfBlockRule blockRule:
                     foreach (var production in Rule(blockRule.Rule))
                     {
-                        grammarModel.Productions.Add(production);
+                        grammarModel.AddProduction(production);
                     }
 
                     break;
