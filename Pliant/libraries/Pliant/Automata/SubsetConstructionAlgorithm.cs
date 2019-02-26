@@ -26,8 +26,7 @@ namespace Pliant.Automata
             while (processOnceQueue.Count > 0)
             {
                 var nfaClosure = processOnceQueue.Dequeue();
-                var transitions = ObjectPoolExtensions.Allocate(SharedPools
-                                      .Default<Dictionary<Terminal, SortedSet<NfaState>>>());
+                var transitions = ObjectPoolExtensions.Allocate(SharedPools.Default<Dictionary<Terminal, SortedSet<NfaState>>>());
 
                 for (var i = 0; i < nfaClosure.Closure.Length; i++)
                 {

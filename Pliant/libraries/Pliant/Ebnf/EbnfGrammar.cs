@@ -14,8 +14,6 @@ namespace Pliant.Ebnf
         {
             LexerRule
                 settingIdentifier = CreateSettingIdentifierLexerRule(),
-                notDoubleQuote = CreateNotDoubleQuoteLexerRule(),
-                notSingleQuote = CreateNotSingleQuoteLexerRule(),
                 identifier = CreateIdentifierLexerRule(),
                 any = new TerminalLexerRule(new AnyTerminal(), "."),
                 notCloseBracket = new TerminalLexerRule(new NegationTerminal(new CharacterTerminal(']')), "[^\\]]"),
@@ -79,8 +77,8 @@ namespace Pliant.Ebnf
                   | grouping;
 
             literal.Rule = (Expr)
-                           new SingleQuoteStringLexerRule()
-                           | new DoubleQuoteStringLexerRule();
+                           new SimpleSingleQuoteStringLexerRule()
+                           | new SimpleDoubleQuoteStringLexerRule();
 
             repetition.Rule = (Expr)
                               '{' + expression + '}';
@@ -294,9 +292,6 @@ namespace Pliant.Ebnf
         }
 
         private static readonly IGrammar ebnfGrammar;
-
-        #region  not sortable (modify ReSharper template to catch these cases)
-
         public static class TokenTypes
         {
             public static readonly TokenType Escape = new TokenType("escape");
@@ -307,7 +302,5 @@ namespace Pliant.Ebnf
             public static readonly TokenType SettingIdentifier = new TokenType("settingIdentifier");
             public static readonly TokenType Whitespace = new TokenType("whitespace");
         }
-
-        #endregion
     }
 }

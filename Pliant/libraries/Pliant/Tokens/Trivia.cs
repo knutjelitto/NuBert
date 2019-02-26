@@ -1,8 +1,8 @@
 ﻿namespace Pliant.Tokens
 {
-    public class Trivia : ITrivia
+    public abstract class Trivia : ITrivia
     {
-        public Trivia(int position, string value, TokenType tokenType)
+        protected Trivia(int position, string value, TokenType tokenType)
         {
             Value = value;
             Position = position;

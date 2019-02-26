@@ -4,22 +4,23 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public class DoubleQuoteStringLexerRule : DfaLexerRule
+    public class SimpleSingleQuoteStringLexerRule : DfaLexerRule
     {
-        // ["][^"]*["]
-        public static readonly TokenType TokenTypeDescriptor = new TokenType(@"[""][^""]*[""]");
-        private static readonly DfaState Start;
+        // ['][^']*[']
+        private const string _pattern = @"['][^']*[']";
+        public static readonly TokenType TokenTypeDescriptor = new TokenType(_pattern);
+        private static readonly DfaState _start;
 
-        static DoubleQuoteStringLexerRule()
+        static SimpleSingleQuoteStringLexerRule()
         {
             var states = new DfaState[3]
             {
                 DfaState.Inner(),
                 DfaState.Inner(),
-                DfaState.Final()
+                DfaState.Final(),
             };
 
-            var quote = new CharacterTerminal('"');
+            var quote = new CharacterTerminal('\'');
             var notQuote = new NegationTerminal(quote);
 
             var quoteToNotQuote = new DfaTransition(quote, states[1]);
@@ -30,11 +31,11 @@ namespace Pliant.LexerRules
             states[1].AddTransition(notQuoteToNotQuote);
             states[1].AddTransition(notQuoteToQuote);
 
-            Start = states[0];
+            _start = states[0];
         }
 
-        public DoubleQuoteStringLexerRule()
-            : base(Start, TokenTypeDescriptor)
+        public SimpleSingleQuoteStringLexerRule()
+            : base(_start, TokenTypeDescriptor)
         {
         }
     }

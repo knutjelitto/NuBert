@@ -24,7 +24,6 @@ namespace Pliant.Builders
                 this.lookup[production.LeftHandSide.NonTerminal] = production;
             }
 
-#if true
             foreach (var alteration in production.Alterations)
             {
                 foreach (var symbol in alteration.Symbols)
@@ -35,7 +34,6 @@ namespace Pliant.Builders
                     }
                 }
             }
-#endif
         }
 
         public ProductionModel GetStartProduction()

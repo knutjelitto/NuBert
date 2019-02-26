@@ -5,11 +5,6 @@ namespace Pliant.Builders
 {
     public sealed class ProductionModel : SymbolModel
     {
-        public ProductionModel()
-        {
-            Alterations = new List<AlterationModel>();
-        }
-
         public ProductionModel(NonTerminal leftHandSide)
             : this(new NonTerminalModel(leftHandSide))
         {
@@ -26,7 +21,7 @@ namespace Pliant.Builders
         }
 
         private ProductionModel(NonTerminalModel leftHandSide)
-            : this()
+            : base(leftHandSide.NonTerminal)
         {
             LeftHandSide = leftHandSide;
             Alterations = new List<AlterationModel>();
@@ -34,9 +29,7 @@ namespace Pliant.Builders
 
         public List<AlterationModel> Alterations { get; }
 
-        public NonTerminalModel LeftHandSide { get; set; }
-
-        public override Symbol Symbol => LeftHandSide.NonTerminal;
+        public NonTerminalModel LeftHandSide { get; }
 
         public void AddWithAnd(SymbolModel model)
         {
@@ -46,14 +39,14 @@ namespace Pliant.Builders
             }
             else
             {
-                Alterations[Alterations.Count - 1].Symbols.Add(model);
+                Alterations[Alterations.Count - 1].AddSymbol(model);
             }
         }
 
         public void AddWithOr(SymbolModel model)
         {
             var alterationModel = new AlterationModel();
-            alterationModel.Symbols.Add(model);
+            alterationModel.AddSymbol(model);
             Alterations.Add(alterationModel);
         }
 

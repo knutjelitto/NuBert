@@ -66,8 +66,8 @@ namespace Pliant.Tests.Unit.Builders
         [TestMethod]
         public void GrammarModelToGrammarShouldResolverProductionReferencesFromOtherGrammars()
         {
-            var S = new ProductionModel { LeftHandSide = new NonTerminalModel(new QualifiedName("ns1", "S")) };
-            var A = new ProductionModel { LeftHandSide = new NonTerminalModel(new QualifiedName("ns1", "A")) };
+            var S = new ProductionModel(new QualifiedName("ns1", "S"));
+            var A = new ProductionModel(new QualifiedName("ns1", "A"));
             S.Alterations.Add(
                 new AlterationModel(
                     new[] { A }));
@@ -85,8 +85,8 @@ namespace Pliant.Tests.Unit.Builders
 
             var ns1ProductionReference = new ProductionReferenceModel(ns1GrammarModel.ToGrammar());
 
-            var Z = new ProductionModel { LeftHandSide = new NonTerminalModel(new QualifiedName("ns2", "Z")) };
-            var X = new ProductionModel { LeftHandSide = new NonTerminalModel(new QualifiedName("ns2", "X")) };
+            var Z = new ProductionModel(new QualifiedName("ns2", "Z"));
+            var X = new ProductionModel(new QualifiedName("ns2", "X"));
             X.Alterations.Add(
                 new AlterationModel(
                     new SymbolModel[]

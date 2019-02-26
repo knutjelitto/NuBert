@@ -120,7 +120,7 @@ namespace Pliant.Builders
         {
             foreach (var lexerRuleModel in this.lexerRuleModels)
             {
-                var lexerRule = lexerRuleModel.Value;
+                var lexerRule = lexerRuleModel.LexerRule;
                 if (lexerRule.TokenType.Id.Equals(value))
                 {
                     return lexerRule;

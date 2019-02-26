@@ -5,12 +5,12 @@ namespace Pliant.Builders.Expressions
 {
     public sealed class ProductionExpression : BaseExpression
     {
-        public ProductionExpression(NonTerminal leftHandSide)
+        private ProductionExpression(NonTerminal leftHandSide)
         {
             ProductionModel = new ProductionModel(leftHandSide);
         }
 
-        public ProductionExpression(QualifiedName fullyQualifiedName)
+        private ProductionExpression(QualifiedName fullyQualifiedName)
         {
             ProductionModel = new ProductionModel(fullyQualifiedName);
         }
@@ -52,18 +52,18 @@ namespace Pliant.Builders.Expressions
                 switch (symbol)
                 {
                     case ProductionExpression productionExpression:
-                        alterationModel.Symbols.Add(productionExpression.ProductionModel);
+                        alterationModel.AddSymbol(productionExpression.ProductionModel);
                         break;
                     case SymbolExpression symbolExpression:
-                        alterationModel.Symbols.Add(symbolExpression.SymbolModel);
+                        alterationModel.AddSymbol(symbolExpression.SymbolModel);
                         break;
                     case ProductionReferenceExpression productionReferenceExpression:
-                        alterationModel.Symbols.Add(productionReferenceExpression.ProductionReferenceModel);
+                        alterationModel.AddSymbol(productionReferenceExpression.ProductionReferenceModel);
                         break;
                     case Expr expr:
-                        foreach (var symbolModel in GetSymbolModelListFromExpr(expr))
+                        foreach (var symbolModel in GetSymbolModelsFromExpr(expr))
                         {
-                            alterationModel.Symbols.Add(symbolModel);
+                            alterationModel.AddSymbol(symbolModel);
                         }
 
                         break;
@@ -73,7 +73,7 @@ namespace Pliant.Builders.Expressions
             return alterationModel;
         }
 
-        private static IEnumerable<SymbolModel> GetSymbolModelListFromExpr(Expr expr)
+        private static IEnumerable<SymbolModel> GetSymbolModelsFromExpr(Expr expr)
         {
             foreach (var alteration in expr.Alterations)
             {

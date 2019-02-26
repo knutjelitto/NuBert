@@ -13,6 +13,7 @@ namespace Pliant.Forest
         }
 
         public override ForestNodeType NodeType => ForestNodeType.Symbol;
+
         public Symbol Symbol { get; }
 
         public override void Accept(IForestNodeVisitor visitor)

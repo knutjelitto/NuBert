@@ -1,24 +1,32 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Pliant.Builders
 {
-    public class AlterationModel
+    public sealed class AlterationModel
     {
         public AlterationModel()
+            : this(Enumerable.Empty<SymbolModel>())
         {
-            Symbols = new List<SymbolModel>();
         }
 
         public AlterationModel(IEnumerable<SymbolModel> symbols)
         {
-            Symbols = new List<SymbolModel>(symbols);
+            this.symbols = new List<SymbolModel>(symbols);
         }
 
-        public IList<SymbolModel> Symbols { get; }
+        public IReadOnlyList<SymbolModel> Symbols => this.symbols;
+
+        public void AddSymbol(SymbolModel symbol)
+        {
+            this.symbols.Add(symbol);
+        }
 
         public override string ToString()
         {
             return string.Join(" ", Symbols);
         }
+
+        private readonly List<SymbolModel> symbols;
     }
 }

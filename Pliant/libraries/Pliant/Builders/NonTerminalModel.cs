@@ -5,8 +5,8 @@ namespace Pliant.Builders
     public sealed class NonTerminalModel : SymbolModel
     {
         public NonTerminalModel(NonTerminal value)
+            : base(value)
         {
-            NonTerminal = value;
         }
 
         public NonTerminalModel(string value)
@@ -15,13 +15,11 @@ namespace Pliant.Builders
         }
 
         public NonTerminalModel(QualifiedName fullyQualifiedName)
-            : this(new NonTerminal(fullyQualifiedName.Qualifier, fullyQualifiedName.Name))
+            : this(new NonTerminal(fullyQualifiedName))
         {
         }
 
-        public NonTerminal NonTerminal { get; }
-
-        public override Symbol Symbol => NonTerminal;
+        public NonTerminal NonTerminal => (NonTerminal) Symbol;
 
         public override bool Equals(object obj)
         {

@@ -34,8 +34,6 @@ namespace Pliant.Bnf
             var list = new NonTerminal("list");
             var term = new NonTerminal("term");
             var literal = new NonTerminal("literal");
-            //var doubleQuoteText = new NonTerminal("doubleQuoteText");
-            //var singleQuoteText = new NonTerminal("singleQuoteText");
 
             var lessThan = new TerminalLexerRule('<');
             var greaterThan = new TerminalLexerRule('>');
@@ -118,6 +116,7 @@ namespace Pliant.Bnf
 
         private static LexerRule CreateRuleNameLexerRule()
         {
+            // /[a-zA-Z][a-zA-Z0-9-_]*/
             var ruleNameState = DfaState.Inner();
             var zeroOrMoreLetterOrDigit = DfaState.Final();
             ruleNameState.AddTransition(

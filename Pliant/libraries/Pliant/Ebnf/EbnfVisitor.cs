@@ -58,8 +58,8 @@ namespace Pliant.Ebnf
                     var tokenType = token.TokenType;
 
                     // if token type is string token type remove surrounding quotes
-                    if (tokenType.Equals(SingleQuoteStringLexerRule.TokenTypeDescriptor) ||
-                        tokenType.Equals(DoubleQuoteStringLexerRule.TokenTypeDescriptor))
+                    if (tokenType.Equals(SimpleSingleQuoteStringLexerRule.TokenTypeDescriptor) ||
+                        tokenType.Equals(SimpleDoubleQuoteStringLexerRule.TokenTypeDescriptor))
                     {
                         return token.Value.Substring(1, token.Value.Length - 2);
                     }

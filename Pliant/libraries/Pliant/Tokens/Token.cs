@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Pliant.Utilities;
 
 namespace Pliant.Tokens
 {
-    public class Token : Trivia, IToken
+    public sealed class Token : Trivia, IToken
     {
         public Token(int position, string value, TokenType tokenType)
             : base(position, value, tokenType)

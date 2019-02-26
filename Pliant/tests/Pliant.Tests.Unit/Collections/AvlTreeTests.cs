@@ -12,7 +12,9 @@ namespace Pliant.Tests.Unit.Collections
         {
             var avlTree = new AvlTree<int>();
             for (var i = 1; i <= 5; i++)
+            {
                 avlTree.Insert(i);
+            }
 
             var index = 0;
             foreach (var value in avlTree)
@@ -29,7 +31,9 @@ namespace Pliant.Tests.Unit.Collections
         {
             var avlTree = new AvlTree<int>();
             for (var i = 5; i >= 1; i--)
+            {
                 avlTree.Insert(i);
+            }
 
             var index = 0;
             foreach (var value in avlTree)
