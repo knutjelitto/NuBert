@@ -129,11 +129,11 @@ namespace Pliant.Ebnf
                     lexerRuleFactor
                 },
                 new[] {new LexerRuleModel(whitespace), new LexerRuleModel(multiLineComment)});
-            _ebnfGrammar = grammarExpression.ToGrammar();
+            ebnfGrammar = grammarExpression.ToGrammar();
         }
 
         public EbnfGrammar()
-            : base(_ebnfGrammar)
+            : base(ebnfGrammar)
         {
         }
 
@@ -293,7 +293,7 @@ namespace Pliant.Ebnf
             return whitespace;
         }
 
-        private static readonly IGrammar _ebnfGrammar;
+        private static readonly IGrammar ebnfGrammar;
 
         #region  not sortable (modify ReSharper template to catch these cases)
 

@@ -8,28 +8,28 @@ namespace Pliant.Builders
     {
         public ReachabilityMatrix()
         {
-            this._matrix = new Dictionary<Symbol, UniqueList<NonTerminalModel>>();
-            this._lookup = new Dictionary<Symbol, ProductionModel>();
+            this.matrix = new Dictionary<Symbol, UniqueList<NonTerminalModel>>();
+            this.lookup = new Dictionary<Symbol, ProductionModel>();
         }
 
         public void AddProduction(ProductionModel production)
         {
-            if (!this._matrix.ContainsKey(production.LeftHandSide.NonTerminal))
+            if (!this.matrix.ContainsKey(production.LeftHandSide.NonTerminal))
             {
-                this._matrix[production.LeftHandSide.NonTerminal] = new UniqueList<NonTerminalModel>();
+                this.matrix[production.LeftHandSide.NonTerminal] = new UniqueList<NonTerminalModel>();
             }
 
-            if (!this._lookup.ContainsKey(production.LeftHandSide.NonTerminal))
+            if (!this.lookup.ContainsKey(production.LeftHandSide.NonTerminal))
             {
-                this._lookup[production.LeftHandSide.NonTerminal] = production;
+                this.lookup[production.LeftHandSide.NonTerminal] = production;
             }
 
-#if false
+#if true
             foreach (var alteration in production.Alterations)
             {
                 foreach (var symbol in alteration.Symbols)
                 {
-                    if (symbol.ModelType == SymbolModelType.Production && symbol.ModelType == SymbolModelType.Reference)
+                    if (symbol is NonTerminalModel)
                     {
                         AddProductionToNewOrExistingSymbolSet(production, symbol);
                     }
@@ -38,20 +38,14 @@ namespace Pliant.Builders
 #endif
         }
 
-        public void ClearProductions()
-        {
-            this._matrix.Clear();
-            this._lookup.Clear();
-        }
-
         public ProductionModel GetStartProduction()
         {
-            foreach (var leftHandSide in this._matrix.Keys)
+            foreach (var leftHandSide in this.matrix.Keys)
             {
-                var symbolsReachableByLeftHandSide = this._matrix[leftHandSide];
+                var symbolsReachableByLeftHandSide = this.matrix[leftHandSide];
                 if (symbolsReachableByLeftHandSide.Count == 0)
                 {
-                    return this._lookup[leftHandSide];
+                    return this.lookup[leftHandSide];
                 }
             }
 
@@ -60,29 +54,16 @@ namespace Pliant.Builders
 
         public bool ProductionExistsForSymbol(NonTerminalModel nonTerminalModel)
         {
-            return this._matrix.ContainsKey(nonTerminalModel.NonTerminal);
-        }
-
-        public void RemoveProduction(ProductionModel productionModel)
-        {
-            if (!this._matrix.ContainsKey(productionModel.LeftHandSide.NonTerminal))
-            {
-                this._matrix.Remove(productionModel.LeftHandSide.NonTerminal);
-            }
-
-            if (!this._lookup.ContainsKey(productionModel.LeftHandSide.NonTerminal))
-            {
-                this._lookup.Remove(productionModel.LeftHandSide.NonTerminal);
-            }
+            return this.matrix.ContainsKey(nonTerminalModel.NonTerminal);
         }
 
         private void AddProductionToNewOrExistingSymbolSet(ProductionModel production, SymbolModel symbol)
         {
-            var set = this._matrix.AddOrGetExisting(symbol.Symbol);
+            var set = this.matrix.AddOrGetExisting(symbol.Symbol);
             set.AddUnique(production.LeftHandSide);
         }
 
-        private readonly Dictionary<Symbol, ProductionModel> _lookup;
-        private readonly Dictionary<Symbol, UniqueList<NonTerminalModel>> _matrix;
+        private readonly Dictionary<Symbol, ProductionModel> lookup;
+        private readonly Dictionary<Symbol, UniqueList<NonTerminalModel>> matrix;
     }
 }

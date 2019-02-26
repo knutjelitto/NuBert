@@ -21,7 +21,14 @@ namespace NuBert.Check
 
         private void Expressions()
         {
-            var result = new ExpressionParser().Parse("1+2");
+            try
+            {
+                var result = new ExpressionParser().Parse("1+2");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private class ExpressionParser
@@ -32,7 +39,7 @@ namespace NuBert.Check
 
                 var parseEngine = new ParseEngine(
                     grammar,
-                    new ParseEngineOptions());
+                    new ParseEngineOptions(loggingEnabled:true));
                 var parseRunner = new ParseRunner(parseEngine, source);
 
                 while (!parseRunner.EndOfStream())

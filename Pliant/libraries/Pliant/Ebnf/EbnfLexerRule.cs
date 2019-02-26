@@ -8,9 +8,8 @@
             Expression = expression;
         }
 
-        public EbnfLexerRuleExpression Expression { get; }
-
         public EbnfQualifiedIdentifier QualifiedIdentifier { get; }
+        public EbnfLexerRuleExpression Expression { get; }
 
         public override bool Equals(object obj)
         {

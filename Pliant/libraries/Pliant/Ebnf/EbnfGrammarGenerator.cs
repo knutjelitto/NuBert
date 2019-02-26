@@ -49,7 +49,7 @@ namespace Pliant.Ebnf
             switch (block)
             {
                 case EbnfBlockLexerRule blockLexerRule:
-                    grammarModel.LexerRules.Add(LexerRule(blockLexerRule));
+                    grammarModel.LexerRuleModels.Add(LexerRule(blockLexerRule));
                     break;
 
                 case EbnfBlockRule blockRule:
@@ -61,7 +61,6 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfBlockSetting blockSetting:
-
                     switch (blockSetting.Setting.SettingIdentifier.Value)
                     {
                         case StartProductionSettingModel.SettingKey:
@@ -72,7 +71,7 @@ namespace Pliant.Ebnf
                             var ignoreSettings = IgnoreSettings(blockSetting);
                             foreach (var ignore in ignoreSettings)
                             {
-                                grammarModel.IgnoreSettings.Add(ignore);
+                                grammarModel.IgnoreSettingModels.Add(ignore);
                             }
 
                             break;
@@ -88,6 +87,8 @@ namespace Pliant.Ebnf
                     }
 
                     break;
+                default:
+                    throw new NotImplementedException();
             }
         }
 

@@ -15,5 +15,10 @@ namespace Pliant.Builders
         }
 
         public IList<SymbolModel> Symbols { get; }
+
+        public override string ToString()
+        {
+            return string.Join(" ", Symbols);
+        }
     }
 }
