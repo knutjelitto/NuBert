@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Pliant.Tree;
 
 namespace Pliant.RegularExpressions
@@ -9,7 +10,7 @@ namespace Pliant.RegularExpressions
 
         public override void Visit(IInternalTreeNode node)
         {
-            if (RegexGrammar.Regex == node.Symbol.Value)
+            if (node.Is(RegexGrammar.Regex))
             {
                 Regex = VisitRegexNode(node);
             }
@@ -17,118 +18,109 @@ namespace Pliant.RegularExpressions
 
         private static RegexCharacterClassCharacter VisitCharacterClassCharacterNode(IInternalTreeNode internalNode)
         {
-            foreach (var child in internalNode.Children)
+            foreach (var tokenNode in internalNode.Children.OfType<ITokenTreeNode>())
             {
-                if (child is ITokenTreeNode childTokenNode)
-                {
-                    var tokenValue = childTokenNode.Token.Value;
-                    var isEscaped = tokenValue.StartsWith(@"\", StringComparison.CurrentCulture);
+                var tokenValue = tokenNode.Token.Value;
+                var isEscaped = tokenValue.StartsWith(@"\", StringComparison.CurrentCulture);
 
-                    var value = isEscaped
-                                    ? tokenValue[1]
-                                    : tokenValue[0];
+                var value = isEscaped
+                                ? tokenValue[1]
+                                : tokenValue[0];
 
-                    return new RegexCharacterClassCharacter(value, isEscaped);
-                }
+                return new RegexCharacterClassCharacter(value, isEscaped);
             }
 
             throw new Exception("Invalid Regex Character Class Character.");
         }
 
-        private static RegexCharacters VisitCharacterRangeNode(IInternalTreeNode internalNode)
+        private static RegexCharacters VisitCharacterRangeNode(IInternalTreeNode node)
         {
             RegexCharacterClassCharacter start = null;
             RegexCharacterClassCharacter end = null;
 
-            foreach (var child in internalNode.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode childInternalNode)
+                if (internalNode.Is(RegexGrammar.CharacterClassCharacter))
                 {
-                    if (RegexGrammar.CharacterClassCharacter == childInternalNode.Symbol.Value)
+                    if (start == null)
                     {
-                        if (start == null)
-                        {
-                            start = VisitCharacterClassCharacterNode(childInternalNode);
-                        }
-                        else
-                        {
-                            end = VisitCharacterClassCharacterNode(childInternalNode);
-                        }
+                        start = VisitCharacterClassCharacterNode(internalNode);
+                    }
+                    else
+                    {
+                        end = VisitCharacterClassCharacterNode(internalNode);
                     }
                 }
             }
 
-            return end == null 
-                       ? (RegexCharacters)new RegexCharactersUnit(start)
-                       : (RegexCharacters)new RegexCharactersRange(start, end);
+            if (end == null)
+            {
+                return new RegexCharactersUnit(start);
+            }
+
+            return new RegexCharactersRange(start, end);
         }
 
-        private RegexCharacterClass VisitCharacterClassNode(IInternalTreeNode internalNode)
+        private RegexCharacterClass VisitCharacterClassNode(IInternalTreeNode node)
         {
             RegexCharacters characterRange = null;
             RegexCharacterClass characterClass = null;
 
-            foreach (var child in internalNode.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode childInternalNode)
-                {
-                    var childInternalNodeSymbolValue = childInternalNode.Symbol.Value;
-
-                    if (RegexGrammar.CharacterRange == childInternalNodeSymbolValue)
+                    if (internalNode.Is(RegexGrammar.CharacterRange))
                     {
-                        characterRange = VisitCharacterRangeNode(childInternalNode);
+                        characterRange = VisitCharacterRangeNode(internalNode);
                     }
-                    else if (RegexGrammar.CharacterClass == childInternalNodeSymbolValue)
+                    else if (internalNode.Is(RegexGrammar.CharacterClass))
                     {
-                        characterClass = VisitCharacterClassNode(childInternalNode);
+                        characterClass = VisitCharacterClassNode(internalNode);
                     }
-                }
             }
 
-            return characterClass == null
-                       ? new RegexCharacterClass(characterRange)
-                       : new RegexCharacterClassAlteration(characterRange, characterClass);
+            if (characterClass == null)
+            {
+                return new RegexCharacterClass(characterRange);
+            }
+
+            return new RegexCharacterClassAlteration(characterRange, characterClass);
         }
 
-        private RegexSet VisitInnerSetNode(bool negate, IInternalTreeNode internalNode)
+        private RegexSet VisitInnerSetNode(bool negate, IInternalTreeNode node)
         {
-            foreach (var child in internalNode.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode childInternalNode)
-                {
-                    if (RegexGrammar.CharacterClass == childInternalNode.Symbol.Value)
+                    if (internalNode.Is(RegexGrammar.CharacterClass))
                     {
-                        var characterClass = VisitCharacterClassNode(childInternalNode);
+                        var characterClass = VisitCharacterClassNode(internalNode);
                         return new RegexSet(negate, characterClass);
                     }
-                }
             }
 
             throw new Exception("Invalid Inner Set Detected");
         }
 
-        private RegexAtom VisitRegexAtomNode(IInternalTreeNode internalNode)
+        private RegexAtom VisitRegexAtomNode(IInternalTreeNode node)
         {
-            foreach (var child in internalNode.Children)
+            foreach (var child in node.Children)
             {
-                if (child is IInternalTreeNode childInternalNode)
+                if (child is IInternalTreeNode internalNode)
                 {
-                    var childInternalNodeSymbolValue = childInternalNode.Symbol.Value;
-                    if (RegexGrammar.Character == childInternalNodeSymbolValue)
+                    if (internalNode.Is(RegexGrammar.Character))
                     {
-                        var character = VisitRegexCharacterNode(childInternalNode);
+                        var character = VisitRegexCharacterNode(internalNode);
                         return new RegexAtomCharacter(character);
                     }
 
-                    if (RegexGrammar.Expression == childInternalNodeSymbolValue)
+                    if (internalNode.Is(RegexGrammar.Expression))
                     {
-                        var expression = VisitRegexExpressionNode(childInternalNode);
+                        var expression = VisitRegexExpressionNode(internalNode);
                         return new RegexAtomExpression(expression);
                     }
 
-                    if (RegexGrammar.Set == childInternalNodeSymbolValue)
+                    if (internalNode.Is(RegexGrammar.Set))
                     {
-                        var set = VisitRegexSetNode(childInternalNode);
+                        var set = VisitRegexSetNode(internalNode);
                         return new RegexAtomSet(set);
                     }
                 }
@@ -150,42 +142,34 @@ namespace Pliant.RegularExpressions
 
         private RegexCharacter VisitRegexCharacterNode(IInternalTreeNode internalNode)
         {
-            foreach (var child in internalNode.Children)
+            foreach (var tokenNode in internalNode.Children.OfType<ITokenTreeNode>())
             {
-                if (child is ITokenTreeNode childTokenNode)
-                {
-                    var isEscaped = childTokenNode.Token.Value.StartsWith(@"\", StringComparison.CurrentCulture);
+                    var isEscaped = tokenNode.Token.Value.StartsWith(@"\", StringComparison.CurrentCulture);
                     var value = isEscaped
-                                    ? childTokenNode.Token.Value[1]
-                                    : childTokenNode.Token.Value[0];
+                                    ? tokenNode.Token.Value[1]
+                                    : tokenNode.Token.Value[0];
 
                     return new RegexCharacter(value, isEscaped);
-                }
             }
 
             throw new Exception("Invalid character detected.");
         }
 
-        private RegexExpression VisitRegexExpressionNode(IInternalTreeNode internalNode)
+        private RegexExpression VisitRegexExpressionNode(IInternalTreeNode node)
         {
             RegexExpression expression = null;
             RegexTerm term = null;
 
-            foreach (var child in internalNode.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode childInternalNode)
-                {
-                    var childInternalNodeSymbolValue = childInternalNode.Symbol.Value;
-
-                    if (RegexGrammar.Expression == childInternalNodeSymbolValue)
+                    if (internalNode.Is(RegexGrammar.Expression))
                     {
-                        expression = VisitRegexExpressionNode(childInternalNode);
+                        expression = VisitRegexExpressionNode(internalNode);
                     }
-                    else if (RegexGrammar.Term == childInternalNodeSymbolValue)
+                    else if (internalNode.Is(RegexGrammar.Term))
                     {
-                        term = VisitRegexTermNode(childInternalNode);
+                        term = VisitRegexTermNode(internalNode);
                     }
-                }
             }
 
             if (expression != null && term != null)
@@ -201,40 +185,36 @@ namespace Pliant.RegularExpressions
             throw new InvalidOperationException("Unable to create null expression.");
         }
 
-        private RegexFactor VisitRegexFactorNode(IInternalTreeNode internalNode)
+        private RegexFactor VisitRegexFactorNode(IInternalTreeNode node)
         {
             RegexAtom atom = null;
             RegexIterator? iterator = null;
 
-            foreach (var child in internalNode.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode childInternalNode)
-                {
-                    var childInternalNodeSymbolValue = childInternalNode.Symbol.Value;
-
-                    if (RegexGrammar.Atom == childInternalNodeSymbolValue)
+                    if (internalNode.Is(RegexGrammar.Atom))
                     {
-                        atom = VisitRegexAtomNode(childInternalNode);
+                        atom = VisitRegexAtomNode(internalNode);
                     }
-                    else if (RegexGrammar.Iterator == childInternalNodeSymbolValue)
+                    else if (internalNode.Is(RegexGrammar.Iterator))
                     {
-                        iterator = VisitRegexIteratorNode(childInternalNode);
+                        iterator = VisitRegexIteratorNode(internalNode);
                     }
-                }
             }
 
-            return iterator.HasValue
-                       ? (RegexFactor)new RegexFactorIterator(atom, iterator.Value)
-                       : (RegexFactor)new RegexFactorAtom(atom);
+            if (iterator.HasValue)
+            {
+                return new RegexFactorIterator(atom, iterator.Value);
+            }
+
+            return new RegexFactorAtom(atom);
         }
 
         private RegexIterator VisitRegexIteratorNode(IInternalTreeNode internalNode)
         {
-            foreach (var child in internalNode.Children)
+            foreach (var tokenNode in internalNode.Children.OfType<ITokenTreeNode>())
             {
-                if (child is ITokenTreeNode tokenChildNode)
-                {
-                    switch (tokenChildNode.Token.Value)
+                    switch (tokenNode.Token.Value)
                     {
                         case "*":
                             return RegexIterator.ZeroOrMany;
@@ -245,7 +225,6 @@ namespace Pliant.RegularExpressions
                         case "+":
                             return RegexIterator.OneOrMany;
                     }
-                }
             }
 
             throw new Exception("Invalid iterator detected.");
@@ -259,80 +238,75 @@ namespace Pliant.RegularExpressions
 
             foreach (var child in node.Children)
             {
-                if (child is IInternalTreeNode internalNode)
+                switch (child)
                 {
-                    var internalNodeSymbolValue = internalNode.Symbol.Value;
-                    if (RegexGrammar.Expression == internalNodeSymbolValue)
-                    {
-                        expression = VisitRegexExpressionNode(internalNode);
-                    }
-                }
-                else if (child is ITokenTreeNode tokenNode)
-                {
-                    switch (tokenNode.Token.Value)
-                    {
-                        case "$":
-                            endsWith = true;
-                            break;
+                    case IInternalTreeNode internalNode:
+                        if (internalNode.Is(RegexGrammar.Expression))
+                        {
+                            expression = VisitRegexExpressionNode(internalNode);
+                        }
 
-                        case "^":
-                            startsWith = true;
-                            break;
-                    }
+                        break;
+                    case ITokenTreeNode tokenNode:
+                        switch (tokenNode.Token.Value)
+                        {
+                            case "$":
+                                endsWith = true;
+                                break;
+
+                            case "^":
+                                startsWith = true;
+                                break;
+                        }
+
+                        break;
                 }
             }
 
             return new Regex(startsWith, expression, endsWith);
         }
 
-        private RegexSet VisitRegexSetNode(IInternalTreeNode internalNode)
+        private RegexSet VisitRegexSetNode(IInternalTreeNode node)
         {
-            foreach (var child in internalNode.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode childInternalNode)
-                {
-                    var childInternalNodeSymbolValue = childInternalNode.Symbol.Value;
-
-                    if (RegexGrammar.PositiveSet == childInternalNodeSymbolValue)
+                    if (internalNode.Is(RegexGrammar.PositiveSet))
                     {
-                        return VisitInnerSetNode(false, childInternalNode);
+                        return VisitInnerSetNode(false, internalNode);
                     }
 
-                    if (RegexGrammar.NegativeSet == childInternalNodeSymbolValue)
+                    if (internalNode.Is(RegexGrammar.NegativeSet))
                     {
-                        return VisitInnerSetNode(true, childInternalNode);
+                        return VisitInnerSetNode(true, internalNode);
                     }
-                }
             }
 
             throw new Exception("Invalid Set Detected.");
         }
 
-        private RegexTerm VisitRegexTermNode(IInternalTreeNode internalNode)
+        private RegexTerm VisitRegexTermNode(IInternalTreeNode node)
         {
             RegexFactor factorAtom = null;
             RegexTerm term = null;
 
-            foreach (var child in internalNode.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode childInternalNode)
-                {
-                    var symbolValue = childInternalNode.Symbol.Value;
-
-                    if (RegexGrammar.Factor == symbolValue)
+                    if (internalNode.Is(RegexGrammar.Factor))
                     {
-                        factorAtom = VisitRegexFactorNode(childInternalNode);
+                        factorAtom = VisitRegexFactorNode(internalNode);
                     }
-                    else if (RegexGrammar.Term == symbolValue)
+                    else if (internalNode.Is(RegexGrammar.Term))
                     {
-                        term = VisitRegexTermNode(childInternalNode);
+                        term = VisitRegexTermNode(internalNode);
                     }
-                }
             }
 
-            return term == null 
-                       ? (RegexTerm)new RegexTermFactor(factorAtom) 
-                       : (RegexTerm)new RegexTermFactorTerm(factorAtom, term);
+            if (term == null)
+            {
+                return new RegexTermFactor(factorAtom);
+            }
+
+            return new RegexTermFactorTerm(factorAtom, term);
         }
     }
 }

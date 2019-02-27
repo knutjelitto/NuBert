@@ -32,9 +32,9 @@ namespace Pliant.Runtime
 
             foreach (var rule in expectedLexerRules)
             {
-                if (Equals(rule.LexerRuleType, TerminalLexerRule.TerminalLexerRuleType))
+                if (rule is TerminalLexerRule terminalRule)
                 {
-                    expectedLexemes.Add(new TerminalLexeme(rule as TerminalLexerRule, Position));
+                    expectedLexemes.Add(new TerminalLexeme(terminalRule, Position));
                 }
             }
 

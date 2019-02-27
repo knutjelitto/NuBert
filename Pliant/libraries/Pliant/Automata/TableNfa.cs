@@ -72,9 +72,8 @@ namespace Pliant.Automata
                 var nfaClosureId = nfaClosure.GetHashCode();
                 tableDfa.SetFinal(nfaClosureId, nfaClosure.IsFinal);
 
-                for (var i = 0; i < nfaClosure.States.Length; i++)
+                foreach (var state in nfaClosure.States)
                 {
-                    var state = nfaClosure.States[i];
                     if (!this._table.TryGetValue(state, out var characterTransitions))
                     {
                         continue;

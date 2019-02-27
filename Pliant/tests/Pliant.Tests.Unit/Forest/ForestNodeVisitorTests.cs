@@ -8,8 +8,8 @@ using Pliant.Builders.Expressions;
 using Pliant.Builders;
 using Pliant.Runtime;
 using Pliant.Tests.Unit.Runtime;
-using System.Linq;
 
+// ReSharper disable once CheckNamespace
 namespace Pliant.Tests.Common.Forest
 {
     [TestClass]
@@ -30,7 +30,7 @@ namespace Pliant.Tests.Common.Forest
 
         public ForestNodeVisitorTests()
         {
-            _whitespace = CreateWhitespaceRule();
+            this._whitespace = CreateWhitespaceRule();
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace Pliant.Tests.Common.Forest
             Panda.Rule = (Expr)'p' + 'a' + 'n' + 'd' + 'a';
             var panda = new GrammarExpression(Panda, new[] { Panda }).ToGrammar();
 
-            AAn.Rule = (Expr)'a' | (Expr)'a' + 'n';
+            AAn.Rule = (Expr)'a' | ((Expr)'a' + 'n');
             var aAn = new GrammarExpression(AAn, new[] { AAn }).ToGrammar();
 
             ShootsLeaves.Rule =
@@ -77,9 +77,9 @@ namespace Pliant.Tests.Common.Forest
             var shootsLeaves = new GrammarExpression(ShootsLeaves, new[] { ShootsLeaves }).ToGrammar();
 
             EatsShootsLeaves.Rule =
-                (Expr)'e' + 'a' + 't' + 's'
-                | (Expr)'s' + 'h' + 'o' + 'o' + 't' + 's'
-                | (Expr)'l' + 'e' + 'a' + 'v' + 'e' + 's';
+                ((Expr)'e' + 'a' + 't' + 's')
+                | ((Expr)'s' + 'h' + 'o' + 'o' + 't' + 's')
+                | ((Expr)'l' + 'e' + 'a' + 'v' + 'e' + 's');
             var eatsShootsLeaves = new GrammarExpression(EatsShootsLeaves, new[] { EatsShootsLeaves }).ToGrammar();
 
             ProductionExpression
@@ -91,13 +91,13 @@ namespace Pliant.Tests.Common.Forest
             NP.Rule =
                 NN
                 | NNS
-                | DT + NN
-                | NN + NNS
-                | NNS + CC + NNS;
-            VP.Rule = VBZ + NP
-                | VP + VBZ + NNS
-                | VP + CC + VP
-                | VP + VP + CC + VP
+                | (DT + NN)
+                | (NN + NNS)
+                | (NNS + CC + NNS);
+            VP.Rule = (VBZ + NP)
+                | (VP + VBZ + NNS)
+                | (VP + CC + VP)
+                | (VP + VP + CC + VP)
                 | VBZ;
             CC.Rule = new GrammarLexerRule(nameof(CC), and);
             DT.Rule = new GrammarLexerRule(nameof(DT), aAn);
@@ -108,7 +108,7 @@ namespace Pliant.Tests.Common.Forest
             var grammar = new GrammarExpression(
                 S,
                 new[] { S, NP, VP, CC, DT, NN, NNS, VBZ },
-                new[] { new LexerRuleModel(_whitespace) })
+                new[] { new LexerRuleModel(this._whitespace) })
                 .ToGrammar();
             var sentence = "a panda eats shoots and leaves.";
 

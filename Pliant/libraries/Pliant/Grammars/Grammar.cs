@@ -22,14 +22,13 @@ namespace Pliant.Grammars
             this._symbolsReverseLookup = new Dictionary<NonTerminal, UniqueList<Production>>();
             this.lexerRules = new IndexedList<LexerRule>();
             this._leftHandSideToProductions = new Dictionary<NonTerminal, List<Production>>();
-            DottedRules = new DottedRuleRegistry();
             this._symbolPaths = new Dictionary<Symbol, UniqueList<Symbol>>();
 
             Start = start;
             AddProductions(productions);
             AddIgnoreRules(ignoreRules ?? EmptyLexerRuleArray);
             AddTriviaRules(triviaRules ?? EmptyLexerRuleArray);
-            DottedRules.Seed(this);
+            DottedRules = new DottedRuleRegistry(Productions);
 
             this._rightRecursiveSymbols = CreateRightRecursiveSymbols(this._symbolPaths);
             FindNullableSymbols(this._symbolsReverseLookup, this._transitiveNullableSymbols);

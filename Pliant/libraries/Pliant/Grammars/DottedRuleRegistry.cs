@@ -1,57 +1,43 @@
 ﻿using System.Collections.Generic;
-using Pliant.Collections;
-using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
     public class DottedRuleRegistry
     {
-        private readonly Dictionary<Production, Dictionary<int, DottedRule>> _dottedRuleIndex;
-
-        public DottedRuleRegistry()
+        public DottedRuleRegistry(IEnumerable<Production> productions)
         {
-            //this._dottedRuleIndex = new Dictionary<Production, Dictionary<int, DottedRule>>(new HashCodeEqualityComparer<Production>());
-            this._dottedRuleIndex = new Dictionary<Production, Dictionary<int, DottedRule>>();
+            this.index = new Dictionary<Production, DottedRule[]>();
+            Seed(productions);
         }
 
-        public void Seed(IGrammar grammar)
+        public DottedRule Get(Production production, int dot)
         {
-            var ruleId = 0;
-
-            foreach (var production in grammar.Productions)
+            if (dot >= 0 && this.index.TryGetValue(production, out var rules) && dot < rules.Length)
             {
-                for (var dot = 0; dot <= production.RightHandSide.Count; dot++)
-                {
-                    var dottedRule = new DottedRule(ruleId++, production, dot);
-                    Register(dottedRule);
-                }
-            }
-        }
-
-        public void Register(DottedRule dottedRule)
-        {
-            var positionIndex = this._dottedRuleIndex.AddOrGetExisting(dottedRule.Production);
-            positionIndex[dottedRule.Position] = dottedRule;
-        }
-
-        public DottedRule Get(Production production, int position)
-        {
-            if (!this._dottedRuleIndex.TryGetValue(production, out var positionIndex))
-            {
-                return null;
+                return rules[dot];
             }
 
-            if (!positionIndex.TryGetValue(position, out var dottedRule))
-            {
-                return null;
-            }
-
-            return dottedRule;
+            return null;
         }
 
         public DottedRule GetNext(DottedRule dottedRule)
         {
-            return Get(dottedRule.Production, dottedRule.Position + 1);
-        }        
+            return Get(dottedRule.Production, dottedRule.Dot + 1);
+        }
+
+        private void Seed(IEnumerable<Production> productions)
+        {
+            foreach (var production in productions)
+            {
+                var rules = new DottedRule[production.RightHandSide.Count + 1];
+                this.index.Add(production, rules);
+                for (var dot = 0; dot <= production.RightHandSide.Count; dot++)
+                {
+                    rules[dot] = new DottedRule(production, dot);
+                }
+            }
+        }
+
+        private readonly Dictionary<Production, DottedRule[]> index;
     }
 }

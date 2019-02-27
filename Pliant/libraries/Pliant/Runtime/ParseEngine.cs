@@ -30,9 +30,9 @@ namespace Pliant.Runtime
 
         public Chart Chart { get; private set; }
 
-        public ParseEngineOptions Options { get; }
+        private ParseEngineOptions Options { get; }
 
-        public StateFactory StateFactory { get; }
+        private StateFactory StateFactory { get; }
 
         public IGrammar Grammar { get; }
 
@@ -68,7 +68,7 @@ namespace Pliant.Runtime
             foreach (var scanState in scanStates)
             {
                 var postDotSymbol = scanState.DottedRule.PostDotSymbol;
-                if (postDotSymbol != null && postDotSymbol is LexerRule lexerRule)
+                if (postDotSymbol is LexerRule lexerRule)
                 {
                     var index = Grammar.GetLexerRuleIndex(lexerRule);
 
@@ -243,11 +243,11 @@ namespace Pliant.Runtime
         {
             Assert.IsNotNull(v, nameof(v));
             var anyPreDotRuleNull = true;
-            if (nextDottedRule.Position > 1)
+            if (nextDottedRule.Dot > 1)
             {
                 var predotPrecursorSymbol = nextDottedRule
                     .Production
-                    .RightHandSide[nextDottedRule.Position - 2];
+                    .RightHandSide[nextDottedRule.Dot - 2];
                 anyPreDotRuleNull = IsSymbolTransativeNullable(predotPrecursorSymbol);
             }
 
@@ -304,8 +304,7 @@ namespace Pliant.Runtime
 
         private void EarleyComplete(NormalState completed, int k)
         {
-            var j = completed.Origin;
-            var sourceEarleySet = Chart.EarleySets[j];
+            var sourceEarleySet = Chart.EarleySets[completed.Origin];
 
             for (var p = 0; p < sourceEarleySet.Predictions.Count; p++)
             {
@@ -372,7 +371,7 @@ namespace Pliant.Runtime
                 return true;
             }
 
-            var nextStatePosition = state.DottedRule.Position + 1;
+            var nextStatePosition = state.DottedRule.Dot + 1;
             var isComplete = nextStatePosition == state.DottedRule.Production.RightHandSide.Count;
             if (isComplete)
             {

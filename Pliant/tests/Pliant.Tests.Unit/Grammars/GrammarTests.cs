@@ -3,6 +3,7 @@ using Pliant.Builders.Expressions;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
 using System.Linq;
+using Pliant.Grammars;
 
 namespace Pliant.Tests.Unit
 {
@@ -107,8 +108,10 @@ namespace Pliant.Tests.Unit
 
             Assert.IsNotNull(grammar.LexerRules);
             Assert.AreEqual(5, grammar.LexerRules.Count);
-            for(var i = 0;i<grammar.LexerRules.Count;i++)
-                Assert.IsNotNull(grammar.LexerRules[i]);
+            foreach (var rule in grammar.LexerRules)
+            {
+                Assert.IsNotNull(rule);
+            }
         }
 
         [TestMethod]

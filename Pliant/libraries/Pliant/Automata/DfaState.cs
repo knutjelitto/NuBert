@@ -4,11 +4,6 @@ namespace Pliant.Automata
 {
     public class DfaState
     {
-        private DfaState()
-            : this(false)
-        {
-        }
-
         private DfaState(bool isFinal)
         {
             IsFinal = isFinal;

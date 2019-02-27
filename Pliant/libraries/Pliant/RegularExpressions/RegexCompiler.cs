@@ -9,7 +9,7 @@ namespace Pliant.RegularExpressions
         {
         }
 
-        private RegexCompiler(IRegexToNfa regexToNfa, NfaToDfa nfaToDfa)
+        private RegexCompiler(RegexToNfa regexToNfa, NfaToDfa nfaToDfa)
         {
             this.regexToNfa = regexToNfa;
             this.nfaToDfa = nfaToDfa;
@@ -23,6 +23,6 @@ namespace Pliant.RegularExpressions
         }
 
         private readonly NfaToDfa nfaToDfa;
-        private readonly IRegexToNfa regexToNfa;
+        private readonly RegexToNfa regexToNfa;
     }
 }

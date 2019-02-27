@@ -4,9 +4,9 @@ using Pliant.Grammars;
 
 namespace Pliant.RegularExpressions
 {
-    public class ThompsonConstructionAlgorithm : IRegexToNfa
+    public class ThompsonConstructionAlgorithm : RegexToNfa
     {
-        public Nfa Transform(Regex regex)
+        public override Nfa Transform(Regex regex)
         {
             return Expression(regex.Expression);
         }

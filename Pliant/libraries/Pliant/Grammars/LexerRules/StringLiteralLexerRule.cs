@@ -6,7 +6,7 @@ namespace Pliant.Grammars
     public sealed class StringLiteralLexerRule : LexerRule //, IStringLiteralLexerRule
     {
         public StringLiteralLexerRule(string literal, TokenType tokenType)
-            : base(StringLiteralLexerRuleType, tokenType)
+            : base(tokenType)
         {
             Literal = literal;
         }
@@ -31,20 +31,17 @@ namespace Pliant.Grammars
         public override bool Equals(object obj)
         {
             return obj is StringLiteralLexerRule other &&
-                   LexerRuleType.Equals(other.LexerRuleType) &&
                    Literal.Equals(other.Literal);
         }
 
         public override int GetHashCode()
         {
-            return (StringLiteralLexerRuleType, TokenType, Literal).GetHashCode();
+            return (TokenType, Literal).GetHashCode();
         }
 
         public override string ToString()
         {
             return Literal;
         }
-
-        public static readonly LexerRuleType StringLiteralLexerRuleType = new LexerRuleType("StringLiteral");
     }
 }

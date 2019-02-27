@@ -6,28 +6,11 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-#if true
     public class DottedRuleSet : IEnumerable<DottedRule>
     {
-        private readonly SortedSet<DottedRule> set = new SortedSet<DottedRule>(new DottedRuleComparer());
-
-        private class DottedRuleComparer : IComparer<DottedRule>
-        {
-            public int Compare(DottedRule x, DottedRule y)
-            {
-                Debug.Assert(x != null, nameof(x) + " != null");
-                Debug.Assert(y != null, nameof(y) + " != null");
-
-                return x.Id.CompareTo(y.Id);
-            }
-        }
+        private readonly HashSet<DottedRule> set = new HashSet<DottedRule>();
 
         public int Count => this.set.Count;
-
-        public DottedRule[] ToArray()
-        {
-            return this.set.ToArray();
-        }
 
         public bool Contains(DottedRule state)
         {
@@ -41,7 +24,7 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            return obj is DottedRuleSet other && this.set.SequenceEqual(other.set);
+            return obj is DottedRuleSet other && this.set.SetEquals(other.set);
         }
 
         public override int GetHashCode()
@@ -64,23 +47,4 @@ namespace Pliant.Grammars
             this.set.Clear();
         }
     }
-#else
-    public class DottedRuleSet : SortedSet<DottedRule>
-    {
-        public DottedRuleSet() : base(new DottedRuleComparer())
-        {
-        }
-
-        private class DottedRuleComparer : IComparer<DottedRule>
-        {
-            public int Compare(DottedRule x, DottedRule y)
-            {
-                Debug.Assert(x != null, nameof(x) + " != null");
-                Debug.Assert(y != null, nameof(y) + " != null");
-
-                return x.Id.CompareTo(y.Id);
-            }
-        }
-    }
-#endif
 }

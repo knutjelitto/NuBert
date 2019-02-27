@@ -7,5 +7,7 @@ namespace Pliant.Tree
     {
         NonTerminal Symbol { get; }
         IReadOnlyList<ITreeNode> Children { get; }
+
+        bool Is(QualifiedName name);
     }
 }

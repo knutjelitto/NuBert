@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Pliant.Collections;
-using System;
 using Pliant.Grammars;
 
 namespace Pliant.Automata
 {
-    public class NfaState : IComparable<NfaState>, IComparable
+    public class NfaState
     {
-        private readonly List<NfaTransition> _transitions;
-
         public NfaState()
         {
             this._transitions = new List<NfaTransition>();
@@ -18,7 +16,7 @@ namespace Pliant.Automata
 
         public void AddEpsilon(NfaState target)
         {
-            AddTransition(new NullNfaTransition(target));
+            AddTransition(new EpsilonNfaTransition(target));
         }
 
         public void AddTransition(Terminal terminal, NfaState target)
@@ -26,16 +24,11 @@ namespace Pliant.Automata
             AddTransition(new TerminalNfaTransition(terminal, target));
         }
 
-        private void AddTransition(NfaTransition transition)
-        {
-            this._transitions.Add(transition);
-        }
-
         public IEnumerable<NfaState> Closure()
         {
             // the working queue used to process states 
             var queue = new ProcessOnceQueue<NfaState>();
-            
+
             // initialize by adding the current state (this)
             queue.Enqueue(this);
 
@@ -44,36 +37,20 @@ namespace Pliant.Automata
             while (queue.Count > 0)
             {
                 var state = queue.Dequeue();
-                foreach (var transition in state.Transitions)
+                foreach (var transition in state.Transitions.OfType<EpsilonNfaTransition>())
                 {
-                    if (transition is NullNfaTransition)
-                    {
-                        queue.Enqueue(transition.Target);
-                    }
+                    queue.Enqueue(transition.Target);
                 }
             }
 
             return queue.Visited;
         }
 
-        public int CompareTo(object obj)
+        private void AddTransition(NfaTransition transition)
         {
-            if (obj == null)
-            {
-                throw new NullReferenceException();
-            }
-
-            if (!(obj is NfaState nfaState))
-            {
-                throw new ArgumentException("parameter must be a INfaState", nameof(obj));
-            }
-
-            return CompareTo(nfaState);
+            this._transitions.Add(transition);
         }
 
-        public int CompareTo(NfaState other)
-        {
-            return GetHashCode().CompareTo(other.GetHashCode());
-        }
-    }    
+        private readonly List<NfaTransition> _transitions;
+    }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Pliant.Collections;
 using Pliant.Grammars;
 using Pliant.Utilities;
@@ -13,7 +11,7 @@ namespace Pliant.Automata
         {
             var processOnceQueue = new ProcessOnceQueue<NfaClosure>();
 
-            var set = ObjectPoolExtensions.Allocate(SharedPools.Default<SortedSet<NfaState>>());
+            var set = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<NfaState>>());
             foreach (var state in nfa.Start.Closure())
             {
                 set.Add(state);
@@ -26,26 +24,22 @@ namespace Pliant.Automata
             while (processOnceQueue.Count > 0)
             {
                 var nfaClosure = processOnceQueue.Dequeue();
-                var transitions = ObjectPoolExtensions.Allocate(SharedPools.Default<Dictionary<Terminal, SortedSet<NfaState>>>());
+                var transitions = ObjectPoolExtensions.Allocate(SharedPools.Default<Dictionary<Terminal, HashSet<NfaState>>>());
 
-                for (var i = 0; i < nfaClosure.Closure.Length; i++)
+                foreach (var state in nfaClosure.Set)
                 {
-                    var state = nfaClosure.Closure[i];
-                    for (var t = 0; t < state.Transitions.Count; t++)
+                    foreach (var transition in state.Transitions)
                     {
-                        var transition = state.Transitions[t];
-                        switch (transition)
+                        if (transition is TerminalNfaTransition terminalTransition)
                         {
-                            case TerminalNfaTransition terminalTransition:
-                                var terminal = terminalTransition.Terminal;
+                            var terminal = terminalTransition.Terminal;
 
-                                if (!transitions.ContainsKey(terminalTransition.Terminal))
-                                {
-                                    transitions[terminal] = ObjectPoolExtensions.Allocate(SharedPools.Default<SortedSet<NfaState>>());
-                                }
+                            if (!transitions.ContainsKey(terminalTransition.Terminal))
+                            {
+                                transitions[terminal] = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<NfaState>>());
+                            }
 
-                                transitions[terminal].Add(transition.Target);
-                                break;
+                            transitions[terminal].Add(transition.Target);
                         }
                     }
                 }
@@ -55,25 +49,24 @@ namespace Pliant.Automata
                     var targetStates = transitions[terminal];
                     var closure = Closure(targetStates, nfa.End);
                     closure = processOnceQueue.EnqueueOrGetExisting(closure);
-                    nfaClosure.State.AddTransition(
-                        new DfaTransition(terminal, closure.State));
-                    SharedPools.Default<SortedSet<NfaState>>().ClearAndFree(targetStates);
+                    nfaClosure.State.AddTransition(new DfaTransition(terminal, closure.State));
+                    SharedPools.Default<HashSet<NfaState>>().ClearAndFree(targetStates);
                 }
 
                 SharedPools
-                    .Default<SortedSet<NfaState>>()
+                    .Default<HashSet<NfaState>>()
                     .ClearAndFree(nfaClosure.Set);
                 SharedPools
-                    .Default<Dictionary<Terminal, SortedSet<NfaState>>>()
+                    .Default<Dictionary<Terminal, HashSet<NfaState>>>()
                     .ClearAndFree(transitions);
             }
 
             return start.State;
         }
 
-        private static NfaClosure Closure(SortedSet<NfaState> states, NfaState endState)
+        private static NfaClosure Closure(IEnumerable<NfaState> states, NfaState endState)
         {
-            var set = ObjectPoolExtensions.Allocate(SharedPools.Default<SortedSet<NfaState>>());
+            var set = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<NfaState>>());
             var isFinal = false;
             foreach (var state in states)
             {
@@ -91,52 +84,22 @@ namespace Pliant.Automata
             return new NfaClosure(set, isFinal);
         }
 
-        #region  not sortable (modify ReSharper template to catch these cases)
-
-        private class NfaClosure : IComparable<NfaClosure>, IComparable
+        private class NfaClosure
         {
-            public NfaClosure(SortedSet<NfaState> closure, bool isFinal)
+            public NfaClosure(HashSet<NfaState> closure, bool isFinal)
             {
                 Set = closure;
-                this._hashCode = HashCode.Compute(closure);
-                Closure = closure.ToArray();
                 State = isFinal ? DfaState.Final() : DfaState.Inner();
+                this._hashCode = HashCode.Compute(Set);
             }
 
-            public NfaState[] Closure { get; }
-
-            public SortedSet<NfaState> Set { get; }
+            public HashSet<NfaState> Set { get; }
 
             public DfaState State { get; }
 
-            public int CompareTo(object obj)
-            {
-                if (obj == null)
-                {
-                    throw new ArgumentNullException();
-                }
-
-                if (!(obj is NfaClosure nfaClosure))
-                {
-                    throw new ArgumentException("instance of NfaClosure expected.", nameof(obj));
-                }
-
-                return CompareTo(nfaClosure);
-            }
-
-            public int CompareTo(NfaClosure other)
-            {
-                return GetHashCode().CompareTo(other.GetHashCode());
-            }
-
             public override bool Equals(object obj)
             {
-                if (!(obj is NfaClosure nfaClosure))
-                {
-                    return false;
-                }
-
-                return nfaClosure._hashCode.Equals(this._hashCode);
+                return obj is NfaClosure other && Set.SetEquals(other.Set);
             }
 
             public override int GetHashCode()
@@ -146,7 +109,5 @@ namespace Pliant.Automata
 
             private readonly int _hashCode;
         }
-
-        #endregion
     }
 }

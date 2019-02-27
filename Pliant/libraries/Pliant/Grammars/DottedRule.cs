@@ -5,24 +5,21 @@ namespace Pliant.Grammars
 {
     public sealed class DottedRule
     {
-        public int Id { get; }
-
-        public DottedRule(int id, Production production, int position)
+        public DottedRule(Production production, int dot)
         {
-            Id = id;
             Assert.IsNotNull(production, nameof(production));
-            Assert.IsGreaterThanEqualToZero(position, nameof(position));
+            Assert.IsGreaterThanEqualToZero(dot, nameof(dot));
 
             Production = production;
-            Position = position;
-            PostDotSymbol = GetPostDotSymbol(production, position);
-            PreDotSymbol = GetPreDotSymbol(production, position);
-            IsComplete = IsCompleted(position, production);
+            Dot = dot;
+            PostDotSymbol = GetPostDotSymbol(production, dot);
+            PreDotSymbol = GetPreDotSymbol(production, dot);
+            IsComplete = IsCompleted(dot, production);
         }
 
         public bool IsComplete { get; }
 
-        public int Position { get; }
+        public int Dot { get; }
 
         public Symbol PostDotSymbol { get; }
 
@@ -32,12 +29,15 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            return obj is DottedRule other && Id.Equals(other.Id);
+            //return obj is DottedRule other && Id.Equals(other.Id);
+            return obj is DottedRule other &&
+                   Production.Equals(other.Production) &&
+                   Dot.Equals(other.Dot);
         }
 
         public override int GetHashCode()
         {
-            return Id;
+            return (Production, Dot).GetHashCode();
         }
 
         public override string ToString()
@@ -50,11 +50,11 @@ namespace Pliant.Grammars
             {
                 stringBuilder.AppendFormat(
                     "{0}{1}",
-                    p == Position ? dot : " ",
+                    p == Dot ? dot : " ",
                     Production.RightHandSide[p]);
             }
 
-            if (Position == Production.RightHandSide.Count)
+            if (Dot == Production.RightHandSide.Count)
             {
                 stringBuilder.Append(dot);
             }

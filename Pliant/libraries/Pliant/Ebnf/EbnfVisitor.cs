@@ -12,7 +12,7 @@ namespace Pliant.Ebnf
 
         public override void Visit(IInternalTreeNode node)
         {
-            if (EbnfGrammar.Definition == node.Symbol.Value)
+            if (node.Is(EbnfGrammar.Definition))
             {
                 Definition = VisitDefinitionNode(node);
             }
@@ -25,23 +25,18 @@ namespace Pliant.Ebnf
 
         private static EbnfLexerRuleFactor VisitLexerRuleFactorNode(IInternalTreeNode node)
         {
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.Literal))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
+                    return new EbnfLexerRuleFactorLiteral(VisitLiteralNode(internalNode));
+                }
 
-                    if (EbnfGrammar.Literal == symbolValue)
-                    {
-                        return new EbnfLexerRuleFactorLiteral(VisitLiteralNode(internalNode));
-                    }
-
-                    if (RegexGrammar.Regex == symbolValue)
-                    {
-                        var regexVisitor = new RegexVisitor();
-                        internalNode.Accept(regexVisitor);
-                        return new EbnfLexerRuleFactorRegex(regexVisitor.Regex);
-                    }
+                if (internalNode.Is(RegexGrammar.Regex))
+                {
+                    var regexVisitor = new RegexVisitor();
+                    internalNode.Accept(regexVisitor);
+                    return new EbnfLexerRuleFactorRegex(regexVisitor.Regex);
                 }
             }
 
@@ -50,25 +45,22 @@ namespace Pliant.Ebnf
 
         private static string VisitLiteralNode(IInternalTreeNode node)
         {
-            foreach (var child in node.Children)
+            foreach (var tokenNode in node.Children.OfType<ITokenTreeNode>())
             {
-                if (child is ITokenTreeNode tokenNode)
+                var token = tokenNode.Token;
+                var tokenType = token.TokenType;
+
+                // if token type is string token type remove surrounding quotes
+                if (tokenType.Equals(SimpleSingleQuoteStringLexerRule.TokenTypeDescriptor) ||
+                    tokenType.Equals(SimpleDoubleQuoteStringLexerRule.TokenTypeDescriptor))
                 {
-                    var token = tokenNode.Token;
-                    var tokenType = token.TokenType;
+                    return token.Value.Substring(1, token.Value.Length - 2);
+                }
 
-                    // if token type is string token type remove surrounding quotes
-                    if (tokenType.Equals(SimpleSingleQuoteStringLexerRule.TokenTypeDescriptor) ||
-                        tokenType.Equals(SimpleDoubleQuoteStringLexerRule.TokenTypeDescriptor))
-                    {
-                        return token.Value.Substring(1, token.Value.Length - 2);
-                    }
-
-                    // TODO: Find a better solution for identifing the lexer rule based on id
-                    if (tokenNode.Token.TokenType.Id.Length > 5)
-                    {
-                        return token.Value;
-                    }
+                // TODO: Find a better solution for identifing the lexer rule based on id
+                if (tokenNode.Token.TokenType.Id.Length > 5)
+                {
+                    return token.Value;
                 }
             }
 
@@ -77,26 +69,21 @@ namespace Pliant.Ebnf
 
         private EbnfBlock VisitBlockNode(IInternalTreeNode node)
         {
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.Rule))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
+                    return VisitRuleNode(internalNode);
+                }
 
-                    if (EbnfGrammar.Rule == symbolValue)
-                    {
-                        return VisitRuleNode(internalNode);
-                    }
+                if (internalNode.Is(EbnfGrammar.Setting))
+                {
+                    return VisitSettingNode(internalNode);
+                }
 
-                    if (EbnfGrammar.Setting == symbolValue)
-                    {
-                        return VisitSettingNode(internalNode);
-                    }
-
-                    if (EbnfGrammar.LexerRule == symbolValue)
-                    {
-                        return VisitLexerRuleNode(internalNode);
-                    }
+                if (internalNode.Is(EbnfGrammar.LexerRule))
+                {
+                    return VisitLexerRuleNode(internalNode);
                 }
             }
 
@@ -108,28 +95,24 @@ namespace Pliant.Ebnf
             EbnfBlock block = null;
             EbnfDefinition definition = null;
 
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.Block))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-
-                    if (EbnfGrammar.Block == symbolValue)
-                    {
-                        block = VisitBlockNode(internalNode);
-                    }
-                    else if (EbnfGrammar.Definition == symbolValue)
-                    {
-                        definition = VisitDefinitionNode(internalNode);
-                    }
+                    block = VisitBlockNode(internalNode);
+                }
+                else if (internalNode.Is(EbnfGrammar.Definition))
+                {
+                    definition = VisitDefinitionNode(internalNode);
                 }
             }
 
-            return definition == null
-                       // ReSharper disable once RedundantCast
-                       ? (EbnfDefinition) new EbnfDefinitionSimple(block)
-                       // ReSharper disable once RedundantCast
-                       : (EbnfDefinition)new EbnfDefinitionConcatenation(block, definition);
+            if (definition == null)
+            {
+                return new EbnfDefinitionSimple(block);
+            }
+
+            return new EbnfDefinitionConcatenation(block, definition);
         }
 
         private EbnfExpression VisitExpressionNode(IInternalTreeNode node)
@@ -137,61 +120,56 @@ namespace Pliant.Ebnf
             EbnfTerm term = null;
             EbnfExpression expression = null;
 
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.Term))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-                    if (EbnfGrammar.Term == symbolValue)
-                    {
-                        term = VisitTermNode(internalNode);
-                    }
-                    else if (EbnfGrammar.Expression == symbolValue)
-                    {
-                        expression = VisitExpressionNode(internalNode);
-                    }
+                    term = VisitTermNode(internalNode);
+                }
+                else if (internalNode.Is(EbnfGrammar.Expression))
+                {
+                    expression = VisitExpressionNode(internalNode);
                 }
             }
 
-            return expression == null
-                       // ReSharper disable once RedundantCast
-                       ? (EbnfExpression) new EbnfExpressionSimple(term)
-                       // ReSharper disable once RedundantCast
-                       : (EbnfExpression)new EbnfExpressionAlteration(term, expression);
+            if (expression == null)
+            {
+                return new EbnfExpressionSimple(term);
+            }
+
+            return new EbnfExpressionAlteration(term, expression);
         }
 
         private EbnfFactor VisitFactorNode(IInternalTreeNode node)
         {
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                var symbolValue = internalNode.Symbol.Value;
-
-                if (EbnfGrammar.QualifiedIdentifier == symbolValue)
+                if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
                 {
                     return new EbnfFactorIdentifier(VisitQualifiedIdentifierNode(internalNode));
                 }
 
-                if (EbnfGrammar.Literal == symbolValue)
+                if (internalNode.Is(EbnfGrammar.Literal))
                 {
                     return new EbnfFactorLiteral(VisitLiteralNode(internalNode));
                 }
 
-                if (EbnfGrammar.Repetition == symbolValue)
+                if (internalNode.Is(EbnfGrammar.Repetition))
                 {
                     return VisitRepetitionNode(internalNode);
                 }
 
-                if (EbnfGrammar.Optional == symbolValue)
+                if (internalNode.Is(EbnfGrammar.Optional))
                 {
                     return VisitOptionalNode(internalNode);
                 }
 
-                if (EbnfGrammar.Grouping == symbolValue)
+                if (internalNode.Is(EbnfGrammar.Grouping))
                 {
                     return VisitGroupingNode(internalNode);
                 }
 
-                if (RegexGrammar.Regex == symbolValue)
+                if (internalNode.Is(RegexGrammar.Regex))
                 {
                     var regexVisitor = new RegexVisitor();
                     internalNode.Accept(regexVisitor);
@@ -204,15 +182,11 @@ namespace Pliant.Ebnf
 
         private EbnfFactorGrouping VisitGroupingNode(IInternalTreeNode node)
         {
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.Expression))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-                    if (EbnfGrammar.Expression == symbolValue)
-                    {
-                        return new EbnfFactorGrouping(VisitExpressionNode(internalNode));
-                    }
+                    return new EbnfFactorGrouping(VisitExpressionNode(internalNode));
                 }
             }
 
@@ -224,28 +198,24 @@ namespace Pliant.Ebnf
             EbnfLexerRuleTerm term = null;
             EbnfLexerRuleExpression expression = null;
 
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.LexerRuleTerm))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-                    if (EbnfGrammar.LexerRuleTerm == symbolValue)
-                    {
-                        term = VisitLexerRuleTermNode(internalNode);
-                    }
-
-                    if (EbnfGrammar.LexerRuleExpression == symbolValue)
-                    {
-                        expression = VisitLexerRuleExpressionNode(internalNode);
-                    }
+                    term = VisitLexerRuleTermNode(internalNode);
+                }
+                else if (internalNode.Is(EbnfGrammar.LexerRuleExpression))
+                {
+                    expression = VisitLexerRuleExpressionNode(internalNode);
                 }
             }
 
-            return expression == null
-                       // ReSharper disable once RedundantCast
-                       ? (EbnfLexerRuleExpression) new EbnfLexerRuleExpressionSimple(term)
-                       // ReSharper disable once RedundantCast
-                       : (EbnfLexerRuleExpression) new EbnfLexerRuleExpressionAlteration(term, expression);
+            if (expression == null)
+            {
+                return new EbnfLexerRuleExpressionSimple(term);
+            }
+
+            return new EbnfLexerRuleExpressionAlteration(term, expression);
         }
 
         private EbnfBlockLexerRule VisitLexerRuleNode(IInternalTreeNode node)
@@ -253,19 +223,15 @@ namespace Pliant.Ebnf
             EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier = null;
             EbnfLexerRuleExpression expression = null;
 
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-                    if (EbnfGrammar.QualifiedIdentifier == symbolValue)
-                    {
-                        qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
-                    }
-                    else if (EbnfGrammar.LexerRuleExpression == symbolValue)
-                    {
-                        expression = VisitLexerRuleExpressionNode(internalNode);
-                    }
+                    qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
+                }
+                else if (internalNode.Is(EbnfGrammar.LexerRuleExpression))
+                {
+                    expression = VisitLexerRuleExpressionNode(internalNode);
                 }
             }
 
@@ -277,41 +243,33 @@ namespace Pliant.Ebnf
             EbnfLexerRuleFactor factor = null;
             EbnfLexerRuleTerm term = null;
 
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.LexerRuleFactor))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-                    if (EbnfGrammar.LexerRuleFactor == symbolValue)
-                    {
-                        factor = VisitLexerRuleFactorNode(internalNode);
-                    }
-
-                    if (EbnfGrammar.LexerRuleTerm == symbolValue)
-                    {
-                        term = VisitLexerRuleTermNode(internalNode);
-                    }
+                    factor = VisitLexerRuleFactorNode(internalNode);
+                }
+                else if (internalNode.Is(EbnfGrammar.LexerRuleTerm))
+                {
+                    term = VisitLexerRuleTermNode(internalNode);
                 }
             }
 
-            return term == null
-                       // ReSharper disable once RedundantCast
-                       ? (EbnfLexerRuleTerm) new EbnfLexerRuleTermSimple(factor)
-                       // ReSharper disable once RedundantCast
-                       : (EbnfLexerRuleTerm) new EbnfLexerRuleTermConcatenation(factor, term);
+            if (term == null)
+            {
+                return new EbnfLexerRuleTermSimple(factor);
+            }
+
+            return new EbnfLexerRuleTermConcatenation(factor, term);
         }
 
         private EbnfFactorOptional VisitOptionalNode(IInternalTreeNode node)
         {
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.Expression))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-                    if (EbnfGrammar.Expression == symbolValue)
-                    {
-                        return new EbnfFactorOptional(VisitExpressionNode(internalNode));
-                    }
+                    return new EbnfFactorOptional(VisitExpressionNode(internalNode));
                 }
             }
 
@@ -327,8 +285,7 @@ namespace Pliant.Ebnf
                 switch (child)
                 {
                     case IInternalTreeNode internalNode:
-                        var symbolValue = internalNode.Symbol.Value;
-                        if (EbnfGrammar.QualifiedIdentifier == symbolValue)
+                        if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
                         {
                             repetitionEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
                         }
@@ -346,24 +303,21 @@ namespace Pliant.Ebnf
                 }
             }
 
-            return repetitionEbnfQualifiedIdentifier == null
-                       // ReSharper disable once RedundantCast
-                       ? (EbnfQualifiedIdentifier) new EbnfQualifiedIdentifierSimple(identifier)
-                       // ReSharper disable once RedundantCast
-                       : (EbnfQualifiedIdentifier) new EbnfQualifiedIdentifierConcatenation(identifier, repetitionEbnfQualifiedIdentifier);
+            if (repetitionEbnfQualifiedIdentifier == null)
+            {
+                return new EbnfQualifiedIdentifierSimple(identifier);
+            }
+
+            return new EbnfQualifiedIdentifierConcatenation(identifier, repetitionEbnfQualifiedIdentifier);
         }
 
         private EbnfFactorRepetition VisitRepetitionNode(IInternalTreeNode node)
         {
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.Expression))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-                    if (EbnfGrammar.Expression == symbolValue)
-                    {
-                        return new EbnfFactorRepetition(VisitExpressionNode(internalNode));
-                    }
+                    return new EbnfFactorRepetition(VisitExpressionNode(internalNode));
                 }
             }
 
@@ -375,20 +329,15 @@ namespace Pliant.Ebnf
             EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier = null;
             EbnfExpression expression = null;
 
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-
-                    if (EbnfGrammar.QualifiedIdentifier == symbolValue)
-                    {
-                        qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
-                    }
-                    else if (EbnfGrammar.Expression == symbolValue)
-                    {
-                        expression = VisitExpressionNode(internalNode);
-                    }
+                    qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
+                }
+                else if (internalNode.Is(EbnfGrammar.Expression))
+                {
+                    expression = VisitExpressionNode(internalNode);
                 }
             }
 
@@ -404,19 +353,18 @@ namespace Pliant.Ebnf
             {
                 switch (child)
                 {
+                    case IInternalTreeNode internalNode:
+                        if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
+                        {
+                            qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
+                        }
+
+                        break;
                     case ITokenTreeNode tokenNode:
                         var token = tokenNode.Token;
                         if (token.TokenType.Equals(EbnfGrammar.TokenTypes.SettingIdentifier))
                         {
                             settingIdentifier = new EbnfSettingIdentifier(token.Value);
-                        }
-
-                        break;
-                    case IInternalTreeNode internalNode:
-                        var symbolValue = internalNode.Symbol.Value;
-                        if (EbnfGrammar.QualifiedIdentifier == symbolValue)
-                        {
-                            qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
                         }
 
                         break;
@@ -431,27 +379,24 @@ namespace Pliant.Ebnf
             EbnfFactor factor = null;
             EbnfTerm term = null;
 
-            foreach (var child in node.Children)
+            foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
-                if (child is IInternalTreeNode internalNode)
+                if (internalNode.Is(EbnfGrammar.Factor))
                 {
-                    var symbolValue = internalNode.Symbol.Value;
-                    if (EbnfGrammar.Factor == symbolValue)
-                    {
-                        factor = VisitFactorNode(internalNode);
-                    }
-                    else if (EbnfGrammar.Term == symbolValue)
-                    {
-                        term = VisitTermNode(internalNode);
-                    }
+                    factor = VisitFactorNode(internalNode);
+                }
+                else if (internalNode.Is(EbnfGrammar.Term))
+                {
+                    term = VisitTermNode(internalNode);
                 }
             }
 
-            return term == null
-                       // ReSharper disable once RedundantCast
-                       ? (EbnfTerm) new EbnfTermSimple(factor)
-                       // ReSharper disable once RedundantCast
-                       : (EbnfTerm)new EbnfTermConcatenation(factor, term);
+            if (term == null)
+            {
+                return new EbnfTermSimple(factor);
+            }
+
+            return new EbnfTermConcatenation(factor, term);
         }
     }
 }

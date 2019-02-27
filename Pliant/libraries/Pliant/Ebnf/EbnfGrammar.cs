@@ -126,7 +126,7 @@ namespace Pliant.Ebnf
                     lexerRuleTerm,
                     lexerRuleFactor
                 },
-                new[] {new LexerRuleModel(whitespace), new LexerRuleModel(multiLineComment)});
+                new[] { whitespace, multiLineComment });
             ebnfGrammar = grammarExpression.ToGrammar();
         }
 

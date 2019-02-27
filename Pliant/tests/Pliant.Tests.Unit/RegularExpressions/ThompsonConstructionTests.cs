@@ -237,7 +237,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
 
         private static void VerifyNullTransition(NfaTransition transition)
         {
-            Assert.IsInstanceOfType(transition, typeof(NullNfaTransition));
+            Assert.IsInstanceOfType(transition, typeof(EpsilonNfaTransition));
         }
 
         private static Nfa CreateNfa(string input)

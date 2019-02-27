@@ -1,6 +1,5 @@
 ﻿using Pliant.Grammars;
 using Pliant.Tokens;
-using Pliant.Utilities;
 
 namespace Pliant.Automata
 {
@@ -12,10 +11,10 @@ namespace Pliant.Automata
         }
 
         public DfaLexerRule(DfaState state, TokenType tokenType)
-            : base(DfaLexerRuleType, tokenType)
+            : base(tokenType)
         {
             StartState = state;
-            this._hashCode = ComputeHashCode(DfaLexerRuleType, tokenType);
+            this._hashCode = tokenType.GetHashCode();
         }
 
         public DfaState StartState { get; }
@@ -45,7 +44,7 @@ namespace Pliant.Automata
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return TokenType.GetHashCode();
         }
 
         public override string ToString()
@@ -53,14 +52,6 @@ namespace Pliant.Automata
             return TokenType.ToString();
         }
 
-        public static readonly LexerRuleType DfaLexerRuleType = new LexerRuleType("Dfa");
-
-        private static int ComputeHashCode(LexerRuleType dfaLexerRuleType, TokenType tokenType)
-        {
-            return HashCode.Compute(
-                dfaLexerRuleType.GetHashCode(),
-                tokenType.GetHashCode());
-        }
 
         private readonly int _hashCode;
     }

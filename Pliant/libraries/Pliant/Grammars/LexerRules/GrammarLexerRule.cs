@@ -3,7 +3,7 @@ using Pliant.Tokens;
 
 namespace Pliant.Grammars
 {
-    public class GrammarLexerRule : LexerRule //, IGrammarLexerRule
+    public class GrammarLexerRule : LexerRule
     {
         public GrammarLexerRule(string tokenType, IGrammar grammar)
             : this(new TokenType(tokenType), grammar)
@@ -11,7 +11,7 @@ namespace Pliant.Grammars
         }
 
         public GrammarLexerRule(TokenType tokenType, IGrammar grammar)
-            : base(GrammarLexerRuleType, tokenType)
+            : base(tokenType)
         {
             Grammar = grammar;
         }
@@ -22,9 +22,8 @@ namespace Pliant.Grammars
         {
             // this is the best I could come up with without copying the initialization and reduction code necessary to 
             // determine if the lexer rules are indeed start rules
-            for (var i = 0; i < Grammar.LexerRules.Count; i++)
+            foreach (var lexerRule in Grammar.LexerRules)
             {
-                var lexerRule = Grammar.LexerRules[i];
                 if (lexerRule.CanApply(c))
                 {
                     return true;
@@ -43,7 +42,5 @@ namespace Pliant.Grammars
         {
             return TokenType.Id;
         }
-
-        public static readonly LexerRuleType GrammarLexerRuleType = new LexerRuleType("Grammar");
     }
 }

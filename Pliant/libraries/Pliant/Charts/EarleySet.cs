@@ -5,66 +5,23 @@ using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public class EarleySet : IEarleySet
+    public class EarleySet
     {
-        public EarleySet(int location)
+        public EarleySet()
         {
-            Location = location;
+            this.completions = new NormalStateList();
+            this.predictions = new NormalStateList();
+            this.scans = new NormalStateList();
+            this.transitions = new UniqueList<TransitionState>();
         }
 
-        public IReadOnlyList<NormalState> Completions
-        {
-            get
-            {
-                if (this._completions == null)
-                {
-                    return EmptyNormalStates;
-                }
+        public IReadOnlyList<NormalState> Completions => this.completions;
 
-                return this._completions;
-            }
-        }
+        public IReadOnlyList<NormalState> Predictions => this.predictions;
 
-        public int Location { get; }
+        public IReadOnlyList<NormalState> Scans => this.scans;
 
-        public IReadOnlyList<NormalState> Predictions
-        {
-            get
-            {
-                if (this._predictions == null)
-                {
-                    return EmptyNormalStates;
-                }
-
-                return this._predictions;
-            }
-        }
-
-        public IReadOnlyList<NormalState> Scans
-        {
-            get
-            {
-                if (this._scans == null)
-                {
-                    return EmptyNormalStates;
-                }
-
-                return this._scans;
-            }
-        }
-
-        public IReadOnlyList<TransitionState> Transitions
-        {
-            get
-            {
-                if (this._transitions == null)
-                {
-                    return EmptyTransitionStates;
-                }
-
-                return this._transitions;
-            }
-        }
+        public IReadOnlyList<TransitionState> Transitions => this.transitions;
 
         public bool ContainsNormal(DottedRule dottedRule, int origin)
         {
@@ -74,27 +31,22 @@ namespace Pliant.Charts
             }
 
             var currentSymbol = dottedRule.PostDotSymbol;
-            if (currentSymbol is NonTerminal)
-            {
-                return PredictionsContains(dottedRule, origin);
-            }
-
-            return ScansContains(dottedRule, origin);
+            return currentSymbol is NonTerminal
+                       ? PredictionsContains(dottedRule, origin) 
+                       : ScansContains(dottedRule, origin);
         }
 
         public bool Enqueue(State state)
         {
-            if (state is TransitionState transition)
+            switch (state)
             {
-                return EnqueueTransition(transition);
+                case TransitionState transition:
+                    return EnqueueTransition(transition);
+                case NormalState normal:
+                    return EnqueueNormal(normal);
             }
 
-            if (state is NormalState normal)
-            {
-                return EnqueueNormal(state, normal);
-            }
-
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public NormalState FindSourceState(Symbol searchSymbol)
@@ -134,98 +86,45 @@ namespace Pliant.Charts
             return null;
         }
 
-        private bool AddUniqueCompletion(NormalState normalState)
-        {
-            if (this._completions == null)
-            {
-                this._completions = new NormalStateList();
-            }
-
-            return this._completions.AddUnique(normalState);
-        }
-
-        private bool AddUniquePrediction(NormalState normalState)
-        {
-            if (this._predictions == null)
-            {
-                this._predictions = new NormalStateList();
-            }
-
-            return this._predictions.AddUnique(normalState);
-        }
-
-        private bool AddUniqueScan(NormalState normalState)
-        {
-            if (this._scans == null)
-            {
-                this._scans = new NormalStateList();
-            }
-
-            return this._scans.AddUnique(normalState);
-        }
-
         private bool CompletionContains(DottedRule rule, int origin)
         {
-            if (this._completions == null)
-            {
-                return false;
-            }
-
-            return this._completions.Contains(rule, origin);
-        }
-
-        private bool EnqueueNormal(State state, NormalState normalState)
-        {
-            var dottedRule = state.DottedRule;
-            if (!dottedRule.IsComplete)
-            {
-                var currentSymbol = dottedRule.PostDotSymbol;
-                if (currentSymbol is NonTerminal)
-                {
-                    return AddUniquePrediction(normalState);
-                }
-
-                return AddUniqueScan(normalState);
-            }
-
-            return AddUniqueCompletion(normalState);
-        }
-
-        private bool EnqueueTransition(TransitionState transitionState)
-        {
-            if (this._transitions == null)
-            {
-                this._transitions = new UniqueList<TransitionState>();
-            }
-
-            return this._transitions.AddUnique(transitionState);
+            return this.completions.Contains(rule, origin);
         }
 
         private bool PredictionsContains(DottedRule rule, int origin)
         {
-            if (this._predictions == null)
-            {
-                return false;
-            }
-
-            return this._predictions.Contains(rule, origin);
+            return this.predictions.Contains(rule, origin);
         }
 
         private bool ScansContains(DottedRule rule, int origin)
         {
-            if (this._scans == null)
-            {
-                return false;
-            }
-
-            return this._scans.Contains(rule, origin);
+            return this.scans.Contains(rule, origin);
         }
 
-        private static readonly NormalState[] EmptyNormalStates = { };
-        private static readonly TransitionState[] EmptyTransitionStates = { };
-        private NormalStateList _completions;
-        private NormalStateList _predictions;
-        private NormalStateList _scans;
-        private UniqueList<TransitionState> _transitions;
+        private bool EnqueueNormal(NormalState normalState)
+        {
+            var dottedRule = normalState.DottedRule;
+            if (!dottedRule.IsComplete)
+            {
+                if (dottedRule.PostDotSymbol is NonTerminal)
+                {
+                    return this.predictions.AddUnique(normalState);
+                }
+
+                return this.scans.AddUnique(normalState);
+            }
+
+            return this.completions.AddUnique(normalState);
+        }
+
+        private bool EnqueueTransition(TransitionState transitionState)
+        {
+            return this.transitions.AddUnique(transitionState);
+        }
+
+        private readonly NormalStateList completions;
+        private readonly NormalStateList predictions;
+        private readonly NormalStateList scans;
+        private readonly UniqueList<TransitionState> transitions;
     }
 }

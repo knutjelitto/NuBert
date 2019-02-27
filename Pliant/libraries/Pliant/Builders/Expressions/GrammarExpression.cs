@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Pliant.Grammars;
 
 namespace Pliant.Builders.Expressions
@@ -18,7 +19,7 @@ namespace Pliant.Builders.Expressions
             ProductionExpression start,
             IReadOnlyList<ProductionExpression> productions,
             IReadOnlyList<LexerRule> ignore,
-            IReadOnlyList<LexerRule> trivia)
+            IReadOnlyList<LexerRule> trivia = null)
         {
             var ignoreModelList = ToLexerRuleModelList(ignore);
             var triviaModelList = ToLexerRuleModelList(trivia);
@@ -33,21 +34,14 @@ namespace Pliant.Builders.Expressions
             return GrammarModel.ToGrammar();
         }
 
-        private static List<LexerRuleModel> ToLexerRuleModelList(IReadOnlyList<LexerRule> lexerRuleList)
+        private static List<LexerRuleModel> ToLexerRuleModelList(IReadOnlyCollection<LexerRule> lexerRules)
         {
-            if (lexerRuleList == null || lexerRuleList.Count == 0)
+            if (lexerRules == null || lexerRules.Count == 0)
             {
                 return null;
             }
 
-            var modelList = new List<LexerRuleModel>();
-
-            foreach (var lexerRule in lexerRuleList)
-            {
-                modelList.Add(new LexerRuleModel(lexerRule));
-            }
-
-            return modelList;
+            return lexerRules.Select(rule => new LexerRuleModel(rule)).ToList();
         }
 
         private void Initialize(ProductionExpression start,

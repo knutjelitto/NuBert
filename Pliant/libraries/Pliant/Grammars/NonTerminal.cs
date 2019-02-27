@@ -12,15 +12,20 @@
         {
         }
 
-        public NonTerminal(QualifiedName fullyQualifiedName)
+        public NonTerminal(QualifiedName qualifiedName)
         {
-            FullyQualifiedName = fullyQualifiedName;
+            QualifiedName = qualifiedName;
             this.hashCode = Value.GetHashCode();
         }
 
-        public QualifiedName FullyQualifiedName { get; }
+        public QualifiedName QualifiedName { get; }
 
-        public string Value => FullyQualifiedName.FullName;
+        public string Value => QualifiedName.FullName;
+
+        public bool Is(QualifiedName otherName)
+        {
+            return Value == otherName.FullName;
+        }
 
         public override bool Equals(object obj)
         {

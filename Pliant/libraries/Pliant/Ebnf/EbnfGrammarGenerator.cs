@@ -399,6 +399,6 @@ namespace Pliant.Ebnf
         }
 
         private readonly NfaToDfa nfaToDfa;
-        private readonly IRegexToNfa regexToNfa;
+        private readonly RegexToNfa regexToNfa;
     }
 }

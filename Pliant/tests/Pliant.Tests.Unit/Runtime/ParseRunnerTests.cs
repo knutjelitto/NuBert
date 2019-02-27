@@ -11,7 +11,6 @@ using Pliant.Tests.Common;
 using Pliant.Tokens;
 using System;
 using System.Text;
-using Testable;
 
 namespace Pliant.Tests.Unit.Runtime
 {
@@ -37,7 +36,7 @@ namespace Pliant.Tests.Unit.Runtime
 
             S.Rule =
                 whitespace
-                | whitespace + S;
+                | (whitespace + S);
             whitespace.Rule =
                 new WhitespaceTerminal();
 
@@ -53,7 +52,7 @@ namespace Pliant.Tests.Unit.Runtime
 
             W.Rule =
                 word
-                | word + W;
+                | (word + W);
             word.Rule = (Expr)
                 new RangeTerminal('a', 'z')
                 | new RangeTerminal('A', 'Z')
@@ -71,19 +70,19 @@ namespace Pliant.Tests.Unit.Runtime
 
             RepeatingWord.Rule =
                 word
-                | word + RepeatingWord;
+                | (word + RepeatingWord);
 
             return new GrammarExpression(
-                RepeatingWord,
-                new[] { RepeatingWord },
-                null,
-                new[] { new WhitespaceLexerRule(), CreateMultiLineCommentLexerRule() })
+                    RepeatingWord,
+                    new[] {RepeatingWord},
+                    null,
+                    new[] {new WhitespaceLexerRule(), CreateMultiLineCommentLexerRule()})
                 .ToGrammar();
         }
 
         private static LexerRule CreateMultiLineCommentLexerRule()
         {
-            var states = new DfaState[5]
+            var states = new[]
             {
                 DfaState.Inner(),
                 DfaState.Inner(),
@@ -120,9 +119,9 @@ namespace Pliant.Tests.Unit.Runtime
             ProductionExpression S = "S";
             S.Rule =
                 _whitespaceRule
-                | _whitespaceRule + S
+                | (_whitespaceRule + S)
                 | _wordRule
-                | _wordRule + S;
+                | (_wordRule + S);
             var grammar = new GrammarExpression(S, new[] { S }).ToGrammar();
             var input = "this is input";
             var parseEngine = new ParseEngine(grammar);
@@ -136,13 +135,12 @@ namespace Pliant.Tests.Unit.Runtime
             const string input = "a abc a a";
             ProductionExpression A = "A";
             A.Rule =
-                _wordRule + A
+                (_wordRule + A)
                 | _wordRule;
             var grammar = new GrammarExpression(
-                A,
-                new[] { A },
-                new[] {_whitespaceRule },
-                null)
+                    A,
+                    new[] {A},
+                    new[] {_whitespaceRule})
                 .ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
@@ -154,7 +152,7 @@ namespace Pliant.Tests.Unit.Runtime
         {
             const string input = "aa";
             ProductionExpression S = "S";
-            S.Rule = 'a' + S | 'a';
+            S.Rule = ('a' + S) | 'a';
             var grammar = new GrammarExpression(S, new[] { S }).ToGrammar();
             var parseEngine = new ParseEngine(grammar);
             var parseRunner = new ParseRunner(parseEngine, input);
@@ -177,7 +175,7 @@ namespace Pliant.Tests.Unit.Runtime
             var a = new GrammarLexerRule("a", aGrammar);
 
             ProductionExpression S = "S";
-            S.Rule = a + S | a;
+            S.Rule = (a + S) | a;
             var grammar = new GrammarExpression(S, new[] { S }).ToGrammar();
             var parseEngine = new ParseEngine(grammar);
             var parseRunner = new ParseRunner(parseEngine, input);
@@ -200,15 +198,18 @@ namespace Pliant.Tests.Unit.Runtime
             var aGrammar = new GrammarExpression(A, new[] { A }).ToGrammar();
             var a = new GrammarLexerRule("a", aGrammar);
 
-            S.Rule = a + S | a;
+            S.Rule = (a + S) | a;
             var grammar = new GrammarExpression(S, new[] { S }).ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
             var parseRunner = new ParseRunner(parseEngine, input);
 
             var chart = GetParseEngineChart(parseEngine);
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
+            {
                 Assert.IsTrue(parseRunner.Read());
+            }
+
             Assert.AreEqual(2, chart.EarleySets.Count);
         }
 
@@ -218,19 +219,18 @@ namespace Pliant.Tests.Unit.Runtime
             const string input = "aa aa";
             ProductionExpression S = "S";
 
-            S.Rule = _wordRule + S | _wordRule;
+            S.Rule = (_wordRule + S) | _wordRule;
 
             var grammar = new GrammarExpression(
                 S,
                 new[] { S },
-                new[] { _whitespaceRule },
-                null)
+                new[] { _whitespaceRule })
                 .ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
             var parseRunner = new ParseRunner(parseEngine, input);
             var chart = GetParseEngineChart(parseEngine);
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
                 Assert.IsTrue(parseRunner.Read());
             Assert.IsTrue(parseRunner.Read());
             Assert.AreEqual(2, chart.EarleySets.Count);
@@ -242,14 +242,14 @@ namespace Pliant.Tests.Unit.Runtime
             const string input = "aabb";
             ProductionExpression A = "A";
             A.Rule =
-                'a' + A
+                ('a' + A)
                 | 'a';
             var aGrammar = new GrammarExpression(A, new[] { A }).ToGrammar();
             var a = new GrammarLexerRule("a", aGrammar);
 
             ProductionExpression B = "B";
             B.Rule =
-                'b' + B
+                ('b' + B)
                 | 'b';
             var bGrammar = new GrammarExpression(B, new[] { B }).ToGrammar();
             var b = new GrammarLexerRule("b", bGrammar);
@@ -262,7 +262,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseEngine = new ParseEngine(grammar);
             var chart = GetParseEngineChart(parseEngine);
             var parseRunner = new ParseRunner(parseEngine, input);
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
             {
                 Assert.IsTrue(parseRunner.Read());
                 if (i < 2)
@@ -287,8 +287,7 @@ namespace Pliant.Tests.Unit.Runtime
             var grammar = new GrammarExpression(
                 S,
                 new[] { S },
-                new[] { _whitespaceRule },
-                null)
+                new[] { _whitespaceRule })
                 .ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
@@ -329,8 +328,10 @@ namespace Pliant.Tests.Unit.Runtime
             Assert.IsNotNull(onlyCompletion);
 
             var parseNode = onlyCompletion.ParseNode as IInternalForestNode;
+            Assert.IsNotNull(parseNode);
             var parseNodeAndNode = parseNode.Children[0];
             var tokenParseNode = parseNodeAndNode.Children[0] as ITokenForestNode;
+            Assert.IsNotNull(tokenParseNode);
             var token = tokenParseNode.Token;
             Assert.AreEqual(EbnfGrammar.TokenTypes.Identifier, token.TokenType);
             Assert.AreEqual("ows", token.Value);
@@ -439,8 +440,11 @@ namespace Pliant.Tests.Unit.Runtime
         private static void RunParse(ParseEngine parseEngine, string input)
         {
             var parseRunner = new ParseRunner(parseEngine, input);
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
+            {
                 Assert.IsTrue(parseRunner.Read(), $"Error parsing at position {i}");
+            }
+
             Assert.IsTrue(parseRunner.ParseEngine.IsAccepted());
         }
     }

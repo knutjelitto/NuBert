@@ -60,6 +60,11 @@ namespace Pliant.Tree
             }
         }
 
+        public bool Is(QualifiedName name)
+        {
+            return Symbol.Is(name);
+        }
+
         private void LazyLoadChildren(IAndForestNode andNode)
         {
             for (var c = 0; c < andNode.Children.Count; c++)

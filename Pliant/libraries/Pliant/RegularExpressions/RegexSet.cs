@@ -21,7 +21,7 @@ namespace Pliant.RegularExpressions
                    CharacterClass.Equals(other.CharacterClass);
         }
 
-        int ComputeHashCode()
+        private int ComputeHashCode()
         {
             return HashCode.Compute(
                 Negate.GetHashCode(),

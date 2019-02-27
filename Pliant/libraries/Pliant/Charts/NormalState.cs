@@ -50,11 +50,11 @@ namespace Pliant.Charts
             {
                 stringBuilder.AppendFormat(
                     "{0}{1}",
-                    p == DottedRule.Position ? Dot : " ",
+                    p == DottedRule.Dot ? Dot : " ",
                     DottedRule.Production.RightHandSide[p]);
             }
 
-            if (DottedRule.Position == DottedRule.Production.RightHandSide.Count)
+            if (DottedRule.Dot == DottedRule.Production.RightHandSide.Count)
             {
                 stringBuilder.Append(Dot);
             }
@@ -66,7 +66,7 @@ namespace Pliant.Charts
         private int ComputeHashCode()
         {
             return HashCode.Compute(
-                DottedRule.Position.GetHashCode(),
+                DottedRule.Dot.GetHashCode(),
                 Origin.GetHashCode(),
                 DottedRule.Production.GetHashCode());
         }

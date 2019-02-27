@@ -215,7 +215,7 @@ namespace Pliant.Runtime
         {
             foreach (var preComputedState in states)
             {
-                var isCompleted = preComputedState.Position == preComputedState.Production.RightHandSide.Count;
+                var isCompleted = preComputedState.Dot == preComputedState.Production.RightHandSide.Count;
                 if (!preComputedState.IsComplete)
                 {
                     continue;

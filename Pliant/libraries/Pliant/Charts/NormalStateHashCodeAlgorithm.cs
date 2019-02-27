@@ -8,7 +8,7 @@ namespace Pliant.Charts
         public static int Compute(DottedRule dottedRule, int origin)
         {
             return HashCode.Compute(
-                dottedRule.Position.GetHashCode(),
+                dottedRule.Dot.GetHashCode(),
                 origin.GetHashCode(),
                 dottedRule.Production.GetHashCode());
         }

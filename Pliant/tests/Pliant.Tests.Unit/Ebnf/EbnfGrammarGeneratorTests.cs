@@ -375,7 +375,7 @@ namespace Pliant.Tests.Unit.Ebnf
 
             var grammar = GenerateGrammar(definition);
             Assert.IsNotNull(grammar.Start);
-            Assert.AreEqual(grammar.Start.FullyQualifiedName.Name, "S");
+            Assert.AreEqual(grammar.Start.QualifiedName.Name, "S");
         }
 
         private static IGrammar GenerateGrammar(EbnfDefinition definition)

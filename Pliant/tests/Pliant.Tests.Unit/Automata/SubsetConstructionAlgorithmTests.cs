@@ -8,20 +8,6 @@ namespace Pliant.Tests.Unit.Automata
     public class SubsetConstructionAlgorithmTests
     {
         [TestMethod]
-        public void SubsetConstructionAlgorithmShouldConvertSingleCharacterNfaToEquivalentDfa()
-        {
-            var a = new CharacterTerminal('a');
-            var states = CreateStates(2);
-
-            states[0].AddTransition(a, states[1]);
-
-            var nfa = new Nfa(states[0], states[1]);
-            var dfa = ConvertNfaToDfa(nfa);
-
-            Assert.IsNotNull(dfa);
-        }
-
-        [TestMethod]
         public void SubsetConstructionAlgorithmShouldConvertComplexNfaToDfa()
         {
             var a = new CharacterTerminal('a');
@@ -49,9 +35,14 @@ namespace Pliant.Tests.Unit.Automata
             {
                 var terminal = transition.Terminal;
                 if (terminal.IsMatch('a'))
+                {
                     transition_0_01 = transition;
+                }
                 else if (terminal.IsMatch('c'))
+                {
                     transition_0_23 = transition;
+                }
+
                 count++;
             }
 
@@ -61,17 +52,24 @@ namespace Pliant.Tests.Unit.Automata
             DfaTransition transition_01_01 = null;
             DfaTransition transition_01_23 = null;
             DfaTransition transition_01_2 = null;
-            
+
             count = 0;
             foreach (var transition in dfa_01.Transitions)
             {
                 var terminal = transition.Terminal;
                 if (terminal.IsMatch('a'))
+                {
                     transition_01_01 = transition;
+                }
                 else if (terminal.IsMatch('b'))
+                {
                     transition_01_2 = transition;
+                }
                 else if (terminal.IsMatch('c'))
+                {
                     transition_01_23 = transition;
+                }
+
                 count++;
             }
 
@@ -80,15 +78,20 @@ namespace Pliant.Tests.Unit.Automata
             var dfa_23 = transition_0_23.Target;
             DfaTransition transition_23_01 = null;
             DfaTransition transition_23_2 = null;
-            
+
             count = 0;
             foreach (var transition in dfa_23.Transitions)
             {
                 var terminal = transition.Terminal;
                 if (terminal.IsMatch('a'))
+                {
                     transition_23_01 = transition;
+                }
                 else if (terminal.IsMatch('c'))
+                {
                     transition_23_2 = transition;
+                }
+
                 count++;
             }
 
@@ -101,18 +104,38 @@ namespace Pliant.Tests.Unit.Automata
             {
                 var terminal = transition.Terminal;
                 if (terminal.IsMatch('a'))
+                {
                     transition_2_01 = transition;
+                }
+
                 count++;
             }
 
             Assert.AreEqual(1, count);
         }
 
+        [TestMethod]
+        public void SubsetConstructionAlgorithmShouldConvertSingleCharacterNfaToEquivalentDfa()
+        {
+            var a = new CharacterTerminal('a');
+            var states = CreateStates(2);
+
+            states[0].AddTransition(a, states[1]);
+
+            var nfa = new Nfa(states[0], states[1]);
+            var dfa = ConvertNfaToDfa(nfa);
+
+            Assert.IsNotNull(dfa);
+        }
+
         private static NfaState[] CreateStates(int count)
         {
             var states = new NfaState[count];
             for (int i = 0; i < states.Length; i++)
+            {
                 states[i] = new EntityNfaState(i);
+            }
+
             return states;
         }
 
@@ -121,13 +144,20 @@ namespace Pliant.Tests.Unit.Automata
             return new SubsetConstructionAlgorithm().Transform(nfa);
         }
 
+        #region  not sortable (modify ReSharper template to catch these cases)
+
         private class EntityNfaState : NfaState
         {
-            public int Id { get; private set; }
-
             public EntityNfaState(int id)
             {
                 Id = id;
+            }
+
+            public int Id { get; }
+
+            public override bool Equals(object obj)
+            {
+                return obj is EntityNfaState other && other.Id.Equals(Id);
             }
 
             public override int GetHashCode()
@@ -135,20 +165,12 @@ namespace Pliant.Tests.Unit.Automata
                 return Id.GetHashCode();
             }
 
-            public override bool Equals(object obj)
-            {
-                if ((object)obj == null)
-                    return false;
-                var entityNfaState = obj as EntityNfaState;
-                if ((object)entityNfaState == null)
-                    return false;
-                return entityNfaState.Id.Equals(this.Id);
-            }
-            
             public override string ToString()
             {
                 return "NfaState: " + Id.ToString();
             }
         }
+
+        #endregion
     }
 }

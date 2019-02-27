@@ -24,12 +24,12 @@ namespace Pliant.Grammars
 
         private static Symbol GetPostDotSymbol(DottedRule state)
         {
-            return state.Production.RightHandSide[state.Position];
+            return state.Production.RightHandSide[state.Dot];
         }
 
         private static bool IsComplete(DottedRule state)
         {
-            return state.Position == state.Production.RightHandSide.Count;
+            return state.Dot == state.Production.RightHandSide.Count;
         }
 
         private DottedRuleAssortment AddNewOrGetExistingDottedRuleSet(DottedRuleSet states)
@@ -70,7 +70,7 @@ namespace Pliant.Grammars
                 }
 
                 var production = state.Production;
-                for (var s = state.Position; s < state.Production.RightHandSide.Count; s++)
+                for (var s = state.Dot; s < state.Production.RightHandSide.Count; s++)
                 {
                     var postDotSymbol = production.RightHandSide[s];
                     if (postDotSymbol is NonTerminal nonTerminalPostDotSymbol)
@@ -130,7 +130,7 @@ namespace Pliant.Grammars
                 {
                     if (Grammar.IsTransitiveNullable(nonTerminalPostDotSymbol))
                     {
-                        var preComputedState = GetPreComputedState(state.Production, state.Position + 1);
+                        var preComputedState = GetPreComputedState(state.Production, state.Dot + 1);
                         if (!frame.Contains(preComputedState))
                         {
                             if (closure.Add(preComputedState))
@@ -232,7 +232,7 @@ namespace Pliant.Grammars
 
                 var postDotSymbol = GetPostDotSymbol(nfaState);
                 var targetStates = transitions.AddOrGetExisting(postDotSymbol);
-                var nextRule = GetPreComputedState(nfaState.Production, nfaState.Position + 1);
+                var nextRule = GetPreComputedState(nfaState.Production, nfaState.Dot + 1);
 
                 targetStates.Add(nextRule);
             }

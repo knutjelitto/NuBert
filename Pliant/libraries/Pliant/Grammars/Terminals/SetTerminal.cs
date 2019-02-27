@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Pliant.Utilities;
 
 namespace Pliant.Grammars
@@ -6,7 +7,7 @@ namespace Pliant.Grammars
     public sealed class SetTerminal : Terminal
     {
         public SetTerminal(params char[] characters)
-            : this(new HashSet<char>(characters))
+            : this(characters.AsEnumerable())
         {
         }
 

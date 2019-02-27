@@ -7,9 +7,8 @@
 
         public virtual void Visit(IAndForestNode andNode)
         {
-            for (var c = 0; c < andNode.Children.Count; c++)
+            foreach (var child in andNode.Children)
             {
-                var child = andNode.Children[c];
                 child.Accept(this);
             }
         }
