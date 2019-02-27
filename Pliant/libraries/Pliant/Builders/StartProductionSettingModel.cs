@@ -2,8 +2,7 @@
 
 namespace Pliant.Builders
 {
-    public sealed class StartProductionSettingModel
-        : SettingModel
+    public sealed class StartProductionSettingModel : SettingModel
     {
         public const string SettingKey = "start";
 

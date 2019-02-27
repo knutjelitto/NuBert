@@ -6,7 +6,7 @@ using Pliant.Tokens;
 
 namespace Pliant.Tree
 {
-    public class ParseTreeEnumerator : IParseTreeEnumerator
+    public class ParseTreeEnumerator : IEnumerator<ITreeNode>
     {
         public ParseTreeEnumerator(IInternalForestNode forestRoot)
         {
@@ -43,13 +43,13 @@ namespace Pliant.Tree
                 return false;
             }
 
-            if (this._forestRoot.NodeType == ForestNodeType.Intermediate)
+            if (this._forestRoot is IIntermediateForestNode intermediateNode)
             {
-                this._visitor.Visit(this._forestRoot as IIntermediateForestNode);
+                this._visitor.Visit(intermediateNode);
             }
-            else if (this._forestRoot.NodeType == ForestNodeType.Symbol)
+            else if (this._forestRoot is ISymbolForestNode symbolNode)
             {
-                this._visitor.Visit(this._forestRoot as ISymbolForestNode);
+                this._visitor.Visit(symbolNode);
             }
 
             if (this._visitor.Root == null)
@@ -86,26 +86,26 @@ namespace Pliant.Tree
         {
             public ForestNodeVisitorImpl()
             {
-                this._paths = new Dictionary<IInternalForestNode, int>();
-                this._nodeStack = new Stack<InternalTreeNodeImpl>();
-                this._visited = new HashSet<IInternalForestNode>();
-                this._count = 0;
+                this.paths = new Dictionary<IInternalForestNode, int>();
+                this.nodeStack = new Stack<InternalTreeNodeImpl>();
+                this.visited = new HashSet<IInternalForestNode>();
+                this.count = 0;
             }
 
             public ITreeNode Root { get; private set; }
 
             public void Reset()
             {
-                this._paths.Clear();
-                this._nodeStack.Clear();
-                this._visited.Clear();
-                this._count = 0;
+                this.paths.Clear();
+                this.nodeStack.Clear();
+                this.visited.Clear();
+                this.count = 0;
                 this._lock = null;
             }
 
             public override void Visit(IIntermediateForestNode intermediateNode)
             {
-                if (!this._visited.Add(intermediateNode))
+                if (!this.visited.Add(intermediateNode))
                 {
                     return;
                 }
@@ -118,7 +118,7 @@ namespace Pliant.Tree
 
             public override void Visit(ISymbolForestNode symbolNode)
             {
-                if (!this._visited.Add(symbolNode))
+                if (!this.visited.Add(symbolNode))
                 {
                     return;
                 }
@@ -131,24 +131,24 @@ namespace Pliant.Tree
                     symbolNode.Location,
                     symbolNode.Symbol as NonTerminal);
 
-                var isRoot = this._nodeStack.Count == 0;
+                var isRoot = this.nodeStack.Count == 0;
                 if (!isRoot)
                 {
-                    this._nodeStack
+                    this.nodeStack
                         .Peek()
                         .ReadWriteChildren
                         .Add(internalTreeNode);
                 }
 
-                this._nodeStack.Push(internalTreeNode);
+                this.nodeStack.Push(internalTreeNode);
 
                 Visit(path);
 
-                var top = this._nodeStack.Pop();
+                var top = this.nodeStack.Pop();
 
                 if (isRoot)
                 {
-                    if (this._count > 0 && this._lock == null)
+                    if (this.count > 0 && this._lock == null)
                     {
                         Root = null;
                     }
@@ -157,8 +157,8 @@ namespace Pliant.Tree
                         Root = top;
                     }
 
-                    this._count++;
-                    this._visited.Clear();
+                    this.count++;
+                    this.visited.Clear();
                 }
             }
 
@@ -166,7 +166,7 @@ namespace Pliant.Tree
             {
                 var token = new Token(terminalNode.Origin,
                     terminalNode.Capture.ToString(),
-                                      new TokenType(terminalNode.ToString()));
+                    new TokenType(terminalNode.ToString()));
                 VisitToken(terminalNode.Origin, terminalNode.Location, token);
             }
 
@@ -177,9 +177,9 @@ namespace Pliant.Tree
 
             private int GetOrSetChildIndex(IInternalForestNode symbolNode)
             {
-                if (!this._paths.TryGetValue(symbolNode, out var childIndex))
+                if (!this.paths.TryGetValue(symbolNode, out var childIndex))
                 {
-                    this._paths.Add(symbolNode, 0);
+                    this.paths.Add(symbolNode, 0);
                     return childIndex;
                 }
 
@@ -199,11 +199,11 @@ namespace Pliant.Tree
                 if (childIndex >= symbolNode.Children.Count)
                 {
                     this._lock = null;
-                    this._paths[symbolNode] = 0;
+                    this.paths[symbolNode] = 0;
                     return 0;
                 }
 
-                this._paths[symbolNode] = childIndex;
+                this.paths[symbolNode] = childIndex;
                 return childIndex;
             }
 
@@ -214,16 +214,16 @@ namespace Pliant.Tree
                     location,
                     token);
 
-                var parent = this._nodeStack.Peek();
+                var parent = this.nodeStack.Peek();
                 parent.ReadWriteChildren.Add(tokenTreeNodeImpl);
             }
 
-            private int _count;
+            private readonly Stack<InternalTreeNodeImpl> nodeStack;
+            private readonly Dictionary<IInternalForestNode, int> paths;
+            private readonly HashSet<IInternalForestNode> visited;
             private IInternalForestNode _lock;
 
-            private readonly Stack<InternalTreeNodeImpl> _nodeStack;
-            private readonly Dictionary<IInternalForestNode, int> _paths;
-            private readonly HashSet<IInternalForestNode> _visited;
+            private int count;
         }
 
         private abstract class TreeNodeImpl : ITreeNode
@@ -250,8 +250,9 @@ namespace Pliant.Tree
                 ReadWriteChildren = new List<ITreeNode>();
             }
 
-            public IReadOnlyList<ITreeNode> Children => ReadWriteChildren;
             public List<ITreeNode> ReadWriteChildren { get; }
+
+            public IReadOnlyList<ITreeNode> Children => ReadWriteChildren;
 
             public NonTerminal Symbol { get; }
 

@@ -97,7 +97,7 @@ namespace Pliant.Forest
 
             return transitionState.Reduction.ParseNode != null &&
                    Equals(completedParseNode, transitionState.Reduction.ParseNode) && 
-                   (completedParseNode.NodeType == ForestNodeType.Intermediate || completedParseNode.NodeType == ForestNodeType.Symbol);
+                   (completedParseNode is IIntermediateForestNode || completedParseNode is ISymbolForestNode);
         }
 
         private void CloneUniqueChildSubTree(IInternalForestNode internalCompletedParseNode)

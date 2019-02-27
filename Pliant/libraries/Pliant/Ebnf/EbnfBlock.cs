@@ -1,4 +1,6 @@
-﻿namespace Pliant.Ebnf
+﻿using System;
+
+namespace Pliant.Ebnf
 {
     public abstract class EbnfBlock : EbnfNode
     {
@@ -56,6 +58,7 @@
 
         public override bool Equals(object obj)
         {
+            // Tests only
             return obj is EbnfBlockLexerRule other &&
                    other.LexerRule.Equals(LexerRule);
         }

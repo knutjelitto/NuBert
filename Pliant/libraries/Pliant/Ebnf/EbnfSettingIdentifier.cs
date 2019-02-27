@@ -4,7 +4,7 @@
     {
         public EbnfSettingIdentifier(string value)
         {
-            Value = value;
+            Value = value.StartsWith(":") ? value.Substring(1) : value;
         }
 
         public string Value { get; }
@@ -18,6 +18,11 @@
         {
             return obj is EbnfSettingIdentifier other && 
                    other.Value.Equals(Value);
+        }
+
+        public override string ToString()
+        {
+            return $"{Value}";
         }
     }
 }

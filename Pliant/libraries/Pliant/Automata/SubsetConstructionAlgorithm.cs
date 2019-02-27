@@ -7,9 +7,9 @@ using Pliant.Utilities;
 
 namespace Pliant.Automata
 {
-    public class SubsetConstructionAlgorithm : INfaToDfa
+    public class SubsetConstructionAlgorithm : NfaToDfa
     {
-        public DfaState Transform(Nfa nfa)
+        public override DfaState Transform(Nfa nfa)
         {
             var processOnceQueue = new ProcessOnceQueue<NfaClosure>();
 

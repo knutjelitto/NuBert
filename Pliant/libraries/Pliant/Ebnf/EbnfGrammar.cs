@@ -295,7 +295,7 @@ namespace Pliant.Ebnf
         public static class TokenTypes
         {
             public static readonly TokenType Escape = new TokenType("escape");
-            public static readonly TokenType Identifier = new TokenType("identifier");
+            public static readonly TokenType Identifier = new TokenType("EbnfQualifiedIdentifier");
             public static readonly TokenType MultiLineComment = new TokenType(@"\/[*]([*][^\/]|[^*])*[*][\/]");
             public static readonly TokenType NotDoubleQuote = new TokenType(@"([^""]|(\\.))+");
             public static readonly TokenType NotSingleQuote = new TokenType(@"([^']|(\\.))+");

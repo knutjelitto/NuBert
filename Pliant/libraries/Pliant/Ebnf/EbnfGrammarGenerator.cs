@@ -13,8 +13,8 @@ namespace Pliant.Ebnf
     {
         public EbnfGrammarGenerator()
         {
-            this.regexToNfaAlgorithm = new ThompsonConstructionAlgorithm();
-            this.nfaToDfaAlgorithm = new SubsetConstructionAlgorithm();
+            this.regexToNfa = new ThompsonConstructionAlgorithm();
+            this.nfaToDfa = new SubsetConstructionAlgorithm();
         }
 
         public IGrammar Generate(EbnfDefinition ebnf)
@@ -24,10 +24,10 @@ namespace Pliant.Ebnf
             return grammarModel.ToGrammar();
         }
 
-        private static QualifiedName GetFullyQualifiedNameFromQualifiedIdentifier(EbnfQualifiedIdentifier qualifiedIdentifier)
+        private static QualifiedName GetFullyQualifiedNameFromQualifiedIdentifier(EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
         {
             var fully = new StringBuilder();
-            var currentQualifiedIdentifier = qualifiedIdentifier;
+            var currentQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
             var index = 0;
             while (currentQualifiedIdentifier is EbnfQualifiedIdentifierConcatenation concatenation)
             {
@@ -37,7 +37,7 @@ namespace Pliant.Ebnf
                 }
 
                 fully.Append(concatenation.Identifier);
-                currentQualifiedIdentifier = concatenation.QualifiedIdentifier;
+                currentQualifiedIdentifier = concatenation.QualifiedEbnfQualifiedIdentifier;
                 index++;
             }
 
@@ -84,6 +84,8 @@ namespace Pliant.Ebnf
                             }
 
                             break;
+                        default:
+                            throw new NotImplementedException($"invalid setting `{blockSetting.Setting.SettingIdentifier}´ with value `{blockSetting.Setting.QualifiedEbnfQualifiedIdentifier}´");
                     }
 
                     break;
@@ -149,7 +151,7 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfFactorIdentifier identifier:
-                    var nonTerminal = GetFullyQualifiedNameFromQualifiedIdentifier(identifier.QualifiedIdentifier);
+                    var nonTerminal = GetFullyQualifiedNameFromQualifiedIdentifier(identifier.QualifiedEbnfQualifiedIdentifier);
                     currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
                     break;
 
@@ -159,8 +161,8 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfFactorRegex regex:
-                    var nfa = this.regexToNfaAlgorithm.Transform(regex.Regex);
-                    var dfa = this.nfaToDfaAlgorithm.Transform(nfa);
+                    var nfa = this.regexToNfa.Transform(regex.Regex);
+                    var dfa = this.nfaToDfa.Transform(nfa);
                     var dfaLexerRule = new DfaLexerRule(dfa, regex.Regex.ToString());
                     currentProduction.AddWithAnd(new LexerRuleModel(dfaLexerRule));
                     break;
@@ -187,7 +189,7 @@ namespace Pliant.Ebnf
         private IReadOnlyList<IgnoreSettingModel> IgnoreSettings(EbnfBlockSetting blockSetting)
         {
             var fullyQualifiedName =
-                GetFullyQualifiedNameFromQualifiedIdentifier(blockSetting.Setting.QualifiedIdentifier);
+                GetFullyQualifiedNameFromQualifiedIdentifier(blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
             var ignoreSettingModel = new IgnoreSettingModel(fullyQualifiedName);
             return new[] {ignoreSettingModel};
         }
@@ -197,7 +199,7 @@ namespace Pliant.Ebnf
             var ebnfLexerRule = blockLexerRule.LexerRule;
 
             var fullyQualifiedName = GetFullyQualifiedNameFromQualifiedIdentifier(
-                ebnfLexerRule.QualifiedIdentifier);
+                ebnfLexerRule.Identifier);
 
             var lexerRule = LexerRuleExpression(
                 fullyQualifiedName,
@@ -216,7 +218,7 @@ namespace Pliant.Ebnf
             }
 
             var nfa = LexerRuleExpression(ebnfLexerRule);
-            var dfa = this.nfaToDfaAlgorithm.Transform(nfa);
+            var dfa = this.nfaToDfa.Transform(nfa);
 
             return new DfaLexerRule(dfa, fullyQualifiedName.FullName);
         }
@@ -273,7 +275,7 @@ namespace Pliant.Ebnf
         private Nfa LexerRuleFactorRegex(EbnfLexerRuleFactorRegex ebnfLexerRuleFactorRegex)
         {
             var regex = ebnfLexerRuleFactorRegex.Regex;
-            return this.regexToNfaAlgorithm.Transform(regex);
+            return this.regexToNfa.Transform(regex);
         }
 
         private Nfa LexerRuleTerm(EbnfLexerRuleTerm term)
@@ -328,7 +330,7 @@ namespace Pliant.Ebnf
 
         private IEnumerable<ProductionModel> Rule(EbnfRule rule)
         {
-            var nonTerminal = GetFullyQualifiedNameFromQualifiedIdentifier(rule.QualifiedIdentifier);
+            var nonTerminal = GetFullyQualifiedNameFromQualifiedIdentifier(rule.QualifiedEbnfQualifiedIdentifier);
             var productionModel = new ProductionModel(nonTerminal);
             foreach (var production in Expression(rule.Expression, productionModel))
             {
@@ -341,7 +343,7 @@ namespace Pliant.Ebnf
         private StartProductionSettingModel StartSetting(EbnfBlockSetting blockSetting)
         {
             var productionName = GetFullyQualifiedNameFromQualifiedIdentifier(
-                blockSetting.Setting.QualifiedIdentifier);
+                blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
             return new StartProductionSettingModel(productionName);
         }
 
@@ -364,7 +366,7 @@ namespace Pliant.Ebnf
         private IReadOnlyList<TriviaSettingModel> TriviaSettings(EbnfBlockSetting blockSetting)
         {
             var fullyQualifiedName =
-                GetFullyQualifiedNameFromQualifiedIdentifier(blockSetting.Setting.QualifiedIdentifier);
+                GetFullyQualifiedNameFromQualifiedIdentifier(blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
             var triviaSettingModel = new TriviaSettingModel(fullyQualifiedName);
             return new[] {triviaSettingModel};
         }
@@ -396,7 +398,7 @@ namespace Pliant.Ebnf
             return false;
         }
 
-        private readonly INfaToDfa nfaToDfaAlgorithm;
-        private readonly IRegexToNfa regexToNfaAlgorithm;
+        private readonly NfaToDfa nfaToDfa;
+        private readonly IRegexToNfa regexToNfa;
     }
 }

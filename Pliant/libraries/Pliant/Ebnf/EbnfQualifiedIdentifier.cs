@@ -38,29 +38,29 @@
     {
         public EbnfQualifiedIdentifierConcatenation(
             string identifier,
-            EbnfQualifiedIdentifier qualifiedIdentifier)
+            EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
             : base(identifier)
         {
-            QualifiedIdentifier = qualifiedIdentifier;
+            QualifiedEbnfQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
         }
 
-        public EbnfQualifiedIdentifier QualifiedIdentifier { get; }
+        public EbnfQualifiedIdentifier QualifiedEbnfQualifiedIdentifier { get; }
 
         public override bool Equals(object obj)
         {
             return obj is EbnfQualifiedIdentifierConcatenation other &&
                    Identifier.Equals(other.Identifier) &&
-                   QualifiedIdentifier.Equals(other.QualifiedIdentifier);
+                   QualifiedEbnfQualifiedIdentifier.Equals(other.QualifiedEbnfQualifiedIdentifier);
         }
 
         public override int GetHashCode()
         {
-            return (Identifier, QualifiedIdentifier).GetHashCode();
+            return (Identifier, QualifiedIdentifier: QualifiedEbnfQualifiedIdentifier).GetHashCode();
         }
 
         public override string ToString()
         {
-            return $"{QualifiedIdentifier}.{Identifier}";
+            return $"{QualifiedEbnfQualifiedIdentifier}.{Identifier}";
         }
     }
 }

@@ -2,25 +2,25 @@
 {
     public class EbnfSetting : EbnfNode
     {
-        public EbnfSetting(EbnfSettingIdentifier settingIdentifier, EbnfQualifiedIdentifier qualifiedIdentifier)
+        public EbnfSetting(EbnfSettingIdentifier settingIdentifier, EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
         {
             SettingIdentifier = settingIdentifier;
-            QualifiedIdentifier = qualifiedIdentifier;
+            QualifiedEbnfQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
         }
 
         public EbnfSettingIdentifier SettingIdentifier { get; }
-        public EbnfQualifiedIdentifier QualifiedIdentifier { get; }
+        public EbnfQualifiedIdentifier QualifiedEbnfQualifiedIdentifier { get; }
 
         public override bool Equals(object obj)
         {
             return obj is EbnfSetting other && 
                    other.SettingIdentifier.Equals(SettingIdentifier) && 
-                   other.QualifiedIdentifier.Equals(QualifiedIdentifier);
+                   other.QualifiedEbnfQualifiedIdentifier.Equals(QualifiedEbnfQualifiedIdentifier);
         }
 
         public override int GetHashCode()
         {
-            return (SettingIdentifier, QualifiedIdentifier).GetHashCode();
+            return (SettingIdentifier, QualifiedIdentifier: QualifiedEbnfQualifiedIdentifier).GetHashCode();
         }
     }
 }

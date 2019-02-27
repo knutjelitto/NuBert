@@ -16,12 +16,12 @@ namespace Pliant.Tests.Unit.Bnf
 
         private string _bnfText = @"
             <syntax>         ::= <rule> | <rule> <syntax>
-            <rule>           ::= <identifier> ""::="" <expression> <line-end>
+            <rule>           ::= <EbnfQualifiedIdentifier> ""::="" <expression> <line-end>
             <expression>     ::= <list> | <list> ""|"" <expression>
             <line-end>       ::= <EOL> | <line-end> <line-end>
             <list>           ::= <term > | <term> <list>
-            <term>           ::= <literal > | <identifier>
-            <identifier>     ::= ""<"" <rule-name> "">""
+            <term>           ::= <literal > | <EbnfQualifiedIdentifier>
+            <EbnfQualifiedIdentifier>     ::= ""<"" <rule-name> "">""
             <literal>        ::= '""' <text> '""' | ""'"" <text> ""'""";
         
         [TestMethod]

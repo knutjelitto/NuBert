@@ -8,27 +8,27 @@ namespace Pliant.Ebnf
 
     public sealed class EbnfFactorIdentifier : EbnfFactor
     {
-        public EbnfFactorIdentifier(EbnfQualifiedIdentifier qualifiedIdentifier)
+        public EbnfFactorIdentifier(EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
         {
-            QualifiedIdentifier = qualifiedIdentifier;
+            QualifiedEbnfQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
         }
 
-        public EbnfQualifiedIdentifier QualifiedIdentifier { get; }
+        public EbnfQualifiedIdentifier QualifiedEbnfQualifiedIdentifier { get; }
 
         public override int GetHashCode()
         {
-            return QualifiedIdentifier.GetHashCode();
+            return QualifiedEbnfQualifiedIdentifier.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             return obj is EbnfFactorIdentifier other &&
-                   other.QualifiedIdentifier.Equals(QualifiedIdentifier);
+                   other.QualifiedEbnfQualifiedIdentifier.Equals(QualifiedEbnfQualifiedIdentifier);
         }
 
         public override string ToString()
         {
-            return QualifiedIdentifier.ToString();
+            return QualifiedEbnfQualifiedIdentifier.ToString();
         }
     }
 

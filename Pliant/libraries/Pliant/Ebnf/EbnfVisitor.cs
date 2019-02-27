@@ -250,7 +250,7 @@ namespace Pliant.Ebnf
 
         private EbnfBlockLexerRule VisitLexerRuleNode(IInternalTreeNode node)
         {
-            EbnfQualifiedIdentifier qualifiedIdentifier = null;
+            EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier = null;
             EbnfLexerRuleExpression expression = null;
 
             foreach (var child in node.Children)
@@ -260,7 +260,7 @@ namespace Pliant.Ebnf
                     var symbolValue = internalNode.Symbol.Value;
                     if (EbnfGrammar.QualifiedIdentifier == symbolValue)
                     {
-                        qualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
+                        qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
                     }
                     else if (EbnfGrammar.LexerRuleExpression == symbolValue)
                     {
@@ -269,7 +269,7 @@ namespace Pliant.Ebnf
                 }
             }
 
-            return new EbnfBlockLexerRule(new EbnfLexerRule(qualifiedIdentifier, expression));
+            return new EbnfBlockLexerRule(new EbnfLexerRule(qualifiedEbnfQualifiedIdentifier, expression));
         }
 
         private EbnfLexerRuleTerm VisitLexerRuleTermNode(IInternalTreeNode node)
@@ -320,7 +320,7 @@ namespace Pliant.Ebnf
 
         private EbnfQualifiedIdentifier VisitQualifiedIdentifierNode(IInternalTreeNode node)
         {
-            EbnfQualifiedIdentifier repetitionIdentifier = null;
+            EbnfQualifiedIdentifier repetitionEbnfQualifiedIdentifier = null;
             string identifier = null;
             foreach (var child in node.Children)
             {
@@ -330,7 +330,7 @@ namespace Pliant.Ebnf
                         var symbolValue = internalNode.Symbol.Value;
                         if (EbnfGrammar.QualifiedIdentifier == symbolValue)
                         {
-                            repetitionIdentifier = VisitQualifiedIdentifierNode(internalNode);
+                            repetitionEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
                         }
 
                         break;
@@ -346,11 +346,11 @@ namespace Pliant.Ebnf
                 }
             }
 
-            return repetitionIdentifier == null
+            return repetitionEbnfQualifiedIdentifier == null
                        // ReSharper disable once RedundantCast
                        ? (EbnfQualifiedIdentifier) new EbnfQualifiedIdentifierSimple(identifier)
                        // ReSharper disable once RedundantCast
-                       : (EbnfQualifiedIdentifier) new EbnfQualifiedIdentifierConcatenation(identifier, repetitionIdentifier);
+                       : (EbnfQualifiedIdentifier) new EbnfQualifiedIdentifierConcatenation(identifier, repetitionEbnfQualifiedIdentifier);
         }
 
         private EbnfFactorRepetition VisitRepetitionNode(IInternalTreeNode node)
@@ -372,7 +372,7 @@ namespace Pliant.Ebnf
 
         private EbnfBlockRule VisitRuleNode(IInternalTreeNode node)
         {
-            EbnfQualifiedIdentifier qualifiedIdentifier = null;
+            EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier = null;
             EbnfExpression expression = null;
 
             foreach (var child in node.Children)
@@ -383,7 +383,7 @@ namespace Pliant.Ebnf
 
                     if (EbnfGrammar.QualifiedIdentifier == symbolValue)
                     {
-                        qualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
+                        qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
                     }
                     else if (EbnfGrammar.Expression == symbolValue)
                     {
@@ -392,13 +392,13 @@ namespace Pliant.Ebnf
                 }
             }
 
-            return new EbnfBlockRule(new EbnfRule(qualifiedIdentifier, expression));
+            return new EbnfBlockRule(new EbnfRule(qualifiedEbnfQualifiedIdentifier, expression));
         }
 
         private EbnfBlockSetting VisitSettingNode(IInternalTreeNode node)
         {
             EbnfSettingIdentifier settingIdentifier = null;
-            EbnfQualifiedIdentifier qualifiedIdentifier = null;
+            EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier = null;
 
             foreach (var child in node.Children)
             {
@@ -416,14 +416,14 @@ namespace Pliant.Ebnf
                         var symbolValue = internalNode.Symbol.Value;
                         if (EbnfGrammar.QualifiedIdentifier == symbolValue)
                         {
-                            qualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
+                            qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
                         }
 
                         break;
                 }
             }
 
-            return new EbnfBlockSetting(new EbnfSetting(settingIdentifier, qualifiedIdentifier));
+            return new EbnfBlockSetting(new EbnfSetting(settingIdentifier, qualifiedEbnfQualifiedIdentifier));
         }
 
         private EbnfTerm VisitTermNode(IInternalTreeNode node)

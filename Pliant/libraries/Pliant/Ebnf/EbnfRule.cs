@@ -2,30 +2,30 @@
 {
     public class EbnfRule : EbnfNode
     {
-        public EbnfRule(EbnfQualifiedIdentifier qualifiedIdentifier, EbnfExpression expression)
+        public EbnfRule(EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier, EbnfExpression expression)
         {
-            QualifiedIdentifier = qualifiedIdentifier;
+            QualifiedEbnfQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
             Expression = expression;
         }
 
-        public EbnfQualifiedIdentifier QualifiedIdentifier { get; }
+        public EbnfQualifiedIdentifier QualifiedEbnfQualifiedIdentifier { get; }
         public EbnfExpression Expression { get; }
 
         public override int GetHashCode()
         {
-            return (QualifiedIdentifier, Expression).GetHashCode();
+            return (QualifiedIdentifier: QualifiedEbnfQualifiedIdentifier, Expression).GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             return obj is EbnfRule rule && 
-                   rule.QualifiedIdentifier.Equals(QualifiedIdentifier) && 
+                   rule.QualifiedEbnfQualifiedIdentifier.Equals(QualifiedEbnfQualifiedIdentifier) && 
                    rule.Expression.Equals(Expression);
         }
 
         public override string ToString()
         {
-            return $"{QualifiedIdentifier} = {Expression}";
+            return $"{QualifiedEbnfQualifiedIdentifier} = {Expression}";
         }
     }
 }

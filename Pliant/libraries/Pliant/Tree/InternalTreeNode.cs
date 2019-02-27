@@ -35,14 +35,14 @@ namespace Pliant.Tree
         
         private void SetSymbol(IInternalForestNode node)
         {
-            switch (node.NodeType)
+            switch (node)
             {
-                case ForestNodeType.Symbol:
-                    Symbol = (node as ISymbolForestNode).Symbol as NonTerminal;
+                case ISymbolForestNode symbol:
+                    Symbol = symbol.Symbol as NonTerminal;
                     break;
 
-                case ForestNodeType.Intermediate:
-                    Symbol = (node as IIntermediateForestNode).DottedRule.Production.LeftHandSide;
+                case IIntermediateForestNode intermediate:
+                    Symbol = intermediate.DottedRule.Production.LeftHandSide;
                     break;
             }
         }
@@ -65,6 +65,29 @@ namespace Pliant.Tree
             for (var c = 0; c < andNode.Children.Count; c++)
             {
                 var child = andNode.Children[c];
+#if true
+                switch (child)
+                {
+                    // skip intermediate nodes by enumerating children only
+                    case IIntermediateForestNode intermediateNode:
+                        var currentAndNode = this._disambiguationAlgorithm.GetCurrentAndNode(intermediateNode);
+                        LazyLoadChildren(currentAndNode);
+                        break;
+
+                    // create a internal tree node for symbol forest nodes
+                    case ISymbolForestNode symbolNode:
+                        this._children.Add(new InternalTreeNode(symbolNode, this._disambiguationAlgorithm));
+                        break;
+
+                    // create a tree token node for token forest nodes
+                    case ITokenForestNode token:
+                        this._children.Add(new TokenTreeNode(token));
+                        break;
+
+                    default:
+                        throw new Exception("Unrecognized NodeType");
+                }
+#else
                 switch (child.NodeType)
                 {
                     // skip intermediate nodes by enumerating children only
@@ -88,7 +111,8 @@ namespace Pliant.Tree
                     default:
                         throw new Exception("Unrecognized NodeType");
                 }
-            }            
+#endif
+            }
         }
 
         private bool ShouldLoadChildren()

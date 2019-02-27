@@ -28,7 +28,7 @@ namespace Pliant.Bnf
 
             var grammar = new NonTerminal("grammar");
             var rule = new NonTerminal("rule");
-            var identifier = new NonTerminal("identifier");
+            var identifier = new NonTerminal("EbnfQualifiedIdentifier");
             var expression = new NonTerminal("expression");
             var lineEnd = new NonTerminal("line-end");
             var list = new NonTerminal("list");

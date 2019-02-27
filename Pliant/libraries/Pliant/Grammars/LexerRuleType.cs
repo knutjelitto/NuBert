@@ -10,16 +10,6 @@
 
         public string Id { get; }
 
-        public static bool operator ==(LexerRuleType first, LexerRuleType second)
-        {
-            return first.Equals(second);
-        }
-
-        public static bool operator !=(LexerRuleType first, LexerRuleType second)
-        {
-            return !first.Equals(second);
-        }
-
         public override bool Equals(object obj)
         {
             return obj is LexerRuleType other && Id.Equals(other.Id);
