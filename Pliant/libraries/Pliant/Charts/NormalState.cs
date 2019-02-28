@@ -32,35 +32,12 @@ namespace Pliant.Charts
         public bool IsSource(Symbol searchSymbol)
         {
             var dottedRule = DottedRule;
-            if (dottedRule.IsComplete)
-            {
-                return false;
-            }
-
-            return dottedRule.PostDotSymbol.Equals(searchSymbol);
+            return !dottedRule.IsComplete && dottedRule.PostDotSymbol.Is(searchSymbol);
         }
 
         public override string ToString()
         {
-            var stringBuilder = new StringBuilder()
-                .AppendFormat("{0} ->", DottedRule.Production.LeftHandSide.Value);
-            const string Dot = "\u25CF";
-
-            for (var p = 0; p < DottedRule.Production.RightHandSide.Count; p++)
-            {
-                stringBuilder.AppendFormat(
-                    "{0}{1}",
-                    p == DottedRule.Dot ? Dot : " ",
-                    DottedRule.Production.RightHandSide[p]);
-            }
-
-            if (DottedRule.Dot == DottedRule.Production.RightHandSide.Count)
-            {
-                stringBuilder.Append(Dot);
-            }
-
-            stringBuilder.Append($"\t\t({Origin})");
-            return stringBuilder.ToString();
+            return $"{DottedRule}\t\t({Origin})";
         }
 
         private int ComputeHashCode()

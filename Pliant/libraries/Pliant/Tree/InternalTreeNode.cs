@@ -70,7 +70,6 @@ namespace Pliant.Tree
             for (var c = 0; c < andNode.Children.Count; c++)
             {
                 var child = andNode.Children[c];
-#if true
                 switch (child)
                 {
                     // skip intermediate nodes by enumerating children only
@@ -92,31 +91,6 @@ namespace Pliant.Tree
                     default:
                         throw new Exception("Unrecognized NodeType");
                 }
-#else
-                switch (child.NodeType)
-                {
-                    // skip intermediate nodes by enumerating children only
-                    case ForestNodeType.Intermediate:
-                        var intermediateNode = child as IIntermediateForestNode;
-                        var currentAndNode = this._disambiguationAlgorithm.GetCurrentAndNode(intermediateNode);
-                        LazyLoadChildren(currentAndNode);
-                        break;
-
-                    // create a internal tree node for symbol forest nodes
-                    case ForestNodeType.Symbol:
-                        var symbolNode = child as ISymbolForestNode;
-                        this._children.Add(new InternalTreeNode(symbolNode, this._disambiguationAlgorithm));
-                        break;
-                        
-                    // create a tree token node for token forest nodes
-                    case ForestNodeType.Token:
-                        this._children.Add(new TokenTreeNode(child as ITokenForestNode));
-                        break;
-
-                    default:
-                        throw new Exception("Unrecognized NodeType");
-                }
-#endif
             }
         }
 

@@ -106,12 +106,9 @@ namespace Pliant.Charts
             var dottedRule = normalState.DottedRule;
             if (!dottedRule.IsComplete)
             {
-                if (dottedRule.PostDotSymbol is NonTerminal)
-                {
-                    return this.predictions.AddUnique(normalState);
-                }
-
-                return this.scans.AddUnique(normalState);
+                return dottedRule.PostDotSymbol is NonTerminal
+                           ? this.predictions.AddUnique(normalState)
+                           : this.scans.AddUnique(normalState);
             }
 
             return this.completions.AddUnique(normalState);

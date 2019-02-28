@@ -1,15 +1,35 @@
-﻿namespace Pliant.Ebnf
+﻿using System.Collections.Generic;
+using System.Linq;
+using Pliant.Utilities;
+
+namespace Pliant.Ebnf
 {
-    public abstract class EbnfQualifiedIdentifier : EbnfNode
+    public sealed class EbnfQualifiedIdentifier : EbnfNode
     {
-        protected EbnfQualifiedIdentifier(string identifier)
+        public EbnfQualifiedIdentifier(IEnumerable<string> identifiers)
+            : this(identifiers.ToArray())
         {
-            Identifier = identifier;
         }
 
-        public string Identifier { get; }
+        public EbnfQualifiedIdentifier(params string[] identifiers)
+        {
+            Identifiers = identifiers;
+            this.hashCode = HashCode.Compute(Identifiers);
+        }
+
+        public string[] Identifiers { get; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is EbnfQualifiedIdentifier other && Identifiers.SequenceEqual(other.Identifiers);
+        }
+
+        public override int GetHashCode() => this.hashCode;
+
+        private readonly int hashCode;
     }
 
+#if false
     public sealed class EbnfQualifiedIdentifierSimple : EbnfQualifiedIdentifier
     {
         public EbnfQualifiedIdentifierSimple(string identifier)
@@ -63,4 +83,5 @@
             return $"{QualifiedEbnfQualifiedIdentifier}.{Identifier}";
         }
     }
+#endif
 }

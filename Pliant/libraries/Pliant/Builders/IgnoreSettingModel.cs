@@ -7,12 +7,12 @@ namespace Pliant.Builders
         public const string SettingKey = "ignore";
 
         public IgnoreSettingModel(LexerRuleModel lexerRuleModel)
-            : base(SettingKey, lexerRuleModel.LexerRule.TokenType.Id)
+            : base(lexerRuleModel.LexerRule.TokenType.Id)
         {
         }
 
         public IgnoreSettingModel(QualifiedName fullyQualifiedName)
-            : base(SettingKey, fullyQualifiedName.FullName)
+            : base(fullyQualifiedName.FullName)
         {
         }
     }

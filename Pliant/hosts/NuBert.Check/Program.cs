@@ -23,7 +23,12 @@ namespace NuBert.Check
         {
             try
             {
-                var result = new ExpressionParser().Parse("1+2");
+                var result = new ExpressionParser().Parse("12+23");
+
+                var dumper = new TreeDumpVisitor();
+
+                result.Accept(dumper);
+
             }
             catch (Exception e)
             {
@@ -49,6 +54,10 @@ namespace NuBert.Check
                         throw new Exception(
                             $"Unable to parse expression. Error at line {parseRunner.Line+1}, column {parseRunner.Column+1}.");
                     }
+
+                    Console.WriteLine("-----");
+                    Console.ReadKey(true);
+
                 }
                 if (!parseEngine.IsAccepted())
                 {

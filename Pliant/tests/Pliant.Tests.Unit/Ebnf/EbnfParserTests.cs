@@ -25,7 +25,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifierSimple("Rule"),
+                            new EbnfQualifiedIdentifier("Rule"),
                             new EbnfExpressionSimple(
                                 new EbnfTermSimple(
                                     new EbnfFactorLiteral("a"))))));
@@ -41,7 +41,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifierSimple("Rule"),
+                        new EbnfQualifiedIdentifier("Rule"),
                         new EbnfExpressionSimple(
                             new EbnfTermConcatenation(
                                 new EbnfFactorLiteral("a"),
@@ -59,7 +59,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifierSimple("Rule"),
+                        new EbnfQualifiedIdentifier("Rule"),
                         new EbnfExpressionAlteration(
                             new EbnfTermSimple(
                                 new EbnfFactorLiteral("a")),
@@ -77,7 +77,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifierSimple("Rule"),
+                        new EbnfQualifiedIdentifier("Rule"),
                         new EbnfExpressionAlteration(
                             new EbnfTermConcatenation(
                                 new EbnfFactorLiteral("a"),
@@ -96,7 +96,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifierSimple("Rule"),
+                            new EbnfQualifiedIdentifier("Rule"),
                             new EbnfExpressionSimple(
                                 new EbnfTermSimple(
                                     new EbnfFactorRegex(
@@ -126,7 +126,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifierSimple("Rule"),
+                            new EbnfQualifiedIdentifier("Rule"),
                             new EbnfExpressionSimple(
                                 new EbnfTermSimple(
                                     new EbnfFactorRepetition(
@@ -145,7 +145,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifierSimple("Rule"),
+                            new EbnfQualifiedIdentifier("Rule"),
                             new EbnfExpressionSimple(
                                 new EbnfTermSimple(
                                     new EbnfFactorOptional(
@@ -164,7 +164,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifierSimple("Rule"),
+                            new EbnfQualifiedIdentifier("Rule"),
                             new EbnfExpressionSimple(
                                 new EbnfTermSimple(
                                     new EbnfFactorGrouping(
@@ -181,11 +181,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifierConcatenation("This",
-                                new EbnfQualifiedIdentifierConcatenation("Is",
-                                    new EbnfQualifiedIdentifierConcatenation("A",
-                                        new EbnfQualifiedIdentifierConcatenation("Namespace",
-                                        new EbnfQualifiedIdentifierSimple("Rule"))))),
+                            new EbnfQualifiedIdentifier("This", "Is", "A", "Namespace", "Rule"),
                             new EbnfExpressionSimple(
                                 new EbnfTermSimple(
                                     new EbnfFactorLiteral("a"))))));
@@ -200,25 +196,25 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionConcatenation(
                 new EbnfBlockRule(
                     new EbnfRule(
-                        new EbnfQualifiedIdentifierSimple("S"),
+                        new EbnfQualifiedIdentifier("S"),
                         new EbnfExpressionSimple(
                             new EbnfTermConcatenation(
                                 new EbnfFactorIdentifier(
-                                    new EbnfQualifiedIdentifierSimple("A")),
+                                    new EbnfQualifiedIdentifier("A")),
                                 new EbnfTermSimple(
                                     new EbnfFactorIdentifier(
-                                        new EbnfQualifiedIdentifierSimple("B"))))))),
+                                        new EbnfQualifiedIdentifier("B"))))))),
                 new EbnfDefinitionConcatenation(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifierSimple("A"),
+                            new EbnfQualifiedIdentifier("A"),
                             new EbnfExpressionSimple(
                                 new EbnfTermSimple(
                                     new EbnfFactorLiteral("a"))))),
                     new EbnfDefinitionSimple(
                         new EbnfBlockRule(
                             new EbnfRule(
-                                new EbnfQualifiedIdentifierSimple(
+                                new EbnfQualifiedIdentifier(
                                     "B"),
                                 new EbnfExpressionSimple(
                                     new EbnfTermSimple(
@@ -242,7 +238,7 @@ namespace Pliant.Tests.Unit.Ebnf
                 new EbnfBlockSetting(
                     new EbnfSetting(
                         new EbnfSettingIdentifier(":ignore"),
-                        new EbnfQualifiedIdentifierSimple("whitespace"))));
+                        new EbnfQualifiedIdentifier("whitespace"))));
 
             Assert.AreEqual(expected, actual);
         }
@@ -258,7 +254,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                 new EbnfBlockLexerRule(
                    new EbnfLexerRule(
-                       new EbnfQualifiedIdentifierSimple("b"),
+                       new EbnfQualifiedIdentifier("b"),
                        new EbnfLexerRuleExpressionSimple(
                             new EbnfLexerRuleTermSimple(
                                 new EbnfLexerRuleFactorLiteral("b"))))));

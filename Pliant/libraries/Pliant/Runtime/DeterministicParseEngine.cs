@@ -218,8 +218,7 @@ namespace Pliant.Runtime
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsStartState(DottedRule state)
         {
-            var start = Grammar.Start;
-            return state.Production.LeftHandSide.Equals(start);
+            return state.Production.LeftHandSide.Is(Grammar.Start);
         }
 
         private void Reduce(int i)
@@ -255,14 +254,12 @@ namespace Pliant.Runtime
                     continue;
                 }
 
-                var leftHandSide = production.LeftHandSide;
-
                 for (var p = 0; p < parentSetDeterministicStateCount; p++)
                 {
                     var pState = parentSetDeterministicStates[p];
                     var pParent = pState.Origin;
 
-                    if (!pState.DottedRuleSet.Reductions.TryGetValue(leftHandSide, out var target))
+                    if (!pState.DottedRuleSet.Reductions.TryGetValue(production.LeftHandSide, out var target))
                     {
                         continue;
                     }

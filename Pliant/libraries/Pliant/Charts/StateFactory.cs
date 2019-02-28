@@ -10,9 +10,9 @@ namespace Pliant.Charts
             DottedRuleRegistry = dottedRuleRegistry;
         }
 
-        public State NewState(Production production, int position, int origin)
+        public State NewState(Production production, int location, int origin)
         {
-            var dottedRule = DottedRuleRegistry.Get(production, position);
+            var dottedRule = DottedRuleRegistry.Get(production, location);
             return NewState(dottedRule, origin);
         }
 

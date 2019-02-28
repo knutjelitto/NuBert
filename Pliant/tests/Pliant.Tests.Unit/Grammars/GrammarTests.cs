@@ -19,9 +19,9 @@ namespace Pliant.Tests.Unit
             B.Rule = 'b';
             var grammar = new GrammarExpression(S, new[] { S, A, B })
                 .ToGrammar();
-            var rules = grammar.RulesFor(A.ProductionModel.LeftHandSide.NonTerminal).ToList();
+            var rules = grammar.PrductionsFor(A.ProductionModel.LeftHandSide.NonTerminal).ToList();
             Assert.AreEqual(1, rules.Count);
-            Assert.AreEqual(A.ProductionModel.LeftHandSide.NonTerminal.Value, rules[0].LeftHandSide.Value);
+            Assert.IsTrue(A.ProductionModel.LeftHandSide.NonTerminal.Is(rules[0].LeftHandSide));
         }
 
         [TestMethod]

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public sealed class Production
+    public sealed class Production : IReadOnlyList<Symbol>
     {
         public Production(NonTerminal leftHandSide, IEnumerable<Symbol> rightHandSide)
         {
@@ -19,15 +20,23 @@ namespace Pliant.Grammars
         {
         }
 
-        public bool IsEmpty => RightHandSide.Count == 0;
+        public int Count => RightHandSide.Count;
+
         public NonTerminal LeftHandSide { get; }
         public IReadOnlyList<Symbol> RightHandSide { get; }
+
+        public Symbol this[int index] => RightHandSide[index];
 
         public override bool Equals(object obj)
         {
             return obj is Production other &&
                    LeftHandSide.Equals(other.LeftHandSide) &&
                    RightHandSide.SequenceEqual(other.RightHandSide);
+        }
+
+        public IEnumerator<Symbol> GetEnumerator()
+        {
+            return RightHandSide.GetEnumerator();
         }
 
         public override int GetHashCode()
@@ -38,11 +47,11 @@ namespace Pliant.Grammars
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("{0} ->", LeftHandSide.Value);
+            stringBuilder.Append($"{LeftHandSide} ->");
 
             foreach (var symbol in RightHandSide)
             {
-                stringBuilder.AppendFormat(" {0}", symbol);
+                stringBuilder.Append($" {symbol}");
             }
 
             return stringBuilder.ToString();
@@ -53,7 +62,11 @@ namespace Pliant.Grammars
             return HashCode.Compute(LeftHandSide.GetHashCode(), HashCode.Compute(RightHandSide));
         }
 
-        // PERF: Cache Costly Hash Code Computation
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         private readonly int _hashCode;
     }
 }

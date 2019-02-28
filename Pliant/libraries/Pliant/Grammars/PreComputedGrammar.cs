@@ -24,12 +24,12 @@ namespace Pliant.Grammars
 
         private static Symbol GetPostDotSymbol(DottedRule state)
         {
-            return state.Production.RightHandSide[state.Dot];
+            return state.Production[state.Dot];
         }
 
         private static bool IsComplete(DottedRule state)
         {
-            return state.Dot == state.Production.RightHandSide.Count;
+            return state.IsComplete;
         }
 
         private DottedRuleAssortment AddNewOrGetExistingDottedRuleSet(DottedRuleSet states)
@@ -70,9 +70,9 @@ namespace Pliant.Grammars
                 }
 
                 var production = state.Production;
-                for (var s = state.Dot; s < state.Production.RightHandSide.Count; s++)
+                for (var s = state.Dot; s < state.Production.Count; s++)
                 {
-                    var postDotSymbol = production.RightHandSide[s];
+                    var postDotSymbol = production[s];
                     if (postDotSymbol is NonTerminal nonTerminalPostDotSymbol)
                     {
                         if (!Grammar.IsTransitiveNullable(nonTerminalPostDotSymbol))
@@ -143,7 +143,7 @@ namespace Pliant.Grammars
                         }
                     }
 
-                    var predictions = Grammar.RulesFor(nonTerminalPostDotSymbol);
+                    var predictions = Grammar.PrductionsFor(nonTerminalPostDotSymbol);
                     for (var p = 0; p < predictions.Count; p++)
                     {
                         var prediction = predictions[p];

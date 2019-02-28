@@ -14,7 +14,6 @@ namespace Pliant.Automata
             : base(tokenType)
         {
             StartState = state;
-            this._hashCode = tokenType.GetHashCode();
         }
 
         public DfaState StartState { get; }
@@ -51,8 +50,5 @@ namespace Pliant.Automata
         {
             return TokenType.ToString();
         }
-
-
-        private readonly int _hashCode;
     }
 }

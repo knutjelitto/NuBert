@@ -22,9 +22,19 @@
 
         public string Value => QualifiedName.FullName;
 
+        public bool Is(string otherName)
+        {
+            return Value == otherName;
+        }
+
         public bool Is(QualifiedName otherName)
         {
-            return Value == otherName.FullName;
+            return Is(otherName.FullName);
+        }
+
+        public bool Is(NonTerminal other)
+        {
+            return Is(other.QualifiedName);
         }
 
         public override bool Equals(object obj)

@@ -2,13 +2,10 @@
 {
     public abstract class SettingModel
     {
-        protected SettingModel(string name, string value)
+        protected SettingModel(string value)
         {
-            Name = name;
             Value = value;
         }
-
-        public string Name { get; }
 
         public string Value { get; }
     }

@@ -15,15 +15,20 @@ namespace Pliant.Charts
 
         public IReadOnlyList<EarleySet> EarleySets => this._earleySets;
 
-        public bool Contains(int position, DottedRule dottedRule, int origin)
+        public EarleySet LastSet()
         {
-            var earleySet = GetEarleySet(position);
+            return this._earleySets[this._earleySets.Count - 1];
+        }
+
+        public bool Contains(int location, DottedRule dottedRule, int origin)
+        {
+            var earleySet = GetEarleySet(location);
             return earleySet.ContainsNormal(dottedRule, origin);
         }
 
-        public bool Enqueue(int position, State state)
+        public bool Enqueue(int location, State state)
         {
-            return GetEarleySet(position).Enqueue(state);
+            return GetEarleySet(location).Enqueue(state);
         }
 
         private EarleySet GetEarleySet(int position)

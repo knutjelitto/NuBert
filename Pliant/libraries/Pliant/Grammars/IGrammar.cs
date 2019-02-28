@@ -18,7 +18,7 @@ namespace Pliant.Grammars
 
         int GetLexerRuleIndex(LexerRule lexerRule);
 
-        IReadOnlyList<Production> RulesFor(NonTerminal nonTerminal);
+        IReadOnlyList<Production> PrductionsFor(NonTerminal nonTerminal);
 
         IReadOnlyList<Production> RulesContainingSymbol(NonTerminal nonTerminal);
 

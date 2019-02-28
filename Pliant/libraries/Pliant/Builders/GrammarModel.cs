@@ -23,11 +23,14 @@ namespace Pliant.Builders
             Start = start;
         }
 
-        public ICollection<IgnoreSettingModel> IgnoreSettingModels => this.ignoreSettingModels;
+        public IReadOnlyCollection<IgnoreSettingModel> IgnoreSettingModels => this.ignoreSettingModels;
 
-        public ICollection<LexerRuleModel> LexerRuleModels => this.lexerRuleModels;
+        public IReadOnlyCollection<LexerRuleModel> LexerRuleModels => this.lexerRuleModels;
 
         public IReadOnlyCollection<ProductionModel> ProductionModels => this.productionModels;
+
+        public IReadOnlyCollection<TriviaSettingModel> TriviaSettings => this.triviaSettings;
+
 
         public void AddProduction(ProductionModel productionModel)
         {
@@ -36,9 +39,24 @@ namespace Pliant.Builders
 
         }
 
+        public void AddLexerRule(LexerRuleModel lexerRule)
+        {
+            this.lexerRuleModels.Add(lexerRule);
+        }
+
+        public void AddIgnoreSetting(IgnoreSettingModel ignore)
+        {
+            this.ignoreSettingModels.Add(ignore);
+        }
+
+        public void AddTriviaSetting(TriviaSettingModel trivia)
+        {
+            this.triviaSettings.Add(trivia);
+        }
+
         public ProductionModel Start
         {
-            get => this.start;
+            get => this.startProduction;
             set
             {
                 if (value != null)
@@ -46,13 +64,11 @@ namespace Pliant.Builders
                     StartSetting = new StartProductionSettingModel(value);
                 }
 
-                this.start = value;
+                this.startProduction = value;
             }
         }
 
         public StartProductionSettingModel StartSetting { get; set; }
-
-        public ICollection<TriviaSettingModel> TriviaSettings => this.triviaSettings;
 
         public IGrammar ToGrammar()
         {
@@ -102,7 +118,7 @@ namespace Pliant.Builders
         {
             foreach (var productionModel in this.productionModels)
             {
-                if (productionModel.LeftHandSide.NonTerminal.Value.Equals(value))
+                if (productionModel.LeftHandSide.NonTerminal.Is(value))
                 {
                     return productionModel;
                 }
@@ -240,7 +256,7 @@ namespace Pliant.Builders
         // ReSharper disable once IdentifierTypo
         private readonly ReachabilityMatrix reachabilityMatrix;
 
-        private ProductionModel start;
+        private ProductionModel startProduction;
 
         private readonly List<TriviaSettingModel> triviaSettings;
     }

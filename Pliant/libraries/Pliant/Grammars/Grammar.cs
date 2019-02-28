@@ -63,7 +63,7 @@ namespace Pliant.Grammars
                 return false;
             }
 
-            return productionList[0].RightHandSide.Count == 0;
+            return productionList[0].Count == 0;
         }
 
         public bool IsRightRecursive(Symbol symbol)
@@ -86,7 +86,7 @@ namespace Pliant.Grammars
             return list;
         }
 
-        public IReadOnlyList<Production> RulesFor(NonTerminal nonTerminal)
+        public IReadOnlyList<Production> PrductionsFor(NonTerminal nonTerminal)
         {
             if (!this._leftHandSideToProductions.TryGetValue(nonTerminal, out var list))
             {
@@ -98,7 +98,7 @@ namespace Pliant.Grammars
 
         public IReadOnlyList<Production> StartProductions()
         {
-            return RulesFor(Start);
+            return PrductionsFor(Start);
         }
 
         private readonly IndexedList<LexerRule> ignores;
@@ -125,11 +125,11 @@ namespace Pliant.Grammars
                     {
                         if (!productionSizes.TryGetValue(production, out var size))
                         {
-                            size = production.RightHandSide.Count;
+                            size = production.Count;
                             productionSizes[production] = size;
                         }
 
-                        foreach (var symbol in production.RightHandSide)
+                        foreach (var symbol in production)
                         {
                             if (nullable.Equals(symbol))
                             {
@@ -148,11 +148,11 @@ namespace Pliant.Grammars
             }
         }
 
-        private static void RegisterSymbolPath(Production production, UniqueList<Symbol> symbolPath, int s)
+        private static void RegisterSymbolPath(Production production, UniqueList<Symbol> symbolPath, int dot)
         {
-            if (s < production.RightHandSide.Count)
+            if (dot < production.Count)
             {
-                var postDotSymbol = production.RightHandSide[s];
+                var postDotSymbol = production[dot];
                 symbolPath.AddUnique(postDotSymbol);
             }
         }
@@ -176,7 +176,7 @@ namespace Pliant.Grammars
             this.productions.Add(production);
             AddProductionToLeftHandSideLookup(production);
 
-            if (production.IsEmpty)
+            if (production.Count == 0)
             {
                 this._transitiveNullableSymbols.AddUnique(production.LeftHandSide);
             }
@@ -184,9 +184,9 @@ namespace Pliant.Grammars
             var leftHandSide = production.LeftHandSide;
             var symbolPath = this._symbolPaths.AddOrGetExisting(leftHandSide);
 
-            for (var s = 0; s < production.RightHandSide.Count; s++)
+            for (var s = 0; s < production.Count; s++)
             {
-                var symbol = production.RightHandSide[s];
+                var symbol = production[s];
                 if (symbol is LexerRule lexerRule)
                 {
                     AddLexerRule(lexerRule);
@@ -226,12 +226,11 @@ namespace Pliant.Grammars
             var hashSet = new HashSet<Symbol>();
             foreach (var production in Productions)
             {
-                var position = production.RightHandSide.Count;
                 var symbolPath = symbolPaths[production.LeftHandSide];
 
-                for (var s = position; s > 0; s--)
+                for (var dot = production.Count; dot > 0; dot--)
                 {
-                    var preDotSymbol = production.RightHandSide[s - 1];
+                    var preDotSymbol = production[dot - 1];
                     if (preDotSymbol is NonTerminal preDotNonTerminal)
                     {
                         if (symbolPath.Contains(preDotNonTerminal))

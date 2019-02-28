@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
@@ -220,14 +221,14 @@ namespace Pliant.Ebnf
 
         private EbnfBlockLexerRule VisitLexerRuleNode(IInternalTreeNode node)
         {
-            EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier = null;
+            EbnfQualifiedIdentifier identifier = null;
             EbnfLexerRuleExpression expression = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
                 if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
                 {
-                    qualifiedEbnfQualifiedIdentifier = VisitQualifiedIdentifierNode(internalNode);
+                    identifier = VisitQualifiedIdentifierNode(internalNode);
                 }
                 else if (internalNode.Is(EbnfGrammar.LexerRuleExpression))
                 {
@@ -235,7 +236,7 @@ namespace Pliant.Ebnf
                 }
             }
 
-            return new EbnfBlockLexerRule(new EbnfLexerRule(qualifiedEbnfQualifiedIdentifier, expression));
+            return new EbnfBlockLexerRule(new EbnfLexerRule(identifier, expression));
         }
 
         private EbnfLexerRuleTerm VisitLexerRuleTermNode(IInternalTreeNode node)
@@ -278,6 +279,9 @@ namespace Pliant.Ebnf
 
         private EbnfQualifiedIdentifier VisitQualifiedIdentifierNode(IInternalTreeNode node)
         {
+#if true
+            return new EbnfQualifiedIdentifier(VisitQualifiedIdentifier(node));
+#else
             EbnfQualifiedIdentifier repetitionEbnfQualifiedIdentifier = null;
             string identifier = null;
             foreach (var child in node.Children)
@@ -309,6 +313,34 @@ namespace Pliant.Ebnf
             }
 
             return new EbnfQualifiedIdentifierConcatenation(identifier, repetitionEbnfQualifiedIdentifier);
+#endif
+        }
+
+        private IEnumerable<string> VisitQualifiedIdentifier(IInternalTreeNode node)
+        {
+            foreach (var child in node.Children)
+            {
+                switch (child)
+                {
+                    case IInternalTreeNode internalNode:
+                        if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
+                        {
+                            foreach (var identifier in VisitQualifiedIdentifier(internalNode))
+                            {
+                                yield return identifier;
+                            }
+                        }
+                        break;
+
+                    case ITokenTreeNode tokenNode:
+                        var token = tokenNode.Token;
+                        if (token.TokenType.Equals(EbnfGrammar.TokenTypes.Identifier))
+                        {
+                            yield return token.Value;
+                        }
+                        break;
+                }
+            }
         }
 
         private EbnfFactorRepetition VisitRepetitionNode(IInternalTreeNode node)

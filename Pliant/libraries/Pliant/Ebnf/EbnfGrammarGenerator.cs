@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Pliant.Automata;
 using Pliant.Builders;
@@ -24,24 +25,18 @@ namespace Pliant.Ebnf
             return grammarModel.ToGrammar();
         }
 
-        private static QualifiedName GetFullyQualifiedNameFromQualifiedIdentifier(EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
+        private static QualifiedName GetQualifiedName(EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
         {
-            var fully = new StringBuilder();
-            var currentQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
-            var index = 0;
-            while (currentQualifiedIdentifier is EbnfQualifiedIdentifierConcatenation concatenation)
-            {
-                if (index > 0)
-                {
-                    fully.Append(".");
-                }
+            var identifiers = qualifiedEbnfQualifiedIdentifier.Identifiers;
 
-                fully.Append(concatenation.Identifier);
-                currentQualifiedIdentifier = concatenation.QualifiedEbnfQualifiedIdentifier;
-                index++;
+            if (identifiers.Length <= 1)
+            {
+                return new QualifiedName(null, identifiers[0]);
             }
 
-            return new QualifiedName(fully.ToString(), currentQualifiedIdentifier.Identifier);
+            return new QualifiedName(
+                string.Join(".", identifiers.Take(identifiers.Length - 1)),
+                identifiers[identifiers.Length - 1]);
         }
 
         private void Block(EbnfBlock block, GrammarModel grammarModel)
@@ -49,7 +44,7 @@ namespace Pliant.Ebnf
             switch (block)
             {
                 case EbnfBlockLexerRule blockLexerRule:
-                    grammarModel.LexerRuleModels.Add(LexerRule(blockLexerRule));
+                    grammarModel.AddLexerRule(LexerRule(blockLexerRule));
                     break;
 
                 case EbnfBlockRule blockRule:
@@ -68,24 +63,16 @@ namespace Pliant.Ebnf
                             break;
 
                         case IgnoreSettingModel.SettingKey:
-                            var ignoreSettings = IgnoreSettings(blockSetting);
-                            foreach (var ignore in ignoreSettings)
-                            {
-                                grammarModel.IgnoreSettingModels.Add(ignore);
-                            }
-
+                            grammarModel.AddIgnoreSetting(IgnoreSetting(blockSetting));
                             break;
 
                         case TriviaSettingModel.SettingKey:
-                            var triviaSettings = TriviaSettings(blockSetting);
-                            foreach (var trivia in triviaSettings)
-                            {
-                                grammarModel.TriviaSettings.Add(trivia);
-                            }
-
+                            grammarModel.AddTriviaSetting(TriviaSetting(blockSetting));
                             break;
+
                         default:
-                            throw new NotImplementedException($"invalid setting `{blockSetting.Setting.SettingIdentifier}´ with value `{blockSetting.Setting.QualifiedEbnfQualifiedIdentifier}´");
+                            throw new NotImplementedException($"invalid setting `{blockSetting.Setting.SettingIdentifier}´" +
+                                                              $" with value `{blockSetting.Setting.QualifiedEbnfQualifiedIdentifier}´");
                     }
 
                     break;
@@ -151,7 +138,7 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfFactorIdentifier identifier:
-                    var nonTerminal = GetFullyQualifiedNameFromQualifiedIdentifier(identifier.QualifiedEbnfQualifiedIdentifier);
+                    var nonTerminal = GetQualifiedName(identifier.QualifiedEbnfQualifiedIdentifier);
                     currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
                     break;
 
@@ -186,19 +173,18 @@ namespace Pliant.Ebnf
             yield return groupingProduction;
         }
 
-        private IReadOnlyList<IgnoreSettingModel> IgnoreSettings(EbnfBlockSetting blockSetting)
+        private IgnoreSettingModel IgnoreSetting(EbnfBlockSetting blockSetting)
         {
             var fullyQualifiedName =
-                GetFullyQualifiedNameFromQualifiedIdentifier(blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
-            var ignoreSettingModel = new IgnoreSettingModel(fullyQualifiedName);
-            return new[] {ignoreSettingModel};
+                GetQualifiedName(blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
+            return new IgnoreSettingModel(fullyQualifiedName);
         }
 
         private LexerRuleModel LexerRule(EbnfBlockLexerRule blockLexerRule)
         {
             var ebnfLexerRule = blockLexerRule.LexerRule;
 
-            var fullyQualifiedName = GetFullyQualifiedNameFromQualifiedIdentifier(
+            var fullyQualifiedName = GetQualifiedName(
                 ebnfLexerRule.Identifier);
 
             var lexerRule = LexerRuleExpression(
@@ -330,7 +316,7 @@ namespace Pliant.Ebnf
 
         private IEnumerable<ProductionModel> Rule(EbnfRule rule)
         {
-            var nonTerminal = GetFullyQualifiedNameFromQualifiedIdentifier(rule.QualifiedEbnfQualifiedIdentifier);
+            var nonTerminal = GetQualifiedName(rule.QualifiedEbnfQualifiedIdentifier);
             var productionModel = new ProductionModel(nonTerminal);
             foreach (var production in Expression(rule.Expression, productionModel))
             {
@@ -342,7 +328,7 @@ namespace Pliant.Ebnf
 
         private StartProductionSettingModel StartSetting(EbnfBlockSetting blockSetting)
         {
-            var productionName = GetFullyQualifiedNameFromQualifiedIdentifier(
+            var productionName = GetQualifiedName(
                 blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
             return new StartProductionSettingModel(productionName);
         }
@@ -363,12 +349,11 @@ namespace Pliant.Ebnf
             }
         }
 
-        private IReadOnlyList<TriviaSettingModel> TriviaSettings(EbnfBlockSetting blockSetting)
+        private TriviaSettingModel TriviaSetting(EbnfBlockSetting blockSetting)
         {
             var fullyQualifiedName =
-                GetFullyQualifiedNameFromQualifiedIdentifier(blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
-            var triviaSettingModel = new TriviaSettingModel(fullyQualifiedName);
-            return new[] {triviaSettingModel};
+                GetQualifiedName(blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
+            return new TriviaSettingModel(fullyQualifiedName);
         }
 
         private bool TryRecognizeSimpleLiteralExpression(

@@ -29,9 +29,9 @@ namespace Pliant.Grammars
         {
             foreach (var production in productions)
             {
-                var rules = new DottedRule[production.RightHandSide.Count + 1];
+                var rules = new DottedRule[production.Count + 1];
                 this.index.Add(production, rules);
-                for (var dot = 0; dot <= production.RightHandSide.Count; dot++)
+                for (var dot = 0; dot <= production.Count; dot++)
                 {
                     rules[dot] = new DottedRule(production, dot);
                 }

@@ -7,10 +7,9 @@ namespace Pliant.Forest
 {
     public sealed class VirtualForestNode : InternalForestNode, ISymbolForestNode
     {
-        public VirtualForestNode(
-            int location,
-            TransitionState transitionState,
-            IForestNode completedParseNode)
+        public VirtualForestNode(TransitionState transitionState,
+                                 int location,
+                                 IForestNode completedParseNode)
             : this(
                 location,
                 transitionState,
@@ -153,7 +152,7 @@ namespace Pliant.Forest
             var completedParseNode = path.ForestNode;
             if (transitionState.NextTransition != null)
             {
-                var virtualNode = new VirtualForestNode(Location, transitionState.NextTransition, completedParseNode);
+                var virtualNode = new VirtualForestNode(transitionState.NextTransition, Location, completedParseNode);
 
                 if (transitionState.Reduction.ParseNode == null)
                 {

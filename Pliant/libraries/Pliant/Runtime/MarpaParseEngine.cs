@@ -215,7 +215,6 @@ namespace Pliant.Runtime
         {
             foreach (var preComputedState in states)
             {
-                var isCompleted = preComputedState.Dot == preComputedState.Production.RightHandSide.Count;
                 if (!preComputedState.IsComplete)
                 {
                     continue;
@@ -286,8 +285,7 @@ namespace Pliant.Runtime
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsStartState(DottedRule state)
         {
-            var start = this._preComputedGrammar.Grammar.Start;
-            return state.Production.LeftHandSide.Equals(start);
+            return state.Production.LeftHandSide.Is(this._preComputedGrammar.Grammar.Start);
         }
 
         private void LeoReductionOperation(int iLoc, CachedDottedRuleSetTransition fromLim)

@@ -20,10 +20,8 @@ namespace Pliant.Tests.Unit.Builders
         {
             var grammar = new GrammarModel();
             var lexerRuleModel = new LexerRuleModel(new StringLiteralLexerRule("this is a literal"));
-            grammar.IgnoreSettingModels.Add(
-                new IgnoreSettingModel(
-                    lexerRuleModel));
-            grammar.LexerRuleModels.Add(lexerRuleModel);
+            grammar.AddIgnoreSetting(new IgnoreSettingModel(lexerRuleModel));
+            grammar.AddLexerRule(lexerRuleModel);
             Assert.AreEqual(1, grammar.LexerRuleModels.Count);
             Assert.AreEqual(1, grammar.IgnoreSettingModels.Count);
         }
@@ -52,9 +50,8 @@ namespace Pliant.Tests.Unit.Builders
             grammarModel.AddProduction(B);
 
             var lexerRuleModel = new LexerRuleModel(space);
-            grammarModel.LexerRuleModels.Add(lexerRuleModel);
-            grammarModel.IgnoreSettingModels.Add(
-                new IgnoreSettingModel(lexerRuleModel));
+            grammarModel.AddLexerRule(lexerRuleModel);
+            grammarModel.AddIgnoreSetting(new IgnoreSettingModel(lexerRuleModel));
 
             grammarModel.Start = S;
 

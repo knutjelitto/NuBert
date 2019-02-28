@@ -28,9 +28,9 @@ namespace Pliant.Grammars
             return this._innerGrammar.GetLexerRuleIndex(lexerRule);
         }
 
-        public IReadOnlyList<Production> RulesFor(NonTerminal nonTerminal)
+        public IReadOnlyList<Production> PrductionsFor(NonTerminal nonTerminal)
         {
-            return this._innerGrammar.RulesFor(nonTerminal);
+            return this._innerGrammar.PrductionsFor(nonTerminal);
         }
 
         public IReadOnlyList<Production> StartProductions()

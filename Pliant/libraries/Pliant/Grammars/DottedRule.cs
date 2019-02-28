@@ -14,7 +14,7 @@ namespace Pliant.Grammars
             Dot = dot;
             PostDotSymbol = GetPostDotSymbol(production, dot);
             PreDotSymbol = GetPreDotSymbol(production, dot);
-            IsComplete = IsCompleted(dot, production);
+            IsComplete = IsCompleted(production, dot);
         }
 
         public bool IsComplete { get; }
@@ -42,50 +42,51 @@ namespace Pliant.Grammars
 
         public override string ToString()
         {
-            var stringBuilder = new StringBuilder()
-                .AppendFormat("{0} ->", Production.LeftHandSide.Value);
             const string dot = "\u25CF";
 
-            for (var p = 0; p < Production.RightHandSide.Count; p++)
+            var builder = new StringBuilder();
+                
+            builder.Append($"{Production.LeftHandSide} ->");
+
+            for (var p = 0; p < Production.Count; p++)
             {
-                stringBuilder.AppendFormat(
+                builder.AppendFormat(
                     "{0}{1}",
                     p == Dot ? dot : " ",
-                    Production.RightHandSide[p]);
+                    Production[p]);
             }
 
-            if (Dot == Production.RightHandSide.Count)
+            if (Dot == Production.Count)
             {
-                stringBuilder.Append(dot);
+                builder.Append(dot);
             }
 
-            return stringBuilder.ToString();
+            return builder.ToString();
         }
 
-        private static Symbol GetPostDotSymbol(Production production, int position)
+        private static Symbol GetPostDotSymbol(Production production, int dot)
         {
-            var productionRightHandSide = production.RightHandSide;
-            if (position >= productionRightHandSide.Count)
-            {
-                return null;
-            }
-
-            return productionRightHandSide[position];
-        }
-
-        private static Symbol GetPreDotSymbol(Production production, int position)
-        {
-            if (position == 0 || production.IsEmpty)
+            if (dot >= production.Count)
             {
                 return null;
             }
 
-            return production.RightHandSide[position - 1];
+            return production[dot];
         }
 
-        private static bool IsCompleted(int position, Production production)
+        private static Symbol GetPreDotSymbol(Production production, int dot)
         {
-            return position == production.RightHandSide.Count;
+            if (dot <= 0 || production.Count == 0)
+            {
+                return null;
+            }
+
+            return production[dot - 1];
+        }
+
+        private static bool IsCompleted(Production production, int dot)
+        {
+            return dot == production.Count;
         }
     }
 }

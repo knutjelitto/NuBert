@@ -17,18 +17,6 @@ namespace Pliant.Grammars
         public string Name { get; }
         public string Qualifier { get; }
 
-        public static bool operator ==(QualifiedName qualifiedName, string value)
-        {
-            Debug.Assert(!ReferenceEquals(qualifiedName, null), nameof(qualifiedName) + " != null");
-            return qualifiedName.FullName.Equals(value);
-        }
-
-        public static bool operator !=(QualifiedName qualifiedName, string value)
-        {
-            Debug.Assert(!ReferenceEquals(qualifiedName, null), nameof(qualifiedName) + " != null");
-            return !qualifiedName.FullName.Equals(value);
-        }
-
         public override bool Equals(object obj)
         {
             return obj is QualifiedName other && FullName.Equals(other.FullName);

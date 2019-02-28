@@ -31,12 +31,7 @@ namespace Pliant.Charts
 
         public bool Contains(DottedRule rule, int origin)
         {
-            if (this.index.TryGetValue(rule, out var origins))
-            {
-                return origins.TryGetValue(origin, out var _);
-            }
-
-            return false;
+            return this.index.TryGetValue(rule, out var origins) && origins.TryGetValue(origin, out var _);
         }
 
         public IEnumerator<NormalState> GetEnumerator()
