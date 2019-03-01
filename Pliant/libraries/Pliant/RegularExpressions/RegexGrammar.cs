@@ -1,5 +1,6 @@
 ﻿using Pliant.Automata;
 using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.RegularExpressions
 {
@@ -134,17 +135,13 @@ namespace Pliant.RegularExpressions
         private static LexerRule CreateNotMetaLexerRule()
         {
             return new TerminalLexerRule(
-                new NegationTerminal(
-                       new SetTerminal('.', '^', '$', '(', ')', '[', ']', '+', '*', '?', '\\', '/')),
+                new NegationTerminal(new SetTerminal('.', '^', '$', '(', ')', '[', ']', '+', '*', '?', '\\', '/')),
                 "NotMeta");
         }
 
         private static LexerRule CreateNotCloseBracketLexerRule()
         {
-            return new TerminalLexerRule(
-                new NegationTerminal(
-                    new CharacterTerminal(']')),
-                "NotCloseBracket");
+            return new TerminalLexerRule(new NegationTerminal(new CharacterTerminal(']')), "NotCloseBracket");
         }
 
         private static LexerRule CreateEscapeCharacterLexerRule()
@@ -152,8 +149,8 @@ namespace Pliant.RegularExpressions
             var start = DfaState.Inner();
             var escape = DfaState.Inner();
             var final = DfaState.Final();
-            start.AddTransition(new DfaTransition(new CharacterTerminal('\\'), escape));
-            escape.AddTransition(new DfaTransition(new AnyTerminal(), final));
+            start.AddTransition(new CharacterTerminal('\\'), escape);
+            escape.AddTransition(AnyTerminal.Instance, final);
             return new DfaLexerRule(start, "escape");
         }
 

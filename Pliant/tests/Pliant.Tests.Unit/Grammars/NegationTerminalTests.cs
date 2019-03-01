@@ -1,10 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Pliant.Grammars;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit.Grammars
 {
@@ -14,8 +9,7 @@ namespace Pliant.Tests.Unit.Grammars
         [TestMethod]
         public void NegationTerminalShouldNegateAnyTerminal()
         {
-            var anyTerminal = new AnyTerminal();
-            var negationTerminal = new NegationTerminal(anyTerminal);
+            var negationTerminal = new NegationTerminal(AnyTerminal.Instance);
             Assert.IsFalse(negationTerminal.IsMatch('a'));
             Assert.IsFalse(negationTerminal.IsMatch(char.MaxValue));
             Assert.IsFalse(negationTerminal.IsMatch('0'));
@@ -24,8 +18,7 @@ namespace Pliant.Tests.Unit.Grammars
         [TestMethod]
         public void NegationTerminalShouldReturnInverseIntervals()
         {
-            var anyTerminal = new AnyTerminal();
-            var negationTerminal = new NegationTerminal(anyTerminal);
+            var negationTerminal = new NegationTerminal(AnyTerminal.Instance);
             var intervals = negationTerminal.GetIntervals();
             Assert.AreEqual(0, intervals.Count);            
         }

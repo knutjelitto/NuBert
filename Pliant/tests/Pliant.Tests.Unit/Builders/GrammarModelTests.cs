@@ -80,7 +80,7 @@ namespace Pliant.Tests.Unit.Builders
             ns1GrammarModel.AddProduction(S);
             ns1GrammarModel.AddProduction(A);
 
-            var ns1ProductionReference = new ProductionReferenceModel(ns1GrammarModel.ToGrammar());
+            var ns1ProductionReference = new GrammarReferenceModel(ns1GrammarModel.ToGrammar());
 
             var Z = new ProductionModel(new QualifiedName("ns2", "Z"));
             var X = new ProductionModel(new QualifiedName("ns2", "X"));

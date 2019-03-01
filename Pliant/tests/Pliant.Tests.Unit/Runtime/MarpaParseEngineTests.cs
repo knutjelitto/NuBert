@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
-using Pliant.Charts;
 using Pliant.Grammars;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
@@ -30,11 +29,15 @@ namespace Pliant.Tests.Unit.Runtime
                 var token = tokens[t];
                 var result = parseEngine.Pulse(token);
                 if (!result)
+                {
                     Assert.Fail($"Error parsing at token position {t}");
+                }
             }
             var accepted = parseEngine.IsAccepted();
             if (!accepted)
-                Assert.Fail($"Parse is not accepted. ");
+            {
+                Assert.Fail("Parse is not accepted. ");
+            }
 
             var deterministicChart = parseEngine.Chart;
             var lastDeterministicSet = deterministicChart.Sets[deterministicChart.Sets.Count - 1];
@@ -56,9 +59,9 @@ namespace Pliant.Tests.Unit.Runtime
             var closeBracket = new TokenType("]");
             var dash = new TokenType("-");
 
-            for (int i = 0; i < pattern.Length; i++)
+            for (var i = 0; i < pattern.Length; i++)
             {
-                TokenType tokenType = null;
+                TokenType tokenType;
                 switch (pattern[i])
                 {
                     case '[':
@@ -74,10 +77,8 @@ namespace Pliant.Tests.Unit.Runtime
                         break;
 
                     default:
-                        if (i < 10)
-                            tokenType = notCloseBracket;
-                        else
-                            tokenType = notMeta;
+                        tokenType = i < 10 ? notCloseBracket : notMeta;
+
                         break;
                 }
                 var token = new Token(i, pattern[i].ToString(), tokenType);
@@ -102,8 +103,8 @@ namespace Pliant.Tests.Unit.Runtime
 
             A.Rule = openBracket + VR + closeBracket;
             VR.Rule = V 
-                | V + comma + VR 
-                | (Expr)null;
+                | (V + comma + VR) 
+                | Expr.Epsilon;
             V.Rule = number;
 
             var grammar = new GrammarExpression(
@@ -120,16 +121,20 @@ namespace Pliant.Tests.Unit.Runtime
                 new Token(4, "]", closeBracket.TokenType)
             };
 
-            for (var i = 0; i < tokens.Length; i++)
+            foreach (var token in tokens)
             {
-                var result = marpaParseEngine.Pulse(tokens[i]);
+                var result = marpaParseEngine.Pulse(token);
                 if (!result)
+                {
                     Assert.Fail($"Failure parsing at position {marpaParseEngine.Location}");
+                }
             }
 
             var accepted = marpaParseEngine.IsAccepted();
             if (!accepted)
-                Assert.Fail($"Input was not accepted.");
+            {
+                Assert.Fail("Input was not accepted.");
+            }
         }
 
         [TestMethod]
@@ -140,8 +145,8 @@ namespace Pliant.Tests.Unit.Runtime
                 A = "A";
 
             S.Rule = A;
-            A.Rule = (Expr)'a' + 'a' + A
-                | (Expr) 'b' + 'b';
+            A.Rule = ((Expr)'a' + 'a' + A)
+                | ((Expr) 'b' + 'b');
 
             var grammar = new GrammarExpression(S, new[] { S, A }).ToGrammar();
             var marpaParseEngine = new MarpaParseEngine(grammar);
@@ -153,16 +158,20 @@ namespace Pliant.Tests.Unit.Runtime
                 new Token(1, "b", bTokenType)
             };
             
-            for (var i = 0; i < tokens.Length; i++)
+            foreach (var token in tokens)
             {
-                var result = marpaParseEngine.Pulse(tokens[i]);
+                var result = marpaParseEngine.Pulse(token);
                 if (!result)
+                {
                     Assert.Fail($"Failure parsing at position {marpaParseEngine.Location}");
+                }
             }
 
             var accepted = marpaParseEngine.IsAccepted();
             if (!accepted)
-                Assert.Fail($"Input was not accepted.");
+            {
+                Assert.Fail("Input was not accepted.");
+            }
         }     
     }
 }

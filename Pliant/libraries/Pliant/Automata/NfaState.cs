@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Pliant.Collections;
-using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.Automata
 {

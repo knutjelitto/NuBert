@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit
 {
@@ -9,9 +10,10 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void AnyTerminalIsMatchShouldReturnTrueWhenAnyCharacterSpecified()
         {
-            var anyTerminal = new AnyTerminal();
-            for (char c = char.MinValue; c < char.MaxValue; c++)
-                Assert.IsTrue(anyTerminal.IsMatch(c));
+            for (var c = char.MinValue; c < char.MaxValue; c++)
+            {
+                Assert.IsTrue(AnyTerminal.Instance.IsMatch(c));
+            }
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Pliant.Automata;
 using Pliant.Builders;
 using Pliant.Grammars;
 using Pliant.RegularExpressions;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.Ebnf

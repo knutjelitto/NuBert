@@ -4,6 +4,7 @@ using Pliant.Grammars;
 using Pliant.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit.RegularExpressions
 {

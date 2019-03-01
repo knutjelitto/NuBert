@@ -106,11 +106,11 @@ namespace Pliant.Tests.Unit.Ebnf
                                                 new RegexTermFactor(
                                                     new RegexFactorAtom(
                                                         new RegexAtomSet(
-                                                            new RegexSet(false, 
-                                                                new RegexCharacterClass(
-                                                                    new RegexCharactersRange(
-                                                                        new RegexCharacterClassCharacter('a'),
-                                                                        new RegexCharacterClassCharacter('z')))))))), 
+                                                            new RegexSet(new RegexCharacterClass(
+                                                                             new RegexCharactersRange(
+                                                                                 new RegexCharacterClassCharacter('a'),
+                                                                                 new RegexCharacterClassCharacter('z'))),
+                                                                         false))))), 
                                             false)))))));
 
             var actual = Parse(@"Rule = /[a-z]/;");

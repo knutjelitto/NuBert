@@ -1,5 +1,6 @@
 ﻿using Pliant.Automata;
 using Pliant.Grammars;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.LexerRules
@@ -11,13 +12,13 @@ namespace Pliant.LexerRules
 
         static WordLexerRule()
         {
-            _start = DfaState.Inner();
+            var start = DfaState.Inner();
             var end = DfaState.Final();
-            var transition = new DfaTransition(
-                new WordTerminal(),
-                end);
-            _start.AddTransition(transition);
-            end.AddTransition(transition);
+
+            start.AddTransition(WordTerminal.Instance, end);
+            end.AddTransition(WordTerminal.Instance, end);
+
+            _start = start;
         }
 
         public WordLexerRule()

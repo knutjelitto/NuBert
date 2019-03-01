@@ -1,5 +1,5 @@
 ﻿using Pliant.Automata;
-using Pliant.Grammars;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.LexerRules
@@ -12,25 +12,18 @@ namespace Pliant.LexerRules
 
         static SimpleDoubleQuoteStringLexerRule()
         {
-            var states = new DfaState[3]
-            {
-                DfaState.Inner(),
-                DfaState.Inner(),
-                DfaState.Final()
-            };
+            var start = DfaState.Inner();
+            var innner = DfaState.Inner();
+            var final = DfaState.Final();
 
             var quote = new CharacterTerminal('"');
             var notQuote = new NegationTerminal(quote);
 
-            var quoteToNotQuote = new DfaTransition(quote, states[1]);
-            var notQuoteToNotQuote = new DfaTransition(notQuote, states[1]);
-            var notQuoteToQuote = new DfaTransition(quote, states[2]);
+            start.AddTransition(quote, innner);
+            innner.AddTransition(notQuote, innner);
+            innner.AddTransition(quote, final);
 
-            states[0].AddTransition(quoteToNotQuote);
-            states[1].AddTransition(notQuoteToNotQuote);
-            states[1].AddTransition(notQuoteToQuote);
-
-            Start = states[0];
+            Start = start;
         }
 
         public SimpleDoubleQuoteStringLexerRule()

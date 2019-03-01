@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Grammars;
 using System.Collections.Generic;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit.Grammars
 {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
 using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit.Builders.Expressions
 {
@@ -389,7 +390,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             Terminal
-                a = new RangeTerminal('a', 'b');
+                a = new SetTerminal('a', 'b');
             S.Rule = a + (Expr)"b";
 
             Assert.IsNotNull(S.ProductionModel);
@@ -403,7 +404,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             Terminal
-                a = new RangeTerminal('a', 'b');
+                a = new SetTerminal('a', 'b');
             S.Rule = (Expr)"b"+ a;
 
             Assert.IsNotNull(S.ProductionModel);
@@ -417,7 +418,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             Terminal
-                a = new RangeTerminal('a', 'b');
+                a = new SetTerminal('a', 'b');
             S.Rule = a | (Expr)"b";
 
             Assert.IsNotNull(S.ProductionModel);
@@ -432,7 +433,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             Terminal
-                a = new RangeTerminal('a', 'b');
+                a = new SetTerminal('a', 'b');
             S.Rule = (Expr)"b" | a;
 
             Assert.IsNotNull(S.ProductionModel);
@@ -442,12 +443,21 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         }
 
         [TestMethod]
-        public void ProductionExpressionShouldSupportNullRuleBody()
+        public void ProductionExpressionShouldSupportNullRuleBodyProp()
         {
             ProductionExpression
                 S = "S";
 
-            S.Rule = (Expr)null;
+            S.Rule = Expr.Epsilon;
+        }
+
+        [TestMethod]
+        public void ProductionExpressionShouldSupportNullRuleBodyMeth()
+        {
+            ProductionExpression
+                S = "S";
+
+            S.Rules(null);
         }
     }
 }

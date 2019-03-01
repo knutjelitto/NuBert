@@ -12,7 +12,7 @@ namespace Pliant.Tests.Common.Grammars
             ProductionExpression A = "A";
             A.Rule =
                 ('a' + A)
-                | (Expr)null;
+                | Expr.Epsilon;
 
             grammar = new GrammarExpression(A, new[] { A })
                 .ToGrammar();

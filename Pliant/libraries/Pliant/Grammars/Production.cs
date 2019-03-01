@@ -12,7 +12,7 @@ namespace Pliant.Grammars
         {
             LeftHandSide = leftHandSide;
             RightHandSide = rightHandSide.ToList();
-            this._hashCode = ComputeHashCode();
+            this._hashCode = (LeftHandSide, HashCode.Compute(RightHandSide)).GetHashCode();
         }
 
         public Production(NonTerminal leftHandSide, params Symbol[] rightHandSide)

@@ -2,7 +2,7 @@
 using System.Linq;
 using Pliant.Utilities;
 
-namespace Pliant.Grammars
+namespace Pliant.Terminals
 {
     public sealed class SetTerminal : Terminal
     {
@@ -16,7 +16,7 @@ namespace Pliant.Grammars
             this.characterSet = new HashSet<char> {first, second};
         }
 
-        public SetTerminal(IEnumerable<char> characterSet)
+        private SetTerminal(IEnumerable<char> characterSet)
         {
             this.characterSet = new HashSet<char>(characterSet);
             this.intervals = CreateIntervals(this.characterSet);
@@ -34,7 +34,7 @@ namespace Pliant.Grammars
 
         public override string ToString()
         {
-            return $"[{string.Join(string.Empty, this.characterSet)}]";
+            return $"[{string.Join(string.Empty, GetIntervals())}]";
         }
 
         private static IReadOnlyList<Interval> CreateIntervals(IEnumerable<char> characters)

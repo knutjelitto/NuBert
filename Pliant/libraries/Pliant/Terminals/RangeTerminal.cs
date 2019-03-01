@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pliant.Grammars
+namespace Pliant.Terminals
 {
     public sealed class RangeTerminal : Terminal
     {

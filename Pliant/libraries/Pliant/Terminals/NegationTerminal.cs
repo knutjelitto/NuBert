@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Pliant.Utilities;
 
-namespace Pliant.Grammars
+namespace Pliant.Terminals
 {
     public sealed class NegationTerminal : Terminal
     {

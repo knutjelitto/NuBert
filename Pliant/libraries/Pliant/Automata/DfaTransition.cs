@@ -1,8 +1,8 @@
-﻿using Pliant.Grammars;
+﻿using Pliant.Terminals;
 
 namespace Pliant.Automata
 {
-    public class DfaTransition
+    public sealed class DfaTransition
     {
         public DfaTransition(Terminal terminal, DfaState target)
         {

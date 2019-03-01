@@ -71,9 +71,9 @@ namespace Pliant.Builders
                 {
                     symbols.Add(symbolModel.Symbol);
 
-                    if (symbolModel is ProductionReferenceModel productionReferenceModel)
+                    if (symbolModel is GrammarReferenceModel grammarReferenceModel)
                     {
-                        foreach (var production in productionReferenceModel.Grammar.Productions)
+                        foreach (var production in grammarReferenceModel.Grammar.Productions)
                         {
                             yield return production;
                         }

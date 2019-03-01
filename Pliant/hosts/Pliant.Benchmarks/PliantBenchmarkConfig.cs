@@ -10,7 +10,7 @@ namespace Pliant.Benchmarks
     {
         public PliantBenchmarkConfig()
         {
-            Add(new MemoryDiagnoser());
+            Add(MemoryDiagnoser.Default);
         }
     }
 }

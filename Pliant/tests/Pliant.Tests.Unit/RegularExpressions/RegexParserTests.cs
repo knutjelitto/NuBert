@@ -40,10 +40,10 @@ namespace Pliant.Tests.Unit.RegularExpressions
                     new RegexTermFactor(
                         new RegexFactorAtom(
                             new RegexAtomSet(
-                                new RegexSet(false,
-                                    new RegexCharacterClass(
-                                        new RegexCharactersUnit(
-                                            new RegexCharacterClassCharacter('a')))))))),
+                                new RegexSet(new RegexCharacterClass(
+                                                 new RegexCharactersUnit(
+                                                     new RegexCharacterClassCharacter('a'))),
+                                             false))))),
                 false);
             Assert.AreEqual(expected, actual);
         }
@@ -60,10 +60,10 @@ namespace Pliant.Tests.Unit.RegularExpressions
                     new RegexTermFactor(
                         new RegexFactorAtom(
                             new RegexAtomSet(
-                                new RegexSet(true,
-                                    new RegexCharacterClass(
-                                        new RegexCharactersUnit(
-                                            new RegexCharacterClassCharacter('a')))))))),
+                                new RegexSet(new RegexCharacterClass(
+                                                 new RegexCharactersUnit(
+                                                     new RegexCharacterClassCharacter('a'))),
+                                             true))))),
                 false);
 
             Assert.AreEqual(expected, actual);
@@ -81,20 +81,19 @@ namespace Pliant.Tests.Unit.RegularExpressions
                     new RegexTermFactor(
                         new RegexFactorAtom(
                             new RegexAtomSet(
-                                new RegexSet(
-                                    false,
-                                    new RegexCharacterClassAlteration(
-                                        characterClass: new RegexCharacterClassAlteration(
-                                            characterClass: new RegexCharacterClass(
-                                                new RegexCharactersRange(
-                                                    new RegexCharacterClassCharacter('0'),
-                                                    new RegexCharacterClassCharacter('9'))),
-                                            characterRange: new RegexCharactersRange(
-                                                new RegexCharacterClassCharacter('A'),
-                                                new RegexCharacterClassCharacter('Z'))),
-                                        characterRange: new RegexCharactersRange(
-                                            new RegexCharacterClassCharacter('a'),
-                                            new RegexCharacterClassCharacter('z')))))))));
+                                new RegexSet(new RegexCharacterClassAlteration(
+                                                 characterClass: new RegexCharacterClassAlteration(
+                                                     characterClass: new RegexCharacterClass(
+                                                         new RegexCharactersRange(
+                                                             new RegexCharacterClassCharacter('0'),
+                                                             new RegexCharacterClassCharacter('9'))),
+                                                     characterRange: new RegexCharactersRange(
+                                                         new RegexCharacterClassCharacter('A'),
+                                                         new RegexCharacterClassCharacter('Z'))),
+                                                 characterRange: new RegexCharactersRange(
+                                                     new RegexCharacterClassCharacter('a'),
+                                                     new RegexCharacterClassCharacter('z'))),
+                                             false))))));
             Assert.AreEqual(expected, actual);
         }
 

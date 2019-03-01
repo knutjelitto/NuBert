@@ -1,9 +1,9 @@
 ﻿using Pliant.Automata;
-using Pliant.Builders;
 using Pliant.Builders.Expressions;
 using Pliant.Grammars;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.Ebnf
@@ -15,9 +15,6 @@ namespace Pliant.Ebnf
             LexerRule
                 settingIdentifier = CreateSettingIdentifierLexerRule(),
                 identifier = CreateIdentifierLexerRule(),
-                any = new TerminalLexerRule(new AnyTerminal(), "."),
-                notCloseBracket = new TerminalLexerRule(new NegationTerminal(new CharacterTerminal(']')), "[^\\]]"),
-                escapeCharacter = CreateEscapeCharacterLexerRule(),
                 whitespace = CreateWhitespaceLexerRule(),
                 multiLineComment = CreateMultiLineCommentLexerRule();
 
@@ -39,8 +36,7 @@ namespace Pliant.Ebnf
                 lexerRuleTerm = LexerRuleTerm,
                 lexerRuleFactor = LexerRuleFactor;
 
-            var regexGrammar = new RegexGrammar();
-            var regexProductionReference = new ProductionReferenceExpression(regexGrammar);
+            var regexProductionReference = new GrammarReferenceExpression(new RegexGrammar());
 
             definition.Rule =
                 block
@@ -154,37 +150,39 @@ namespace Pliant.Ebnf
         public static readonly QualifiedName Setting = new QualifiedName(Namespace, nameof(Setting));
         public static readonly QualifiedName Term = new QualifiedName(Namespace, nameof(Term));
 
-        private static LexerRule CreateEscapeCharacterLexerRule()
-        {
-            var start = DfaState.Inner();
-            var escape = DfaState.Inner();
-            var final = DfaState.Final();
-            start.AddTransition(new DfaTransition(new CharacterTerminal('\\'), escape));
-            escape.AddTransition(new DfaTransition(new AnyTerminal(), final));
-            return new DfaLexerRule(start, TokenTypes.Escape);
-        }
-
         private static LexerRule CreateIdentifierLexerRule()
         {
             // /[a-zA-Z][a-zA-Z0-9-_]*/
             var identifierState = DfaState.Inner();
             var zeroOrMoreLetterOrDigit = DfaState.Final();
             identifierState.AddTransition(
-                new DfaTransition(
-                    new CharacterClassTerminal(
-                        new RangeTerminal('a', 'z'),
-                        new RangeTerminal('A', 'Z')),
-                    zeroOrMoreLetterOrDigit));
+                AsciiLetterTerminal.Instance,
+                zeroOrMoreLetterOrDigit);
             zeroOrMoreLetterOrDigit.AddTransition(
-                new DfaTransition(
-                    new CharacterClassTerminal(
-                        new RangeTerminal('a', 'z'),
-                        new RangeTerminal('A', 'Z'),
-                        new DigitTerminal(),
-                        new SetTerminal('-', '_')),
-                    zeroOrMoreLetterOrDigit));
-            var identifier = new DfaLexerRule(identifierState, TokenTypes.Identifier);
-            return identifier;
+                new CharacterClassTerminal(
+                    AsciiLetterTerminal.Instance,
+                    DigitTerminal.Instance,
+                    new SetTerminal('-', '_')),
+                zeroOrMoreLetterOrDigit);
+
+            return new DfaLexerRule(identifierState, TokenTypes.Identifier);
+        }
+
+        private static LexerRule CreateSingleLineComment()
+        {
+            var slash = new CharacterTerminal('/');
+            var newLine = new CharacterTerminal('\n');
+            var notNewLine = new NegationTerminal(newLine);
+
+            var start = DfaState.Inner();
+            var oneSlash = DfaState.Inner();
+            var twoSlash = DfaState.Final();
+
+            start.AddTransition(slash, oneSlash);
+            oneSlash.AddTransition(slash, twoSlash);
+            twoSlash.AddTransition(notNewLine, twoSlash);
+
+            return new DfaLexerRule(start, TokenTypes.SingleLineComment);
         }
 
         private static LexerRule CreateMultiLineCommentLexerRule()
@@ -200,58 +198,15 @@ namespace Pliant.Ebnf
             var notStar = new NegationTerminal(star);
             var notSlash = new NegationTerminal(slash);
 
-            var firstSlash = new DfaTransition(slash, states[1]);
-            var firstStar = new DfaTransition(star, states[2]);
-            var repeatNotStar = new DfaTransition(notStar, states[2]);
-            var lastStar = new DfaTransition(star, states[3]);
-            var goBackNotSlash = new DfaTransition(notSlash, states[2]);
-            var lastSlash = new DfaTransition(slash, states[4]);
 
-            states[0].AddTransition(firstSlash);
-            states[1].AddTransition(firstStar);
-            states[2].AddTransition(repeatNotStar);
-            states[2].AddTransition(lastStar);
-            states[3].AddTransition(goBackNotSlash);
-            states[3].AddTransition(lastSlash);
+            states[0].AddTransition(slash, states[1]);
+            states[1].AddTransition(star, states[2]);
+            states[2].AddTransition(notStar, states[2]);
+            states[2].AddTransition(star, states[3]);
+            states[3].AddTransition(notSlash, states[2]);
+            states[3].AddTransition(slash, states[4]);
 
             return new DfaLexerRule(states[0], TokenTypes.MultiLineComment);
-        }
-
-        private static LexerRule CreateNotDoubleQuoteLexerRule()
-        {
-            // ([^"]|(\\.))*
-            var start = DfaState.Inner();
-            var escape = DfaState.Inner();
-            var final = DfaState.Final();
-
-            var notDoubleQuoteTerminal = new NegationTerminal(
-                new CharacterTerminal('"'));
-            var escapeTerminal = new CharacterTerminal('\\');
-            var anyTerminal = new AnyTerminal();
-
-            var notDoubleQuoteEdge = new DfaTransition(notDoubleQuoteTerminal, final);
-            start.AddTransition(notDoubleQuoteEdge);
-            final.AddTransition(notDoubleQuoteEdge);
-
-            var escapeEdge = new DfaTransition(escapeTerminal, escape);
-            start.AddTransition(escapeEdge);
-            final.AddTransition(escapeEdge);
-
-            var anyEdge = new DfaTransition(anyTerminal, final);
-            escape.AddTransition(anyEdge);
-
-            return new DfaLexerRule(start, TokenTypes.NotDoubleQuote);
-        }
-
-        private static LexerRule CreateNotSingleQuoteLexerRule()
-        {
-            var start = DfaState.Inner();
-            var final = DfaState.Final();
-            var terminal = new NegationTerminal(new CharacterTerminal('\''));
-            var edge = new DfaTransition(terminal, final);
-            start.AddTransition(edge);
-            final.AddTransition(edge);
-            return new DfaLexerRule(start, TokenTypes.NotSingleQuote);
         }
 
         private static LexerRule CreateSettingIdentifierLexerRule()
@@ -260,33 +215,25 @@ namespace Pliant.Ebnf
             var start = DfaState.Inner();
             var oneLetter = DfaState.Inner();
             var zeroOrMoreLetterOrDigit = DfaState.Final();
-            start.AddTransition(
-                new DfaTransition(
-                    new CharacterTerminal(':'),
-                    oneLetter));
+            start.AddTransition(new CharacterTerminal(':'), oneLetter);
             oneLetter.AddTransition(
-                new DfaTransition(
-                    new CharacterClassTerminal(
-                        new RangeTerminal('a', 'z'),
-                        new RangeTerminal('A', 'Z')),
-                    zeroOrMoreLetterOrDigit));
+                AsciiLetterTerminal.Instance,
+                zeroOrMoreLetterOrDigit);
             zeroOrMoreLetterOrDigit.AddTransition(
-                new DfaTransition(
-                    new CharacterClassTerminal(
-                        new RangeTerminal('a', 'z'),
-                        new RangeTerminal('A', 'Z'),
-                        new DigitTerminal()),
-                    zeroOrMoreLetterOrDigit));
+                new CharacterClassTerminal(
+                    AsciiLetterTerminal.Instance,
+                    DigitTerminal.Instance),
+                zeroOrMoreLetterOrDigit);
             return new DfaLexerRule(start, TokenTypes.SettingIdentifier);
         }
 
         private static LexerRule CreateWhitespaceLexerRule()
         {
-            var whitespaceTerminal = new WhitespaceTerminal();
+            var whitespaceTerminal = WhitespaceTerminal.Instance;
             var startWhitespace = DfaState.Inner();
             var finalWhitespace = DfaState.Final();
-            startWhitespace.AddTransition(new DfaTransition(whitespaceTerminal, finalWhitespace));
-            finalWhitespace.AddTransition(new DfaTransition(whitespaceTerminal, finalWhitespace));
+            startWhitespace.AddTransition(whitespaceTerminal, finalWhitespace);
+            finalWhitespace.AddTransition(whitespaceTerminal, finalWhitespace);
             var whitespace = new DfaLexerRule(startWhitespace, TokenTypes.Whitespace);
             return whitespace;
         }
@@ -294,11 +241,9 @@ namespace Pliant.Ebnf
         private static readonly IGrammar ebnfGrammar;
         public static class TokenTypes
         {
-            public static readonly TokenType Escape = new TokenType("escape");
             public static readonly TokenType Identifier = new TokenType("EbnfQualifiedIdentifier");
             public static readonly TokenType MultiLineComment = new TokenType(@"\/[*]([*][^\/]|[^*])*[*][\/]");
-            public static readonly TokenType NotDoubleQuote = new TokenType(@"([^""]|(\\.))+");
-            public static readonly TokenType NotSingleQuote = new TokenType(@"([^']|(\\.))+");
+            public static readonly TokenType SingleLineComment = new TokenType(@"\/\/.*$");
             public static readonly TokenType SettingIdentifier = new TokenType("settingIdentifier");
             public static readonly TokenType Whitespace = new TokenType("whitespace");
         }

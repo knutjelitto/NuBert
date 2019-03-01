@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Pliant.Collections;
-using Pliant.Grammars;
+using Pliant.Terminals;
 using Pliant.Utilities;
 
 namespace Pliant.Automata
@@ -49,7 +49,7 @@ namespace Pliant.Automata
                     var targetStates = transitions[terminal];
                     var closure = Closure(targetStates, nfa.End);
                     closure = processOnceQueue.EnqueueOrGetExisting(closure);
-                    nfaClosure.State.AddTransition(new DfaTransition(terminal, closure.State));
+                    nfaClosure.State.AddTransition(terminal, closure.State);
                     SharedPools.Default<HashSet<NfaState>>().ClearAndFree(targetStates);
                 }
 

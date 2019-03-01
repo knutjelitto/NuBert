@@ -11,6 +11,7 @@ using Pliant.Tests.Common;
 using Pliant.Tokens;
 using System;
 using System.Text;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit.Runtime
 {
@@ -38,7 +39,7 @@ namespace Pliant.Tests.Unit.Runtime
                 whitespace
                 | (whitespace + S);
             whitespace.Rule =
-                new WhitespaceTerminal();
+                WhitespaceTerminal.Instance;
 
             var grammar = new GrammarExpression(S, new[] { S, whitespace }).ToGrammar();
             return new GrammarLexerRule(nameof(whitespace), grammar);
@@ -96,19 +97,19 @@ namespace Pliant.Tests.Unit.Runtime
             var notStar = new NegationTerminal(star);
             var notSlash = new NegationTerminal(slash);
 
-            var firstSlash = new DfaTransition(slash, states[1]);
-            var firstStar = new DfaTransition(star, states[2]);
-            var repeatNotStar = new DfaTransition(notStar, states[2]);
-            var lastStar = new DfaTransition(star, states[3]);
-            var goBackNotSlash = new DfaTransition(notSlash, states[2]);
-            var lastSlash = new DfaTransition(slash, states[4]);
+            //var firstSlash = new DfaTransition(slash, states[1]);
+            //var firstStar = new DfaTransition(star, states[2]);
+            //var repeatNotStar = new DfaTransition(notStar, states[2]);
+            //var lastStar = new DfaTransition(star, states[3]);
+            //var goBackNotSlash = new DfaTransition(notSlash, states[2]);
+            //var lastSlash = new DfaTransition(slash, states[4]);
 
-            states[0].AddTransition(firstSlash);
-            states[1].AddTransition(firstStar);
-            states[2].AddTransition(repeatNotStar);
-            states[2].AddTransition(lastStar);
-            states[3].AddTransition(goBackNotSlash);
-            states[3].AddTransition(lastSlash);
+            states[0].AddTransition(slash, states[1]);
+            states[1].AddTransition(star, states[2]);
+            states[2].AddTransition(notStar, states[2]);
+            states[2].AddTransition(star, states[3]);
+            states[3].AddTransition(notSlash, states[2]);
+            states[3].AddTransition(slash, states[4]);
             
             return new DfaLexerRule(states[0], new TokenType(@"\/[*]([*][^\/]|[^*])*[*][\/]"));
         }

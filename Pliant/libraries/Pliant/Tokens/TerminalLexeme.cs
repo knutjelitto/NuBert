@@ -1,5 +1,5 @@
-﻿using Pliant.Forest;
-using Pliant.Grammars;
+﻿using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.Tokens
 {

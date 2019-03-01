@@ -19,8 +19,7 @@
 
         public override bool Equals(object obj)
         {
-            return obj is EbnfExpressionSimple other && 
-                   Term.Equals(other.Term);
+            return obj is EbnfExpressionSimple other && Term.Equals(other.Term);
         }
 
         public override int GetHashCode()

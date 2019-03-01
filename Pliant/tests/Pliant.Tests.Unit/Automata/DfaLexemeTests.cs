@@ -2,6 +2,7 @@
 using Pliant.Automata;
 using Pliant.Grammars;
 using Pliant.LexerRules;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.Tests.Unit.Automata
@@ -15,8 +16,8 @@ namespace Pliant.Tests.Unit.Automata
             var randomWhitespace = "\t\f\v \r\n";
             var dfa = DfaState.Inner();
             var final = DfaState.Final();
-            dfa.AddTransition(new DfaTransition(new WhitespaceTerminal(), final));
-            final.AddTransition(new DfaTransition(new WhitespaceTerminal(), final));
+            dfa.AddTransition(WhitespaceTerminal.Instance, final);
+            final.AddTransition(WhitespaceTerminal.Instance, final);
 
             var dfaLexerRule = new DfaLexerRule(dfa, new TokenType("whitespace"));
             var whitespaceLexeme = new DfaLexeme(dfaLexerRule, 0);
@@ -32,11 +33,11 @@ namespace Pliant.Tests.Unit.Automata
             var wordInput = "t90vAriabl3";
             var dfa = DfaState.Inner();
             var final = DfaState.Final();
-            dfa.AddTransition(new DfaTransition(new RangeTerminal('a', 'z'), final));
-            dfa.AddTransition(new DfaTransition(new RangeTerminal('A', 'Z'), final));
-            final.AddTransition(new DfaTransition(new RangeTerminal('a', 'z'), final));
-            final.AddTransition(new DfaTransition(new RangeTerminal('A', 'Z'), final));
-            final.AddTransition(new DfaTransition(new DigitTerminal(), final));
+            dfa.AddTransition(new RangeTerminal('a', 'z'), final);
+            dfa.AddTransition(new RangeTerminal('A', 'Z'), final);
+            final.AddTransition(new RangeTerminal('a', 'z'), final);
+            final.AddTransition(new RangeTerminal('A', 'Z'), final);
+            final.AddTransition(DigitTerminal.Instance, final);
 
             var dfaLexerRule = new DfaLexerRule(dfa, new TokenType("Identifier"));
             var indentifierLexeme = new DfaLexeme(dfaLexerRule, 0);
@@ -52,8 +53,8 @@ namespace Pliant.Tests.Unit.Automata
             var numberInput = "0";
             var dfa = DfaState.Inner();
             var final = DfaState.Final();
-            dfa.AddTransition(new DfaTransition(new RangeTerminal('a', 'z'), final));
-            final.AddTransition(new DfaTransition(new RangeTerminal('a', 'z'), final));
+            dfa.AddTransition(new RangeTerminal('a', 'z'), final);
+            final.AddTransition(new RangeTerminal('a', 'z'), final);
 
             var dfaLexerRule = new DfaLexerRule(dfa, new TokenType("lowerCase"));
             var letterLexeme = new DfaLexeme(dfaLexerRule, 0);

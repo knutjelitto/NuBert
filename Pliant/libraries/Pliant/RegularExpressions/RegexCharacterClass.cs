@@ -29,9 +29,7 @@
 
     public class RegexCharacterClassAlteration : RegexCharacterClass
     {
-        public RegexCharacterClassAlteration(
-            RegexCharacters characterRange,
-            RegexCharacterClass characterClass)
+        public RegexCharacterClassAlteration(RegexCharacters characterRange, RegexCharacterClass characterClass)
             : base(characterRange)
         {
             CharacterClass = characterClass;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Automata;
 using Pliant.Grammars;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.Tests.Unit.Automata
@@ -17,9 +18,8 @@ namespace Pliant.Tests.Unit.Automata
                 DfaState.Final()
             };
 
-            var whitespaceToFinal = new DfaTransition(new WhitespaceTerminal(), states[1]);
-            states[0].AddTransition(whitespaceToFinal);
-            states[1].AddTransition(whitespaceToFinal);
+            states[0].AddTransition(WhitespaceTerminal.Instance, states[1]);
+            states[1].AddTransition(WhitespaceTerminal.Instance, states[1]);
 
             var dfaLexerRule = new DfaLexerRule(states[0], new TokenType(@"\s+"));
 

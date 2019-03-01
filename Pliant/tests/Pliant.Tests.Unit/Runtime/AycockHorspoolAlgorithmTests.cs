@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
-using Pliant.Charts;
 using Pliant.Grammars;
 using Pliant.Runtime;
+using Pliant.Terminals;
 using Pliant.Tokens;
-using Testable;
 
 namespace Pliant.Tests.Unit.Runtime
 {
@@ -18,19 +17,19 @@ namespace Pliant.Tests.Unit.Runtime
                 new CharacterTerminal('a'),
                 new TokenType("a"));
 
-            ProductionExpression 
+            ProductionExpression
                 SPrime = "S'",
                 S = "S",
                 A = "A",
                 E = "E";
 
             SPrime.Rule = S;
-            S.Rule = (Expr)S | A + A + A + A;
-            A.Rule = (Expr)"a" | E;
+            S.Rule = (Expr) S | (A + A + A + A);
+            A.Rule = (Expr) "a" | E;
 
             var expression = new GrammarExpression(
                 SPrime,
-                new[] { SPrime, S, A, E });
+                new[] {SPrime, S, A, E});
 
             var grammar = expression.ToGrammar();
 

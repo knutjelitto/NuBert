@@ -33,7 +33,7 @@ namespace Pliant.Json
             PairRepeat.Rule =
                 Pair
                 | (Pair + ',' + PairRepeat)
-                | (Expr)null;
+                | Expr.Epsilon;
 
             Pair.Rule =
                 (Expr)@string + ':' + Value;
@@ -44,10 +44,10 @@ namespace Pliant.Json
             ValueRepeat.Rule =
                 Value
                 | (Value + ',' + ValueRepeat)
-                | (Expr)null;
+                | Expr.Epsilon;
 
-            Value.Rule = (Expr)
-                @string
+            Value.Rule =
+                (Expr)@string
                 | number
                 | Object
                 | Array

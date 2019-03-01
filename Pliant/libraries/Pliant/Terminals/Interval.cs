@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Pliant.Utilities;
 
-namespace Pliant.Grammars
+namespace Pliant.Terminals
 {
     /// <summary>
     /// Defines an interval with a inclusive min and max. Does not represent empty sets. Represents single value sets with Min == Max
@@ -200,7 +200,12 @@ namespace Pliant.Grammars
 
         public override string ToString()
         {
-            return $"'[{this.Min}', '{this.Max}']";
+            if (this.Min == this.Max)
+            {
+                return $"{this.Min}";
+            }
+
+            return $"{this.Min}-{this.Max}";
         }
 
         /// <summary>

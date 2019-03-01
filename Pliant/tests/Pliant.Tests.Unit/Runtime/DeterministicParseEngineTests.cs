@@ -7,6 +7,7 @@ using Pliant.Tests.Common;
 using Pliant.Tokens;
 using Pliant.Tests.Common.Grammars;
 using Pliant.LexerRules;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit.Runtime
 {
@@ -101,7 +102,7 @@ namespace Pliant.Tests.Unit.Runtime
             ProductionExpression A = "A";
             A.Rule =
                 'a' + A
-                | (Expr)null;
+                | Expr.Epsilon;
 
             var grammarExpression = new GrammarExpression(A, new[] { A });
             
@@ -152,7 +153,7 @@ namespace Pliant.Tests.Unit.Runtime
             A.Rule = openBracket + VR + closeBracket;
             VR.Rule = V
                 | V + comma + VR
-                | (Expr)null;
+                | Expr.Epsilon;
             V.Rule = number;
 
             var grammar = new GrammarExpression(

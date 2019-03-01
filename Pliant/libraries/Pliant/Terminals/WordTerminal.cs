@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace Pliant.Grammars
+namespace Pliant.Terminals
 {
     public class WordTerminal : Terminal
     {
+        public static readonly WordTerminal Instance = new WordTerminal();
+        private WordTerminal()
+        {
+        }
+
         public override IReadOnlyList<Interval> GetIntervals()
         {
             return intervals;
@@ -11,16 +16,16 @@ namespace Pliant.Grammars
 
         public override bool IsMatch(char character)
         {
-            return 'A' <= character && character <= 'Z' || 
-                   'a' <= character && character <= 'z' || 
+            return 'a' <= character && character <= 'z' ||
+                   'A' <= character && character <= 'Z' || 
                    '0' <= character && character <= '9' || 
                    '_' == character;
         }
 
         private static readonly Interval[] intervals =
         {
-            new Interval('A', 'Z'),
             new Interval('a', 'z'),
+            new Interval('A', 'Z'),
             new Interval('0', '9'),
             new Interval('_')
         };

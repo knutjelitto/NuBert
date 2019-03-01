@@ -67,11 +67,10 @@ namespace Pliant.Tests.Unit.RegularExpressions
                     new RegexTermFactor(
                         new RegexFactorAtom(
                             new RegexAtomSet(
-                                new RegexSet(
-                                    false, 
-                                    new RegexCharacterClass(
-                                        new RegexCharactersUnit(
-                                            new RegexCharacterClassCharacter('a')))))))),
+                                new RegexSet(new RegexCharacterClass(
+                                                 new RegexCharactersUnit(
+                                                     new RegexCharacterClassCharacter('a'))),
+                                             false))))),
                 false);
             Assert.AreEqual("[a]", regex.ToString());
         }
@@ -85,12 +84,11 @@ namespace Pliant.Tests.Unit.RegularExpressions
                     new RegexTermFactor(
                         new RegexFactorAtom(
                             new RegexAtomSet(
-                                new RegexSet(
-                                    false, 
-                                    new RegexCharacterClass(
-                                        new RegexCharactersRange(
-                                            new RegexCharacterClassCharacter('a'),
-                                            new RegexCharacterClassCharacter('z')))))))), 
+                                new RegexSet(new RegexCharacterClass(
+                                                 new RegexCharactersRange(
+                                                     new RegexCharacterClassCharacter('a'),
+                                                     new RegexCharacterClassCharacter('z'))),
+                                             false))))), 
                 false);
             Assert.AreEqual("[a-z]", regex.ToString());
         }
@@ -105,12 +103,11 @@ namespace Pliant.Tests.Unit.RegularExpressions
                     new RegexTermFactor(
                         new RegexFactorAtom(
                             new RegexAtomSet(
-                                new RegexSet(
-                                    true,
-                                    new RegexCharacterClass(
-                                        new RegexCharactersRange(
-                                            new RegexCharacterClassCharacter('a'),
-                                            new RegexCharacterClassCharacter('z')))))))),
+                                new RegexSet(new RegexCharacterClass(
+                                                 new RegexCharactersRange(
+                                                     new RegexCharacterClassCharacter('a'),
+                                                     new RegexCharacterClassCharacter('z'))),
+                                             true))))),
                 false);
             Assert.AreEqual("[^a-z]", regex.ToString());
         }

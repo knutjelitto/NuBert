@@ -1,4 +1,5 @@
-﻿using Pliant.Tokens;
+﻿using Pliant.Terminals;
+using Pliant.Tokens;
 
 namespace Pliant.Grammars
 {
@@ -17,6 +18,11 @@ namespace Pliant.Grammars
 
         public TerminalLexerRule(Terminal terminal, string tokenTypeId)
             : this(terminal, new TokenType(tokenTypeId))
+        {
+        }
+
+        public TerminalLexerRule(Terminal terminal)
+            : this(terminal, terminal.ToString())
         {
         }
 

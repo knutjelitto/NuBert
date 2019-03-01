@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Pliant.Terminals;
 
 namespace Pliant.Automata
 {
@@ -24,9 +25,9 @@ namespace Pliant.Automata
 
         public IReadOnlyList<DfaTransition> Transitions => this._transitions;
 
-        public void AddTransition(DfaTransition edge)
+        public void AddTransition(Terminal terminal, DfaState target)
         {
-            this._transitions.Add(edge);
+            this._transitions.Add(new DfaTransition(terminal, target));
         }
 
         private readonly List<DfaTransition> _transitions;

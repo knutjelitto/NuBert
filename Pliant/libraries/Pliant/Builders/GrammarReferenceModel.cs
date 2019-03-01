@@ -2,9 +2,9 @@
 
 namespace Pliant.Builders
 {
-    public sealed class ProductionReferenceModel : SymbolModel
+    public sealed class GrammarReferenceModel : SymbolModel
     {
-        public ProductionReferenceModel(IGrammar grammar)
+        public GrammarReferenceModel(IGrammar grammar)
             : base(grammar.Start)
         {
             Grammar = grammar;

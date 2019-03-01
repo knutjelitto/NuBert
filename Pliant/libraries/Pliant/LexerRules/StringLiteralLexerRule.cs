@@ -3,7 +3,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public sealed class StringLiteralLexerRule : LexerRule //, IStringLiteralLexerRule
+    public sealed class StringLiteralLexerRule : LexerRule
     {
         public StringLiteralLexerRule(string literal, TokenType tokenType)
             : base(tokenType)

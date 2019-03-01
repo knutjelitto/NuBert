@@ -1,4 +1,5 @@
 ﻿using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.Builders.Expressions
 {
@@ -9,38 +10,34 @@ namespace Pliant.Builders.Expressions
         {
         }
 
+        public static Expr Epsilon => null;
+
         public static explicit operator Expr(string value)
         {
-            return new Expr(
-                new SymbolExpression(
-                    new LexerRuleModel(
-                        new StringLiteralLexerRule(value))));
+            return new Expr(new SymbolExpression(new LexerRuleModel(new StringLiteralLexerRule(value))));
         }
 
         public static explicit operator Expr(char value)
         {
 
-            return new Expr(
-                new SymbolExpression(
-                    new LexerRuleModel(
-                        new TerminalLexerRule(value))));
+            return new Expr(new SymbolExpression(new LexerRuleModel(new TerminalLexerRule(value))));
         }
 
         public static explicit operator Expr(LexerRule value)
         {
-            return new Expr(
-                   new SymbolExpression(
-                       new LexerRuleModel(
-                           value)));
+            return new Expr(new SymbolExpression(new LexerRuleModel(value)));
         }
 
         public static explicit operator Expr(Terminal value)
         {
-            return new Expr(
-                new SymbolExpression(
-                    new LexerRuleModel(
-                        new TerminalLexerRule(value, value.ToString()))));
+            return new Expr(new SymbolExpression(new LexerRuleModel(new TerminalLexerRule(value))));
         }
+
+        public static explicit operator Expr(GrammarReferenceExpression grammarReference)
+        {
+            return new Expr(grammarReference);
+        }
+
 
         public static explicit operator Expr(ProductionExpression productionExpression)
         {

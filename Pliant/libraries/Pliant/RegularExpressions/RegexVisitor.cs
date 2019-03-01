@@ -93,7 +93,7 @@ namespace Pliant.RegularExpressions
                     if (internalNode.Is(RegexGrammar.CharacterClass))
                     {
                         var characterClass = VisitCharacterClassNode(internalNode);
-                        return new RegexSet(negate, characterClass);
+                        return new RegexSet(characterClass, negate);
                     }
             }
 

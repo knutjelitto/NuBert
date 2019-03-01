@@ -199,7 +199,7 @@ namespace Pliant.Tests.Unit.Ebnf
 
             R.Rule = optA;
             optA.Rule = 'a'
-                | (Expr)null;
+                | Expr.Epsilon;
 
             var expectedGrammar = new GrammarExpression(R, new[] { R, optA }).ToGrammar();
             Assert.AreEqual(expectedGrammar.Productions.Count, grammar.Productions.Count);
@@ -239,8 +239,8 @@ namespace Pliant.Tests.Unit.Ebnf
 
             R.Rule =
                 (Expr)'b' + optA + 'c' + optD ;
-            optA.Rule = 'a' | (Expr)null;
-            optD.Rule = 'd' | (Expr)null;
+            optA.Rule = 'a' | Expr.Epsilon;
+            optD.Rule = 'd' | Expr.Epsilon;
 
             var expectedGrammar = new GrammarExpression(R, new[] { R, optA, optD }).ToGrammar();
             Assert.AreEqual(expectedGrammar.Productions.Count, grammar.Productions.Count);
@@ -275,11 +275,10 @@ namespace Pliant.Tests.Unit.Ebnf
                     new RegexTermFactor(
                         new RegexFactorIterator(                            
                             new RegexAtomSet(
-                                new RegexSet(
-                                    false,
-                                    new RegexCharacterClass(
-                                        new RegexCharactersUnit(
-                                            new RegexCharacterClassCharacter(' '))))),
+                                new RegexSet(new RegexCharacterClass(
+                                                 new RegexCharactersUnit(
+                                                     new RegexCharacterClassCharacter(' '))),
+                                             false)),
                             RegexIterator.OneOrMany))),
                 false);
             var definition = new EbnfDefinitionConcatenation(
@@ -317,11 +316,10 @@ namespace Pliant.Tests.Unit.Ebnf
                     new RegexTermFactor(
                         new RegexFactorIterator(
                             new RegexAtomSet(
-                                new RegexSet(
-                                    false,
-                                    new RegexCharacterClass(
-                                        new RegexCharactersUnit(
-                                            new RegexCharacterClassCharacter(' '))))),
+                                new RegexSet(new RegexCharacterClass(
+                                                 new RegexCharactersUnit(
+                                                     new RegexCharacterClassCharacter(' '))),
+                                             false)),
                             RegexIterator.OneOrMany))),
                 false);
             var definition = new EbnfDefinitionConcatenation(

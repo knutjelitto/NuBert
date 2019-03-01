@@ -6,6 +6,7 @@ using Pliant.Charts;
 using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Runtime;
+using Pliant.Terminals;
 using Pliant.Tests.Common;
 using Pliant.Tests.Common.Grammars;
 using Pliant.Tokens;
@@ -474,9 +475,6 @@ namespace Pliant.Tests.Unit.Runtime
         [TestMethod]
         public void ParseEngineRightRecursionShouldNotBeCubicComplexity()
         {
-            var a = new TerminalLexerRule(
-                new CharacterTerminal('a'),
-                new TokenType("a"));
             ProductionExpression A = "A";
             A.Rule =
                 ('a' + A)
@@ -519,9 +517,7 @@ namespace Pliant.Tests.Unit.Runtime
                 | (F + E)
                 | (Expr) null;
             F.Rule =
-                new TerminalLexerRule(
-                    new SetTerminal('a', 'b'),
-                    "[ab]");
+                new TerminalLexerRule(new SetTerminal('a', 'b'));
 
             var grammar = new GrammarExpression(E, new[] {E, F})
                 .ToGrammar();
@@ -531,7 +527,7 @@ namespace Pliant.Tests.Unit.Runtime
         }
 
         [TestMethod]
-        public void ParseEngineShouldDisambiguateFollowingOperatorPresidence()
+        public void ParseEngineShouldDisambiguateFollowingOperatorPrecedence()
         {
             var input = "2*3+5*7";
             var parseTester = new ParseTester(new ExpressionGrammar());
@@ -917,9 +913,7 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static IGrammar CreateExpressionGrammar()
         {
-            var digit = new TerminalLexerRule(
-                new DigitTerminal(),
-                new TokenType("digit"));
+            var digit = new TerminalLexerRule(DigitTerminal.Instance, new TokenType("digit"));
 
             ProductionExpression S = "S", M = "M", T = "T";
             S.Rule = (S + '+' + M) | M;

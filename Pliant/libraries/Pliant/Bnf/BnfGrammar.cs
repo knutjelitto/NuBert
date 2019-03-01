@@ -1,5 +1,6 @@
 ﻿using Pliant.Automata;
 using Pliant.Grammars;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.Bnf
@@ -72,9 +73,8 @@ namespace Pliant.Bnf
             var start = DfaState.Inner();
             var final = DfaState.Final();
             var terminal = new NegationTerminal(new CharacterTerminal('\''));
-            var edge = new DfaTransition(terminal, final);
-            start.AddTransition(edge);
-            final.AddTransition(edge);
+            start.AddTransition(terminal, final);
+            final.AddTransition(terminal, final);
             return new DfaLexerRule(start, new TokenType("not-single-quote"));
         }
 
@@ -85,21 +85,16 @@ namespace Pliant.Bnf
             var escape = DfaState.Inner();
             var final = DfaState.Final();
 
-            var notQuoteTerminal = new NegationTerminal(
-                new SetTerminal('"', '\\'));
+            var notQuoteTerminal = new NegationTerminal(new SetTerminal('"', '\\'));
             var escapeTerminal = new CharacterTerminal('\\');
-            var anyTerminal = new AnyTerminal();
 
-            var notQuoteEdge = new DfaTransition(notQuoteTerminal, final);
-            start.AddTransition(notQuoteEdge);
-            final.AddTransition(notQuoteEdge);
+            start.AddTransition(notQuoteTerminal, final);
+            final.AddTransition(notQuoteTerminal, final);
 
-            var escapeEdge = new DfaTransition(escapeTerminal, escape);
-            start.AddTransition(escapeEdge);
-            final.AddTransition(escapeEdge);
+            start.AddTransition(escapeTerminal, escape);
+            final.AddTransition(escapeTerminal, escape);
 
-            var anyEdge = new DfaTransition(anyTerminal, final);
-            escape.AddTransition(anyEdge);
+            escape.AddTransition(AnyTerminal.Instance, final);
 
             return new DfaLexerRule(start, new TokenType("not-double-quote"));
         }
@@ -120,31 +115,25 @@ namespace Pliant.Bnf
             var ruleNameState = DfaState.Inner();
             var zeroOrMoreLetterOrDigit = DfaState.Final();
             ruleNameState.AddTransition(
-                new DfaTransition(
-                    new CharacterClassTerminal(
-                        new RangeTerminal('a', 'z'),
-                        new RangeTerminal('A', 'Z')),
-                    zeroOrMoreLetterOrDigit));
+                AsciiLetterTerminal.Instance,
+                zeroOrMoreLetterOrDigit);
             zeroOrMoreLetterOrDigit.AddTransition(
-                new DfaTransition(
                     new CharacterClassTerminal(
-                        new RangeTerminal('a', 'z'),
-                        new RangeTerminal('A', 'Z'),
-                        new DigitTerminal(),
+                        AsciiLetterTerminal.Instance,
+                        DigitTerminal.Instance,
                         new SetTerminal('-', '_')),
-                    zeroOrMoreLetterOrDigit));
+                    zeroOrMoreLetterOrDigit);
             var ruleName = new DfaLexerRule(ruleNameState, new TokenType("rule-name"));
             return ruleName;
         }
 
         private static LexerRule CreateWhitespaceLexerRule()
         {
-            var whitespaceTerminal = new WhitespaceTerminal();
+            var whitespaceTerminal = WhitespaceTerminal.Instance;
             var startState = DfaState.Inner();
             var finalState = DfaState.Final();
-            var whitespaceTransition = new DfaTransition(whitespaceTerminal, finalState);
-            startState.AddTransition(whitespaceTransition);
-            finalState.AddTransition(whitespaceTransition);
+            startState.AddTransition(whitespaceTerminal, finalState);
+            finalState.AddTransition(whitespaceTerminal, finalState);
             return new DfaLexerRule(startState, new TokenType("[\\s]+"));
         }
 

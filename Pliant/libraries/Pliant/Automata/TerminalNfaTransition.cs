@@ -1,4 +1,4 @@
-﻿using Pliant.Grammars;
+﻿using Pliant.Terminals;
 
 namespace Pliant.Automata
 {

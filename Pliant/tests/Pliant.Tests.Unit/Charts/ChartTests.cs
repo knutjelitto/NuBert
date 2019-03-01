@@ -2,6 +2,7 @@
 using Pliant.Builders.Expressions;
 using Pliant.Charts;
 using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit
 {

@@ -1,31 +1,22 @@
-﻿using Pliant.Utilities;
-
-namespace Pliant.RegularExpressions
+﻿namespace Pliant.RegularExpressions
 {
     public class RegexSet : RegexNode
     {
-        public RegexSet(bool negate, RegexCharacterClass characterClass)
+        public RegexSet(RegexCharacterClass characterClass, bool negate)
         {
             Negate = negate;
             CharacterClass = characterClass;
             this.hashCode = ComputeHashCode();
         }
 
-        public bool Negate { get; }
         public RegexCharacterClass CharacterClass { get; }
+        public bool Negate { get; }
 
         public override bool Equals(object obj)
         {
             return obj is RegexSet other &&
-                   Negate.Equals(other.Negate) &&
-                   CharacterClass.Equals(other.CharacterClass);
-        }
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                Negate.GetHashCode(),
-                CharacterClass.GetHashCode());
+                   CharacterClass.Equals(other.CharacterClass) &&
+                   Negate.Equals(other.Negate);
         }
 
         public override int GetHashCode()
@@ -36,6 +27,11 @@ namespace Pliant.RegularExpressions
         public override string ToString()
         {
             return $"[{(Negate ? "^" : string.Empty)}{CharacterClass}]";
+        }
+
+        private int ComputeHashCode()
+        {
+            return (CharacterClass, Negate).GetHashCode();
         }
 
         private readonly int hashCode;

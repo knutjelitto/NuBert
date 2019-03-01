@@ -5,6 +5,7 @@ using Pliant.Runtime;
 using Pliant.Tokens;
 using System.Collections.Generic;
 using System.Linq;
+using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit
 {
@@ -18,8 +19,8 @@ namespace Pliant.Tests.Unit
                 S = "S",
                 W = "W";
 
-            S.Rule = W | W + S;
-            W.Rule = new WhitespaceTerminal();
+            S.Rule = W | (W + S);
+            W.Rule = WhitespaceTerminal.Instance;
 
             var grammar = new GrammarExpression(S, new[] { S, W }).ToGrammar();
 
@@ -29,8 +30,11 @@ namespace Pliant.Tests.Unit
 
             var lexeme = new ParseEngineLexeme(lexerRule);
             var input = "\t\r\n\v\f ";
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
+            {
                 Assert.IsTrue(lexeme.Scan(input[i]), $"Unable to recognize input[{i}]");
+            }
+
             Assert.IsTrue(lexeme.IsAccepted());
         }
 
@@ -44,8 +48,11 @@ namespace Pliant.Tests.Unit
             var lexerRule = new GrammarLexerRule(new TokenType("sequence"), grammar);
             var lexeme = new ParseEngineLexeme(lexerRule);
             var input = "abc123";
-            for (int i = 0; i < input.Length; i++)
-                Assert.IsTrue(lexeme.Scan(input[i]));
+            foreach (var ch in input)
+            {
+                Assert.IsTrue(lexeme.Scan(ch));
+            }
+
             Assert.IsTrue(lexeme.IsAccepted());
         }
 
@@ -81,8 +88,10 @@ namespace Pliant.Tests.Unit
                 // all existing lexemes have failed
                 // fall back onto the lexemes that existed before
                 // we read this character
-                if (passedLexemes.Count() == 0)
+                if (passedLexemes.Count == 0)
+                {
                     break;
+                }
 
                 lexemeList = passedLexemes;
             }

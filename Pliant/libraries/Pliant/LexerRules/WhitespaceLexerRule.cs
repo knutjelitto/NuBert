@@ -1,5 +1,5 @@
 ﻿using Pliant.Automata;
-using Pliant.Grammars;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.LexerRules
@@ -11,11 +11,13 @@ namespace Pliant.LexerRules
 
         static WhitespaceLexerRule()
         {
-            _start = DfaState.Inner();
+            var start = DfaState.Inner();
             var end = DfaState.Final();
-            var transition = new DfaTransition(new WhitespaceTerminal(), end);
-            _start.AddTransition(transition);
-            end.AddTransition(transition);
+
+            start.AddTransition(WhitespaceTerminal.Instance, end);
+            end.AddTransition(WhitespaceTerminal.Instance, end);
+
+            _start = start;
         }
 
         public WhitespaceLexerRule()

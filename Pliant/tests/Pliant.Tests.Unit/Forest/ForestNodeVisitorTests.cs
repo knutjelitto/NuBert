@@ -7,6 +7,7 @@ using Pliant.Tokens;
 using Pliant.Builders.Expressions;
 using Pliant.Builders;
 using Pliant.Runtime;
+using Pliant.Terminals;
 using Pliant.Tests.Unit.Runtime;
 
 // ReSharper disable once CheckNamespace
@@ -21,10 +22,8 @@ namespace Pliant.Tests.Common.Forest
         {
             var start = DfaState.Inner();
             var end = DfaState.Final();
-            var startToEnd = new DfaTransition(new WhitespaceTerminal(), end);
-            var endToEnd = new DfaTransition(new WhitespaceTerminal(), end);
-            start.AddTransition(startToEnd);
-            end.AddTransition(endToEnd);
+            start.AddTransition(WhitespaceTerminal.Instance, end);
+            end.AddTransition(WhitespaceTerminal.Instance, end);
             return new DfaLexerRule(start, new TokenType("whitespace"));
         }
 
@@ -56,12 +55,13 @@ namespace Pliant.Tests.Common.Forest
         [TestMethod]
         public void NodeVisitorShouldEnumerateAllParseTrees()
         {
-            ProductionExpression And = "AND",
+            ProductionExpression
+                And = "AND",
                 Panda = "Panda",
                 AAn = "AAn",
                 ShootsLeaves = "ShootsAndLeaves",
-                EatsShootsLeaves = "EatsShootsLeaves"
-                ;
+                EatsShootsLeaves = "EatsShootsLeaves";
+
             And.Rule = (Expr)'a' + 'n' + 'd';
             var and = new GrammarExpression(And, new[] { And }).ToGrammar();
 
@@ -83,8 +83,14 @@ namespace Pliant.Tests.Common.Forest
             var eatsShootsLeaves = new GrammarExpression(EatsShootsLeaves, new[] { EatsShootsLeaves }).ToGrammar();
 
             ProductionExpression
-                S = "S", NP = "NP", VP = "VP", NN = "NN",
-                NNS = "NNS", DT = "DT", CC = "CC", VBZ = "VBZ";
+                S = "S",
+                NP = "NP",
+                VP = "VP",
+                NN = "NN",
+                NNS = "NNS",
+                DT = "DT",
+                CC = "CC",
+                VBZ = "VBZ";
 
             S.Rule =
                 NP + VP + '.';

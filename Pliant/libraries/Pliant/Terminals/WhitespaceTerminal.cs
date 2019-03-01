@@ -1,9 +1,15 @@
 ﻿using System.Collections.Generic;
 
-namespace Pliant.Grammars
+namespace Pliant.Terminals
 {
     public class WhitespaceTerminal : Terminal
     {
+        public static readonly WhitespaceTerminal Instance = new WhitespaceTerminal();
+
+        private WhitespaceTerminal()
+        {
+        }
+
         public override bool Equals(object obj)
         {
             return obj is WhitespaceTerminal;

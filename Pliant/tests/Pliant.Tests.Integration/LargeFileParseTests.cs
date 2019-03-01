@@ -166,25 +166,6 @@ namespace Pliant.Tests.Integration.Runtime
             }
         }
 
-        private static LexerRule String()
-        {
-            // ["][^"]+["]
-            const string pattern = "[\"][^\"]+[\"]";
-            return CreateRegexDfa(pattern);
-        }
-
-        private static LexerRule Whitespace()
-        {
-            var start = DfaState.Inner();
-            var end = DfaState.Final();
-            var transition = new DfaTransition(
-                new WhitespaceTerminal(),
-                end);
-            start.AddTransition(transition);
-            end.AddTransition(transition);
-            return new DfaLexerRule(start, "\\w+");
-        }
-
         private ParseTester compressedParseTester;
         private ParseTester marpaParseTester;
 

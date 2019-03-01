@@ -1,6 +1,7 @@
 ﻿using System;
 using Pliant.Automata;
 using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.RegularExpressions
 {
@@ -15,7 +16,7 @@ namespace Pliant.RegularExpressions
         {
             var start = new NfaState();
             var end = new NfaState();
-            start.AddTransition(new AnyTerminal(), end);
+            start.AddTransition(AnyTerminal.Instance, end);
             return new Nfa(start, end);
         }
 
@@ -96,24 +97,24 @@ namespace Pliant.RegularExpressions
                 switch (value)
                 {
                     case 's':
-                        terminal = new WhitespaceTerminal();
+                        terminal = WhitespaceTerminal.Instance;
                         break;
                     case 'd':
-                        terminal = new DigitTerminal();
+                        terminal = DigitTerminal.Instance;
                         break;
                     case 'w':
-                        terminal = new WordTerminal();
+                        terminal = WordTerminal.Instance;
                         break;
                     case 'D':
-                        terminal = new DigitTerminal();
+                        terminal = DigitTerminal.Instance;
                         negate = !negate;
                         break;
                     case 'S':
-                        terminal = new WhitespaceTerminal();
+                        terminal = WhitespaceTerminal.Instance;
                         negate = !negate;
                         break;
                     case 'W':
-                        terminal = new WordTerminal();
+                        terminal = WordTerminal.Instance;
                         negate = !negate;
                         break;
                     default:

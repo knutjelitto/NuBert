@@ -117,7 +117,7 @@ namespace Pliant.Tests.Unit.Grammars
             PairRepeat.Rule =
                 Pair
                 | (Pair + ',' + PairRepeat)
-                | (Expr)null;
+                | Expr.Epsilon;
 
             Pair.Rule =
                 (Expr)@string + ':' + Value;
@@ -128,7 +128,7 @@ namespace Pliant.Tests.Unit.Grammars
             ValueRepeat.Rule =
                 Value
                 | (Value + ',' + ValueRepeat)
-                | (Expr)null;
+                | Expr.Epsilon;
 
             Value.Rule = (Expr)
                 @string

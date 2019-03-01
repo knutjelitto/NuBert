@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
 
-namespace Pliant.Grammars
+namespace Pliant.Terminals
 {
-    public sealed class DigitTerminal : Terminal
+    public sealed class AnyTerminal : Terminal
     {
+        public static readonly AnyTerminal Instance = new AnyTerminal();
+
+        private AnyTerminal()
+        {
+        }
+
         public override bool Equals(object obj)
         {
-            return obj is DigitTerminal;
+            return obj is AnyTerminal;
         }
 
         public override int GetHashCode()
@@ -16,19 +22,19 @@ namespace Pliant.Grammars
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            return Intervals;
+            return Interval;
         }
 
         public override bool IsMatch(char character)
         {
-            return '0' <= character && character <= '9';
+            return true;
         }
 
         public override string ToString()
         {
-            return "[0-9]";
+            return ".";
         }
 
-        private static readonly Interval[] Intervals = {new Interval('0', '9')};
+        private static readonly Interval[] Interval = {new Interval(char.MinValue, char.MaxValue)};
     }
 }

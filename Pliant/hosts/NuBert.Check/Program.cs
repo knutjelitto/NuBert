@@ -23,7 +23,7 @@ namespace NuBert.Check
         {
             try
             {
-                var result = new ExpressionParser().Parse("12+23");
+                var result = new ExpressionParser().Parse("12*-23");
 
                 var dumper = new TreeDumpVisitor();
 

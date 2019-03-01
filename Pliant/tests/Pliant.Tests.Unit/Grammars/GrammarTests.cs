@@ -1,59 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
-using System.Linq;
-using Pliant.Grammars;
 
 namespace Pliant.Tests.Unit
 {
     [TestClass]
     public class GrammarTests
     {
-        [TestMethod]
-        public void GrammarRulesForWhenProductionMatchesShouldReturnRules()
-        {
-            ProductionExpression B = "B", A = "A", S = "S";
-            S.Rule = A | B;
-            A.Rule = 'a';
-            B.Rule = 'b';
-            var grammar = new GrammarExpression(S, new[] { S, A, B })
-                .ToGrammar();
-            var rules = grammar.PrductionsFor(A.ProductionModel.LeftHandSide.NonTerminal).ToList();
-            Assert.AreEqual(1, rules.Count);
-            Assert.IsTrue(A.ProductionModel.LeftHandSide.NonTerminal.Is(rules[0].LeftHandSide));
-        }
-
-        [TestMethod]
-        public void GrammarShouldDiscoverEmptyProductionsWithTracibility()
-        {
-            ProductionExpression 
-                S = nameof(S), 
-                A = nameof(A), 
-                B = nameof(B), 
-                C = nameof(C), 
-                D = nameof(D), 
-                E = nameof(E), 
-                F = nameof(F), 
-                G = nameof(G);
-            S.Rule = A + B;
-            A.Rule = C + 'a';
-            C.Rule = E;
-            B.Rule = D;
-            D.Rule = E + F;
-            E.Rule = (Expr)null;
-            F.Rule = G;
-            G.Rule = (Expr)null;
-            var grammar = new GrammarExpression(S, new[] { S, A, B, C, D, E, F, G }).ToGrammar();
-            var expectedEmpty = new[] { B, C, D, E, F, G };
-            var expectedNotEmpty = new[] { S, A };
-
-            foreach(var productionBuilder in expectedEmpty)
-                Assert.IsTrue(grammar.IsTransitiveNullable(productionBuilder.ProductionModel.LeftHandSide.NonTerminal));
-            foreach (var productionBuilder in expectedNotEmpty)
-                Assert.IsFalse(grammar.IsTransitiveNullable(productionBuilder.ProductionModel.LeftHandSide.NonTerminal));
-        }
-
         [TestMethod]
         public void GrammarRulesConainingSymbolShouldReturnAllRulesContainingSymbol()
         {
@@ -85,6 +40,33 @@ namespace Pliant.Tests.Unit
         }
 
         [TestMethod]
+        public void GrammarRulesForWhenProductionMatchesShouldReturnRules()
+        {
+            ProductionExpression B = "B", A = "A", S = "S";
+            S.Rule = A | B;
+            A.Rule = 'a';
+            B.Rule = 'b';
+            var grammar = new GrammarExpression(S, new[] {S, A, B})
+                .ToGrammar();
+            var rules = grammar.PrductionsFor(A.ProductionModel.LeftHandSide.NonTerminal).ToList();
+            Assert.AreEqual(1, rules.Count);
+            Assert.IsTrue(A.ProductionModel.LeftHandSide.NonTerminal.Is(rules[0].LeftHandSide));
+        }
+
+        [TestMethod]
+        public void GrammarShouldContainAllLexerRulesInReferencedGrammars()
+        {
+            var regex = new GrammarReferenceExpression(new RegexGrammar());
+            ProductionExpression
+                S = "S";
+            S.Rule = regex;
+            var grammarExpression = new GrammarExpression(S);
+            var grammar = grammarExpression.ToGrammar();
+            Assert.IsNotNull(grammar.LexerRules);
+            Assert.AreEqual(15, grammar.LexerRules.Count);
+        }
+
+        [TestMethod]
         public void GrammarShouldContainAllLexerRulesInSuppliedProductionsIgnoresAndTrivia()
         {
             ProductionExpression
@@ -99,10 +81,10 @@ namespace Pliant.Tests.Unit
             C.Rule = 'c';
 
             var grammarExpression = new GrammarExpression(
-                S, 
-                null, 
-                new[] { new WhitespaceLexerRule() }, 
-                new[] { new WordLexerRule() });
+                S,
+                null,
+                new[] {new WhitespaceLexerRule()},
+                new[] {new WordLexerRule()});
 
             var grammar = grammarExpression.ToGrammar();
 
@@ -115,15 +97,38 @@ namespace Pliant.Tests.Unit
         }
 
         [TestMethod]
-        public void GrammarShouldContainAllLexerRulesInReferencedGrammars()
+        public void GrammarShouldDiscoverEmptyProductionsWithTracibility()
         {
-            var regex = new ProductionReferenceExpression(new RegexGrammar());
-            ProductionExpression S = nameof(S);
-            S.Rule = regex;
-            var grammarExpression = new GrammarExpression(S);
-            var grammar = grammarExpression.ToGrammar();
-            Assert.IsNotNull(grammar.LexerRules);
-            Assert.AreEqual(15, grammar.LexerRules.Count);
+            ProductionExpression
+                S = nameof(S),
+                A = nameof(A),
+                B = nameof(B),
+                C = nameof(C),
+                D = nameof(D),
+                E = nameof(E),
+                F = nameof(F),
+                G = nameof(G);
+            S.Rule = A + B;
+            A.Rule = C + 'a';
+            C.Rule = E;
+            B.Rule = D;
+            D.Rule = E + F;
+            E.Rule = null;
+            F.Rule = G;
+            G.Rule = null;
+            var grammar = new GrammarExpression(S, new[] {S, A, B, C, D, E, F, G}).ToGrammar();
+            var expectedEmpty = new[] {B, C, D, E, F, G};
+            var expectedNotEmpty = new[] {S, A};
+
+            foreach (var productionBuilder in expectedEmpty)
+            {
+                Assert.IsTrue(grammar.IsTransitiveNullable(productionBuilder.ProductionModel.LeftHandSide.NonTerminal));
+            }
+
+            foreach (var productionBuilder in expectedNotEmpty)
+            {
+                Assert.IsFalse(grammar.IsTransitiveNullable(productionBuilder.ProductionModel.LeftHandSide.NonTerminal));
+            }
         }
     }
 }

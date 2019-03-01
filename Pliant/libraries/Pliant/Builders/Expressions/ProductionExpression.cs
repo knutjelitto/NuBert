@@ -34,6 +34,20 @@ namespace Pliant.Builders.Expressions
             }
         }
 
+        public void Rules(RuleExpression value)
+        {
+            ProductionModel.Alterations.Clear();
+            if (value == null)
+            {
+                return;
+            }
+
+            foreach (var alteration in value.Alterations)
+            {
+                ProductionModel.Alterations.Add(GetAlterationModelFromAlterationExpression(alteration));
+            }
+        }
+
         public static implicit operator ProductionExpression(string leftHandSide)
         {
             return new ProductionExpression(new NonTerminal(leftHandSide));
@@ -57,10 +71,10 @@ namespace Pliant.Builders.Expressions
                     case SymbolExpression symbolExpression:
                         alterationModel.AddSymbol(symbolExpression.SymbolModel);
                         break;
-                    case ProductionReferenceExpression productionReferenceExpression:
-                        alterationModel.AddSymbol(productionReferenceExpression.ProductionReferenceModel);
+                    case GrammarReferenceExpression grammarReferenceExpression:
+                        alterationModel.AddSymbol(grammarReferenceExpression.GrammarReferenceModel);
                         break;
-                    case Expr expr:
+                    case RuleExpression expr:
                         foreach (var symbolModel in GetSymbolModelsFromExpr(expr))
                         {
                             alterationModel.AddSymbol(symbolModel);
@@ -73,7 +87,7 @@ namespace Pliant.Builders.Expressions
             return alterationModel;
         }
 
-        private static IEnumerable<SymbolModel> GetSymbolModelsFromExpr(Expr expr)
+        private static IEnumerable<SymbolModel> GetSymbolModelsFromExpr(RuleExpression expr)
         {
             foreach (var alteration in expr.Alterations)
             {

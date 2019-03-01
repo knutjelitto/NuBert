@@ -1,5 +1,5 @@
 ﻿using Pliant.Automata;
-using Pliant.Grammars;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.LexerRules
@@ -19,24 +19,19 @@ namespace Pliant.LexerRules
 
             var zeroThroughNine = new RangeTerminal('0', '9');
 
-            var plusOrMinusTo1 = new DfaTransition(new SetTerminal('+', '-'), states[1]);
-            var dotTo3 = new DfaTransition(new CharacterTerminal('.'), states[3]);
-            var zeroThroughNineTo2 = new DfaTransition(zeroThroughNine, states[2]);
-            var zeroThroughNineTo4 = new DfaTransition(zeroThroughNine, states[4]);
+            states[0].AddTransition(new CharacterTerminal('.'), states[3]);
+            states[0].AddTransition(new SetTerminal('+', '-'), states[1]);
+            states[0].AddTransition(zeroThroughNine, states[2]);
 
-            states[0].AddTransition(dotTo3);
-            states[0].AddTransition(plusOrMinusTo1);
-            states[0].AddTransition(zeroThroughNineTo2);
+            states[1].AddTransition(new CharacterTerminal('.'), states[3]);
+            states[1].AddTransition(zeroThroughNine, states[2]);
 
-            states[1].AddTransition(dotTo3);
-            states[1].AddTransition(zeroThroughNineTo2);
+            states[2].AddTransition(zeroThroughNine, states[2]);
+            states[2].AddTransition(new CharacterTerminal('.'), states[3]);
 
-            states[2].AddTransition(zeroThroughNineTo2);
-            states[2].AddTransition(dotTo3);
+            states[3].AddTransition(zeroThroughNine, states[4]);
 
-            states[3].AddTransition(zeroThroughNineTo4);
-
-            states[4].AddTransition(zeroThroughNineTo4);
+            states[4].AddTransition(zeroThroughNine, states[4]);
 
             Start = states[0];
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Pliant.Grammars;
+using Pliant.Terminals;
 
 namespace Pliant.Builders.Expressions
 {
@@ -25,44 +26,32 @@ namespace Pliant.Builders.Expressions
 
         public static implicit operator RuleExpression(ProductionExpression productionExpression)
         {
-            return new RuleExpression(productionExpression);
+            return (Expr) productionExpression;
+        }
+
+        public static implicit operator RuleExpression(GrammarReferenceExpression grammarReference)
+        {
+            return (Expr) grammarReference;
         }
 
         public static implicit operator RuleExpression(string literal)
         {
-            return new RuleExpression(
-                new SymbolExpression(
-                    new LexerRuleModel(
-                        new StringLiteralLexerRule(literal))));
+            return (Expr) literal;
         }
 
         public static implicit operator RuleExpression(char literal)
         {
-            return new RuleExpression(
-                new SymbolExpression(
-                    new LexerRuleModel(
-                        new TerminalLexerRule(literal))));
+            return (Expr) literal;
         }
 
         public static implicit operator RuleExpression(LexerRule lexerRule)
         {
-            return new RuleExpression(
-                new SymbolExpression(
-                    new LexerRuleModel(
-                        lexerRule)));
+            return (Expr) lexerRule;
         }
 
         public static implicit operator RuleExpression(Terminal baseTerminal)
         {
-            return new RuleExpression(
-                new SymbolExpression(
-                    new LexerRuleModel(
-                        new TerminalLexerRule(baseTerminal, baseTerminal.ToString()))));
-        }
-
-        public static implicit operator RuleExpression(ProductionReferenceExpression productionReference)
-        {
-            return new RuleExpression(productionReference);
+            return (Expr) baseTerminal;
         }
     }
 }
