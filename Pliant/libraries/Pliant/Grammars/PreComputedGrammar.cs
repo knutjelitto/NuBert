@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Pliant.Collections;
+using Pliant.Dotted;
 using Pliant.Utilities;
 
 namespace Pliant.Grammars
@@ -8,8 +9,8 @@ namespace Pliant.Grammars
     {
         public PreComputedGrammar(IGrammar grammar)
         {
-            this._dottedRuleSetQueue = new ProcessOnceQueue<DottedRuleAssortment>();
-            this._dottedRuleSets = new Dictionary<DottedRuleAssortment, DottedRuleAssortment>();
+            this.dottedRuleSetQueue = new ProcessOnceQueue<DottedRuleAssortment>();
+            this.dottedRuleSets = new Dictionary<DottedRuleAssortment, DottedRuleAssortment>();
 
             Grammar = grammar;
 
@@ -35,14 +36,14 @@ namespace Pliant.Grammars
         private DottedRuleAssortment AddNewOrGetExistingDottedRuleSet(DottedRuleSet states)
         {
             var dottedRuleSet = new DottedRuleAssortment(states);
-            if (this._dottedRuleSets.TryGetValue(dottedRuleSet, out var outDottedRuleSet))
+            if (this.dottedRuleSets.TryGetValue(dottedRuleSet, out var outDottedRuleSet))
             {
                 return outDottedRuleSet;
             }
 
             outDottedRuleSet = dottedRuleSet;
-            this._dottedRuleSets[dottedRuleSet] = outDottedRuleSet;
-            this._dottedRuleSetQueue.Enqueue(outDottedRuleSet);
+            this.dottedRuleSets[dottedRuleSet] = outDottedRuleSet;
+            this.dottedRuleSetQueue.Enqueue(outDottedRuleSet);
             return outDottedRuleSet;
         }
 
@@ -143,7 +144,7 @@ namespace Pliant.Grammars
                         }
                     }
 
-                    var predictions = Grammar.PrductionsFor(nonTerminalPostDotSymbol);
+                    var predictions = Grammar.ProductionsFor(nonTerminalPostDotSymbol);
                     for (var p = 0; p < predictions.Count; p++)
                     {
                         var prediction = predictions[p];
@@ -175,11 +176,9 @@ namespace Pliant.Grammars
             var pool = SharedPools.Default<DottedRuleSet>();
 
             var startStates = ObjectPoolExtensions.Allocate(pool);
-            var startProductions = grammar.StartProductions();
 
-            for (var p = 0; p < startProductions.Count; p++)
+            foreach (var production in grammar.StartProductions())
             {
-                var production = startProductions[p];
                 var state = GetPreComputedState(production, 0);
                 startStates.Add(state);
             }
@@ -192,10 +191,10 @@ namespace Pliant.Grammars
 
         private void ProcessDottedRuleSetQueue()
         {
-            while (this._dottedRuleSetQueue.Count > 0)
+            while (this.dottedRuleSetQueue.Count > 0)
             {
                 // assume the closure has already been captured
-                var frame = this._dottedRuleSetQueue.Dequeue();
+                var frame = this.dottedRuleSetQueue.Dequeue();
                 ProcessSymbolTransitions(frame);
 
                 // capture the predictions for the frame
@@ -250,19 +249,19 @@ namespace Pliant.Grammars
         private bool TryGetOrCreateDottedRuleSet(DottedRuleSet states, out DottedRuleAssortment outDottedRuleSet)
         {
             var dottedRuleSet = new DottedRuleAssortment(states);
-            if (this._dottedRuleSets.TryGetValue(dottedRuleSet, out outDottedRuleSet))
+            if (this.dottedRuleSets.TryGetValue(dottedRuleSet, out outDottedRuleSet))
             {
                 return true;
             }
 
             outDottedRuleSet = dottedRuleSet;
-            this._dottedRuleSets[dottedRuleSet] = outDottedRuleSet;
-            this._dottedRuleSetQueue.Enqueue(outDottedRuleSet);
+            this.dottedRuleSets[dottedRuleSet] = outDottedRuleSet;
+            this.dottedRuleSetQueue.Enqueue(outDottedRuleSet);
             return false;
         }
 
-        private readonly ProcessOnceQueue<DottedRuleAssortment> _dottedRuleSetQueue;
+        private readonly ProcessOnceQueue<DottedRuleAssortment> dottedRuleSetQueue;
 
-        private readonly Dictionary<DottedRuleAssortment, DottedRuleAssortment> _dottedRuleSets;
+        private readonly Dictionary<DottedRuleAssortment, DottedRuleAssortment> dottedRuleSets;
     }
 }

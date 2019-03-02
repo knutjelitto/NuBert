@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 
 namespace Pliant.Tests.Unit.Builders
 {
@@ -19,7 +20,7 @@ namespace Pliant.Tests.Unit.Builders
         public void GrammarModelShouldAddIgnoreLexerRuleModel()
         {
             var grammar = new GrammarModel();
-            var lexerRuleModel = new LexerRuleModel(new StringLiteralLexerRule("this is a literal"));
+            var lexerRuleModel = new LexerRuleModel(new StringLiteralLexer("this is a literal"));
             grammar.AddIgnoreSetting(new IgnoreSettingModel(lexerRuleModel));
             grammar.AddLexerRule(lexerRuleModel);
             Assert.AreEqual(1, grammar.LexerRuleModels.Count);
@@ -35,9 +36,9 @@ namespace Pliant.Tests.Unit.Builders
             var A = new ProductionModel("A");
             var B = new ProductionModel("B");
 
-            var a = new StringLiteralLexerRule("a");
-            var b = new StringLiteralLexerRule("b");
-            var space = new StringLiteralLexerRule(" ");
+            var a = new StringLiteralLexer("a");
+            var b = new StringLiteralLexer("b");
+            var space = new StringLiteralLexer(" ");
 
             S.AddWithAnd(A.LeftHandSide);
             S.AddWithAnd(B.LeftHandSide);
@@ -71,7 +72,7 @@ namespace Pliant.Tests.Unit.Builders
             A.Alterations.Add(
                 new AlterationModel(
                     new[] { new LexerRuleModel(
-                        new StringLiteralLexerRule("a"))})
+                        new StringLiteralLexer("a"))})
             );
             var ns1GrammarModel = new GrammarModel
             {
@@ -122,8 +123,8 @@ namespace Pliant.Tests.Unit.Builders
             S.AddWithAnd(A);
             A.AddWithAnd(B);
             A.AddWithOr(C);
-            B.AddWithAnd(new LexerRuleModel(new StringLiteralLexerRule("b")));
-            C.AddWithAnd(new LexerRuleModel(new StringLiteralLexerRule("c")));
+            B.AddWithAnd(new LexerRuleModel(new StringLiteralLexer("b")));
+            C.AddWithAnd(new LexerRuleModel(new StringLiteralLexer("c")));
 
             var grammarModel = new GrammarModel(S);
             var grammar = grammarModel.ToGrammar();
@@ -138,7 +139,7 @@ namespace Pliant.Tests.Unit.Builders
             var A = new ProductionModel("A");
             S.AddWithAnd(S);
             S.AddWithOr(A);
-            A.AddWithAnd(new LexerRuleModel(new StringLiteralLexerRule("a")));
+            A.AddWithAnd(new LexerRuleModel(new StringLiteralLexer("a")));
 
             var grammarModel = new GrammarModel(S);
             var grammar = grammarModel.ToGrammar();
@@ -155,9 +156,9 @@ namespace Pliant.Tests.Unit.Builders
 
             S.AddWithAnd(A);
             S.AddWithAnd(B);
-            A.AddWithAnd(new LexerRuleModel(new StringLiteralLexerRule("a")));
+            A.AddWithAnd(new LexerRuleModel(new StringLiteralLexer("a")));
             A.AddWithAnd(B);
-            B.AddWithAnd(new LexerRuleModel(new StringLiteralLexerRule("b")));
+            B.AddWithAnd(new LexerRuleModel(new StringLiteralLexer("b")));
 
             var grammarModel = new GrammarModel();
             grammarModel.AddProduction(S);

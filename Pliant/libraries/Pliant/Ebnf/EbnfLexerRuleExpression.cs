@@ -1,54 +1,44 @@
-﻿namespace Pliant.Ebnf
+﻿using Pliant.Utilities;
+
+namespace Pliant.Ebnf
 {
-    public abstract class EbnfLexerRuleExpression : EbnfNode
+    public interface IEbnfLexerRuleExpression : IEbnfNode
     {
-        protected EbnfLexerRuleExpression(EbnfLexerRuleTerm term)
+        IEbnfLexerRuleTerm Term { get; }
+    }
+
+    public sealed class EbnfLexerRuleExpressionSimple : ValueEqualityBase<EbnfLexerRuleExpressionSimple>, IEbnfLexerRuleExpression
+    {
+        public IEbnfLexerRuleTerm Term { get; }
+
+        public EbnfLexerRuleExpressionSimple(IEbnfLexerRuleTerm term)
+            : base(term.GetHashCode())
         {
             Term = term;
         }
 
-        public EbnfLexerRuleTerm Term { get; }
-    }
-
-    public sealed class EbnfLexerRuleExpressionSimple : EbnfLexerRuleExpression
-    {
-        public EbnfLexerRuleExpressionSimple(EbnfLexerRuleTerm term)
-            : base(term)
+        public override bool ThisEquals(EbnfLexerRuleExpressionSimple other)
         {
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfLexerRuleExpressionSimple other &&
-                   other.Term.Equals(Term);
-        }
-
-        public override int GetHashCode()
-        {
-            return Term.GetHashCode();
+            return other.Term.Equals(Term);
         }
     }
 
-    public sealed class EbnfLexerRuleExpressionAlteration : EbnfLexerRuleExpression
+    public sealed class EbnfLexerRuleExpressionAlteration : ValueEqualityBase<EbnfLexerRuleExpressionAlteration>, IEbnfLexerRuleExpression
     {
-        public EbnfLexerRuleExpressionAlteration(EbnfLexerRuleTerm term, EbnfLexerRuleExpression expression)
-            : base(term)
+        public EbnfLexerRuleExpressionAlteration(IEbnfLexerRuleTerm term, IEbnfLexerRuleExpression expression)
+            : base((term, expression).GetHashCode())
         {
+            Term = term;
             Expression = expression;
         }
 
-        public EbnfLexerRuleExpression Expression { get; }
+        public IEbnfLexerRuleTerm Term { get; }
+        public IEbnfLexerRuleExpression Expression { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(EbnfLexerRuleExpressionAlteration other)
         {
-            return obj is EbnfLexerRuleExpressionAlteration other &&
-                   Term.Equals(other.Term) &&
+            return Term.Equals(other.Term) &&
                    Expression.Equals(other.Expression);
-        }
-
-        public override int GetHashCode()
-        {
-            return (Term, Expression).GetHashCode();
         }
     }
 }

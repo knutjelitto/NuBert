@@ -131,13 +131,13 @@ namespace Pliant.Tests.Integration.Runtime
             }
         }
 
-        private static LexerRule CreateRegexDfa(string pattern)
+        private static Lexer CreateRegexDfa(string pattern)
         {
             var regexParser = new RegexParser();
             var regex = regexParser.Parse(pattern);
             var regexCompiler = new RegexCompiler();
             var dfa = regexCompiler.Compile(regex);
-            return new DfaLexerRule(dfa, pattern);
+            return new DfaLexer(dfa, pattern);
         }
 
         private static void RunParseWithCustomLexer(IParseEngine parser)

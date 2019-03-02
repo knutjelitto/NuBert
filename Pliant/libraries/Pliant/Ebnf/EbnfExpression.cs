@@ -1,30 +1,25 @@
-﻿namespace Pliant.Ebnf
+﻿using Pliant.Utilities;
+
+namespace Pliant.Ebnf
 {
-    public abstract class EbnfExpression : EbnfNode
+    public interface IEbnfExpression : IEbnfNode
     {
-        protected EbnfExpression(EbnfTerm term)
+        IEbnfTerm Term { get;  }
+    }
+
+    public sealed class EbnfExpressionSimple : ValueEqualityBase<EbnfExpressionSimple>, IEbnfExpression
+    {
+        public IEbnfTerm Term { get; }
+
+        public EbnfExpressionSimple(IEbnfTerm term)
+            : base(term.GetHashCode())
         {
             Term = term;
         }
 
-        public EbnfTerm Term { get; }
-    }
-
-    public sealed class EbnfExpressionSimple : EbnfExpression
-    {
-        public EbnfExpressionSimple(EbnfTerm term)
-            : base(term)
+        public override bool ThisEquals(EbnfExpressionSimple other)
         {
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfExpressionSimple other && Term.Equals(other.Term);
-        }
-
-        public override int GetHashCode()
-        {
-            return Term.GetHashCode();
+            return Term.Equals(other.Term);
         }
 
         public override string ToString()
@@ -33,26 +28,22 @@
         }
     }
 
-    public sealed class EbnfExpressionAlteration : EbnfExpression
+    public sealed class EbnfExpressionAlteration : ValueEqualityBase<EbnfExpressionAlteration>, IEbnfExpression
     {
-        public EbnfExpressionAlteration(EbnfTerm term, EbnfExpression expression)
-            : base(term)
+        public EbnfExpressionAlteration(IEbnfTerm term, IEbnfExpression expression)
+            : base((term, expression).GetHashCode())
         {
+            Term = term;
             Expression = expression;
         }
 
-        public EbnfExpression Expression { get; }
+        public IEbnfTerm Term { get; }
+        public IEbnfExpression Expression { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(EbnfExpressionAlteration other)
         {
-            return obj is EbnfExpressionAlteration other && 
-                   other.Term.Equals(Term) && 
+            return other.Term.Equals(Term) &&
                    other.Expression.Equals(Expression);
-        }
-
-        public override int GetHashCode()
-        {
-            return (Term, Expression).GetHashCode();
         }
 
         public override string ToString()

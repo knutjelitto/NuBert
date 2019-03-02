@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Pliant.Dotted;
 
 namespace Pliant.Grammars
 {
@@ -15,22 +16,22 @@ namespace Pliant.Grammars
 
         public NonTerminal Start => this._innerGrammar.Start;
 
-        public IReadOnlyList<LexerRule> Ignores => this._innerGrammar.Ignores;
+        public IReadOnlyList<Lexer> Ignores => this._innerGrammar.Ignores;
 
-        public IReadOnlyList<LexerRule> Trivia => this._innerGrammar.Trivia;
+        public IReadOnlyList<Lexer> Trivia => this._innerGrammar.Trivia;
 
-        public IReadOnlyList<LexerRule> LexerRules => this._innerGrammar.LexerRules;
+        public IReadOnlyList<Lexer> LexerRules => this._innerGrammar.LexerRules;
 
         public DottedRuleRegistry DottedRules => this._innerGrammar.DottedRules;
 
-        public int GetLexerRuleIndex(LexerRule lexerRule)
+        public int GetLexerRuleIndex(Lexer lexerRule)
         {
             return this._innerGrammar.GetLexerRuleIndex(lexerRule);
         }
 
-        public IReadOnlyList<Production> PrductionsFor(NonTerminal nonTerminal)
+        public IReadOnlyList<Production> ProductionsFor(NonTerminal nonTerminal)
         {
-            return this._innerGrammar.PrductionsFor(nonTerminal);
+            return this._innerGrammar.ProductionsFor(nonTerminal);
         }
 
         public IReadOnlyList<Production> StartProductions()

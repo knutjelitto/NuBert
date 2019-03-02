@@ -1,28 +1,25 @@
-﻿namespace Pliant.Ebnf
+﻿using Pliant.Utilities;
+
+namespace Pliant.Ebnf
 {
-    public sealed class EbnfSettingIdentifier : EbnfNode
+    public sealed class EbnfSettingIdentifier : ValueEqualityBase<EbnfSettingIdentifier>, IEbnfNode
     {
         public EbnfSettingIdentifier(string value)
+            : base(value.GetHashCode())
         {
-            Value = value.StartsWith(":") ? value.Substring(1) : value;
+            Value = value;
         }
 
         public string Value { get; }
 
-        public override int GetHashCode()
+        public override bool ThisEquals(EbnfSettingIdentifier other)
         {
-            return Value.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfSettingIdentifier other && 
-                   other.Value.Equals(Value);
+            return Value.Equals(other.Value);
         }
 
         public override string ToString()
         {
-            return $"{Value}";
+            return $":{Value}";
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Pliant.Ebnf
 {
     public class EbnfVisitor : TreeNodeVisitorBase
     {
-        public EbnfDefinition Definition { get; private set; }
+        public IEbnfDefinition Definition { get; private set; }
 
         public override void Visit(IInternalTreeNode node)
         {
@@ -24,7 +24,7 @@ namespace Pliant.Ebnf
             return new InvalidOperationException("Unreachable Code Detected");
         }
 
-        private static EbnfLexerRuleFactor VisitLexerRuleFactorNode(IInternalTreeNode node)
+        private static IEbnfLexerRuleFactor VisitLexerRuleFactorNode(IInternalTreeNode node)
         {
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -68,7 +68,7 @@ namespace Pliant.Ebnf
             throw UnreachableCodeException();
         }
 
-        private EbnfBlock VisitBlockNode(IInternalTreeNode node)
+        private IEbnfBlock VisitBlockNode(IInternalTreeNode node)
         {
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -91,10 +91,10 @@ namespace Pliant.Ebnf
             throw UnreachableCodeException();
         }
 
-        private EbnfDefinition VisitDefinitionNode(IInternalTreeNode node)
+        private IEbnfDefinition VisitDefinitionNode(IInternalTreeNode node)
         {
-            EbnfBlock block = null;
-            EbnfDefinition definition = null;
+            IEbnfBlock block = null;
+            IEbnfDefinition definition = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -116,10 +116,10 @@ namespace Pliant.Ebnf
             return new EbnfDefinitionConcatenation(block, definition);
         }
 
-        private EbnfExpression VisitExpressionNode(IInternalTreeNode node)
+        private IEbnfExpression VisitExpressionNode(IInternalTreeNode node)
         {
-            EbnfTerm term = null;
-            EbnfExpression expression = null;
+            IEbnfTerm term = null;
+            IEbnfExpression expression = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -141,7 +141,7 @@ namespace Pliant.Ebnf
             return new EbnfExpressionAlteration(term, expression);
         }
 
-        private EbnfFactor VisitFactorNode(IInternalTreeNode node)
+        private IEbnfFactor VisitFactorNode(IInternalTreeNode node)
         {
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -194,10 +194,10 @@ namespace Pliant.Ebnf
             throw UnreachableCodeException();
         }
 
-        private EbnfLexerRuleExpression VisitLexerRuleExpressionNode(IInternalTreeNode node)
+        private IEbnfLexerRuleExpression VisitLexerRuleExpressionNode(IInternalTreeNode node)
         {
-            EbnfLexerRuleTerm term = null;
-            EbnfLexerRuleExpression expression = null;
+            IEbnfLexerRuleTerm term = null;
+            IEbnfLexerRuleExpression expression = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -222,7 +222,7 @@ namespace Pliant.Ebnf
         private EbnfBlockLexerRule VisitLexerRuleNode(IInternalTreeNode node)
         {
             EbnfQualifiedIdentifier identifier = null;
-            EbnfLexerRuleExpression expression = null;
+            IEbnfLexerRuleExpression expression = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -239,10 +239,10 @@ namespace Pliant.Ebnf
             return new EbnfBlockLexerRule(new EbnfLexerRule(identifier, expression));
         }
 
-        private EbnfLexerRuleTerm VisitLexerRuleTermNode(IInternalTreeNode node)
+        private IEbnfLexerRuleTerm VisitLexerRuleTermNode(IInternalTreeNode node)
         {
-            EbnfLexerRuleFactor factor = null;
-            EbnfLexerRuleTerm term = null;
+            IEbnfLexerRuleFactor factor = null;
+            IEbnfLexerRuleTerm term = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -359,7 +359,7 @@ namespace Pliant.Ebnf
         private EbnfBlockRule VisitRuleNode(IInternalTreeNode node)
         {
             EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier = null;
-            EbnfExpression expression = null;
+            IEbnfExpression expression = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -406,10 +406,10 @@ namespace Pliant.Ebnf
             return new EbnfBlockSetting(new EbnfSetting(settingIdentifier, qualifiedEbnfQualifiedIdentifier));
         }
 
-        private EbnfTerm VisitTermNode(IInternalTreeNode node)
+        private IEbnfTerm VisitTermNode(IInternalTreeNode node)
         {
-            EbnfFactor factor = null;
-            EbnfTerm term = null;
+            IEbnfFactor factor = null;
+            IEbnfTerm term = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {

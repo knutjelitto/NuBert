@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Pliant.Grammars;
 
-namespace Pliant.Grammars
+namespace Pliant.Dotted
 {
     public class DottedRuleRegistry
     {

@@ -4,7 +4,7 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public class NumberLexerRule : DfaLexerRule
+    public class NumberLexerRule : DfaLexer
     {
         static NumberLexerRule()
         {

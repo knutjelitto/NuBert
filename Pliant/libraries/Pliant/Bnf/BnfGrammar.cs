@@ -1,5 +1,6 @@
 ﻿using Pliant.Automata;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 using Pliant.Terminals;
 using Pliant.Tokens;
 
@@ -68,17 +69,17 @@ namespace Pliant.Bnf
             _bnfGrammar = new Grammar(grammar, productions, ignore, null);
         }
 
-        private static LexerRule CreateNotSingleQuoteLexerRule()
+        private static Lexer CreateNotSingleQuoteLexerRule()
         {
             var start = DfaState.Inner();
             var final = DfaState.Final();
             var terminal = new NegationTerminal(new CharacterTerminal('\''));
             start.AddTransition(terminal, final);
             final.AddTransition(terminal, final);
-            return new DfaLexerRule(start, new TokenType("not-single-quote"));
+            return new DfaLexer(start, new TokenType("not-single-quote"));
         }
 
-        private static LexerRule CreateNotDoubleQuoteLexerRule()
+        private static Lexer CreateNotDoubleQuoteLexerRule()
         {
             // ( [^"\\] | (\\ .) ) +
             var start = DfaState.Inner();
@@ -96,20 +97,20 @@ namespace Pliant.Bnf
 
             escape.AddTransition(AnyTerminal.Instance, final);
 
-            return new DfaLexerRule(start, new TokenType("not-double-quote"));
+            return new DfaLexer(start, new TokenType("not-double-quote"));
         }
 
-        private static LexerRule CreateEndOfLineLexerRule()
+        private static Lexer CreateEndOfLineLexerRule()
         {
-            return new StringLiteralLexerRule("\r\n", new TokenType("eol"));
+            return new StringLiteralLexer("\r\n", new TokenType("eol"));
         }
 
-        private static LexerRule CreateImplementsLexerRule()
+        private static Lexer CreateImplementsLexerRule()
         {
-            return new StringLiteralLexerRule("::=", new TokenType("implements"));
+            return new StringLiteralLexer("::=", new TokenType("implements"));
         }
 
-        private static LexerRule CreateRuleNameLexerRule()
+        private static Lexer CreateRuleNameLexerRule()
         {
             // /[a-zA-Z][a-zA-Z0-9-_]*/
             var ruleNameState = DfaState.Inner();
@@ -123,18 +124,18 @@ namespace Pliant.Bnf
                         DigitTerminal.Instance,
                         new SetTerminal('-', '_')),
                     zeroOrMoreLetterOrDigit);
-            var ruleName = new DfaLexerRule(ruleNameState, new TokenType("rule-name"));
+            var ruleName = new DfaLexer(ruleNameState, new TokenType("rule-name"));
             return ruleName;
         }
 
-        private static LexerRule CreateWhitespaceLexerRule()
+        private static Lexer CreateWhitespaceLexerRule()
         {
             var whitespaceTerminal = WhitespaceTerminal.Instance;
             var startState = DfaState.Inner();
             var finalState = DfaState.Final();
             startState.AddTransition(whitespaceTerminal, finalState);
             finalState.AddTransition(whitespaceTerminal, finalState);
-            return new DfaLexerRule(startState, new TokenType("[\\s]+"));
+            return new DfaLexer(startState, new TokenType("[\\s]+"));
         }
 
         public BnfGrammar() 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Pliant.Dotted;
 
 namespace Pliant.Grammars
 {
@@ -8,17 +9,17 @@ namespace Pliant.Grammars
 
         NonTerminal Start { get; }
 
-        IReadOnlyList<LexerRule> Ignores { get; }
+        IReadOnlyList<Lexer> Ignores { get; }
 
-        IReadOnlyList<LexerRule> Trivia { get; }
+        IReadOnlyList<Lexer> Trivia { get; }
 
         DottedRuleRegistry DottedRules { get; }
 
-        IReadOnlyList<LexerRule> LexerRules { get; }
+        IReadOnlyList<Lexer> LexerRules { get; }
 
-        int GetLexerRuleIndex(LexerRule lexerRule);
+        int GetLexerRuleIndex(Lexer lexerRule);
 
-        IReadOnlyList<Production> PrductionsFor(NonTerminal nonTerminal);
+        IReadOnlyList<Production> ProductionsFor(NonTerminal nonTerminal);
 
         IReadOnlyList<Production> RulesContainingSymbol(NonTerminal nonTerminal);
 

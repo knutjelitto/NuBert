@@ -1,10 +1,11 @@
 ﻿using Pliant.Grammars;
+using Pliant.LexerRules;
 
 namespace Pliant.Tokens
 {
     public class StringLiteralLexeme : Lexeme
     {
-        public StringLiteralLexeme(StringLiteralLexerRule lexerRule, int position)
+        public StringLiteralLexeme(StringLiteralLexer lexerRule, int position)
             : base(lexerRule, position)
         {
             this.index = 0;

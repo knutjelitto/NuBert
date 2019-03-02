@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 using Pliant.Tokens;
 using Pliant.Utilities;
 
@@ -8,7 +9,7 @@ namespace Pliant.Runtime
 {
     public class ParseEngineLexeme : Lexeme
     {
-        public ParseEngineLexeme(GrammarLexerRule lexerRule)
+        public ParseEngineLexeme(GrammarLexer lexerRule)
             : base(lexerRule, 0)
         {
             this.capture = new StringBuilder();

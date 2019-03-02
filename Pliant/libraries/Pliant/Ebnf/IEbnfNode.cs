@@ -1,6 +1,6 @@
 ﻿namespace Pliant.Ebnf
 {
-    public abstract class EbnfNode
+    public interface IEbnfNode
     {
     }
 }

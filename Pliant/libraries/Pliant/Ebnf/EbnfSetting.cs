@@ -1,8 +1,11 @@
-﻿namespace Pliant.Ebnf
+﻿using Pliant.Utilities;
+
+namespace Pliant.Ebnf
 {
-    public class EbnfSetting : EbnfNode
+    public sealed class EbnfSetting : ValueEqualityBase<EbnfSetting>, IEbnfNode
     {
         public EbnfSetting(EbnfSettingIdentifier settingIdentifier, EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
+            : base((settingIdentifier, qualifiedEbnfQualifiedIdentifier).GetHashCode())
         {
             SettingIdentifier = settingIdentifier;
             QualifiedEbnfQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
@@ -11,16 +14,10 @@
         public EbnfSettingIdentifier SettingIdentifier { get; }
         public EbnfQualifiedIdentifier QualifiedEbnfQualifiedIdentifier { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(EbnfSetting other)
         {
-            return obj is EbnfSetting other && 
-                   other.SettingIdentifier.Equals(SettingIdentifier) && 
-                   other.QualifiedEbnfQualifiedIdentifier.Equals(QualifiedEbnfQualifiedIdentifier);
-        }
-
-        public override int GetHashCode()
-        {
-            return (SettingIdentifier, QualifiedIdentifier: QualifiedEbnfQualifiedIdentifier).GetHashCode();
+            return SettingIdentifier.Equals(other.SettingIdentifier) &&
+                   QualifiedEbnfQualifiedIdentifier.Equals(other.QualifiedEbnfQualifiedIdentifier);
         }
     }
 }

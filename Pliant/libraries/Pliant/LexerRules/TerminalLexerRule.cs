@@ -3,7 +3,7 @@ using Pliant.Tokens;
 
 namespace Pliant.Grammars
 {
-    public sealed class TerminalLexerRule : LexerRule
+    public sealed class TerminalLexerRule : Lexer
     {
         public TerminalLexerRule(char character)
             : this(new CharacterTerminal(character), new TokenType(character.ToString()))

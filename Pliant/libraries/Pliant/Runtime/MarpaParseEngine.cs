@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Pliant.Charts;
 using Pliant.Collections;
+using Pliant.Dotted;
 using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Tokens;
@@ -31,7 +32,7 @@ namespace Pliant.Runtime
 
         public int Location { get; private set; }
 
-        public IReadOnlyList<LexerRule> GetExpectedLexerRules()
+        public IReadOnlyList<Lexer> GetExpectedLexerRules()
         {
             var frameSets = Chart.Sets;
             var frameSetCount = frameSets.Count;
@@ -79,7 +80,7 @@ namespace Pliant.Runtime
 
             if (this._expectedLexerRuleCache == null)
             {
-                this._expectedLexerRuleCache = new Dictionary<int, LexerRule[]>();
+                this._expectedLexerRuleCache = new Dictionary<int, Lexer[]>();
             }
 
             // if the hash is found in the cached lexer rule lists, return the cached array
@@ -89,7 +90,7 @@ namespace Pliant.Runtime
             }
 
             // compute the new lexer rule array and add it to the cache
-            var array = new LexerRule[count];
+            var array = new Lexer[count];
             var returnItemIndex = 0;
             for (var i = 0; i < Grammar.LexerRules.Count; i++)
             {
@@ -433,9 +434,9 @@ namespace Pliant.Runtime
             }
         }
 
-        private static readonly LexerRule[] EmptyLexerRules = { };
+        private static readonly Lexer[] EmptyLexerRules = { };
 
-        private Dictionary<int, LexerRule[]> _expectedLexerRuleCache;
+        private Dictionary<int, Lexer[]> _expectedLexerRuleCache;
         private BitArray _expectedLexerRuleIndicies;
         private readonly PreComputedGrammar _preComputedGrammar;
     }

@@ -1,16 +1,17 @@
-﻿using Pliant.Runtime;
+﻿using Pliant.Grammars;
+using Pliant.Runtime;
 using Pliant.Tokens;
 
-namespace Pliant.Grammars
+namespace Pliant.LexerRules
 {
-    public class GrammarLexerRule : LexerRule
+    public class GrammarLexer : Lexer
     {
-        public GrammarLexerRule(string tokenType, IGrammar grammar)
+        public GrammarLexer(string tokenType, IGrammar grammar)
             : this(new TokenType(tokenType), grammar)
         {
         }
 
-        public GrammarLexerRule(TokenType tokenType, IGrammar grammar)
+        public GrammarLexer(TokenType tokenType, IGrammar grammar)
             : base(tokenType)
         {
             Grammar = grammar;

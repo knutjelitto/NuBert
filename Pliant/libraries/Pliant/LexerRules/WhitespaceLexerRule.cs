@@ -4,7 +4,7 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public class WhitespaceLexerRule : DfaLexerRule
+    public class WhitespaceLexerRule : DfaLexer
     {
         private static readonly DfaState _start;
         private static readonly TokenType _staticTokenType = new TokenType(@"[\s]+");

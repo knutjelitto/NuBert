@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using Pliant.Dotted;
 using Pliant.Grammars;
 
 namespace Pliant.Charts

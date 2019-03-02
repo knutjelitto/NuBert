@@ -1,31 +1,28 @@
-﻿namespace Pliant.Ebnf
+﻿using Pliant.Utilities;
+
+namespace Pliant.Ebnf
 {
-    public class EbnfRule : EbnfNode
+    public class EbnfRule : ValueEqualityBase<EbnfRule>, IEbnfNode
     {
-        public EbnfRule(EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier, EbnfExpression expression)
+        public EbnfRule(EbnfQualifiedIdentifier identifier, IEbnfExpression expression)
+            : base((qualifiedEbnfQualifiedIdentifier: identifier, expression).GetHashCode())
         {
-            QualifiedEbnfQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
+            Identifier = identifier;
             Expression = expression;
         }
 
-        public EbnfQualifiedIdentifier QualifiedEbnfQualifiedIdentifier { get; }
-        public EbnfExpression Expression { get; }
+        public EbnfQualifiedIdentifier Identifier { get; }
+        public IEbnfExpression Expression { get; }
 
-        public override int GetHashCode()
+        public override bool ThisEquals(EbnfRule other)
         {
-            return (QualifiedIdentifier: QualifiedEbnfQualifiedIdentifier, Expression).GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfRule rule && 
-                   rule.QualifiedEbnfQualifiedIdentifier.Equals(QualifiedEbnfQualifiedIdentifier) && 
-                   rule.Expression.Equals(Expression);
+            return Identifier.Equals(other.Identifier) &&
+                   Expression.Equals(other.Expression);
         }
 
         public override string ToString()
         {
-            return $"{QualifiedEbnfQualifiedIdentifier} = {Expression}";
+            return $"{Identifier} = {Expression}";
         }
     }
 }

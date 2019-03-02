@@ -4,7 +4,7 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public class SimpleSingleQuoteStringLexerRule : DfaLexerRule
+    public class SimpleSingleQuoteStringLexerRule : DfaLexer
     {
         // ['][^']*[']
         private const string _pattern = @"['][^']*[']";

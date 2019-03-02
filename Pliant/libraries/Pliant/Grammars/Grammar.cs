@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Pliant.Collections;
+using Pliant.Dotted;
 
 namespace Pliant.Grammars
 {
@@ -9,18 +10,18 @@ namespace Pliant.Grammars
         public Grammar(
             NonTerminal start,
             IReadOnlyList<Production> productions,
-            IReadOnlyList<LexerRule> ignoreRules,
-            IReadOnlyList<LexerRule> triviaRules)
+            IReadOnlyList<Lexer> ignoreRules,
+            IReadOnlyList<Lexer> triviaRules)
         {
             Debug.Assert(productions != null);
 
             this.productions = new IndexedList<Production>();
-            this.ignores = new IndexedList<LexerRule>();
-            this.trivia = new IndexedList<LexerRule>();
+            this.ignores = new IndexedList<Lexer>();
+            this.trivia = new IndexedList<Lexer>();
 
             this._transitiveNullableSymbols = new UniqueList<NonTerminal>();
             this._symbolsReverseLookup = new Dictionary<NonTerminal, UniqueList<Production>>();
-            this.lexerRules = new IndexedList<LexerRule>();
+            this.lexerRules = new IndexedList<Lexer>();
             this._leftHandSideToProductions = new Dictionary<NonTerminal, List<Production>>();
             this._symbolPaths = new Dictionary<Symbol, UniqueList<Symbol>>();
 
@@ -36,17 +37,17 @@ namespace Pliant.Grammars
 
         public DottedRuleRegistry DottedRules { get; }
 
-        public IReadOnlyList<LexerRule> Ignores => this.ignores;
+        public IReadOnlyList<Lexer> Ignores => this.ignores;
 
-        public IReadOnlyList<LexerRule> LexerRules => this.lexerRules;
+        public IReadOnlyList<Lexer> LexerRules => this.lexerRules;
 
         public IReadOnlyList<Production> Productions => this.productions;
 
         public NonTerminal Start { get; }
 
-        public IReadOnlyList<LexerRule> Trivia => this.trivia;
+        public IReadOnlyList<Lexer> Trivia => this.trivia;
 
-        public int GetLexerRuleIndex(LexerRule lexerRule)
+        public int GetLexerRuleIndex(Lexer lexerRule)
         {
             return this.lexerRules.IndexOf(lexerRule);
         }
@@ -86,7 +87,7 @@ namespace Pliant.Grammars
             return list;
         }
 
-        public IReadOnlyList<Production> PrductionsFor(NonTerminal nonTerminal)
+        public IReadOnlyList<Production> ProductionsFor(NonTerminal nonTerminal)
         {
             if (!this._leftHandSideToProductions.TryGetValue(nonTerminal, out var list))
             {
@@ -98,13 +99,13 @@ namespace Pliant.Grammars
 
         public IReadOnlyList<Production> StartProductions()
         {
-            return PrductionsFor(Start);
+            return ProductionsFor(Start);
         }
 
-        private readonly IndexedList<LexerRule> ignores;
-        private readonly IndexedList<LexerRule> lexerRules;
+        private readonly IndexedList<Lexer> ignores;
+        private readonly IndexedList<Lexer> lexerRules;
         private readonly IndexedList<Production> productions;
-        private readonly IndexedList<LexerRule> trivia;
+        private readonly IndexedList<Lexer> trivia;
 
         private static void FindNullableSymbols(
             Dictionary<NonTerminal, UniqueList<Production>> reverseLookup,
@@ -157,7 +158,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private void AddIgnoreRules(IEnumerable<LexerRule> ignoreRules)
+        private void AddIgnoreRules(IEnumerable<Lexer> ignoreRules)
         {
             foreach (var ignoreRule in ignoreRules)
             {
@@ -166,7 +167,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private void AddLexerRule(LexerRule lexerRule)
+        private void AddLexerRule(Lexer lexerRule)
         {
             this.lexerRules.Add(lexerRule);
         }
@@ -187,7 +188,7 @@ namespace Pliant.Grammars
             for (var s = 0; s < production.Count; s++)
             {
                 var symbol = production[s];
-                if (symbol is LexerRule lexerRule)
+                if (symbol is Lexer lexerRule)
                 {
                     AddLexerRule(lexerRule);
                 }
@@ -212,7 +213,7 @@ namespace Pliant.Grammars
             indexedProductions.Add(production);
         }
 
-        private void AddTriviaRules(IEnumerable<LexerRule> triviaRules)
+        private void AddTriviaRules(IEnumerable<Lexer> triviaRules)
         {
             foreach (var triviaRule in triviaRules)
             {
@@ -263,7 +264,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private static readonly LexerRule[] EmptyLexerRuleArray = { };
+        private static readonly Lexer[] EmptyLexerRuleArray = { };
         private static readonly Production[] EmptyProductionArray = { };
         private readonly Dictionary<NonTerminal, List<Production>> _leftHandSideToProductions;
 

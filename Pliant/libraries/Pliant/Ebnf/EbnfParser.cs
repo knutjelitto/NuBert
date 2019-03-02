@@ -7,7 +7,7 @@ namespace Pliant.Ebnf
 {
     public class EbnfParser
     {
-        public EbnfDefinition Parse(string ebnf)
+        public IEbnfDefinition Parse(string ebnf)
         {
             var grammar = new EbnfGrammar();
             var parseEngine = new ParseEngine(

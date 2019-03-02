@@ -1,14 +1,15 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Pliant.Forest;
 using Pliant.Automata;
-using Pliant.Grammars;
-using Pliant.RegularExpressions;
-using Pliant.Tokens;
-using Pliant.Builders.Expressions;
 using Pliant.Builders;
+using Pliant.Builders.Expressions;
+using Pliant.Forest;
+using Pliant.Grammars;
+using Pliant.LexerRules;
+using Pliant.RegularExpressions;
 using Pliant.Runtime;
 using Pliant.Terminals;
 using Pliant.Tests.Unit.Runtime;
+using Pliant.Tokens;
 
 // ReSharper disable once CheckNamespace
 namespace Pliant.Tests.Common.Forest
@@ -16,20 +17,18 @@ namespace Pliant.Tests.Common.Forest
     [TestClass]
     public class ForestNodeVisitorTests
     {
-        private readonly LexerRule _whitespace;
+        public ForestNodeVisitorTests()
+        {
+            this.whitespace = CreateWhitespaceRule();
+        }
 
-        private static LexerRule CreateWhitespaceRule()
+        private static Lexer CreateWhitespaceRule()
         {
             var start = DfaState.Inner();
             var end = DfaState.Final();
             start.AddTransition(WhitespaceTerminal.Instance, end);
             end.AddTransition(WhitespaceTerminal.Instance, end);
-            return new DfaLexerRule(start, new TokenType("whitespace"));
-        }
-
-        public ForestNodeVisitorTests()
-        {
-            this._whitespace = CreateWhitespaceRule();
+            return new DfaLexer(start, new TokenType("whitespace"));
         }
 
         [TestMethod]
@@ -41,10 +40,13 @@ namespace Pliant.Tests.Common.Forest
             while (!regexLexer.EndOfStream())
             {
                 if (!regexLexer.Read())
+                {
                     Assert.Fail($"error parsing input at position {regexLexer.Position}");
+                }
             }
+
             Assert.IsTrue(regexParseEngine.IsAccepted());
-            
+
             var nodeVisitor = new LoggingNodeVisitor(
                 new SelectFirstChildDisambiguationAlgorithm());
             var root = regexParseEngine.GetParseForestRootNode();
@@ -56,40 +58,53 @@ namespace Pliant.Tests.Common.Forest
         public void NodeVisitorShouldEnumerateAllParseTrees()
         {
             ProductionExpression
+                // ReSharper disable once InconsistentNaming
                 And = "AND",
+                // ReSharper disable once InconsistentNaming
                 Panda = "Panda",
+                // ReSharper disable once InconsistentNaming
                 AAn = "AAn",
+                // ReSharper disable once InconsistentNaming
                 ShootsLeaves = "ShootsAndLeaves",
+                // ReSharper disable once InconsistentNaming
                 EatsShootsLeaves = "EatsShootsLeaves";
 
-            And.Rule = (Expr)'a' + 'n' + 'd';
-            var and = new GrammarExpression(And, new[] { And }).ToGrammar();
+            And.Rule = (Expr) 'a' + 'n' + 'd';
+            var and = new GrammarExpression(And, new[] {And}).ToGrammar();
 
-            Panda.Rule = (Expr)'p' + 'a' + 'n' + 'd' + 'a';
-            var panda = new GrammarExpression(Panda, new[] { Panda }).ToGrammar();
+            Panda.Rule = (Expr) 'p' + 'a' + 'n' + 'd' + 'a';
+            var panda = new GrammarExpression(Panda, new[] {Panda}).ToGrammar();
 
-            AAn.Rule = (Expr)'a' | ((Expr)'a' + 'n');
-            var aAn = new GrammarExpression(AAn, new[] { AAn }).ToGrammar();
+            AAn.Rule = (Expr) 'a' | ((Expr) 'a' + 'n');
+            var aAn = new GrammarExpression(AAn, new[] {AAn}).ToGrammar();
 
             ShootsLeaves.Rule =
-                (Expr)"shoots"
-                | (Expr)"leaves";
-            var shootsLeaves = new GrammarExpression(ShootsLeaves, new[] { ShootsLeaves }).ToGrammar();
+                (Expr) "shoots"
+                | (Expr) "leaves";
+            var shootsLeaves = new GrammarExpression(ShootsLeaves, new[] {ShootsLeaves}).ToGrammar();
 
             EatsShootsLeaves.Rule =
-                ((Expr)'e' + 'a' + 't' + 's')
-                | ((Expr)'s' + 'h' + 'o' + 'o' + 't' + 's')
-                | ((Expr)'l' + 'e' + 'a' + 'v' + 'e' + 's');
-            var eatsShootsLeaves = new GrammarExpression(EatsShootsLeaves, new[] { EatsShootsLeaves }).ToGrammar();
+                ((Expr) 'e' + 'a' + 't' + 's')
+                | ((Expr) 's' + 'h' + 'o' + 'o' + 't' + 's')
+                | ((Expr) 'l' + 'e' + 'a' + 'v' + 'e' + 's');
+            var eatsShootsLeaves = new GrammarExpression(EatsShootsLeaves, new[] {EatsShootsLeaves}).ToGrammar();
 
             ProductionExpression
+                // ReSharper disable once InconsistentNaming
                 S = "S",
+                // ReSharper disable once InconsistentNaming
                 NP = "NP",
+                // ReSharper disable once InconsistentNaming
                 VP = "VP",
+                // ReSharper disable once InconsistentNaming
                 NN = "NN",
+                // ReSharper disable once InconsistentNaming
                 NNS = "NNS",
+                // ReSharper disable once InconsistentNaming
                 DT = "DT",
+                // ReSharper disable once InconsistentNaming
                 CC = "CC",
+                // ReSharper disable once InconsistentNaming
                 VBZ = "VBZ";
 
             S.Rule =
@@ -101,20 +116,20 @@ namespace Pliant.Tests.Common.Forest
                 | (NN + NNS)
                 | (NNS + CC + NNS);
             VP.Rule = (VBZ + NP)
-                | (VP + VBZ + NNS)
-                | (VP + CC + VP)
-                | (VP + VP + CC + VP)
-                | VBZ;
-            CC.Rule = new GrammarLexerRule(nameof(CC), and);
-            DT.Rule = new GrammarLexerRule(nameof(DT), aAn);
-            NN.Rule = new GrammarLexerRule(nameof(NN), panda);
-            NNS.Rule = new GrammarLexerRule(nameof(NNS), shootsLeaves);
-            VBZ.Rule = new GrammarLexerRule(nameof(VBZ), eatsShootsLeaves);
+                      | (VP + VBZ + NNS)
+                      | (VP + CC + VP)
+                      | (VP + VP + CC + VP)
+                      | VBZ;
+            CC.Rule = new GrammarLexer(nameof(CC), and);
+            DT.Rule = new GrammarLexer(nameof(DT), aAn);
+            NN.Rule = new GrammarLexer(nameof(NN), panda);
+            NNS.Rule = new GrammarLexer(nameof(NNS), shootsLeaves);
+            VBZ.Rule = new GrammarLexer(nameof(VBZ), eatsShootsLeaves);
 
             var grammar = new GrammarExpression(
-                S,
-                new[] { S, NP, VP, CC, DT, NN, NNS, VBZ },
-                new[] { new LexerRuleModel(this._whitespace) })
+                    S,
+                    new[] {S, NP, VP, CC, DT, NN, NNS, VBZ},
+                    new[] {new LexerRuleModel(this.whitespace)})
                 .ToGrammar();
             var sentence = "a panda eats shoots and leaves.";
 
@@ -124,9 +139,12 @@ namespace Pliant.Tests.Common.Forest
             while (!parseRunner.EndOfStream())
             {
                 Assert.IsTrue(parseRunner.Read(),
-                $"Error parsing position: {parseRunner.Position}");
+                    $"Error parsing position: {parseRunner.Position}");
             }
+
             Assert.IsTrue(parseRunner.ParseEngine.IsAccepted());
         }
+
+        private readonly Lexer whitespace;
     }
 }

@@ -127,12 +127,12 @@ namespace Pliant.Builders
             return null;
         }
 
-        private List<LexerRule> GetIgnoreRulesFromIgnoreRulesModel()
+        private List<Lexer> GetIgnoreRulesFromIgnoreRulesModel()
         {
             return GetLexerRulesFromSettings(this.ignoreSettingModels);
         }
 
-        private LexerRule GetLexerRuleByName(string value)
+        private Lexer GetLexerRuleByName(string value)
         {
             foreach (var lexerRuleModel in this.lexerRuleModels)
             {
@@ -146,9 +146,9 @@ namespace Pliant.Builders
             return null;
         }
 
-        private List<LexerRule> GetLexerRulesFromSettings(IEnumerable<SettingModel> settings)
+        private List<Lexer> GetLexerRulesFromSettings(IEnumerable<SettingModel> settings)
         {
-            var lexerRules = new List<LexerRule>();
+            var lexerRules = new List<Lexer>();
             foreach (var setting in settings)
             {
                 var lexerRule = GetLexerRuleByName(setting.Value);
@@ -177,7 +177,7 @@ namespace Pliant.Builders
             return productions;
         }
 
-        private List<LexerRule> GetTriviaRulesFromTriviaRulesModel()
+        private List<Lexer> GetTriviaRulesFromTriviaRulesModel()
         {
             return GetLexerRulesFromSettings(this.triviaSettings);
         }

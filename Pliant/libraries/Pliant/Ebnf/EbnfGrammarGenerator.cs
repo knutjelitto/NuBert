@@ -4,6 +4,7 @@ using System.Linq;
 using Pliant.Automata;
 using Pliant.Builders;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 using Pliant.RegularExpressions;
 using Pliant.Terminals;
 using Pliant.Tokens;
@@ -18,7 +19,7 @@ namespace Pliant.Ebnf
             this.nfaToDfa = new SubsetConstructionAlgorithm();
         }
 
-        public IGrammar Generate(EbnfDefinition ebnf)
+        public IGrammar Generate(IEbnfDefinition ebnf)
         {
             var grammarModel = new GrammarModel();
             Definition(ebnf, grammarModel);
@@ -39,7 +40,7 @@ namespace Pliant.Ebnf
                 identifiers[identifiers.Length - 1]);
         }
 
-        private void Block(EbnfBlock block, GrammarModel grammarModel)
+        private void Block(IEbnfBlock block, GrammarModel grammarModel)
         {
             switch (block)
             {
@@ -81,7 +82,7 @@ namespace Pliant.Ebnf
             }
         }
 
-        private void Definition(EbnfDefinition definition, GrammarModel grammarModel)
+        private void Definition(IEbnfDefinition definition, GrammarModel grammarModel)
         {
             Block(definition.Block, grammarModel);
 
@@ -91,7 +92,7 @@ namespace Pliant.Ebnf
             }
         }
 
-        private IEnumerable<ProductionModel> Expression(EbnfExpression expression, ProductionModel currentProduction)
+        private IEnumerable<ProductionModel> Expression(IEbnfExpression expression, ProductionModel currentProduction)
         {
             foreach (var production in Term(expression.Term, currentProduction))
             {
@@ -109,7 +110,7 @@ namespace Pliant.Ebnf
             }
         }
 
-        private IEnumerable<ProductionModel> Factor(EbnfFactor factor, ProductionModel currentProduction)
+        private IEnumerable<ProductionModel> Factor(IEbnfFactor factor, ProductionModel currentProduction)
         {
             switch (factor)
             {
@@ -138,19 +139,19 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfFactorIdentifier identifier:
-                    var nonTerminal = GetQualifiedName(identifier.QualifiedEbnfQualifiedIdentifier);
+                    var nonTerminal = GetQualifiedName(identifier.QualifiedIdentifier);
                     currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
                     break;
 
                 case EbnfFactorLiteral literal:
-                    var stringLiteralRule = new StringLiteralLexerRule(literal.Value);
+                    var stringLiteralRule = new StringLiteralLexer(literal.Value);
                     currentProduction.AddWithAnd(new LexerRuleModel(stringLiteralRule));
                     break;
 
                 case EbnfFactorRegex regex:
                     var nfa = this.regexToNfa.Transform(regex.Regex);
                     var dfa = this.nfaToDfa.Transform(nfa);
-                    var dfaLexerRule = new DfaLexerRule(dfa, regex.Regex.ToString());
+                    var dfaLexerRule = new DfaLexer(dfa, regex.Regex.ToString());
                     currentProduction.AddWithAnd(new LexerRuleModel(dfaLexerRule));
                     break;
             }
@@ -194,9 +195,9 @@ namespace Pliant.Ebnf
             return new LexerRuleModel(lexerRule);
         }
 
-        private LexerRule LexerRuleExpression(
+        private Lexer LexerRuleExpression(
             QualifiedName fullyQualifiedName,
-            EbnfLexerRuleExpression ebnfLexerRule)
+            IEbnfLexerRuleExpression ebnfLexerRule)
         {
             if (TryRecognizeSimpleLiteralExpression(fullyQualifiedName, ebnfLexerRule, out var lexerRule))
             {
@@ -206,10 +207,10 @@ namespace Pliant.Ebnf
             var nfa = LexerRuleExpression(ebnfLexerRule);
             var dfa = this.nfaToDfa.Transform(nfa);
 
-            return new DfaLexerRule(dfa, fullyQualifiedName.FullName);
+            return new DfaLexer(dfa, fullyQualifiedName.FullName);
         }
 
-        private Nfa LexerRuleExpression(EbnfLexerRuleExpression expression)
+        private Nfa LexerRuleExpression(IEbnfLexerRuleExpression expression)
         {
             var nfa = LexerRuleTerm(expression.Term);
             if (expression is EbnfLexerRuleExpressionAlteration alteration)
@@ -221,7 +222,7 @@ namespace Pliant.Ebnf
             return nfa;
         }
 
-        private Nfa LexerRuleFactor(EbnfLexerRuleFactor factor)
+        private Nfa LexerRuleFactor(IEbnfLexerRuleFactor factor)
         {
             switch (factor)
             {
@@ -233,7 +234,7 @@ namespace Pliant.Ebnf
 
                 default:
                     throw new InvalidOperationException(
-                        $"Invalid EbnfLexerRuleFactor node type detected. Found {factor.GetType().Name}, expected EbnfLexerRuleFactorLiteral or EbnfLexerRuleFactorRegex");
+                        $"Invalid IEbnfLexerRuleFactor node type detected. Found {factor.GetType().Name}, expected EbnfLexerRuleFactorLiteral or EbnfLexerRuleFactorRegex");
             }
         }
 
@@ -264,7 +265,7 @@ namespace Pliant.Ebnf
             return this.regexToNfa.Transform(regex);
         }
 
-        private Nfa LexerRuleTerm(EbnfLexerRuleTerm term)
+        private Nfa LexerRuleTerm(IEbnfLexerRuleTerm term)
         {
             var nfa = LexerRuleFactor(term.Factor);
             if (term is EbnfLexerRuleTermConcatenation concatenation)
@@ -316,7 +317,7 @@ namespace Pliant.Ebnf
 
         private IEnumerable<ProductionModel> Rule(EbnfRule rule)
         {
-            var nonTerminal = GetQualifiedName(rule.QualifiedEbnfQualifiedIdentifier);
+            var nonTerminal = GetQualifiedName(rule.Identifier);
             var productionModel = new ProductionModel(nonTerminal);
             foreach (var production in Expression(rule.Expression, productionModel))
             {
@@ -333,7 +334,7 @@ namespace Pliant.Ebnf
             return new StartProductionSettingModel(productionName);
         }
 
-        private IEnumerable<ProductionModel> Term(EbnfTerm term, ProductionModel currentProduction)
+        private IEnumerable<ProductionModel> Term(IEbnfTerm term, ProductionModel currentProduction)
         {
             foreach (var production in Factor(term.Factor, currentProduction))
             {
@@ -358,8 +359,8 @@ namespace Pliant.Ebnf
 
         private bool TryRecognizeSimpleLiteralExpression(
             QualifiedName fullyQualifiedName,
-            EbnfLexerRuleExpression ebnfLexerRule,
-            out LexerRule lexerRule)
+            IEbnfLexerRuleExpression ebnfLexerRule,
+            out Lexer lexerRule)
         {
             lexerRule = null;
 
@@ -374,7 +375,7 @@ namespace Pliant.Ebnf
                 var factor = term.Factor;
                 if (factor is EbnfLexerRuleFactorLiteral literal)
                 {
-                    lexerRule = new StringLiteralLexerRule(literal.Value, new TokenType(fullyQualifiedName.FullName));
+                    lexerRule = new StringLiteralLexer(literal.Value, new TokenType(fullyQualifiedName.FullName));
 
                     return true;
                 }

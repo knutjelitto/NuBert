@@ -17,7 +17,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var dfa = CreateDfaFromRegexPattern(pattern);
             Assert.IsNotNull(dfa);
 
-            var lexerRule = new DfaLexerRule(dfa, "a");
+            var lexerRule = new DfaLexer(dfa, "a");
             var lexeme = lexerRule.CreateLexeme(0);
             Assert.IsTrue(lexeme.Scan('a'));
         }
@@ -29,7 +29,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
             var dfa = CreateDfaFromRegexPattern(pattern);
             Assert.IsNotNull(dfa);
             Assert.AreEqual(3, dfa.Transitions.Count);
-            var lexerRule = new DfaLexerRule(dfa, pattern);
+            var lexerRule = new DfaLexer(dfa, pattern);
             AssertLexerRuleMatches(lexerRule, "+0");
             AssertLexerRuleMatches(lexerRule, "-1");
             AssertLexerRuleMatches(lexerRule, "9");
@@ -43,7 +43,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
             Assert.IsNotNull(dfa);
             Assert.AreEqual(1, dfa.Transitions.Count);
             Assert.AreEqual(0, dfa.Transitions[0].Target.Transitions.Count);
-            var lexerRule = new DfaLexerRule(dfa, pattern);
+            var lexerRule = new DfaLexer(dfa, pattern);
             AssertLexerRuleMatches(lexerRule, " ");
             AssertLexerRuleMatches(lexerRule, "\t");
             AssertLexerRuleMatches(lexerRule, "\f");
@@ -57,7 +57,7 @@ namespace Pliant.Tests.Unit.RegularExpressions
             return dfa;
         }
 
-        private static void AssertLexerRuleMatches(DfaLexerRule lexerRule, string input)
+        private static void AssertLexerRuleMatches(DfaLexer lexerRule, string input)
         {
             var lexeme = lexerRule.CreateLexeme(0);
             for (var i = 0; i < input.Length; i++)

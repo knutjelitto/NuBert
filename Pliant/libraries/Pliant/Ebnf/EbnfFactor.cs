@@ -1,55 +1,46 @@
 ﻿using Pliant.RegularExpressions;
+using Pliant.Utilities;
 
 namespace Pliant.Ebnf
 {
-    public abstract class EbnfFactor : EbnfNode
+    public interface IEbnfFactor : IEbnfNode
     {
     }
 
-    public sealed class EbnfFactorIdentifier : EbnfFactor
+    public sealed class EbnfFactorIdentifier : ValueEqualityBase<EbnfFactorIdentifier>, IEbnfFactor
     {
-        public EbnfFactorIdentifier(EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
+        public EbnfFactorIdentifier(EbnfQualifiedIdentifier qualifiedIdentifier)
+            : base(qualifiedIdentifier.GetHashCode())
         {
-            QualifiedEbnfQualifiedIdentifier = qualifiedEbnfQualifiedIdentifier;
+            QualifiedIdentifier = qualifiedIdentifier;
         }
 
-        public EbnfQualifiedIdentifier QualifiedEbnfQualifiedIdentifier { get; }
+        public EbnfQualifiedIdentifier QualifiedIdentifier { get; }
 
-        public override int GetHashCode()
+        public override bool ThisEquals(EbnfFactorIdentifier other)
         {
-            return QualifiedEbnfQualifiedIdentifier.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfFactorIdentifier other &&
-                   other.QualifiedEbnfQualifiedIdentifier.Equals(QualifiedEbnfQualifiedIdentifier);
+            return other.QualifiedIdentifier.Equals(QualifiedIdentifier);
         }
 
         public override string ToString()
         {
-            return QualifiedEbnfQualifiedIdentifier.ToString();
+            return QualifiedIdentifier.ToString();
         }
     }
 
-    public sealed class EbnfFactorLiteral : EbnfFactor
+    public sealed class EbnfFactorLiteral : ValueEqualityBase<EbnfFactorLiteral>, IEbnfFactor
     {
         public EbnfFactorLiteral(string value)
+            : base(value.GetHashCode())
         {
             Value = value;
         }
 
         public string Value { get; }
 
-        public override int GetHashCode()
+        public override bool ThisEquals(EbnfFactorLiteral other)
         {
-            return Value.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfFactorLiteral other &&
-                   other.Value.Equals(Value);
+            return Value.Equals(other.Value);
         }
 
         public override string ToString()
@@ -58,24 +49,19 @@ namespace Pliant.Ebnf
         }
     }
 
-    public class EbnfFactorRegex : EbnfFactor
+    public class EbnfFactorRegex : ValueEqualityBase<EbnfFactorRegex>, IEbnfFactor
     {
         public EbnfFactorRegex(Regex regex)
+            : base(regex.GetHashCode())
         {
             Regex = regex;
         }
 
         public Regex Regex { get; }
 
-        public override int GetHashCode()
+        public override bool ThisEquals(EbnfFactorRegex other)
         {
-            return Regex.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfFactorRegex other && 
-                   other.Regex.Equals(Regex);
+            return Regex.Equals(other.Regex);
         }
 
         public override string ToString()
@@ -84,24 +70,19 @@ namespace Pliant.Ebnf
         }
     }
 
-    public sealed class EbnfFactorRepetition : EbnfFactor
+    public sealed class EbnfFactorRepetition : ValueEqualityBase<EbnfFactorRepetition>, IEbnfFactor
     {
-        public EbnfFactorRepetition(EbnfExpression expression)
+        public EbnfFactorRepetition(IEbnfExpression expression)
+            : base(expression.GetHashCode())
         {
             Expression = expression;
         }
 
-        public EbnfExpression Expression { get; }
+        public IEbnfExpression Expression { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(EbnfFactorRepetition other)
         {
-            return obj is EbnfFactorRepetition other && 
-                   other.Expression.Equals(Expression);
-        }
-
-        public override int GetHashCode()
-        {
-            return Expression.GetHashCode();
+            return Expression.Equals(other.Expression);
         }
 
         public override string ToString()
@@ -110,51 +91,40 @@ namespace Pliant.Ebnf
         }
     }
 
-    public sealed class EbnfFactorOptional : EbnfFactor
+    public sealed class EbnfFactorOptional : ValueEqualityBase<EbnfFactorOptional>, IEbnfFactor
     {
-        public EbnfFactorOptional(EbnfExpression expression)
+        public EbnfFactorOptional(IEbnfExpression expression)
+            : base(expression.GetHashCode())
         {
             Expression = expression;
         }
 
-        public EbnfExpression Expression { get; }
+        public IEbnfExpression Expression { get; }
 
-        public override int GetHashCode()
+        public override bool ThisEquals(EbnfFactorOptional other)
         {
-            return Expression.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfFactorOptional other && 
-                   other.Expression.Equals(Expression);
+            return other.Expression.Equals(Expression);
         }
 
         public override string ToString()
         {
             return $"[{Expression}]";
         }
-
     }
 
-    public class EbnfFactorGrouping : EbnfFactor
+    public class EbnfFactorGrouping : ValueEqualityBase<EbnfFactorGrouping>, IEbnfFactor
     {
-        public EbnfFactorGrouping(EbnfExpression expression)
+        public EbnfFactorGrouping(IEbnfExpression expression)
+            : base(expression.GetHashCode())
         {
             Expression = expression;
         }
 
-        public EbnfExpression Expression { get; }
+        public IEbnfExpression Expression { get; }
 
-        public override int GetHashCode()
+        public override bool ThisEquals(EbnfFactorGrouping other)
         {
-            return Expression.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EbnfFactorGrouping factor && 
-                   factor.Expression.Equals(Expression);
+            return Expression.Equals(other.Expression);
         }
 
         public override string ToString()

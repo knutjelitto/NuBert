@@ -299,7 +299,7 @@ namespace Pliant.Tests.Unit.Ebnf
                     new EbnfDefinitionSimple(
                         new EbnfBlockSetting(
                             new EbnfSetting(
-                                new EbnfSettingIdentifier("ignore"),
+                                new EbnfSettingIdentifier(":ignore"),
                                 new EbnfQualifiedIdentifier("whitespace"))))));
             
             var grammar = GenerateGrammar(definition);
@@ -340,7 +340,7 @@ namespace Pliant.Tests.Unit.Ebnf
                     new EbnfDefinitionSimple(
                         new EbnfBlockSetting(
                             new EbnfSetting(
-                                new EbnfSettingIdentifier("trivia"),
+                                new EbnfSettingIdentifier(":trivia"),
                                 new EbnfQualifiedIdentifier("whitespace"))))));
 
             var grammar = GenerateGrammar(definition);
@@ -356,7 +356,7 @@ namespace Pliant.Tests.Unit.Ebnf
             var definition = new EbnfDefinitionConcatenation(
                 new EbnfBlockSetting(
                     new EbnfSetting(
-                        new EbnfSettingIdentifier("start"),
+                        new EbnfSettingIdentifier(":start"),
                         new EbnfQualifiedIdentifier("S"))), 
                 new EbnfDefinitionSimple(
                 new EbnfBlockRule(
@@ -372,7 +372,7 @@ namespace Pliant.Tests.Unit.Ebnf
             Assert.AreEqual(grammar.Start.QualifiedName.Name, "S");
         }
 
-        private static IGrammar GenerateGrammar(EbnfDefinition definition)
+        private static IGrammar GenerateGrammar(IEbnfDefinition definition)
         {
             var generator = new EbnfGrammarGenerator();
             return generator.Generate(definition);

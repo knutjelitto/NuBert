@@ -6,7 +6,7 @@ namespace Pliant.Tokens
 {
     public abstract class Lexeme : IToken
     {
-        protected Lexeme(LexerRule lexerRule, int position)
+        protected Lexeme(Lexer lexerRule, int position)
         {
             TokenType = lexerRule.TokenType;
             Position = position;

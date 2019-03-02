@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
-using Pliant.Grammars;
 using Pliant.Runtime;
 using Pliant.Tokens;
 using System.Collections.Generic;
 using System.Linq;
+using Pliant.LexerRules;
 using Pliant.Terminals;
 
 namespace Pliant.Tests.Unit
@@ -15,8 +15,10 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void ParseEngineLexemeShouldConsumeWhitespace()
         {
-            ProductionExpression 
+            ProductionExpression
+                // ReSharper disable once InconsistentNaming
                 S = "S",
+                // ReSharper disable once InconsistentNaming
                 W = "W";
 
             S.Rule = W | (W + S);
@@ -24,9 +26,7 @@ namespace Pliant.Tests.Unit
 
             var grammar = new GrammarExpression(S, new[] { S, W }).ToGrammar();
 
-            var lexerRule = new GrammarLexerRule(
-                "whitespace",
-                grammar);
+            var lexerRule = new GrammarLexer("whitespace", grammar);
 
             var lexeme = new ParseEngineLexeme(lexerRule);
             var input = "\t\r\n\v\f ";
@@ -45,7 +45,7 @@ namespace Pliant.Tests.Unit
             sequence.Rule = (Expr)'a' + 'b' + 'c' + '1' + '2' + '3';
 
             var grammar = new GrammarExpression(sequence, new[] { sequence }).ToGrammar();
-            var lexerRule = new GrammarLexerRule(new TokenType("sequence"), grammar);
+            var lexerRule = new GrammarLexer(new TokenType("sequence"), grammar);
             var lexeme = new ParseEngineLexeme(lexerRule);
             var input = "abc123";
             foreach (var ch in input)
@@ -61,19 +61,23 @@ namespace Pliant.Tests.Unit
         {
             var lexemeList = new List<ParseEngineLexeme>();
 
-            ProductionExpression There = "there";
+            ProductionExpression
+                // ReSharper disable once InconsistentNaming
+                There = "there";
             There.Rule = (Expr)'t' + 'h' + 'e' + 'r' + 'e';
             var thereGrammar = new GrammarExpression(There, new[] { There })
                 .ToGrammar();
-            var thereLexerRule = new GrammarLexerRule(new TokenType(There.ProductionModel.LeftHandSide.NonTerminal.Value), thereGrammar);
+            var thereLexerRule = new GrammarLexer(new TokenType(There.ProductionModel.LeftHandSide.NonTerminal.Value), thereGrammar);
             var thereLexeme = new ParseEngineLexeme(thereLexerRule);
             lexemeList.Add(thereLexeme);
 
-            ProductionExpression Therefore = "therefore";
+            ProductionExpression
+                // ReSharper disable once InconsistentNaming
+                Therefore = "therefore";
             Therefore.Rule = (Expr)'t' + 'h' + 'e' + 'r' + 'e' + 'f' + 'o' + 'r' + 'e';
             var thereforeGrammar = new GrammarExpression(Therefore, new[] { Therefore })
                 .ToGrammar();
-            var thereforeLexerRule = new GrammarLexerRule(new TokenType(Therefore.ProductionModel.LeftHandSide.NonTerminal.Value), thereforeGrammar);
+            var thereforeLexerRule = new GrammarLexer(new TokenType(Therefore.ProductionModel.LeftHandSide.NonTerminal.Value), thereforeGrammar);
             var thereforeLexeme = new ParseEngineLexeme(thereforeLexerRule);
             lexemeList.Add(thereforeLexeme);
 

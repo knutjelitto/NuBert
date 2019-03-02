@@ -11,7 +11,7 @@ namespace Pliant.RegularExpressions
         public RegexTermFactor(RegexFactor factor)
         {
             Factor = factor;
-            this._hashCode = ComputeHashCode();
+            this.hashCode = Factor.GetHashCode();
         }
 
         public RegexFactor Factor { get; }
@@ -23,7 +23,7 @@ namespace Pliant.RegularExpressions
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
         public override string ToString()
@@ -31,12 +31,7 @@ namespace Pliant.RegularExpressions
             return Factor.ToString();
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(Factor.GetHashCode());
-        }
-
-        private readonly int _hashCode;
+        private readonly int hashCode;
     }
 
     public sealed class RegexTermFactorTerm : RegexTerm

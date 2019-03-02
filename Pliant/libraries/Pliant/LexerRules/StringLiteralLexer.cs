@@ -1,17 +1,17 @@
-﻿using Pliant.Tokens;
-using Pliant.Utilities;
+﻿using Pliant.Grammars;
+using Pliant.Tokens;
 
-namespace Pliant.Grammars
+namespace Pliant.LexerRules
 {
-    public sealed class StringLiteralLexerRule : LexerRule
+    public sealed class StringLiteralLexer : Lexer
     {
-        public StringLiteralLexerRule(string literal, TokenType tokenType)
+        public StringLiteralLexer(string literal, TokenType tokenType)
             : base(tokenType)
         {
             Literal = literal;
         }
 
-        public StringLiteralLexerRule(string literal)
+        public StringLiteralLexer(string literal)
             : this(literal, new TokenType(literal))
         {
         }
@@ -30,7 +30,7 @@ namespace Pliant.Grammars
 
         public override bool Equals(object obj)
         {
-            return obj is StringLiteralLexerRule other &&
+            return obj is StringLiteralLexer other &&
                    Literal.Equals(other.Literal);
         }
 

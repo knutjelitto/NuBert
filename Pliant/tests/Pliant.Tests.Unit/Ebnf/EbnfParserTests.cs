@@ -291,7 +291,7 @@ namespace Pliant.Tests.Unit.Ebnf
             parseForest.Accept(visitor);
         }
 
-        private static EbnfDefinition Parse(string input)
+        private static IEbnfDefinition Parse(string input)
         {
             var ebnfParser = new EbnfParser();
             return ebnfParser.Parse(input);

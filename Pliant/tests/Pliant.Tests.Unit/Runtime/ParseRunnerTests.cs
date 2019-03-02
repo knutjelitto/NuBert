@@ -18,8 +18,8 @@ namespace Pliant.Tests.Unit.Runtime
     [TestClass]
     public class ParseRunnerTests
     {
-        private static readonly GrammarLexerRule _whitespaceRule;
-        private static readonly GrammarLexerRule _wordRule;
+        private static readonly GrammarLexer _whitespaceRule;
+        private static readonly GrammarLexer _wordRule;
         private static readonly IGrammar _repeatingWordGrammar;
 
         static ParseRunnerTests()
@@ -29,7 +29,7 @@ namespace Pliant.Tests.Unit.Runtime
             _repeatingWordGrammar = CreateRepeatingWordGrammar();
         }
 
-        private static GrammarLexerRule CreateWhitespaceRule()
+        private static GrammarLexer CreateWhitespaceRule()
         {
             ProductionExpression 
                 S = "S", 
@@ -42,10 +42,10 @@ namespace Pliant.Tests.Unit.Runtime
                 WhitespaceTerminal.Instance;
 
             var grammar = new GrammarExpression(S, new[] { S, whitespace }).ToGrammar();
-            return new GrammarLexerRule(nameof(whitespace), grammar);
+            return new GrammarLexer(nameof(whitespace), grammar);
         }
 
-        private static GrammarLexerRule CreateWordRule()
+        private static GrammarLexer CreateWordRule()
         {
             ProductionExpression 
                 W = "W", 
@@ -60,7 +60,7 @@ namespace Pliant.Tests.Unit.Runtime
                 | new RangeTerminal('0', '9');
 
             var wordGrammar = new GrammarExpression(W, new[] { W, word }).ToGrammar();
-            return new GrammarLexerRule(nameof(word), wordGrammar);
+            return new GrammarLexer(nameof(word), wordGrammar);
         }
         
         private static IGrammar CreateRepeatingWordGrammar()
@@ -81,7 +81,7 @@ namespace Pliant.Tests.Unit.Runtime
                 .ToGrammar();
         }
 
-        private static LexerRule CreateMultiLineCommentLexerRule()
+        private static Lexer CreateMultiLineCommentLexerRule()
         {
             var states = new[]
             {
@@ -111,7 +111,7 @@ namespace Pliant.Tests.Unit.Runtime
             states[3].AddTransition(notSlash, states[2]);
             states[3].AddTransition(slash, states[4]);
             
-            return new DfaLexerRule(states[0], new TokenType(@"\/[*]([*][^\/]|[^*])*[*][\/]"));
+            return new DfaLexer(states[0], new TokenType(@"\/[*]([*][^\/]|[^*])*[*][\/]"));
         }
 
         [TestMethod]
@@ -173,7 +173,7 @@ namespace Pliant.Tests.Unit.Runtime
             ProductionExpression A = "A";
             A.Rule = (Expr)'a' + 'a';
             var aGrammar = new GrammarExpression(A, new[] { A }).ToGrammar();
-            var a = new GrammarLexerRule("a", aGrammar);
+            var a = new GrammarLexer("a", aGrammar);
 
             ProductionExpression S = "S";
             S.Rule = (a + S) | a;
@@ -197,7 +197,7 @@ namespace Pliant.Tests.Unit.Runtime
 
             A.Rule = (Expr)'a' + 'a';
             var aGrammar = new GrammarExpression(A, new[] { A }).ToGrammar();
-            var a = new GrammarLexerRule("a", aGrammar);
+            var a = new GrammarLexer("a", aGrammar);
 
             S.Rule = (a + S) | a;
             var grammar = new GrammarExpression(S, new[] { S }).ToGrammar();
@@ -246,14 +246,14 @@ namespace Pliant.Tests.Unit.Runtime
                 ('a' + A)
                 | 'a';
             var aGrammar = new GrammarExpression(A, new[] { A }).ToGrammar();
-            var a = new GrammarLexerRule("a", aGrammar);
+            var a = new GrammarLexer("a", aGrammar);
 
             ProductionExpression B = "B";
             B.Rule =
                 ('b' + B)
                 | 'b';
             var bGrammar = new GrammarExpression(B, new[] { B }).ToGrammar();
-            var b = new GrammarLexerRule("b", bGrammar);
+            var b = new GrammarLexer("b", bGrammar);
 
             ProductionExpression S = "S";
             S.Rule = (Expr)
@@ -280,7 +280,7 @@ namespace Pliant.Tests.Unit.Runtime
         {
             var input = "word \t\r\n word";
 
-            var endOfLine = new StringLiteralLexerRule(
+            var endOfLine = new StringLiteralLexer(
                 Environment.NewLine,
                 new TokenType("EOL"));
             ProductionExpression S = "S";

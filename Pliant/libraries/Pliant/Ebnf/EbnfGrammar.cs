@@ -12,7 +12,7 @@ namespace Pliant.Ebnf
     {
         static EbnfGrammar()
         {
-            LexerRule
+            Lexer
                 settingIdentifier = CreateSettingIdentifierLexerRule(),
                 identifier = CreateIdentifierLexerRule(),
                 whitespace = CreateWhitespaceLexerRule(),
@@ -150,7 +150,7 @@ namespace Pliant.Ebnf
         public static readonly QualifiedName Setting = new QualifiedName(Namespace, nameof(Setting));
         public static readonly QualifiedName Term = new QualifiedName(Namespace, nameof(Term));
 
-        private static LexerRule CreateIdentifierLexerRule()
+        private static Lexer CreateIdentifierLexerRule()
         {
             // /[a-zA-Z][a-zA-Z0-9-_]*/
             var identifierState = DfaState.Inner();
@@ -165,10 +165,10 @@ namespace Pliant.Ebnf
                     new SetTerminal('-', '_')),
                 zeroOrMoreLetterOrDigit);
 
-            return new DfaLexerRule(identifierState, TokenTypes.Identifier);
+            return new DfaLexer(identifierState, TokenTypes.Identifier);
         }
 
-        private static LexerRule CreateSingleLineComment()
+        private static Lexer CreateSingleLineComment()
         {
             var slash = new CharacterTerminal('/');
             var newLine = new CharacterTerminal('\n');
@@ -182,10 +182,10 @@ namespace Pliant.Ebnf
             oneSlash.AddTransition(slash, twoSlash);
             twoSlash.AddTransition(notNewLine, twoSlash);
 
-            return new DfaLexerRule(start, TokenTypes.SingleLineComment);
+            return new DfaLexer(start, TokenTypes.SingleLineComment);
         }
 
-        private static LexerRule CreateMultiLineCommentLexerRule()
+        private static Lexer CreateMultiLineCommentLexerRule()
         {
             var states = new DfaState[5];
             for (var i = 0; i < states.Length; i++)
@@ -206,10 +206,10 @@ namespace Pliant.Ebnf
             states[3].AddTransition(notSlash, states[2]);
             states[3].AddTransition(slash, states[4]);
 
-            return new DfaLexerRule(states[0], TokenTypes.MultiLineComment);
+            return new DfaLexer(states[0], TokenTypes.MultiLineComment);
         }
 
-        private static LexerRule CreateSettingIdentifierLexerRule()
+        private static Lexer CreateSettingIdentifierLexerRule()
         {
             // /:[a-zA-Z][a-zA-Z0-9]*/
             var start = DfaState.Inner();
@@ -224,17 +224,17 @@ namespace Pliant.Ebnf
                     AsciiLetterTerminal.Instance,
                     DigitTerminal.Instance),
                 zeroOrMoreLetterOrDigit);
-            return new DfaLexerRule(start, TokenTypes.SettingIdentifier);
+            return new DfaLexer(start, TokenTypes.SettingIdentifier);
         }
 
-        private static LexerRule CreateWhitespaceLexerRule()
+        private static Lexer CreateWhitespaceLexerRule()
         {
             var whitespaceTerminal = WhitespaceTerminal.Instance;
             var startWhitespace = DfaState.Inner();
             var finalWhitespace = DfaState.Final();
             startWhitespace.AddTransition(whitespaceTerminal, finalWhitespace);
             finalWhitespace.AddTransition(whitespaceTerminal, finalWhitespace);
-            var whitespace = new DfaLexerRule(startWhitespace, TokenTypes.Whitespace);
+            var whitespace = new DfaLexer(startWhitespace, TokenTypes.Whitespace);
             return whitespace;
         }
 

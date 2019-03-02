@@ -1,19 +1,25 @@
-﻿using System;
+﻿using Pliant.Utilities;
 
 namespace Pliant.Ebnf
 {
-    public abstract class EbnfBlock : EbnfNode
+    public interface IEbnfBlock
     {
     }
 
-    public sealed class EbnfBlockRule : EbnfBlock
+    public sealed class EbnfBlockRule : ValueEqualityBase<EbnfBlockRule>, IEbnfBlock
     {
-        public EbnfBlockRule(EbnfRule rule)
+        public EbnfBlockRule(EbnfRule rule) 
+            : base(rule.GetHashCode())
         {
             Rule = rule;
         }
 
         public EbnfRule Rule { get; }
+
+        public override bool ThisEquals(EbnfBlockRule other)
+        {
+            return Rule.Equals(other.Rule);
+        }
 
         public override bool Equals(object obj)
         {
@@ -26,46 +32,35 @@ namespace Pliant.Ebnf
         }
     }
 
-    public sealed class EbnfBlockSetting : EbnfBlock
+    public sealed class EbnfBlockSetting : ValueEqualityBase<EbnfBlockSetting>, IEbnfBlock
     {
         public EbnfBlockSetting(EbnfSetting setting)
+            : base(setting.GetHashCode())
         {
             Setting = setting;
         }
 
         public EbnfSetting Setting { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(EbnfBlockSetting other)
         {
-            return obj is EbnfBlockSetting other &&
-                   other.Setting.Equals(Setting);
-        }
-
-        public override int GetHashCode()
-        {
-            return Setting.GetHashCode();
+            return other.Setting.Equals(Setting);
         }
     }
 
-    public sealed class EbnfBlockLexerRule : EbnfBlock
+    public sealed class EbnfBlockLexerRule : ValueEqualityBase<EbnfBlockLexerRule>, IEbnfBlock
     {
         public EbnfBlockLexerRule(EbnfLexerRule lexerRule)
+            : base(lexerRule.GetHashCode())
         {
             LexerRule = lexerRule;
         }
 
         public EbnfLexerRule LexerRule { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(EbnfBlockLexerRule other)
         {
-            // Tests only
-            return obj is EbnfBlockLexerRule other &&
-                   other.LexerRule.Equals(LexerRule);
-        }
-
-        public override int GetHashCode()
-        {
-            return LexerRule.GetHashCode();
+            return other.LexerRule.Equals(LexerRule);
         }
     }
 }

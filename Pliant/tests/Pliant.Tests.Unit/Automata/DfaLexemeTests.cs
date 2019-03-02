@@ -19,7 +19,7 @@ namespace Pliant.Tests.Unit.Automata
             dfa.AddTransition(WhitespaceTerminal.Instance, final);
             final.AddTransition(WhitespaceTerminal.Instance, final);
 
-            var dfaLexerRule = new DfaLexerRule(dfa, new TokenType("whitespace"));
+            var dfaLexerRule = new DfaLexer(dfa, new TokenType("whitespace"));
             var whitespaceLexeme = new DfaLexeme(dfaLexerRule, 0);
             foreach (var character in randomWhitespace)
             {
@@ -39,7 +39,7 @@ namespace Pliant.Tests.Unit.Automata
             final.AddTransition(new RangeTerminal('A', 'Z'), final);
             final.AddTransition(DigitTerminal.Instance, final);
 
-            var dfaLexerRule = new DfaLexerRule(dfa, new TokenType("Identifier"));
+            var dfaLexerRule = new DfaLexer(dfa, new TokenType("Identifier"));
             var indentifierLexeme = new DfaLexeme(dfaLexerRule, 0);
             foreach (var character in wordInput)
             {
@@ -56,7 +56,7 @@ namespace Pliant.Tests.Unit.Automata
             dfa.AddTransition(new RangeTerminal('a', 'z'), final);
             final.AddTransition(new RangeTerminal('a', 'z'), final);
 
-            var dfaLexerRule = new DfaLexerRule(dfa, new TokenType("lowerCase"));
+            var dfaLexerRule = new DfaLexer(dfa, new TokenType("lowerCase"));
             var letterLexeme = new DfaLexeme(dfaLexerRule, 0);
             Assert.IsFalse(letterLexeme.Scan(numberInput[0]));
             Assert.AreEqual(string.Empty, letterLexeme.Value);

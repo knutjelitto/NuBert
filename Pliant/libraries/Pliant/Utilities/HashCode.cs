@@ -4,26 +4,16 @@ namespace Pliant.Utilities
 {
     internal static class HashCode
     {
-        private const uint Seed = 2166136261;
-        private const int Incremental = 16777619;
+        private const uint seed = 2166136261;
+        private const int incremental = 16777619;
         
-        public static int Compute(int first)
-        {
-            unchecked
-            {
-                var hash = (int)Seed;
-                hash = (hash * Incremental) ^ first;
-                return hash;
-            }
-        }
-
         public static int Compute(int first, int second)
         {
             unchecked
             {
-                var hash = (int)Seed;
-                hash = (hash * Incremental) ^ first;
-                hash = (hash * Incremental) ^ second;
+                var hash = (int)seed;
+                hash = (hash * incremental) ^ first;
+                hash = (hash * incremental) ^ second;
                 return hash;
             }
         }
@@ -32,10 +22,10 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)Seed;
-                hash = (hash * Incremental) ^ first;
-                hash = (hash * Incremental) ^ second;
-                hash = (hash * Incremental) ^ third;
+                var hash = (int)seed;
+                hash = (hash * incremental) ^ first;
+                hash = (hash * incremental) ^ second;
+                hash = (hash * incremental) ^ third;
                 return hash;
             }
         }
@@ -44,11 +34,11 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)Seed;
-                hash = (hash * Incremental) ^ first;
-                hash = (hash * Incremental) ^ second;
-                hash = (hash * Incremental) ^ third;
-                hash = (hash * Incremental) ^ fourth;
+                var hash = (int)seed;
+                hash = (hash * incremental) ^ first;
+                hash = (hash * incremental) ^ second;
+                hash = (hash * incremental) ^ third;
+                hash = (hash * incremental) ^ fourth;
                 return hash;
             }
         }
@@ -57,13 +47,13 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)Seed;
-                hash = (hash * Incremental) ^ first;
-                hash = (hash * Incremental) ^ second;
-                hash = (hash * Incremental) ^ third;
-                hash = (hash * Incremental) ^ fourth;
-                hash = (hash * Incremental) ^ fifth;
-                hash = (hash * Incremental) ^ sixth;
+                var hash = (int)seed;
+                hash = (hash * incremental) ^ first;
+                hash = (hash * incremental) ^ second;
+                hash = (hash * incremental) ^ third;
+                hash = (hash * incremental) ^ fourth;
+                hash = (hash * incremental) ^ fifth;
+                hash = (hash * incremental) ^ sixth;
                 return hash;
             }
         }
@@ -72,10 +62,10 @@ namespace Pliant.Utilities
         {
             unchecked
             {
-                var hash = (int)Seed;
+                var hash = (int)seed;
                 foreach (var item in items)
                 {
-                    hash = (hash * Incremental) ^ item.GetHashCode();
+                    hash = (hash * incremental) ^ item.GetHashCode();
                 }
                 return hash;
             }
@@ -87,9 +77,9 @@ namespace Pliant.Utilities
             {
                 if (isFirstValue)
                 {
-                    accumulator = (int)Seed;
+                    accumulator = (int)seed;
                 }
-                accumulator = (accumulator * Incremental) ^ hashCode;
+                accumulator = (accumulator * incremental) ^ hashCode;
                 return accumulator;
             }
         }

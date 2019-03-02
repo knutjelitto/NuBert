@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Pliant.Charts;
 using Pliant.Diagnostics;
+using Pliant.Dotted;
 using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Tokens;
@@ -33,7 +34,7 @@ namespace Pliant.Runtime
 
         public int Location { get; private set; }
 
-        public IReadOnlyList<LexerRule> GetExpectedLexerRules()
+        public IReadOnlyList<Lexer> GetExpectedLexerRules()
         {
             var currentEarleySet = Chart.LastSet();
             var scanStates = currentEarleySet.Scans;
@@ -45,7 +46,7 @@ namespace Pliant.Runtime
 
             var numbers = scanStates
                           .Select(state => state.DottedRule.PostDotSymbol)
-                          .OfType<LexerRule>()
+                          .OfType<Lexer>()
                           .Select(lexerRule => Grammar.GetLexerRuleIndex(lexerRule))
                           .Where(index => index >= 0);
 
@@ -286,7 +287,7 @@ namespace Pliant.Runtime
         {
             Location = 0;
             Chart = new Chart();
-            this.expectedLexerRuleCache = new Dictionary<Indices, LexerRule[]>();
+            this.expectedLexerRuleCache = new Dictionary<Indices, Lexer[]>();
             var startProductions = Grammar.StartProductions();
             foreach (var startProduction in startProductions)
             {
@@ -515,7 +516,7 @@ namespace Pliant.Runtime
         {
             var dottedRule = evidence.DottedRule;
             var nonTerminal = dottedRule.PostDotSymbol as NonTerminal;
-            var rulesForNonTerminal = Grammar.PrductionsFor(nonTerminal);
+            var rulesForNonTerminal = Grammar.ProductionsFor(nonTerminal);
 
             foreach (var production in rulesForNonTerminal)
             {
@@ -623,7 +624,7 @@ namespace Pliant.Runtime
             var i = scan.Origin;
             var currentSymbol = scan.DottedRule.PostDotSymbol;
 
-            if (currentSymbol is LexerRule lexerRule && token.TokenType.Equals(lexerRule.TokenType))
+            if (currentSymbol is Lexer lexerRule && token.TokenType.Equals(lexerRule.TokenType))
             {
                 var dottedRule = DottedRules.GetNext(scan.DottedRule);
                 if (Chart.Contains(j + 1, dottedRule, i))
@@ -656,11 +657,11 @@ namespace Pliant.Runtime
             }
         }
 
-        private static readonly LexerRule[] emptyLexerRules = { };
+        private static readonly Lexer[] emptyLexerRules = { };
 
         private static readonly TokenType emptyTokenType = new TokenType(string.Empty);
 
-        private Dictionary<Indices, LexerRule[]> expectedLexerRuleCache;
+        private Dictionary<Indices, Lexer[]> expectedLexerRuleCache;
 
         private ForestNodeSet NodeSet { get; }
 
@@ -684,7 +685,7 @@ namespace Pliant.Runtime
                 }
             }
 
-            public LexerRule[] GetLexerRules(IReadOnlyList<LexerRule> rules)
+            public Lexer[] GetLexerRules(IReadOnlyList<Lexer> rules)
             {
                 return this.indices.Select(index => rules[index]).ToArray();
             }

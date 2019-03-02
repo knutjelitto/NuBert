@@ -1,25 +1,27 @@
-﻿using System.Collections;
+﻿#if true
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Pliant.Utilities;
 
-namespace Pliant.Grammars
+namespace Pliant.Dotted
 {
-    public class DottedRuleSet : IEnumerable<DottedRule>
+    public class DottedRuleSet : IReadOnlyCollection<DottedRule>
     {
-        private readonly HashSet<DottedRule> set = new HashSet<DottedRule>();
-
         public int Count => this.set.Count;
-
-        public bool Contains(DottedRule state)
-        {
-            return this.set.Contains(state);
-        }
 
         public IEnumerator<DottedRule> GetEnumerator()
         {
             return this.set.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public bool Contains(DottedRule state)
+        {
+            return this.set.Contains(state);
         }
 
         public override bool Equals(object obj)
@@ -32,11 +34,6 @@ namespace Pliant.Grammars
             return HashCode.Compute(this.set);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
         public bool Add(DottedRule state)
         {
             return this.set.Add(state);
@@ -46,5 +43,8 @@ namespace Pliant.Grammars
         {
             this.set.Clear();
         }
+
+        private readonly HashSet<DottedRule> set = new HashSet<DottedRule>();
     }
 }
+#endif

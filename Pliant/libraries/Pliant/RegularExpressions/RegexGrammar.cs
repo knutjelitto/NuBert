@@ -132,26 +132,26 @@ namespace Pliant.RegularExpressions
             Grammar = new Grammar(regex, productions, null, null);
         }
         
-        private static LexerRule CreateNotMetaLexerRule()
+        private static Lexer CreateNotMetaLexerRule()
         {
             return new TerminalLexerRule(
                 new NegationTerminal(new SetTerminal('.', '^', '$', '(', ')', '[', ']', '+', '*', '?', '\\', '/')),
                 "NotMeta");
         }
 
-        private static LexerRule CreateNotCloseBracketLexerRule()
+        private static Lexer CreateNotCloseBracketLexerRule()
         {
             return new TerminalLexerRule(new NegationTerminal(new CharacterTerminal(']')), "NotCloseBracket");
         }
 
-        private static LexerRule CreateEscapeCharacterLexerRule()
+        private static Lexer CreateEscapeCharacterLexerRule()
         {
             var start = DfaState.Inner();
             var escape = DfaState.Inner();
             var final = DfaState.Final();
             start.AddTransition(new CharacterTerminal('\\'), escape);
             escape.AddTransition(AnyTerminal.Instance, final);
-            return new DfaLexerRule(start, "escape");
+            return new DfaLexer(start, "escape");
         }
 
         public RegexGrammar() : base(Grammar)

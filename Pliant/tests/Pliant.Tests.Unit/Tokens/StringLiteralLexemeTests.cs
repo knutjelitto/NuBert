@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Tokens;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 
 namespace Pliant.Tests.Unit.Tokens
 {
@@ -11,7 +12,7 @@ namespace Pliant.Tests.Unit.Tokens
         [TestMethod]
         public void StringLiteralLexemeResetShouldResetLexemeValues()
         {
-            var abc123LexerRule = new StringLiteralLexerRule("abc123");
+            var abc123LexerRule = new StringLiteralLexer("abc123");
             
             var lexeme = new StringLiteralLexeme(abc123LexerRule, 0);
             const string input = "abc123";

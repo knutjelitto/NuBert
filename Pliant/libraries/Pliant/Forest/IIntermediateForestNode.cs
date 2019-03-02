@@ -1,4 +1,4 @@
-﻿using Pliant.Grammars;
+﻿using Pliant.Dotted;
 
 namespace Pliant.Forest
 {

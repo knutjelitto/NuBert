@@ -1,4 +1,5 @@
-﻿using Pliant.Grammars;
+﻿using Pliant.Dotted;
+using Pliant.Grammars;
 using Pliant.Utilities;
 
 namespace Pliant.Charts
@@ -10,7 +11,7 @@ namespace Pliant.Charts
             DottedRuleSet = dottedRuleSet;
             Origin = origin;
 
-            this.hashCode = HashCode.Compute(DottedRuleSet.GetHashCode(), Origin.GetHashCode());
+            this.hashCode = (DottedRuleSet, Origin).GetHashCode();
         }
 
         public DottedRuleAssortment DottedRuleSet { get; }

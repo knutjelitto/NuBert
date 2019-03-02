@@ -1,15 +1,14 @@
 ﻿using System.Text;
-using Pliant.Diagnostics;
+using Pliant.Grammars;
+using Pliant.Utilities;
 
-namespace Pliant.Grammars
+namespace Pliant.Dotted
 {
-    public sealed class DottedRule
+    public sealed class DottedRule : ValueEqualityBase<DottedRule>
     {
         public DottedRule(Production production, int dot)
+            : base((production, dot).GetHashCode())
         {
-            Assert.IsNotNull(production, nameof(production));
-            Assert.IsGreaterThanEqualToZero(dot, nameof(dot));
-
             Production = production;
             Dot = dot;
             PostDotSymbol = GetPostDotSymbol(production, dot);
@@ -27,17 +26,9 @@ namespace Pliant.Grammars
 
         public Production Production { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(DottedRule other)
         {
-            //return obj is DottedRule other && Id.Equals(other.Id);
-            return obj is DottedRule other &&
-                   Production.Equals(other.Production) &&
-                   Dot.Equals(other.Dot);
-        }
-
-        public override int GetHashCode()
-        {
-            return (Production, Dot).GetHashCode();
+            return Production.Equals(other.Production) && Dot.Equals(other.Dot);
         }
 
         public override string ToString()
@@ -45,7 +36,7 @@ namespace Pliant.Grammars
             const string dot = "\u25CF";
 
             var builder = new StringBuilder();
-                
+
             builder.Append($"{Production.LeftHandSide} ->");
 
             for (var p = 0; p < Production.Count; p++)
