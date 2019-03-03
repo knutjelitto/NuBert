@@ -17,7 +17,7 @@ namespace Pliant.Grammars
 
         IReadOnlyList<Lexer> LexerRules { get; }
 
-        int GetLexerRuleIndex(Lexer lexerRule);
+        int GetLexerIndex(Lexer lexer);
 
         IReadOnlyList<Production> ProductionsFor(NonTerminal nonTerminal);
 
@@ -29,6 +29,6 @@ namespace Pliant.Grammars
 
         bool IsTransitiveNullable(NonTerminal nonTerminal);
 
-        bool IsRightRecursive(Symbol symbol);
+        bool IsRightRecursive(NonTerminal nonTerminal);
     }
 }

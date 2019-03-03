@@ -21,10 +21,10 @@ namespace Pliant.Forest
 
         public override bool Equals(object obj)
         {
-            return obj is ForestNodeBase nodeBase && 
-                   Location == nodeBase.Location && 
-                   NodeType == nodeBase.NodeType && 
-                   Origin == nodeBase.Origin;
+            return obj is ForestNodeBase other && 
+                   Location.Equals(other.Location) && 
+                   NodeType.Equals(other.NodeType) && 
+                   Origin.Equals(other.Origin);
         }
 
         public override int GetHashCode()

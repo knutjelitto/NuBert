@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Pliant.Dotted;
+﻿using Pliant.Dotted;
 using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Utilities;

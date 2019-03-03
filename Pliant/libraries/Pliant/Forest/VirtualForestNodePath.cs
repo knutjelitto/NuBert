@@ -8,7 +8,7 @@ namespace Pliant.Forest
     public class VirtualForestNodePath : ValueEqualityBase<VirtualForestNodePath>
     {
         public VirtualForestNodePath(TransitionState transitionState, IForestNode forestNode)
-            : base((transitionState, forestNode).GetHashCode())
+            : base((transitionState, forestNode))
         {
             TransitionState = transitionState;
             ForestNode = forestNode;

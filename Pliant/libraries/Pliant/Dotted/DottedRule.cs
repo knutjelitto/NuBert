@@ -7,7 +7,7 @@ namespace Pliant.Dotted
     public sealed class DottedRule : ValueEqualityBase<DottedRule>
     {
         public DottedRule(Production production, int dot)
-            : base((production, dot).GetHashCode())
+            : base((production, dot))
         {
             Production = production;
             Dot = dot;

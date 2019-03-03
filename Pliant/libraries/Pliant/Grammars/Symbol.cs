@@ -1,8 +1,13 @@
 ﻿namespace Pliant.Grammars
 {
-    public abstract class Symbol
+    public interface ISymbol
     {
-        public bool Is(Symbol other)
+        bool Is(ISymbol other);
+    }
+
+    public abstract class Symbol : ISymbol
+    {
+        public bool Is(ISymbol other)
         {
             return Equals(other);
         }

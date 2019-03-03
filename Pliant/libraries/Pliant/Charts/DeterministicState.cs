@@ -4,32 +4,22 @@ using Pliant.Utilities;
 
 namespace Pliant.Charts
 {
-    public sealed class DeterministicState
+    public sealed class DeterministicState : ValueEqualityBase<DeterministicState>
     {
-        public DeterministicState(DottedRuleAssortment dottedRuleSet, int origin)
+        public DeterministicState(DottedRuleSet dottedRuleSet, int origin)
+            : base((dottedRuleSet, origin))
         {
             DottedRuleSet = dottedRuleSet;
             Origin = origin;
-
-            this.hashCode = (DottedRuleSet, Origin).GetHashCode();
         }
 
-        public DottedRuleAssortment DottedRuleSet { get; }
-
+        public DottedRuleSet DottedRuleSet { get; }
         public int Origin { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(DeterministicState other)
         {
-            return obj is DeterministicState other &&
-                   Origin.Equals(other.Origin) &&
+            return Origin.Equals(other.Origin) &&
                    DottedRuleSet.Equals(other.DottedRuleSet);
         }
-
-        public override int GetHashCode()
-        {
-            return this.hashCode;
-        }
-
-        private readonly int hashCode;
     }
 }

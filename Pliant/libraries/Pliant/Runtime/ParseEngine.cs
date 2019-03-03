@@ -47,7 +47,7 @@ namespace Pliant.Runtime
             var numbers = scanStates
                           .Select(state => state.DottedRule.PostDotSymbol)
                           .OfType<Lexer>()
-                          .Select(lexerRule => Grammar.GetLexerRuleIndex(lexerRule))
+                          .Select(lexerRule => Grammar.GetLexerIndex(lexerRule))
                           .Where(index => index >= 0);
 
             var indices = new Indices(numbers);
@@ -190,11 +190,11 @@ namespace Pliant.Runtime
             var anyPreDotRuleNull = true;
             if (nextDottedRule.Dot > 1)
             {
-                var predotPrecursorSymbol = nextDottedRule.Production[nextDottedRule.Dot - 2];
-                anyPreDotRuleNull = IsSymbolTransativeNullable(predotPrecursorSymbol);
+                var preDotPrecursorSymbol = nextDottedRule.Production[nextDottedRule.Dot - 2];
+                anyPreDotRuleNull = IsSymbolTransitiveNullable(preDotPrecursorSymbol);
             }
 
-            var anyPostDotRuleNull = IsSymbolTransativeNullable(nextDottedRule.PostDotSymbol);
+            var anyPostDotRuleNull = IsSymbolTransitiveNullable(nextDottedRule.PostDotSymbol);
             if (anyPreDotRuleNull && !anyPostDotRuleNull)
             {
                 return v;
@@ -308,23 +308,25 @@ namespace Pliant.Runtime
         /// <returns>true if quasi complete, false otherwise</returns>
         private bool IsNextStateQuasiComplete(State state)
         {
-            var ruleCount = state.DottedRule.Production.Count;
-            if (ruleCount == 0)
+            var production = state.DottedRule.Production;
+
+            var symbolCount = production.Count;
+            if (symbolCount == 0)
             {
                 return true;
             }
 
-            var nextStatePosition = state.DottedRule.Dot + 1;
-            var isComplete = nextStatePosition == state.DottedRule.Production.Count;
+            var nextDot = state.DottedRule.Dot + 1;
+            var isComplete = nextDot == production.Count;
             if (isComplete)
             {
                 return true;
             }
 
             // if all subsequent symbols are nullable
-            for (var i = nextStatePosition; i < state.DottedRule.Production.Count; i++)
+            for (var i = nextDot; i < production.Count; i++)
             {
-                var nextSymbol = state.DottedRule.Production[nextStatePosition];
+                var nextSymbol = production[nextDot];
                 var isSymbolNullable = IsSymbolNullable(nextSymbol);
                 if (!isSymbolNullable)
                 {
@@ -341,7 +343,7 @@ namespace Pliant.Runtime
                 //
                 // to fix this, check if S can derive S. Basically if we are in the StartState state
                 // and the StartState state is found and is nullable, exit with false
-                if (Grammar.Start.Is(state.DottedRule.Production.LeftHandSide) &&
+                if (Grammar.Start.Is(production.LeftHandSide) &&
                     Grammar.Start.Is(nextSymbol))
                 {
                     return false;
@@ -353,32 +355,12 @@ namespace Pliant.Runtime
 
         private bool IsSymbolNullable(Symbol symbol)
         {
-            if (symbol == null)
-            {
-                return true;
-            }
-
-            if (symbol is NonTerminal nonTerminal)
-            {
-                return Grammar.IsNullable(nonTerminal);
-            }
-
-            return false;
+            return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsNullable(nonTerminal);
         }
 
-        private bool IsSymbolTransativeNullable(Symbol symbol)
+        private bool IsSymbolTransitiveNullable(Symbol symbol)
         {
-            if (symbol == null)
-            {
-                return true;
-            }
-
-            if (symbol is NonTerminal nonTerminal)
-            {
-                return Grammar.IsTransitiveNullable(nonTerminal);
-            }
-
-            return false;
+            return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsTransitiveNullable(nonTerminal);
         }
 
         private void LeoComplete(TransitionState transitionState, State completed, int k)

@@ -1,6 +1,6 @@
 ﻿namespace Pliant.RegularExpressions
 {
-    public abstract class RegexAtom : RegexNode
+    public abstract class RegexAtom : IRegexNode
     {
     }
 
@@ -35,7 +35,7 @@
 
         public override bool Equals(object obj)
         {
-            return obj is RegexAtomCharacter other && 
+            return obj is RegexAtomCharacter other &&
                    Character.Equals(other.Character);
         }
 
@@ -61,7 +61,7 @@
 
         public override bool Equals(object obj)
         {
-            return obj is RegexAtomExpression other && 
+            return obj is RegexAtomExpression other &&
                    Expression.Equals(other.Expression);
         }
 

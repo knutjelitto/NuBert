@@ -1,11 +1,11 @@
-﻿namespace Pliant.RegularExpressions
+﻿using Pliant.Utilities;
+
+namespace Pliant.RegularExpressions
 {
-    public sealed class Regex : RegexNode
+    public sealed class Regex : ValueEqualityBase<Regex>, IRegexNode
     {
-        public Regex(
-            bool startsWith,
-            RegexExpression expression,
-            bool endsWith)
+        public Regex(bool startsWith, RegexExpression expression, bool endsWith)
+            : base((startsWith, expression, endsWith))
         {
             StartsWith = startsWith;
             EndsWith = endsWith;
@@ -16,17 +16,11 @@
         public RegexExpression Expression { get; }
         public bool EndsWith { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(Regex other)
         {
-            return obj is Regex other &&
-                   StartsWith.Equals(other.StartsWith) &&
+            return StartsWith.Equals(other.StartsWith) &&
                    Expression.Equals(other.Expression) &&
                    EndsWith.Equals(other.EndsWith);
-        }
-
-        public override int GetHashCode()
-        {
-            return (StartsWith, Expression, EndsWith).GetHashCode();
         }
 
         public override string ToString()

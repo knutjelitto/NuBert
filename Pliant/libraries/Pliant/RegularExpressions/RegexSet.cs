@@ -1,6 +1,6 @@
 ﻿namespace Pliant.RegularExpressions
 {
-    public class RegexSet : RegexNode
+    public class RegexSet : IRegexNode
     {
         public RegexSet(RegexCharacterClass characterClass, bool negate)
         {

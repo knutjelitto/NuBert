@@ -6,17 +6,17 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public sealed class Production : IReadOnlyList<Symbol>
+    public sealed class Production : ValueEqualityBase<Production>, IReadOnlyList<Symbol>
     {
-        public Production(NonTerminal leftHandSide, IEnumerable<Symbol> rightHandSide)
+        public Production(NonTerminal leftHandSide, IReadOnlyList<Symbol> rightHandSide)
+            : base((leftHandSide, HashCode.Compute(rightHandSide)))
         {
             LeftHandSide = leftHandSide;
-            RightHandSide = rightHandSide.ToList();
-            this._hashCode = (LeftHandSide, HashCode.Compute(RightHandSide)).GetHashCode();
+            RightHandSide = rightHandSide.ToArray();
         }
 
         public Production(NonTerminal leftHandSide, params Symbol[] rightHandSide)
-            : this(leftHandSide, rightHandSide.AsEnumerable())
+            : this(leftHandSide, (IReadOnlyList<Symbol>)rightHandSide)
         {
         }
 
@@ -27,21 +27,15 @@ namespace Pliant.Grammars
 
         public Symbol this[int index] => RightHandSide[index];
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(Production other)
         {
-            return obj is Production other &&
-                   LeftHandSide.Equals(other.LeftHandSide) &&
+            return LeftHandSide.Equals(other.LeftHandSide) &&
                    RightHandSide.SequenceEqual(other.RightHandSide);
         }
 
         public IEnumerator<Symbol> GetEnumerator()
         {
             return RightHandSide.GetEnumerator();
-        }
-
-        public override int GetHashCode()
-        {
-            return this._hashCode;
         }
 
         public override string ToString()
@@ -57,16 +51,9 @@ namespace Pliant.Grammars
             return stringBuilder.ToString();
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(LeftHandSide.GetHashCode(), HashCode.Compute(RightHandSide));
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-
-        private readonly int _hashCode;
     }
 }

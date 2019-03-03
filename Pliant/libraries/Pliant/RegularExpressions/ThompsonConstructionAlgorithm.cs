@@ -158,7 +158,7 @@ namespace Pliant.RegularExpressions
             throw new InvalidOperationException("Unrecognized Regex Expression");
         }
 
-        private static Nfa Factor(RegexFactor factorAtom)
+        private static Nfa Factor(IRegexFactor factorAtom)
         {
             switch (factorAtom)
             {
@@ -243,7 +243,7 @@ namespace Pliant.RegularExpressions
             return CharacterClass(set.CharacterClass, set.Negate);
         }
 
-        private static Nfa Term(RegexTerm termX)
+        private static Nfa Term(IRegexTerm termX)
         {
             switch (termX)
             {

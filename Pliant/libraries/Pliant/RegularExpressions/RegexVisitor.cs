@@ -158,7 +158,7 @@ namespace Pliant.RegularExpressions
         private RegexExpression VisitRegexExpressionNode(IInternalTreeNode node)
         {
             RegexExpression expression = null;
-            RegexTerm term = null;
+            IRegexTerm term = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
@@ -185,7 +185,7 @@ namespace Pliant.RegularExpressions
             throw new InvalidOperationException("Unable to create null expression.");
         }
 
-        private RegexFactor VisitRegexFactorNode(IInternalTreeNode node)
+        private IRegexFactor VisitRegexFactorNode(IInternalTreeNode node)
         {
             RegexAtom atom = null;
             RegexIterator? iterator = null;
@@ -284,10 +284,10 @@ namespace Pliant.RegularExpressions
             throw new Exception("Invalid Set Detected.");
         }
 
-        private RegexTerm VisitRegexTermNode(IInternalTreeNode node)
+        private IRegexTerm VisitRegexTermNode(IInternalTreeNode node)
         {
-            RegexFactor factorAtom = null;
-            RegexTerm term = null;
+            IRegexFactor factorAtom = null;
+            IRegexTerm term = null;
 
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {

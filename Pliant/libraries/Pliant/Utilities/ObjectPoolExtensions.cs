@@ -28,7 +28,7 @@ namespace Pliant.Utilities
             return set;
         }
 
-        internal static DottedRuleSet Allocate(this ObjectPool<DottedRuleSet> pool)
+        internal static HashSet<DottedRule> Allocate(this ObjectPool<HashSet<DottedRule>> pool)
         {
             var set = pool.Allocate();
             //set.Clear();
@@ -74,7 +74,7 @@ namespace Pliant.Utilities
             pool.Free(set);
         }
 
-        internal static void ClearAndFree(this ObjectPool<DottedRuleSet> pool, DottedRuleSet set)
+        internal static void ClearAndFree(this ObjectPool<HashSet<DottedRule>> pool, HashSet<DottedRule> set)
         {
             set.Clear();
             pool.Free(set);

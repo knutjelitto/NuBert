@@ -57,7 +57,7 @@ namespace Pliant.Runtime
                 for (var j = 0; j < stateFrame.DottedRuleSet.ScanKeys.Count; j++)
                 {
                     var lexerRule = stateFrame.DottedRuleSet.ScanKeys[j];
-                    var index = Grammar.GetLexerRuleIndex(lexerRule);
+                    var index = Grammar.GetLexerIndex(lexerRule);
                     if (index < 0)
                     {
                         continue;
@@ -240,7 +240,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void ReduceDottedRuleSet(int i, int parent, DottedRuleAssortment dottedRuleSet)
+        private void ReduceDottedRuleSet(int i, int parent, DottedRuleSet dottedRuleSet)
         {
             var parentSet = this.chart.Sets[parent];
             var parentSetDeterministicStates = parentSet.States;
@@ -296,7 +296,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void ScanDottedRuleSet(int location, IToken token, int parent, DottedRuleAssortment dottedRuleSet)
+        private void ScanDottedRuleSet(int location, IToken token, int parent, DottedRuleSet dottedRuleSet)
         {
             //PERF: This could perhaps be improved with an int array and direct index lookup based on "token.TokenType.Id"?...
             if (!dottedRuleSet.TokenTransitions.TryGetValue(token.TokenType, out var target))

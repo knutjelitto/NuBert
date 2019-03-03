@@ -10,6 +10,11 @@
             this.hashCode = hashCode;
         }
 
+        protected ValueEqualityBase(object obj)
+            : this(obj.GetHashCode())
+        {
+        }
+
         public abstract bool ThisEquals(T other);
 
         public override bool Equals(object obj)

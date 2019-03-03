@@ -1,22 +1,51 @@
-﻿#if true
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Pliant.Grammars;
+using Pliant.Tokens;
 using Pliant.Utilities;
 
 namespace Pliant.Dotted
 {
-    public class DottedRuleSet : IReadOnlyCollection<DottedRule>
+    public class DottedRuleSet
     {
-        public int Count => this.set.Count;
-
-        public IEnumerator<DottedRule> GetEnumerator()
+        public DottedRuleSet(HashSet<DottedRule> set)
         {
-            return this.set.GetEnumerator();
+            this.set = set;
+            this.reductions = new Dictionary<Symbol, DottedRuleSet>();
+            this.tokenTransitions = new Dictionary<TokenType, DottedRuleSet>();
+            this.scans = new Dictionary<Lexer, DottedRuleSet>();
+            this.scanKeys = new List<Lexer>();
+
+            this.hashCode = ComputeHashCode(set);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEnumerable<DottedRule> Data => this.set;
+
+        public DottedRuleSet NullTransition { get; set; }
+
+        public IReadOnlyDictionary<Symbol, DottedRuleSet> Reductions => this.reductions;
+
+        public IReadOnlyList<Lexer> ScanKeys => this.scanKeys;
+
+        public IReadOnlyDictionary<TokenType, DottedRuleSet> TokenTransitions => this.tokenTransitions;
+
+        public void AddTransition(Symbol symbol, DottedRuleSet target)
         {
-            return GetEnumerator();
+            if (symbol is NonTerminal)
+            {
+                if (!Reductions.ContainsKey(symbol))
+                {
+                    this.reductions.Add(symbol, target);
+                }
+            }
+            else if (symbol is Lexer lexerRule)
+            {
+                if (!Scans.ContainsKey(lexerRule))
+                {
+                    this.tokenTransitions.Add(lexerRule.TokenType, target);
+                    this.scans.Add(lexerRule, target);
+                    this.scanKeys.Add(lexerRule);
+                }
+            }
         }
 
         public bool Contains(DottedRule state)
@@ -31,20 +60,21 @@ namespace Pliant.Dotted
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(this.set);
+            return this.hashCode;
         }
 
-        public bool Add(DottedRule state)
+        private IReadOnlyDictionary<Lexer, DottedRuleSet> Scans => this.scans;
+
+        private static int ComputeHashCode(IEnumerable<DottedRule> data)
         {
-            return this.set.Add(state);
+            return HashCode.Compute(data);
         }
 
-        public void Clear()
-        {
-            this.set.Clear();
-        }
-
-        private readonly HashSet<DottedRule> set = new HashSet<DottedRule>();
+        private readonly int hashCode;
+        private readonly Dictionary<Symbol, DottedRuleSet> reductions;
+        private readonly List<Lexer> scanKeys;
+        private readonly Dictionary<Lexer, DottedRuleSet> scans;
+        private readonly HashSet<DottedRule> set;
+        private readonly Dictionary<TokenType, DottedRuleSet> tokenTransitions;
     }
 }
-#endif

@@ -2,8 +2,8 @@
 {
     public sealed class NonTerminal : Symbol
     {
-        private NonTerminal(string @namespace, string name)
-            : this(new QualifiedName(@namespace, name))
+        private NonTerminal(string qualifier, string name)
+            : this(new QualifiedName(qualifier, name))
         {
         }
 

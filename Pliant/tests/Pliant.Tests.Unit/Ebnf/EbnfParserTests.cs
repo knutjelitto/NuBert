@@ -181,12 +181,12 @@ namespace Pliant.Tests.Unit.Ebnf
             var expected = new EbnfDefinitionSimple(
                     new EbnfBlockRule(
                         new EbnfRule(
-                            new EbnfQualifiedIdentifier("This", "Is", "A", "Namespace", "Rule"),
+                            new EbnfQualifiedIdentifier("This", "Is", "A", "Qualifier", "Rule"),
                             new EbnfExpressionSimple(
                                 new EbnfTermSimple(
                                     new EbnfFactorLiteral("a"))))));
 
-            var actual = Parse(@"This.Is.A.Namespace.Rule = 'a'; ");
+            var actual = Parse(@"This.Is.A.Qualifier.Rule = 'a'; ");
             Assert.AreEqual(expected, actual);
         }
 

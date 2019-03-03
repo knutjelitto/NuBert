@@ -26,7 +26,7 @@ namespace Pliant.Ebnf
     public sealed class EbnfDefinitionConcatenation : ValueEqualityBase<EbnfDefinitionConcatenation>, IEbnfDefinition
     {
         public EbnfDefinitionConcatenation(IEbnfBlock block, IEbnfDefinition definition)
-            : base((block, definition).GetHashCode())
+            : base((block, definition))
         {
             Block = block;
             Definition = definition;

@@ -1,17 +1,17 @@
 ﻿namespace Pliant.RegularExpressions
 {
-    public abstract class RegexExpression : RegexNode
+    public abstract class RegexExpression : IRegexNode
     {
     }
 
     public sealed class RegexExpressionTerm : RegexExpression
     {
-        public RegexExpressionTerm(RegexTerm term)
+        public RegexExpressionTerm(IRegexTerm term)
         {
             Term = term;
         }
 
-        public RegexTerm Term { get; }
+        public IRegexTerm Term { get; }
 
         public override bool Equals(object obj)
         {
@@ -32,13 +32,13 @@
 
     public sealed class RegexExpressionAlteration : RegexExpression
     {
-        public RegexExpressionAlteration(RegexTerm term, RegexExpression expression)
+        public RegexExpressionAlteration(IRegexTerm term, RegexExpression expression)
         {
             Term = term;
             Expression = expression;
         }
 
-        public RegexTerm Term { get; }
+        public IRegexTerm Term { get; }
         public RegexExpression Expression { get; }
 
         public override int GetHashCode()

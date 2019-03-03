@@ -3,27 +3,23 @@ using Pliant.Utilities;
 
 namespace Pliant.RegularExpressions
 {
-    public abstract class RegexFactor : RegexNode
+    public interface IRegexFactor : IRegexNode
     {
     }
 
-    public class RegexFactorAtom : RegexFactor
+    public class RegexFactorAtom : ValueEqualityBase<RegexFactorAtom>, IRegexFactor
     {
         public RegexFactorAtom(RegexAtom atom)
+            : base(atom)
         {
             Atom = atom;
         }
 
         public RegexAtom Atom { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(RegexFactorAtom other)
         {
-            return obj is RegexFactorAtom other && other.Atom.Equals(Atom);
-        }
-
-        public override int GetHashCode()
-        {
-            return Atom.GetHashCode();
+            return Atom.Equals(other.Atom);
         }
 
         public override string ToString()
@@ -32,26 +28,21 @@ namespace Pliant.RegularExpressions
         }
     }
 
-    public class RegexFactorIterator : RegexFactor
+    public class RegexFactorIterator : ValueEqualityBase<RegexFactorIterator>, IRegexFactor
     {
         public RegexFactorIterator(RegexAtom atom, RegexIterator iterator)
+            : base((atom, iterator))
         {
             Atom = atom;
             Iterator = iterator;
-            this._hashCode = ComputeHashCode();
         }
 
         public RegexAtom Atom { get; }
         public RegexIterator Iterator { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(RegexFactorIterator other)
         {
-            return obj is RegexFactorIterator other && other.Atom.Equals(Atom) && other.Iterator.Equals(Iterator);
-        }
-
-        public override int GetHashCode()
-        {
-            return this._hashCode;
+            return Atom.Equals(other.Atom) && Iterator.Equals(other.Iterator);
         }
 
         public override string ToString()
@@ -68,14 +59,5 @@ namespace Pliant.RegularExpressions
 
             throw new InvalidOperationException("Unexpected RegexIterator encountered.");
         }
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                Atom.GetHashCode(),
-                Iterator.GetHashCode());
-        }
-
-        private readonly int _hashCode;
     }
 }

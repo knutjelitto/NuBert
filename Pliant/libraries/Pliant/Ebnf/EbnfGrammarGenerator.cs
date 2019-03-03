@@ -32,7 +32,7 @@ namespace Pliant.Ebnf
 
             if (identifiers.Length <= 1)
             {
-                return new QualifiedName(null, identifiers[0]);
+                return new QualifiedName(identifiers[0]);
             }
 
             return new QualifiedName(
@@ -73,7 +73,7 @@ namespace Pliant.Ebnf
 
                         default:
                             throw new NotImplementedException($"invalid setting `{blockSetting.Setting.SettingIdentifier}´" +
-                                                              $" with value `{blockSetting.Setting.QualifiedEbnfQualifiedIdentifier}´");
+                                                              $" with value `{blockSetting.Setting.Identifier}´");
                     }
 
                     break;
@@ -177,7 +177,7 @@ namespace Pliant.Ebnf
         private IgnoreSettingModel IgnoreSetting(EbnfBlockSetting blockSetting)
         {
             var fullyQualifiedName =
-                GetQualifiedName(blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
+                GetQualifiedName(blockSetting.Setting.Identifier);
             return new IgnoreSettingModel(fullyQualifiedName);
         }
 
@@ -330,7 +330,7 @@ namespace Pliant.Ebnf
         private StartProductionSettingModel StartSetting(EbnfBlockSetting blockSetting)
         {
             var productionName = GetQualifiedName(
-                blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
+                blockSetting.Setting.Identifier);
             return new StartProductionSettingModel(productionName);
         }
 
@@ -353,7 +353,7 @@ namespace Pliant.Ebnf
         private TriviaSettingModel TriviaSetting(EbnfBlockSetting blockSetting)
         {
             var fullyQualifiedName =
-                GetQualifiedName(blockSetting.Setting.QualifiedEbnfQualifiedIdentifier);
+                GetQualifiedName(blockSetting.Setting.Identifier);
             return new TriviaSettingModel(fullyQualifiedName);
         }
 

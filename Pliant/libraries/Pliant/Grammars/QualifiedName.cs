@@ -1,30 +1,31 @@
-﻿using System.Diagnostics;
+﻿using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public sealed class QualifiedName
+    public sealed class QualifiedName : ValueEqualityBase<QualifiedName>
     {
         public QualifiedName(string qualifier, string name)
+            : base((qualifier, name))
         {
             Qualifier = (qualifier ?? string.Empty).Trim();
             Name = name;
-            FullName = qualifier == string.Empty
-                           ? $"{name}"
-                           : $"{qualifier}.{name}";
+            FullName = Qualifier == string.Empty
+                ? $"{Name}"
+                : $"{Qualifier}.{Name}";
+        }
+
+        public QualifiedName(string name)
+            : this(string.Empty, name)
+        {
         }
 
         public string FullName { get; }
         public string Name { get; }
         public string Qualifier { get; }
 
-        public override bool Equals(object obj)
+        public override bool ThisEquals(QualifiedName other)
         {
-            return obj is QualifiedName other && FullName.Equals(other.FullName);
-        }
-
-        public override int GetHashCode()
-        {
-            return FullName.GetHashCode();
+            return FullName.Equals(other.FullName);
         }
 
         public override string ToString()

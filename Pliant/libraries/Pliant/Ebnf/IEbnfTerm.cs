@@ -31,7 +31,7 @@ namespace Pliant.Ebnf
     public sealed class EbnfTermConcatenation : ValueEqualityBase<EbnfTermConcatenation>, IEbnfTerm
     {
         public EbnfTermConcatenation(IEbnfFactor factor, IEbnfTerm term)
-            : base((factor, term).GetHashCode())
+            : base((factor, term))
         {
             Factor = factor;
             Term = term;

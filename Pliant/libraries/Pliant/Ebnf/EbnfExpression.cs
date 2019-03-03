@@ -31,7 +31,7 @@ namespace Pliant.Ebnf
     public sealed class EbnfExpressionAlteration : ValueEqualityBase<EbnfExpressionAlteration>, IEbnfExpression
     {
         public EbnfExpressionAlteration(IEbnfTerm term, IEbnfExpression expression)
-            : base((term, expression).GetHashCode())
+            : base((term, expression))
         {
             Term = term;
             Expression = expression;

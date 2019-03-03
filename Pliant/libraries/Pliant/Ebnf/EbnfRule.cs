@@ -5,7 +5,7 @@ namespace Pliant.Ebnf
     public class EbnfRule : ValueEqualityBase<EbnfRule>, IEbnfNode
     {
         public EbnfRule(EbnfQualifiedIdentifier identifier, IEbnfExpression expression)
-            : base((qualifiedEbnfQualifiedIdentifier: identifier, expression).GetHashCode())
+            : base((identifier, expression))
         {
             Identifier = identifier;
             Expression = expression;

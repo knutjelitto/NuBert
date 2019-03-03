@@ -26,7 +26,7 @@ namespace Pliant.Ebnf
     public sealed class EbnfLexerRuleExpressionAlteration : ValueEqualityBase<EbnfLexerRuleExpressionAlteration>, IEbnfLexerRuleExpression
     {
         public EbnfLexerRuleExpressionAlteration(IEbnfLexerRuleTerm term, IEbnfLexerRuleExpression expression)
-            : base((term, expression).GetHashCode())
+            : base((term, expression))
         {
             Term = term;
             Expression = expression;

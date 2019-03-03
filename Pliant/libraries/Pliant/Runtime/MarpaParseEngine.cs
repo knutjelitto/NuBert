@@ -61,7 +61,7 @@ namespace Pliant.Runtime
                 for (var j = 0; j < stateFrame.DottedRuleSet.ScanKeys.Count; j++)
                 {
                     var lexerRule = stateFrame.DottedRuleSet.ScanKeys[j];
-                    var index = Grammar.GetLexerRuleIndex(lexerRule);
+                    var index = Grammar.GetLexerIndex(lexerRule);
                     if (index < 0)
                     {
                         continue;
@@ -162,22 +162,22 @@ namespace Pliant.Runtime
             Initialize();
         }
 
-        private static DottedRuleAssortment Goto(DottedRuleAssortment fromAH)
+        private static DottedRuleSet Goto(DottedRuleSet fromAH)
         {
             return fromAH.NullTransition;
         }
 
-        private static DottedRuleAssortment Goto(DottedRuleAssortment fromAH, Symbol symbol)
+        private static DottedRuleSet Goto(DottedRuleSet fromAH, Symbol symbol)
         {
             return fromAH.Reductions.GetOrReturnNull(symbol);
         }
 
-        private static DottedRuleAssortment Goto(DottedRuleAssortment fromAH, IToken token)
+        private static DottedRuleSet Goto(DottedRuleSet fromAH, IToken token)
         {
             return fromAH.TokenTransitions.GetOrReturnNull(token.TokenType);
         }
 
-        private void AddEimPair(int iLoc, DottedRuleAssortment confirmedAH, int origLoc)
+        private void AddEimPair(int iLoc, DottedRuleSet confirmedAH, int origLoc)
         {
             var confirmedEIM = new DeterministicState(confirmedAH, origLoc);
             var predictedAH = Goto(confirmedAH);

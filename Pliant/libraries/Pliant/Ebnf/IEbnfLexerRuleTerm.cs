@@ -26,7 +26,7 @@ namespace Pliant.Ebnf
     public sealed class EbnfLexerRuleTermConcatenation : ValueEqualityBase<EbnfLexerRuleTermConcatenation>, IEbnfLexerRuleTerm
     {
         public EbnfLexerRuleTermConcatenation(IEbnfLexerRuleFactor factor, IEbnfLexerRuleTerm term)
-            : base((factor, term).GetHashCode())
+            : base((factor, term))
         {
             Factor = factor;
             Term = term;
