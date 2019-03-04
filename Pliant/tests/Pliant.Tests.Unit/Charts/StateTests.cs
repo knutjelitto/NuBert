@@ -11,7 +11,7 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void StateToStringShouldCreateCorrectFormat()
         {
-            var state = new PredictState(
+            var state = new PredictionState(
                 new DottedRule(
                     new Production(
                         new NonTerminal("A"), new NonTerminal("B"), new NonTerminal("C")),

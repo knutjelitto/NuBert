@@ -21,7 +21,7 @@ namespace Pliant.Charts
 
             if (dottedRule.PostDotSymbol is NonTerminal)
             {
-                return new PredictState(dottedRule, origin, parseNode);
+                return new PredictionState(dottedRule, origin, parseNode);
             }
 
             return new ScanState(dottedRule, origin, parseNode);

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using Pliant.Collections;
 using Pliant.Dotted;
 using Pliant.Grammars;
@@ -12,16 +10,16 @@ namespace Pliant.Charts
         public EarleySet()
         {
             this.completions = new StateList<CompletionState>();
-            this.predictions = new StateList<PredictState>();
-            this.scans = new NormalStateList();
+            this.predictions = new StateList<PredictionState>();
+            this.scans = new StateList<ScanState>();
             this.transitions = new UniqueList<TransitionState>();
         }
 
-        public IReadOnlyList<NormalState> Completions => this.completions;
+        public IReadOnlyList<CompletionState> Completions => this.completions;
 
-        public IReadOnlyList<NormalState> Predictions => this.predictions;
+        public IReadOnlyList<PredictionState> Predictions => this.predictions;
 
-        public IReadOnlyList<NormalState> Scans => this.scans;
+        public IReadOnlyList<ScanState> Scans => this.scans;
 
         public IReadOnlyList<TransitionState> Transitions => this.transitions;
 
@@ -30,7 +28,7 @@ namespace Pliant.Charts
             return this.completions.AddUnique(state);
         }
 
-        public bool Add(PredictState state)
+        public bool Add(PredictionState state)
         {
             return this.predictions.AddUnique(state);
         }
@@ -58,12 +56,7 @@ namespace Pliant.Charts
                        : ScansContains(dottedRule, origin);
         }
 
-        public bool Enqueue(TransitionState state)
-        {
-            return state.Enqueue(this);
-        }
-
-        public bool FindUniqueSourceState(Symbol searchSymbol, out NormalState sourceItem)
+        public bool FindUniqueSourceState(Symbol searchSymbol, out StateBase sourceItem)
         {
             var sourceItemCount = 0;
             sourceItem = null;
@@ -116,31 +109,9 @@ namespace Pliant.Charts
             return this.scans.Contains(rule, origin);
         }
 
-        private bool EnqueueNormal(NormalState normalState)
-        {
-            var dottedRule = normalState.DottedRule;
-            if (!dottedRule.IsComplete)
-            {
-                if (dottedRule.PostDotSymbol is NonTerminal)
-                {
-                    return this.predictions.AddUnique(normalState as PredictState);
-                }
-
-                return this.scans.AddUnique(normalState as ScanState);
-            }
-
-            Debug.Assert(normalState is CompletionState);
-            return this.completions.AddUnique(normalState as CompletionState);
-        }
-
-        private bool EnqueueTransition(TransitionState transitionState)
-        {
-            return this.transitions.AddUnique(transitionState);
-        }
-
         private readonly StateList<CompletionState> completions;
-        private readonly StateList<PredictState> predictions;
-        private readonly NormalStateList scans;
+        private readonly StateList<PredictionState> predictions;
+        private readonly StateList<ScanState> scans;
         private readonly UniqueList<TransitionState> transitions;
     }
 }

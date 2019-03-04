@@ -502,7 +502,7 @@ namespace Pliant.Tests.Unit.Runtime
             // n	A : A -> a A.	(0)	  # Transition
             // n	A -> a A.		(0)	  # Complete
             Assert.AreEqual(input.Count + 1, chart.Count);
-            var lastEarleySet = chart.EarleySets[chart.EarleySets.Count - 1];
+            var lastEarleySet = chart[chart.Count - 1];
             Assert.AreEqual(3, lastEarleySet.Completions.Count);
             Assert.AreEqual(1, lastEarleySet.Transitions.Count);
             Assert.AreEqual(1, lastEarleySet.Predictions.Count);
@@ -628,7 +628,7 @@ namespace Pliant.Tests.Unit.Runtime
             ParseInput(parseEngine, input);
             var chart = GetChartFromParseEngine(parseEngine);
             // when this count is < 10 we know that quasi complete items are being processed successfully
-            Assert.IsTrue(chart.EarleySets[23].Completions.Count < 10);
+            Assert.IsTrue(chart[23].Completions.Count < 10);
         }
 
         [TestMethod]

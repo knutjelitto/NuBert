@@ -160,9 +160,9 @@ namespace Pliant.Tests.Unit.Runtime
 
             var chart = GetParseEngineChart(parseEngine);
             Assert.IsTrue(parseRunner.Read());
-            Assert.AreEqual(1, chart.EarleySets.Count);
+            Assert.AreEqual(1, chart.Count);
             Assert.IsTrue(parseRunner.Read());
-            Assert.AreEqual(3, chart.EarleySets.Count);
+            Assert.AreEqual(3, chart.Count);
         }
 
         [TestMethod]
@@ -183,9 +183,9 @@ namespace Pliant.Tests.Unit.Runtime
 
             var chart = GetParseEngineChart(parseEngine);
             Assert.IsTrue(parseRunner.Read());
-            Assert.AreEqual(1, chart.EarleySets.Count);
+            Assert.AreEqual(1, chart.Count);
             Assert.IsTrue(parseRunner.Read());
-            Assert.AreEqual(1, chart.EarleySets.Count);
+            Assert.AreEqual(1, chart.Count);
         }
 
         [TestMethod]
@@ -211,7 +211,7 @@ namespace Pliant.Tests.Unit.Runtime
                 Assert.IsTrue(parseRunner.Read());
             }
 
-            Assert.AreEqual(2, chart.EarleySets.Count);
+            Assert.AreEqual(2, chart.Count);
         }
 
         [TestMethod]
@@ -234,7 +234,7 @@ namespace Pliant.Tests.Unit.Runtime
             for (var i = 0; i < 2; i++)
                 Assert.IsTrue(parseRunner.Read());
             Assert.IsTrue(parseRunner.Read());
-            Assert.AreEqual(2, chart.EarleySets.Count);
+            Assert.AreEqual(2, chart.Count);
         }
 
         [TestMethod]
@@ -320,8 +320,8 @@ namespace Pliant.Tests.Unit.Runtime
             RunParse(parseEngine, stringBuilder.ToString());
 
             var chart = parseEngine.Chart;
-            Assert.IsTrue(chart.EarleySets.Count > 7);
-            var seventhSet = chart.EarleySets[7];
+            Assert.IsTrue(chart.Count > 7);
+            var seventhSet = chart[7];
             Assert.IsNotNull(seventhSet);
 
             Assert.AreEqual(1, seventhSet.Completions.Count);

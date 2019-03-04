@@ -27,7 +27,7 @@ namespace Pliant.Tests.Unit
             var secondState = factory.NewState(dottedRule, 1);
             chart.Enqueue(0, firstState);
             chart.Enqueue(0, secondState);
-            Assert.AreEqual(1, chart.EarleySets[0].Predictions.Count);
+            Assert.AreEqual(1, chart[0].Predictions.Count);
         }
     }
 }

@@ -3,7 +3,7 @@ using Pliant.Forest;
 
 namespace Pliant.Charts
 {
-    public class ScanState : NormalState
+    public class ScanState : StateBase
     {
         public ScanState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
             : base(dottedRule, origin, parseNode)

@@ -3,7 +3,7 @@ using Pliant.Terminals;
 
 namespace Pliant.Automata
 {
-    public sealed class DfaState
+    public struct DfaState
     {
         private DfaState(bool isFinal)
         {

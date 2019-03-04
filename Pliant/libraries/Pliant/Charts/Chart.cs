@@ -1,24 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Pliant.Dotted;
-using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public class Chart
+    public class Chart : IReadOnlyList<EarleySet>
     {
         public Chart()
         {
-            this._earleySets = new List<EarleySet>();
+            this.sets = new List<EarleySet>();
         }
 
-        public int Count => EarleySets.Count;
+        public int Count => this.sets.Count;
 
-        public IReadOnlyList<EarleySet> EarleySets => this._earleySets;
+        public IEnumerator<EarleySet> GetEnumerator()
+        {
+            return this.sets.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public EarleySet this[int index] => this.sets[index];
 
         public EarleySet LastSet()
         {
-            return this._earleySets[this._earleySets.Count - 1];
+            return this.sets[this.sets.Count - 1];
         }
 
         public bool ContainsNormal(int location, DottedRule dottedRule, int origin)
@@ -32,23 +42,23 @@ namespace Pliant.Charts
             return state.Enqueue(GetEarleySet(location));
         }
 
-        private EarleySet GetEarleySet(int position)
+        private EarleySet GetEarleySet(int location)
         {
             EarleySet earleySet;
-            if (position < this._earleySets.Count)
+            if (location < this.sets.Count)
             {
-                earleySet = this._earleySets[position];
+                earleySet = this.sets[location];
             }
             else
             {
-                Debug.Assert(position == this._earleySets.Count);
+                Debug.Assert(location == this.sets.Count);
                 earleySet = new EarleySet();
-                this._earleySets.Add(earleySet);
+                this.sets.Add(earleySet);
             }
 
             return earleySet;
         }
 
-        private readonly List<EarleySet> _earleySets;
+        private readonly List<EarleySet> sets;
     }
 }

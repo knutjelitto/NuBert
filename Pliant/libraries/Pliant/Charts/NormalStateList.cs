@@ -4,17 +4,17 @@ using Pliant.Dotted;
 
 namespace Pliant.Charts
 {
-    public class NormalStateList : IReadOnlyList<NormalState>
+    public class NormalStateList : IReadOnlyList<StateBase>
     {
         public int Count => this.list.Count;
 
-        public NormalState this[int index] => this.list[index];
+        public StateBase this[int index] => this.list[index];
 
-        public bool AddUnique(NormalState normalState)
+        public bool AddUnique(StateBase stateImplementation)
         {
-            if (this.lookup.TryGetValue(normalState.DottedRule, out var origins))
+            if (this.lookup.TryGetValue(stateImplementation.DottedRule, out var origins))
             {
-                if (origins.TryGetValue(normalState.Origin, out var _))
+                if (origins.TryGetValue(stateImplementation.Origin, out var _))
                 {
                     return false;
                 }
@@ -22,11 +22,11 @@ namespace Pliant.Charts
             else
             {
                 origins = new Dictionary<int, int>();
-                this.lookup.Add(normalState.DottedRule, origins);
+                this.lookup.Add(stateImplementation.DottedRule, origins);
             }
 
-            origins.Add(normalState.Origin, this.list.Count);
-            this.list.Add(normalState);
+            origins.Add(stateImplementation.Origin, this.list.Count);
+            this.list.Add(stateImplementation);
 
             return true;
         }
@@ -36,7 +36,7 @@ namespace Pliant.Charts
             return this.lookup.TryGetValue(rule, out var origins) && origins.TryGetValue(origin, out var _);
         }
 
-        public IEnumerator<NormalState> GetEnumerator()
+        public IEnumerator<StateBase> GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
@@ -48,6 +48,6 @@ namespace Pliant.Charts
 
         private readonly Dictionary<DottedRule, Dictionary<int, int>> lookup = new Dictionary<DottedRule, Dictionary<int, int>>();
 
-        private readonly List<NormalState> list = new List<NormalState>();
+        private readonly List<StateBase> list = new List<StateBase>();
     }
 }

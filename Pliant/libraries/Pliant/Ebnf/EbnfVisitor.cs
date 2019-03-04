@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
 using Pliant.Tokens;
@@ -346,6 +348,8 @@ namespace Pliant.Ebnf
 
         private EbnfFactorRepetition VisitRepetitionNode(IInternalTreeNode node)
         {
+            Debug.Assert(node.Children.Count > 0);
+
             foreach (var internalNode in node.Children.OfType<IInternalTreeNode>())
             {
                 if (internalNode.Is(EbnfGrammar.Expression))

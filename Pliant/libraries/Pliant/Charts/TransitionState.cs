@@ -8,7 +8,7 @@ namespace Pliant.Charts
         public TransitionState(
             Symbol recognized,
             State transition,
-            NormalState reduction,
+            StateBase reduction,
             int index)
             : base(transition.DottedRule, transition.Origin, null)
         {
@@ -23,7 +23,7 @@ namespace Pliant.Charts
         public TransitionState NextTransition { get; set; }
 
         public Symbol Recognized { get; }
-        public NormalState Reduction { get; }
+        public StateBase Reduction { get; }
 
         public override bool Equals(object obj)
         {

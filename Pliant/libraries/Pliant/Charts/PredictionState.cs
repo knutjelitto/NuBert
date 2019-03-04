@@ -3,9 +3,9 @@ using Pliant.Forest;
 
 namespace Pliant.Charts
 {
-    public class PredictState : NormalState
+    public class PredictionState : StateBase
     {
-        public PredictState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        public PredictionState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
             : base(dottedRule, origin, parseNode)
         {
         }

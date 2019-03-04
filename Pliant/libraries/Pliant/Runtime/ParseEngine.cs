@@ -118,8 +118,7 @@ namespace Pliant.Runtime
 
         private bool Recognize()
         {
-
-            var tokenRecognized = Chart.EarleySets.Count > Location + 1;
+            var tokenRecognized = Chart.Count > Location + 1;
 
             if (!tokenRecognized)
             {
@@ -144,14 +143,14 @@ namespace Pliant.Runtime
             return $"{origin.ToString().PadRight(9)}{state.ToString().PadRight(100)}{operation}";
         }
 
-        private void Complete(NormalState completed, int location)
+        private void Complete(StateBase completed, int location)
         {
             if (completed.ParseNode == null)
             {
                 completed.ParseNode = CreateNullParseNode(completed.DottedRule.Production.LeftHandSide, location);
             }
 
-            var earleySet = Chart.EarleySets[completed.Origin];
+            var earleySet = Chart[completed.Origin];
             var searchSymbol = completed.DottedRule.Production.LeftHandSide;
 
             if (Options.OptimizeRightRecursion)
@@ -243,9 +242,9 @@ namespace Pliant.Runtime
             return virtualParseNode;
         }
 
-        private void EarleyComplete(NormalState completed, int location)
+        private void EarleyComplete(StateBase completed, int location)
         {
-            var sourceEarleySet = Chart.EarleySets[completed.Origin];
+            var sourceEarleySet = Chart[completed.Origin];
 
             // Predictions may grow
             for (var p = 0; p < sourceEarleySet.Predictions.Count; p++)
@@ -362,23 +361,23 @@ namespace Pliant.Runtime
             return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsTransitiveNullable(nonTerminal);
         }
 
-        private void LeoComplete(TransitionState transitionState, State completed, int k)
+        private void LeoComplete(TransitionState transitionState, State completed, int location)
         {
-            var earleySet = Chart.EarleySets[transitionState.Index];
+            var earleySet = Chart[transitionState.Index];
             if (!earleySet.FindTransitionState(transitionState.DottedRule.PreDotSymbol, out var rootTransitionState))
             {
                 rootTransitionState = transitionState;
             }
 
-            var virtualParseNode = CreateVirtualParseNode(completed, k, rootTransitionState);
+            var virtualParseNode = CreateVirtualParseNode(completed, location, rootTransitionState);
 
             var dottedRule = transitionState.DottedRule;
 
             var topmostItem = StateFactory.NewState(dottedRule, transitionState.Origin, virtualParseNode);
 
-            if (Chart.Enqueue(k, topmostItem))
+            if (Chart.Enqueue(location, topmostItem))
             {
-                Log(completeLogName, k, topmostItem);
+                Log(completeLogName, location, topmostItem);
             }
         }
 
@@ -415,7 +414,7 @@ namespace Pliant.Runtime
             ref TransitionState previousTransitionState,
             HashSet<State> visited)
         {
-            var earleySet = Chart.EarleySets[origin];
+            var earleySet = Chart[origin];
 
             // if Ii contains a transitive item of the for [B -> b., A, k]
             if (earleySet.FindTransitionState(searchSymbol, out var transitionState))
@@ -484,7 +483,7 @@ namespace Pliant.Runtime
             previousTransitionState = transition;
         }
 
-        private void Predict(NormalState evidence, int location)
+        private void Predict(StateBase evidence, int location)
         {
             var dottedRule = evidence.DottedRule;
             var nonTerminal = dottedRule.PostDotSymbol as NonTerminal;
@@ -502,7 +501,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void PredictAycockHorspool(NormalState evidence, int location)
+        private void PredictAycockHorspool(StateBase evidence, int location)
         {
             var nullParseNode = CreateNullParseNode(evidence.DottedRule.PostDotSymbol, location);
             var dottedRule = DottedRules.GetNext(evidence.DottedRule);
@@ -562,7 +561,7 @@ namespace Pliant.Runtime
 
         private void ReductionPass(int position)
         {
-            var earleySet = Chart.EarleySets[position];
+            var earleySet = Chart[position];
             var resume = true;
 
             var p = 0;
@@ -594,7 +593,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void Scan(NormalState scan, int location, IToken token)
+        private void Scan(StateBase scan, int location, IToken token)
         {
             var origin = scan.Origin;
             var currentSymbol = scan.DottedRule.PostDotSymbol;
@@ -625,7 +624,7 @@ namespace Pliant.Runtime
 
         private void ScanPass(int location, IToken token)
         {
-            var earleySet = Chart.EarleySets[location];
+            var earleySet = Chart[location];
             foreach (var scanState in earleySet.Scans)
             {
                 Scan(scanState, location, token);

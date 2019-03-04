@@ -5,7 +5,7 @@ using Pliant.Dotted;
 namespace Pliant.Charts
 {
     public class StateList<T> : IReadOnlyList<T>
-        where T : NormalState
+        where T : StateBase
     {
         public int Count => this.list.Count;
 
