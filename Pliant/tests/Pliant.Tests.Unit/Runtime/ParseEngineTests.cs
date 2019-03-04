@@ -223,27 +223,28 @@ namespace Pliant.Tests.Unit.Runtime
 
             var a_1_2 = new TokenForestNode("a", 1, 2);
             var expected =
-                new SymbolForestNode(S.ProductionModel.LeftHandSide.NonTerminal,
-                                     0,
-                                     2,
-                                     new AndForestNode(
-                                         new SymbolForestNode(S.ProductionModel.LeftHandSide.NonTerminal,
-                                                              0,
-                                                              1,
-                                                              new AndForestNode(
-                                                                  new TokenForestNode("a", 0, 1))),
-                                         new SymbolForestNode(T.ProductionModel.LeftHandSide.NonTerminal,
-                                                              1,
-                                                              2,
-                                                              new AndForestNode(
-                                                                  a_1_2),
-                                                              new AndForestNode(
-                                                                  a_1_2,
-                                                                  new SymbolForestNode(B.ProductionModel.LeftHandSide.NonTerminal,
-                                                                                       2,
-                                                                                       2,
-                                                                                       new AndForestNode(
-                                                                                           new TokenForestNode("", 2, 2)))))));
+                new SymbolForestNode(
+                    S.ProductionModel.LeftHandSide.NonTerminal,
+                    0,
+                    2,
+                    new AndForestNode(
+                        new SymbolForestNode(
+                            S.ProductionModel.LeftHandSide.NonTerminal,
+                            0,
+                            1,
+                            new AndForestNode(new TokenForestNode("a", 0, 1))),
+                        new SymbolForestNode(
+                            T.ProductionModel.LeftHandSide.NonTerminal,
+                            1,
+                            2,
+                            new AndForestNode(a_1_2),
+                            new AndForestNode(
+                                a_1_2,
+                                new SymbolForestNode(
+                                    B.ProductionModel.LeftHandSide.NonTerminal,
+                                    2,
+                                    2,
+                                    new AndForestNode(new TokenForestNode("", 2, 2)))))));
             AssertForestsAreEqual(expected, actual);
         }
 

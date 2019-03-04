@@ -11,46 +11,43 @@ namespace Pliant.Forest
     {
         public ForestNodeSet()
         {
-            this._symbolNodes = new Dictionary<int, ISymbolForestNode>();
-            this._intermediateNodes = new Dictionary<int, IIntermediateForestNode>();
-            this._virtualNodes = new Dictionary<int, VirtualForestNode>();
+            this._symbolNodes = new Dictionary<(Symbol, int, int), ISymbolForestNode>();
+            this._intermediateNodes = new Dictionary<(DottedRule, int, int), IIntermediateForestNode>();
+            this._virtualNodes = new Dictionary<(Symbol, int, int), VirtualForestNode>();
             this._tokenNodes = new Dictionary<IToken, ITokenForestNode>();
         }
 
         public void AddNewVirtualNode(VirtualForestNode virtualNode)
         {
-            var hash = ComputeHashCode(
-                virtualNode.Symbol,
-                virtualNode.Origin,
-                virtualNode.Location);
-            this._virtualNodes.Add(hash, virtualNode);
+            var key = (virtualNode.Symbol, virtualNode.Origin, virtualNode.Location);
+            this._virtualNodes.Add(key, virtualNode);
         }
 
         public IIntermediateForestNode AddOrGetExistingIntermediateNode(DottedRule dottedRule, int origin, int location)
         {
-            var hash = ComputeHashCode(dottedRule, origin, location);
+            var key = (dottedRule, origin, location);
 
-            if (this._intermediateNodes.TryGetValue(hash, out var intermediateNode))
+            if (this._intermediateNodes.TryGetValue(key, out var intermediateNode))
             {
                 return intermediateNode;
             }
 
             intermediateNode = new IntermediateForestNode(dottedRule, origin, location);
-            this._intermediateNodes.Add(hash, intermediateNode);
+            this._intermediateNodes.Add(key, intermediateNode);
             return intermediateNode;
         }
 
         public ISymbolForestNode AddOrGetExistingSymbolNode(Symbol symbol, int origin, int location)
         {
-            var hash = ComputeHashCode(symbol, origin, location);
+            var key = (symbol, origin, location);
 
-            if (this._symbolNodes.TryGetValue(hash, out var symbolNode))
+            if (this._symbolNodes.TryGetValue(key, out var symbolNode))
             {
                 return symbolNode;
             }
 
             symbolNode = new SymbolForestNode(symbol, origin, location);
-            this._symbolNodes.Add(hash, symbolNode);
+            this._symbolNodes.Add(key, symbolNode);
             return symbolNode;
         }
 
@@ -80,29 +77,13 @@ namespace Pliant.Forest
             out VirtualForestNode node)
         {
             var targetState = transitionState.GetTargetState();
-            var hash = ComputeHashCode(targetState.DottedRule.Production.LeftHandSide, targetState.Origin, location);
-            return this._virtualNodes.TryGetValue(hash, out node);
+            var key = (targetState.DottedRule.Production.LeftHandSide, targetState.Origin, location);
+            return this._virtualNodes.TryGetValue(key, out node);
         }
 
-        private static int ComputeHashCode(Symbol symbol, int origin, int location)
-        {
-            return HashCode.Compute(
-                symbol.GetHashCode(),
-                origin.GetHashCode(),
-                location.GetHashCode());
-        }
-
-        private static int ComputeHashCode(DottedRule dottedRule, int origin, int location)
-        {
-            return HashCode.Compute(
-                dottedRule.GetHashCode(),
-                origin.GetHashCode(),
-                location.GetHashCode());
-        }
-
-        private readonly Dictionary<int, IIntermediateForestNode> _intermediateNodes;
-        private readonly Dictionary<int, ISymbolForestNode> _symbolNodes;
+        private readonly Dictionary<(DottedRule, int, int), IIntermediateForestNode> _intermediateNodes;
+        private readonly Dictionary<(Symbol, int, int), ISymbolForestNode> _symbolNodes;
         private readonly Dictionary<IToken, ITokenForestNode> _tokenNodes;
-        private readonly Dictionary<int, VirtualForestNode> _virtualNodes;
+        private readonly Dictionary<(Symbol, int, int), VirtualForestNode> _virtualNodes;
     }
 }

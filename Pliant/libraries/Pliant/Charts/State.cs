@@ -7,10 +7,11 @@ namespace Pliant.Charts
 {
     public abstract class State
     {
-        protected State(DottedRule dottedRule, int origin)
+        protected State(DottedRule dottedRule, int origin, IForestNode parseNode)
         {
             DottedRule = dottedRule;
             Origin = origin;
+            ParseNode = parseNode;
         }
 
         public DottedRule DottedRule { get; }

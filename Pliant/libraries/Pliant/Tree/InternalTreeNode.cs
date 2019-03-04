@@ -67,7 +67,7 @@ namespace Pliant.Tree
             }
         }
 
-        private void LazyLoadChildren(IAndForestNode andNode)
+        private void LazyLoadChildren(AndForestNode andNode)
         {
             foreach (var child in andNode.Children)
             {

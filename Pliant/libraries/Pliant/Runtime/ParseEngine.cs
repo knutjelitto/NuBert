@@ -290,6 +290,7 @@ namespace Pliant.Runtime
             foreach (var startProduction in Grammar.StartProductions())
             {
                 var startState = StateFactory.NewState(startProduction, 0, 0);
+
                 if (Chart.Enqueue(0, startState))
                 {
                     Log(startLogName, 0, startState);
@@ -595,7 +596,7 @@ namespace Pliant.Runtime
             var i = scan.Origin;
             var currentSymbol = scan.DottedRule.PostDotSymbol;
 
-            if (currentSymbol is Lexer lexerRule && token.TokenType.Equals(lexerRule.TokenType))
+            if (currentSymbol is Lexer lexer && token.TokenType.Equals(lexer.TokenType))
             {
                 var dottedRule = DottedRules.GetNext(scan.DottedRule);
                 if (Chart.Contains(j + 1, dottedRule, i))

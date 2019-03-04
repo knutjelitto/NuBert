@@ -10,7 +10,7 @@ namespace Pliant.Charts
             State transition,
             NormalState reduction,
             int index)
-            : base(transition.DottedRule, transition.Origin)
+            : base(transition.DottedRule, transition.Origin, null)
         {
             Reduction = reduction;
             Recognized = recognized;

@@ -30,12 +30,13 @@ namespace Pliant.Forest
             this._paths = new List<VirtualForestNodePath>();
 
             Symbol = targetState.DottedRule.Production.LeftHandSide;
+
             this._hashCode = ComputeHashCode();
             var path = new VirtualForestNodePath(transitionState, completedParseNode);
             AddUniquePath(path);
         }
 
-        public override IReadOnlyList<IAndForestNode> Children
+        public override IReadOnlyList<AndForestNode> Children
         {
             get
             {

@@ -18,7 +18,7 @@ namespace Pliant.Tests.Common.Forest
             this._visited.Add(tokenNode);
         }
 
-        public void Visit(IAndForestNode andNode)
+        public void Visit(AndForestNode andNode)
         {
             for (var i = 0; i < andNode.Children.Count; i++)
             {

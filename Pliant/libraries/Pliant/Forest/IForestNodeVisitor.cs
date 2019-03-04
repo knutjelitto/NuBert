@@ -8,7 +8,7 @@
 
         void Visit(IIntermediateForestNode node);
 
-        void Visit(IAndForestNode andNode);
+        void Visit(AndForestNode andNode);
 
         void Visit(ITokenForestNode tokenNode);
     }

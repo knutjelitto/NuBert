@@ -12,21 +12,14 @@ namespace Pliant.Charts
             DottedRuleRegistry = dottedRuleRegistry;
         }
 
+        public State NewState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        {
+            return new NormalState(dottedRule, origin, parseNode);
+        }
+
         public State NewState(Production production, int dot, int origin)
         {
             return NewState(DottedRuleRegistry.Get(production, dot), origin);
-        }
-
-        public State NewState(DottedRule dottedRule, int origin)
-        {
-            return new NormalState(dottedRule, origin);
-        }
-
-        public State NewState(DottedRule dottedRule, int origin, IForestNode parseNode)
-        {
-            Debug.Assert(parseNode != null);
-
-            return new NormalState(dottedRule, origin, parseNode);
         }
 
         public State NextState(State state)
@@ -37,7 +30,7 @@ namespace Pliant.Charts
             }
 
             var dottedRule = DottedRuleRegistry.GetNext(state.DottedRule);
-            return new NormalState(dottedRule, state.Origin);
+            return NewState(dottedRule, state.Origin);
         }
 
         private DottedRuleRegistry DottedRuleRegistry { get; }

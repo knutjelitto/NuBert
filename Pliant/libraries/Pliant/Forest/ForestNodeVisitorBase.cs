@@ -5,7 +5,7 @@
 
         public abstract void Visit(IIntermediateForestNode intermediateNode);
 
-        public virtual void Visit(IAndForestNode andNode)
+        public virtual void Visit(AndForestNode andNode)
         {
             foreach (var child in andNode.Children)
             {

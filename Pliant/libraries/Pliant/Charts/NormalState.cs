@@ -5,23 +5,19 @@ using Pliant.Utilities;
 
 namespace Pliant.Charts
 {
-    public sealed class NormalState : State
+    public class NormalState : State
     {
-        public NormalState(DottedRule dottedRule, int origin)
-            : base(dottedRule, origin)
+        public NormalState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+            : base(dottedRule, origin, parseNode)
         {
-            this._hashCode = ComputeHashCode();
-        }
-
-        public NormalState(DottedRule dottedRule, int origin, IForestNode parseNode)
-            : this(dottedRule, origin)
-        {
-            ParseNode = parseNode;
+            this._hashCode = (DottedRule, Origin).GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            return obj is NormalState other && GetHashCode() == other.GetHashCode();
+            return obj is NormalState other && 
+                   DottedRule.Equals(other.DottedRule) &&
+                   Origin.Equals(other.Origin);
         }
 
         public override int GetHashCode()
@@ -38,14 +34,6 @@ namespace Pliant.Charts
         public override string ToString()
         {
             return $"{DottedRule}\t\t({Origin})";
-        }
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                DottedRule.Dot.GetHashCode(),
-                Origin.GetHashCode(),
-                DottedRule.Production.GetHashCode());
         }
 
         private readonly int _hashCode;

@@ -5,7 +5,7 @@
     /// </summary>
     public class SelectFirstChildDisambiguationAlgorithm : IForestDisambiguationAlgorithm
     {
-        public IAndForestNode GetCurrentAndNode(IInternalForestNode internalNode)
+        public AndForestNode GetCurrentAndNode(IInternalForestNode internalNode)
         {
             return internalNode.Children[0];
         }

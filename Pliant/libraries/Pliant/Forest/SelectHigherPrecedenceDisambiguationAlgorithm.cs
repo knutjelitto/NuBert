@@ -4,7 +4,7 @@ namespace Pliant.Forest
 {
     public class SelectHigherPrecedenceDisambiguationAlgorithm : IForestDisambiguationAlgorithm
     {
-        public IAndForestNode GetCurrentAndNode(IInternalForestNode internalNode)
+        public AndForestNode GetCurrentAndNode(IInternalForestNode internalNode)
         {
             throw new NotImplementedException();
         }

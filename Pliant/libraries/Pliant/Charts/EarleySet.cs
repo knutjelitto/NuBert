@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Pliant.Collections;
 using Pliant.Dotted;
 using Pliant.Grammars;
@@ -49,29 +48,6 @@ namespace Pliant.Charts
             }
 
             throw new InvalidOperationException();
-        }
-
-        public NormalState FindUniqueSourceState(Symbol searchSymbol)
-        {
-            var sourceItemCount = 0;
-            NormalState sourceItem = null;
-
-            foreach (var state in Predictions)
-            {
-                if (state.IsSource(searchSymbol))
-                {
-                    var moreThanOneSourceItemExists = sourceItemCount > 0;
-                    if (moreThanOneSourceItemExists)
-                    {
-                        return null;
-                    }
-
-                    sourceItemCount++;
-                    sourceItem = state;
-                }
-            }
-
-            return sourceItem;
         }
 
         public bool FindUniqueSourceState(Symbol searchSymbol, out NormalState sourceItem)

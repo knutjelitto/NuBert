@@ -67,7 +67,7 @@ namespace Pliant.Tests.Common
                    secondForestTokenNode.Token.Value;
         }
 
-        private bool AreAndNodesEqual(IAndForestNode firstAndNode, IAndForestNode secondAndNode)
+        private bool AreAndNodesEqual(AndForestNode firstAndNode, AndForestNode secondAndNode)
         {
             if (firstAndNode.Children.Count != secondAndNode.Children.Count)
             {

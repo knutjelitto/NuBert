@@ -2,7 +2,7 @@
 
 namespace Pliant.Forest
 {
-    public class AndForestNode : IAndForestNode
+    public class AndForestNode
     {
         public AndForestNode(params IForestNode[] nodes)
         {
