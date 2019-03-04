@@ -15,7 +15,7 @@ namespace Pliant.Charts
             Reduction = reduction;
             Recognized = recognized;
             Index = index;
-            this._hashCode = ComputeHashCode();
+            this.hashCode = ComputeHashCode();
         }
 
         public int Index { get; }
@@ -27,15 +27,15 @@ namespace Pliant.Charts
 
         public override bool Equals(object obj)
         {
-            return obj is TransitionState transitionState && 
-                   GetHashCode() == transitionState.GetHashCode() && 
-                   Recognized.Equals(transitionState.Recognized) && 
+            return obj is TransitionState transitionState &&
+                   GetHashCode() == transitionState.GetHashCode() &&
+                   Recognized.Equals(transitionState.Recognized) &&
                    Index == transitionState.Index;
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
         public State GetTargetState()
@@ -65,6 +65,11 @@ namespace Pliant.Charts
                 Index.GetHashCode());
         }
 
-        private readonly int _hashCode;
+        public override bool Enqueue(EarleySet set)
+        {
+            return set.Add(this);
+        }
+
+        private readonly int hashCode;
     }
 }

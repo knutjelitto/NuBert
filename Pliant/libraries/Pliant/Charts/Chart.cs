@@ -21,7 +21,7 @@ namespace Pliant.Charts
             return this._earleySets[this._earleySets.Count - 1];
         }
 
-        public bool Contains(int location, DottedRule dottedRule, int origin)
+        public bool ContainsNormal(int location, DottedRule dottedRule, int origin)
         {
             var earleySet = GetEarleySet(location);
             return earleySet.ContainsNormal(dottedRule, origin);
@@ -29,7 +29,7 @@ namespace Pliant.Charts
 
         public bool Enqueue(int location, State state)
         {
-            return GetEarleySet(location).Enqueue(state);
+            return state.Enqueue(GetEarleySet(location));
         }
 
         private EarleySet GetEarleySet(int position)

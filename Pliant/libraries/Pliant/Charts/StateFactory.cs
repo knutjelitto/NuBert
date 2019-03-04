@@ -14,7 +14,17 @@ namespace Pliant.Charts
 
         public State NewState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
         {
-            return new NormalState(dottedRule, origin, parseNode);
+            if (dottedRule.IsComplete)
+            {
+                return new CompletionState(dottedRule, origin, parseNode);
+            }
+
+            if (dottedRule.PostDotSymbol is NonTerminal)
+            {
+                return new PredictState(dottedRule, origin, parseNode);
+            }
+
+            return new ScanState(dottedRule, origin, parseNode);
         }
 
         public State NewState(Production production, int dot, int origin)

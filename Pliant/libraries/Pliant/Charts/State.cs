@@ -19,5 +19,7 @@ namespace Pliant.Charts
         public int Origin { get; }
 
         public IForestNode ParseNode { get; set; }
+
+        public abstract bool Enqueue(EarleySet set);
     }
 }

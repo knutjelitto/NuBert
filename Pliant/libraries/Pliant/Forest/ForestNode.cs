@@ -2,9 +2,9 @@
 
 namespace Pliant.Forest
 {
-    public abstract class ForestNodeBase : IForestNode
+    public abstract class ForestNode : IForestNode
     {
-        protected ForestNodeBase(int origin, int location)
+        protected ForestNode(int origin, int location)
         {
             Origin = origin;
             Location = location;
@@ -21,7 +21,7 @@ namespace Pliant.Forest
 
         public override bool Equals(object obj)
         {
-            return obj is ForestNodeBase other && 
+            return obj is ForestNode other && 
                    Location.Equals(other.Location) && 
                    NodeType.Equals(other.NodeType) && 
                    Origin.Equals(other.Origin);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Pliant.Collections;
 using Pliant.Dotted;
 using Pliant.Grammars;
@@ -10,8 +11,8 @@ namespace Pliant.Charts
     {
         public EarleySet()
         {
-            this.completions = new NormalStateList();
-            this.predictions = new NormalStateList();
+            this.completions = new StateList<CompletionState>();
+            this.predictions = new StateList<PredictState>();
             this.scans = new NormalStateList();
             this.transitions = new UniqueList<TransitionState>();
         }
@@ -23,6 +24,26 @@ namespace Pliant.Charts
         public IReadOnlyList<NormalState> Scans => this.scans;
 
         public IReadOnlyList<TransitionState> Transitions => this.transitions;
+
+        public bool Add(CompletionState state)
+        {
+            return this.completions.AddUnique(state);
+        }
+
+        public bool Add(PredictState state)
+        {
+            return this.predictions.AddUnique(state);
+        }
+
+        public bool Add(ScanState state)
+        {
+            return this.scans.AddUnique(state);
+        }
+
+        public bool Add(TransitionState state)
+        {
+            return this.transitions.AddUnique(state);
+        }
 
         public bool ContainsNormal(DottedRule dottedRule, int origin)
         {
@@ -37,17 +58,9 @@ namespace Pliant.Charts
                        : ScansContains(dottedRule, origin);
         }
 
-        public bool Enqueue(State state)
+        public bool Enqueue(TransitionState state)
         {
-            switch (state)
-            {
-                case TransitionState transition:
-                    return EnqueueTransition(transition);
-                case NormalState normal:
-                    return EnqueueNormal(normal);
-            }
-
-            throw new InvalidOperationException();
+            return state.Enqueue(this);
         }
 
         public bool FindUniqueSourceState(Symbol searchSymbol, out NormalState sourceItem)
@@ -108,12 +121,16 @@ namespace Pliant.Charts
             var dottedRule = normalState.DottedRule;
             if (!dottedRule.IsComplete)
             {
-                return dottedRule.PostDotSymbol is NonTerminal
-                           ? this.predictions.AddUnique(normalState)
-                           : this.scans.AddUnique(normalState);
+                if (dottedRule.PostDotSymbol is NonTerminal)
+                {
+                    return this.predictions.AddUnique(normalState as PredictState);
+                }
+
+                return this.scans.AddUnique(normalState as ScanState);
             }
 
-            return this.completions.AddUnique(normalState);
+            Debug.Assert(normalState is CompletionState);
+            return this.completions.AddUnique(normalState as CompletionState);
         }
 
         private bool EnqueueTransition(TransitionState transitionState)
@@ -121,8 +138,8 @@ namespace Pliant.Charts
             return this.transitions.AddUnique(transitionState);
         }
 
-        private readonly NormalStateList completions;
-        private readonly NormalStateList predictions;
+        private readonly StateList<CompletionState> completions;
+        private readonly StateList<PredictState> predictions;
         private readonly NormalStateList scans;
         private readonly UniqueList<TransitionState> transitions;
     }

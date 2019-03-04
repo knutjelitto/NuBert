@@ -267,7 +267,7 @@ namespace Pliant.Runtime
                     completed.ParseNode,
                     location);
 
-                if (Chart.Contains(location, dottedRule, origin))
+                if (Chart.ContainsNormal(location, dottedRule, origin))
                 {
                     continue;
                 }
@@ -373,6 +373,7 @@ namespace Pliant.Runtime
             var virtualParseNode = CreateVirtualParseNode(completed, k, rootTransitionState);
 
             var dottedRule = transitionState.DottedRule;
+
             var topmostItem = StateFactory.NewState(dottedRule, transitionState.Origin, virtualParseNode);
 
             if (Chart.Enqueue(k, topmostItem))
@@ -455,32 +456,32 @@ namespace Pliant.Runtime
                 return;
             }
 
-            TransitionState currentTransitionState;
+            TransitionState transition;
             if (previousTransitionState != null)
             {
-                currentTransitionState = new TransitionState(
+                transition = new TransitionState(
                     searchSymbol,
                     t_rule,
                     sourceState,
                     previousTransitionState.Index);
 
-                previousTransitionState.NextTransition = currentTransitionState;
+                previousTransitionState.NextTransition = transition;
             }
             else
             {
-                currentTransitionState = new TransitionState(
+                transition = new TransitionState(
                     searchSymbol,
                     t_rule,
                     sourceState,
                     origin);
             }
 
-            if (Chart.Enqueue(origin, currentTransitionState))
+            if (Chart.Enqueue(origin, transition))
             {
-                Log(transitionLogName, origin, currentTransitionState);
+                Log(transitionLogName, origin, transition);
             }
 
-            previousTransitionState = currentTransitionState;
+            previousTransitionState = transition;
         }
 
         private void Predict(NormalState evidence, int location)
@@ -529,12 +530,13 @@ namespace Pliant.Runtime
                     location);
             }
 
-            if (Chart.Contains(location, dottedRule, evidence.Origin))
+            if (Chart.ContainsNormal(location, dottedRule, evidence.Origin))
             {
                 return;
             }
 
             var aycockHorspoolState = StateFactory.NewState(dottedRule, evidence.Origin, parseNode);
+
             if (Chart.Enqueue(location, aycockHorspoolState))
             {
                 Log(predictionLogName, location, aycockHorspoolState);
@@ -544,13 +546,14 @@ namespace Pliant.Runtime
         private void PredictProduction(int location, Production production)
         {
             var dottedRule = DottedRules.Get(production, 0);
-            if (Chart.Contains(location, dottedRule, 0))
+            if (Chart.ContainsNormal(location, dottedRule, 0))
             {
                 return;
             }
 
             // TODO: Pre-Compute Leo Items. If item is 1 step from being complete, add a transition item
             var predictedState = StateFactory.NewState(dottedRule, location);
+
             if (Chart.Enqueue(location, predictedState))
             {
                 Log(predictionLogName, location, predictedState);
@@ -591,15 +594,15 @@ namespace Pliant.Runtime
             }
         }
 
-        private void Scan(NormalState scan, int j, IToken token)
+        private void Scan(NormalState scan, int location, IToken token)
         {
-            var i = scan.Origin;
+            var origin = scan.Origin;
             var currentSymbol = scan.DottedRule.PostDotSymbol;
 
             if (currentSymbol is Lexer lexer && token.TokenType.Equals(lexer.TokenType))
             {
                 var dottedRule = DottedRules.GetNext(scan.DottedRule);
-                if (Chart.Contains(j + 1, dottedRule, i))
+                if (Chart.ContainsNormal(location + 1, dottedRule, origin))
                 {
                     return;
                 }
@@ -610,12 +613,12 @@ namespace Pliant.Runtime
                     scan.Origin,
                     scan.ParseNode,
                     tokenNode,
-                    j + 1);
+                    location + 1);
                 var nextState = StateFactory.NewState(dottedRule, scan.Origin, parseNode);
 
-                if (Chart.Enqueue(j + 1, nextState))
+                if (Chart.Enqueue(location + 1, nextState))
                 {
-                    LogScan(j + 1, nextState, token);
+                    LogScan(location + 1, nextState, token);
                 }
             }
         }

@@ -2,7 +2,7 @@
 
 namespace Pliant.Forest
 {
-    public abstract class InternalForestNode : ForestNodeBase, IInternalForestNode
+    public abstract class InternalForestNode : ForestNode, IInternalForestNode
     {
         protected InternalForestNode(int origin, int location, params AndForestNode[] children)
             : base(origin, location)

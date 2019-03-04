@@ -3,7 +3,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
-    public sealed class TokenForestNode : ForestNodeBase, ITokenForestNode
+    public sealed class TokenForestNode : ForestNode, ITokenForestNode
     {
         public TokenForestNode(IToken token, int origin, int location)
             : base(origin, location)

@@ -8,7 +8,7 @@ namespace Pliant.Terminals
         public NegationTerminal(Terminal innerTerminal)
         {
             InnerTerminal = innerTerminal;
-            this._hashCode = ComputeHashCode();
+            this.hashCode = ("!", InnerTerminal).GetHashCode();
         }
 
         public Terminal InnerTerminal { get; }
@@ -33,12 +33,12 @@ namespace Pliant.Terminals
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            return this._intervals ?? (this._intervals = CreateIntervals(InnerTerminal));
+            return this.intervals ?? (this.intervals = CreateIntervals(InnerTerminal));
         }
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
         public override bool Equals(object obj)
@@ -47,13 +47,8 @@ namespace Pliant.Terminals
                    InnerTerminal.Equals(other.InnerTerminal);
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(InnerTerminal.GetHashCode(), "!".GetHashCode());
-        }
+        private readonly int hashCode;
 
-        private readonly int _hashCode;
-
-        private IReadOnlyList<Interval> _intervals;
+        private IReadOnlyList<Interval> intervals;
     }
 }

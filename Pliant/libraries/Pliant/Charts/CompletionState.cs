@@ -3,9 +3,9 @@ using Pliant.Forest;
 
 namespace Pliant.Charts
 {
-    public class ScanState : NormalState
+    public class CompletionState : NormalState
     {
-        public ScanState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        public CompletionState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
             : base(dottedRule, origin, parseNode)
         {
         }

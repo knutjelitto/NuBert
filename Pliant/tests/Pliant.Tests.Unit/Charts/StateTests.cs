@@ -11,11 +11,11 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void StateToStringShouldCreateCorrectFormat()
         {
-            var state = new NormalState(
+            var state = new PredictState(
                 new DottedRule(
                     new Production(
                         new NonTerminal("A"), new NonTerminal("B"), new NonTerminal("C")),
-                    1), 
+                    1),
                 0);
             Assert.AreEqual("A -> B\u25CFC\t\t(0)", state.ToString());
         }
