@@ -9,36 +9,40 @@ namespace Pliant.Ebnf
 
     public sealed class EbnfLexerRuleExpressionSimple : ValueEqualityBase<EbnfLexerRuleExpressionSimple>, IEbnfLexerRuleExpression
     {
-        public IEbnfLexerRuleTerm Term { get; }
-
         public EbnfLexerRuleExpressionSimple(IEbnfLexerRuleTerm term)
-            : base(term.GetHashCode())
         {
             Term = term;
         }
 
-        public override bool ThisEquals(EbnfLexerRuleExpressionSimple other)
+        public IEbnfLexerRuleTerm Term { get; }
+
+        protected override object ThisHashCode => Term;
+
+        protected override bool ThisEquals(EbnfLexerRuleExpressionSimple other)
         {
             return other.Term.Equals(Term);
         }
     }
 
-    public sealed class EbnfLexerRuleExpressionAlteration : ValueEqualityBase<EbnfLexerRuleExpressionAlteration>, IEbnfLexerRuleExpression
+    public sealed class EbnfLexerRuleExpressionAlteration : ValueEqualityBase<EbnfLexerRuleExpressionAlteration>,
+                                                            IEbnfLexerRuleExpression
     {
         public EbnfLexerRuleExpressionAlteration(IEbnfLexerRuleTerm term, IEbnfLexerRuleExpression expression)
-            : base((term, expression))
         {
             Term = term;
             Expression = expression;
         }
 
-        public IEbnfLexerRuleTerm Term { get; }
         public IEbnfLexerRuleExpression Expression { get; }
 
-        public override bool ThisEquals(EbnfLexerRuleExpressionAlteration other)
+        public IEbnfLexerRuleTerm Term { get; }
+
+        protected override bool ThisEquals(EbnfLexerRuleExpressionAlteration other)
         {
             return Term.Equals(other.Term) &&
                    Expression.Equals(other.Expression);
         }
+
+        protected override object ThisHashCode => (Term, Expression);
     }
 }

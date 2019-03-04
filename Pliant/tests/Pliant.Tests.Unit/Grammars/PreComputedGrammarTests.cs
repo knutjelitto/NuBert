@@ -2,6 +2,7 @@
 using Pliant.Automata;
 using Pliant.Builders.Expressions;
 using Pliant.Grammars;
+using Pliant.Json;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
 using Pliant.Tests.Common.Grammars;
@@ -16,7 +17,7 @@ namespace Pliant.Tests.Unit.Grammars
         [ClassInitialize]
         public static void InitializeClass(TestContext testContext)
         {
-            jsonGrammar = GetJsonGrammar();
+            jsonGrammar = new JsonGrammar();
         }
 
         [TestMethod]
@@ -93,75 +94,5 @@ namespace Pliant.Tests.Unit.Grammars
                 Assert.IsFalse(preComputedGrammar.Grammar.IsRightRecursive(leftHandSide));
             }
         }
-        
-        private static Grammar GetJsonGrammar()
-        {
-            ProductionExpression
-                Json = "Json",
-                Object = "Object",
-                Pair = "Pair",
-                PairRepeat = "PairRepeat",
-                Array = "Array",
-                Value = "Value",
-                ValueRepeat = "ValueRepeat";
-
-            var number = new NumberLexerRule();
-            var @string = String();
-
-            Json.Rule =
-                Value;
-
-            Object.Rule =
-                '{' + PairRepeat + '}';
-
-            PairRepeat.Rule =
-                Pair
-                | (Pair + ',' + PairRepeat)
-                | Expr.Epsilon;
-
-            Pair.Rule =
-                (Expr)@string + ':' + Value;
-
-            Array.Rule =
-                '[' + ValueRepeat + ']';
-
-            ValueRepeat.Rule =
-                Value
-                | (Value + ',' + ValueRepeat)
-                | Expr.Epsilon;
-
-            Value.Rule = (Expr)
-                @string
-                | number
-                | Object
-                | Array
-                | "true"
-                | "false"
-                | "null";
-
-            return new GrammarExpression(
-                    Json,
-                    null,
-                    new[] {new WhitespaceLexerRule()})
-                .ToGrammar();
-        }
-
-        private static Lexer String()
-        {
-            // ["][^"]+["]
-            const string pattern = "[\"][^\"]+[\"]";
-            return CreateRegexDfa(pattern);
-        }
-
-
-        private static Lexer CreateRegexDfa(string pattern)
-        {
-            var regexParser = new RegexParser();
-            var regex = regexParser.Parse(pattern);
-            var regexCompiler = new RegexCompiler();
-            var dfa = regexCompiler.Compile(regex);
-            return new DfaLexer(dfa, pattern);
-        }
-
     }
 }

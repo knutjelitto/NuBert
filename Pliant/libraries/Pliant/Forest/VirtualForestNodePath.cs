@@ -8,7 +8,6 @@ namespace Pliant.Forest
     public class VirtualForestNodePath : ValueEqualityBase<VirtualForestNodePath>
     {
         public VirtualForestNodePath(TransitionState transitionState, IForestNode forestNode)
-            : base((transitionState, forestNode))
         {
             TransitionState = transitionState;
             ForestNode = forestNode;
@@ -17,10 +16,12 @@ namespace Pliant.Forest
         public TransitionState TransitionState { get; }
         public IForestNode ForestNode { get; }
 
-        public override bool ThisEquals(VirtualForestNodePath other)
+        protected override bool ThisEquals(VirtualForestNodePath other)
         {
             return TransitionState.Equals(other.TransitionState) &&
                    ForestNode.Equals(other.ForestNode);
         }
+
+        protected override object ThisHashCode => (TransitionState, ForestNode);
     }
 }

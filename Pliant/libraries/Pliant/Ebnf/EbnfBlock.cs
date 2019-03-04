@@ -9,17 +9,18 @@ namespace Pliant.Ebnf
     public sealed class EbnfBlockRule : ValueEqualityBase<EbnfBlockRule>, IEbnfBlock
     {
         public EbnfBlockRule(EbnfRule rule) 
-            : base(rule.GetHashCode())
         {
             Rule = rule;
         }
 
         public EbnfRule Rule { get; }
 
-        public override bool ThisEquals(EbnfBlockRule other)
+        protected override bool ThisEquals(EbnfBlockRule other)
         {
             return Rule.Equals(other.Rule);
         }
+
+        protected override object ThisHashCode => Rule;
 
         public override bool Equals(object obj)
         {
@@ -35,32 +36,34 @@ namespace Pliant.Ebnf
     public sealed class EbnfBlockSetting : ValueEqualityBase<EbnfBlockSetting>, IEbnfBlock
     {
         public EbnfBlockSetting(EbnfSetting setting)
-            : base(setting.GetHashCode())
         {
             Setting = setting;
         }
 
         public EbnfSetting Setting { get; }
 
-        public override bool ThisEquals(EbnfBlockSetting other)
+        protected override bool ThisEquals(EbnfBlockSetting other)
         {
             return other.Setting.Equals(Setting);
         }
+
+        protected override object ThisHashCode => Setting;
     }
 
     public sealed class EbnfBlockLexerRule : ValueEqualityBase<EbnfBlockLexerRule>, IEbnfBlock
     {
         public EbnfBlockLexerRule(EbnfLexerRule lexerRule)
-            : base(lexerRule.GetHashCode())
         {
             LexerRule = lexerRule;
         }
 
         public EbnfLexerRule LexerRule { get; }
 
-        public override bool ThisEquals(EbnfBlockLexerRule other)
+        protected override bool ThisEquals(EbnfBlockLexerRule other)
         {
             return other.LexerRule.Equals(LexerRule);
         }
+
+        protected override object ThisHashCode => LexerRule;
     }
 }

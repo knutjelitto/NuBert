@@ -28,7 +28,7 @@ namespace Pliant.Dotted
 
         public IReadOnlyDictionary<TokenType, DottedRuleSet> TokenTransitions => this.tokenTransitions;
 
-        public void AddTransition(ISymbol symbol, DottedRuleSet target)
+        public void AddTransition(Symbol symbol, DottedRuleSet target)
         {
             if (symbol is NonTerminal nonTerminal)
             {

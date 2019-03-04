@@ -170,7 +170,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private IForestNode CreateNullParseNode(ISymbol symbol, int location)
+        private IForestNode CreateNullParseNode(Symbol symbol, int location)
         {
             var symbolNode = NodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
             var token = new Token(location, string.Empty, emptyTokenType);
@@ -203,8 +203,7 @@ namespace Pliant.Runtime
             IInternalForestNode internalNode;
             if (anyPostDotRuleNull)
             {
-                internalNode = NodeSet
-                                   .AddOrGetExistingSymbolNode(nextDottedRule.Production.LeftHandSide, origin, location);
+                internalNode = NodeSet.AddOrGetExistingSymbolNode(nextDottedRule.Production.LeftHandSide, origin, location);
             }
             else
             {
@@ -353,12 +352,12 @@ namespace Pliant.Runtime
             return true;
         }
 
-        private bool IsSymbolNullable(ISymbol symbol)
+        private bool IsSymbolNullable(Symbol symbol)
         {
             return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsNullable(nonTerminal);
         }
 
-        private bool IsSymbolTransitiveNullable(ISymbol symbol)
+        private bool IsSymbolTransitiveNullable(Symbol symbol)
         {
             return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsTransitiveNullable(nonTerminal);
         }
@@ -398,7 +397,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void OptimizeReductionPath(ISymbol searchSymbol, int k)
+        private void OptimizeReductionPath(Symbol searchSymbol, int k)
         {
             State t_rule = null;
             TransitionState previousTransitionState = null;
@@ -409,7 +408,7 @@ namespace Pliant.Runtime
         }
 
         private void OptimizeReductionPathRecursive(
-            ISymbol searchSymbol,
+            Symbol searchSymbol,
             int k,
             ref State t_rule,
             ref TransitionState previousTransitionState,
@@ -517,24 +516,25 @@ namespace Pliant.Runtime
             var nullParseNode = CreateNullParseNode(evidence.DottedRule.PostDotSymbol, location);
             var dottedRule = DottedRules.GetNext(evidence.DottedRule);
 
-            var evidenceParseNode = evidence.ParseNode as IInternalForestNode;
-            IForestNode parseNode = null;
-            if (evidenceParseNode == null)
-            {
-                parseNode = CreateParseNode(
-                    dottedRule,
-                    evidence.Origin,
-                    null,
-                    nullParseNode,
-                    location);
-            }
-            else if (evidenceParseNode.Children.Count > 0
-                     && evidenceParseNode.Children[0].Children.Count > 0)
+            //var evidenceParseNode = evidence.ParseNode as IInternalForestNode;
+            IForestNode parseNode;
+            if (evidence.ParseNode is IInternalForestNode evidenceParseNode &&
+                evidenceParseNode.Children.Count > 0
+                && evidenceParseNode.Children[0].Children.Count > 0)
             {
                 parseNode = CreateParseNode(
                     dottedRule,
                     evidence.Origin,
                     evidenceParseNode,
+                    nullParseNode,
+                    location);
+            }
+            else
+            {
+                parseNode = CreateParseNode(
+                    dottedRule,
+                    evidence.Origin,
+                    null,
                     nullParseNode,
                     location);
             }

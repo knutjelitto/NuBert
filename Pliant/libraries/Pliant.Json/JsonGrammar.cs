@@ -8,8 +8,6 @@ namespace Pliant.Json
 {
     public class JsonGrammar : GrammarWrapper
     {
-        private static readonly Grammar _grammar;
-
         static JsonGrammar()
         {
             ProductionExpression
@@ -36,7 +34,7 @@ namespace Pliant.Json
                 | Expr.Epsilon;
 
             Pair.Rule =
-                (Expr)@string + ':' + Value;
+                (Expr) @string + ':' + Value;
 
             Array.Rule =
                 '[' + ValueRepeat + ']';
@@ -47,7 +45,7 @@ namespace Pliant.Json
                 | Expr.Epsilon;
 
             Value.Rule =
-                (Expr)@string
+                (Expr) @string
                 | number
                 | Object
                 | Array
@@ -55,22 +53,15 @@ namespace Pliant.Json
                 | "false"
                 | "null";
 
-            _grammar = new GrammarExpression(
-                Json,
-                null,
-                new[] { new WhitespaceLexerRule() })
-            .ToGrammar();
+            grammar = new GrammarExpression(
+                    Json,
+                    null,
+                    new[] {new WhitespaceLexerRule()})
+                .ToGrammar();
         }
 
-        public JsonGrammar() : base(_grammar)
+        public JsonGrammar() : base(grammar)
         {
-        }
-        
-        private static Lexer String()
-        {
-            // ["][^"]+["]
-            const string pattern = "[\"][^\"]+[\"]";
-            return CreateRegexDfa(pattern);
         }
 
         private static Lexer CreateRegexDfa(string pattern)
@@ -82,5 +73,13 @@ namespace Pliant.Json
             return new DfaLexer(dfa, pattern);
         }
 
+        private static Lexer String()
+        {
+            // ["][^"]+["]
+            const string pattern = "[\"][^\"]+[\"]";
+            return CreateRegexDfa(pattern);
+        }
+
+        private static readonly Grammar grammar;
     }
 }

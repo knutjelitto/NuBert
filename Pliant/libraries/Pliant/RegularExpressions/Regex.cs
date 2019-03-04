@@ -5,7 +5,6 @@ namespace Pliant.RegularExpressions
     public sealed class Regex : ValueEqualityBase<Regex>, IRegexNode
     {
         public Regex(bool startsWith, RegexExpression expression, bool endsWith)
-            : base((startsWith, expression, endsWith))
         {
             StartsWith = startsWith;
             EndsWith = endsWith;
@@ -16,12 +15,14 @@ namespace Pliant.RegularExpressions
         public RegexExpression Expression { get; }
         public bool EndsWith { get; }
 
-        public override bool ThisEquals(Regex other)
+        protected override bool ThisEquals(Regex other)
         {
             return StartsWith.Equals(other.StartsWith) &&
                    Expression.Equals(other.Expression) &&
                    EndsWith.Equals(other.EndsWith);
         }
+
+        protected override object ThisHashCode => (StartsWith, Expression, EndsWith);
 
         public override string ToString()
         {

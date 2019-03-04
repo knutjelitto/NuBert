@@ -5,9 +5,9 @@ using Pliant.Dotted;
 
 namespace Pliant.Grammars
 {
-    public sealed class GrammarImpl : Grammar
+    public sealed class ConcreteGrammar : Grammar
     {
-        public GrammarImpl(
+        public ConcreteGrammar(
             NonTerminal start,
             IReadOnlyList<Production> productions,
             IReadOnlyList<Lexer> ignoreRules,
@@ -23,7 +23,7 @@ namespace Pliant.Grammars
             this.symbolsReverseLookup = new Dictionary<NonTerminal, UniqueList<Production>>();
             this.lexerRules = new IndexedList<Lexer>();
             this.leftHandSideToProductions = new Dictionary<NonTerminal, List<Production>>();
-            this.symbolPaths = new Dictionary<ISymbol, UniqueList<ISymbol>>();
+            this.symbolPaths = new Dictionary<Symbol, UniqueList<Symbol>>();
 
             Start = start;
             AddProductions(productions);
@@ -147,7 +147,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private static void RegisterSymbolPath(Production production, UniqueList<ISymbol> symbolPath, int dot)
+        private static void RegisterSymbolPath(Production production, UniqueList<Symbol> symbolPath, int dot)
         {
             if (dot < production.Count)
             {
@@ -220,9 +220,9 @@ namespace Pliant.Grammars
             }
         }
 
-        private HashSet<ISymbol> CreateRightRecursiveSymbols()
+        private HashSet<Symbol> CreateRightRecursiveSymbols()
         {
-            var hashSet = new HashSet<ISymbol>();
+            var hashSet = new HashSet<Symbol>();
             foreach (var production in Productions)
             {
                 var symbolPath = this.symbolPaths[production.LeftHandSide];
@@ -253,7 +253,7 @@ namespace Pliant.Grammars
             return hashSet;
         }
 
-        private void RegisterSymbolInReverseLookup(Production production, ISymbol symbol)
+        private void RegisterSymbolInReverseLookup(Production production, Symbol symbol)
         {
             if (symbol is NonTerminal nonTerminal)
             {
@@ -266,8 +266,8 @@ namespace Pliant.Grammars
         private static readonly Production[] emptyProductionArray = { };
         private readonly Dictionary<NonTerminal, List<Production>> leftHandSideToProductions;
 
-        private readonly HashSet<ISymbol> rightRecursiveSymbols;
-        private readonly Dictionary<ISymbol, UniqueList<ISymbol>> symbolPaths;
+        private readonly HashSet<Symbol> rightRecursiveSymbols;
+        private readonly Dictionary<Symbol, UniqueList<Symbol>> symbolPaths;
         private readonly Dictionary<NonTerminal, UniqueList<Production>> symbolsReverseLookup;
         private readonly UniqueList<NonTerminal> transitiveNullableSymbols;
     }

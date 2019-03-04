@@ -29,7 +29,7 @@ namespace Pliant.Charts
             return this._hashCode;
         }
 
-        public bool IsSource(ISymbol searchSymbol)
+        public bool IsSource(Symbol searchSymbol)
         {
             var dottedRule = DottedRule;
             return !dottedRule.IsComplete && dottedRule.PostDotSymbol.Is(searchSymbol);

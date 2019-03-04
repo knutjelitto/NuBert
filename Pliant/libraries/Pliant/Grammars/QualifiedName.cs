@@ -5,7 +5,6 @@ namespace Pliant.Grammars
     public sealed class QualifiedName : ValueEqualityBase<QualifiedName>
     {
         public QualifiedName(string qualifier, string name)
-            : base((qualifier, name))
         {
             Qualifier = (qualifier ?? string.Empty).Trim();
             Name = name;
@@ -23,10 +22,12 @@ namespace Pliant.Grammars
         public string Name { get; }
         public string Qualifier { get; }
 
-        public override bool ThisEquals(QualifiedName other)
+        protected override bool ThisEquals(QualifiedName other)
         {
             return FullName.Equals(other.FullName);
         }
+
+        protected override object ThisHashCode => FullName;
 
         public override string ToString()
         {

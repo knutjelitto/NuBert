@@ -6,34 +6,35 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public sealed class Production : ValueEqualityBase<Production>, IReadOnlyList<ISymbol>
+    public sealed class Production : ValueEqualityBase<Production>, IReadOnlyList<Symbol>
     {
-        public Production(NonTerminal leftHandSide, IReadOnlyList<ISymbol> rightHandSide)
-            : base((leftHandSide, HashCode.Compute(rightHandSide)))
+        public Production(NonTerminal leftHandSide, IReadOnlyList<Symbol> rightHandSide)
         {
             LeftHandSide = leftHandSide;
             RightHandSide = rightHandSide.ToArray();
         }
 
-        public Production(NonTerminal leftHandSide, params ISymbol[] rightHandSide)
-            : this(leftHandSide, (IReadOnlyList<ISymbol>)rightHandSide)
+        public Production(NonTerminal leftHandSide, params Symbol[] rightHandSide)
+            : this(leftHandSide, (IReadOnlyList<Symbol>)rightHandSide)
         {
         }
 
         public int Count => RightHandSide.Count;
 
         public NonTerminal LeftHandSide { get; }
-        public IReadOnlyList<ISymbol> RightHandSide { get; }
+        public IReadOnlyList<Symbol> RightHandSide { get; }
 
-        public ISymbol this[int index] => RightHandSide[index];
+        public Symbol this[int index] => RightHandSide[index];
 
-        public override bool ThisEquals(Production other)
+        protected override bool ThisEquals(Production other)
         {
             return LeftHandSide.Equals(other.LeftHandSide) &&
                    RightHandSide.SequenceEqual(other.RightHandSide);
         }
 
-        public IEnumerator<ISymbol> GetEnumerator()
+        protected override object ThisHashCode => (LeftHandSide, HashCode.Compute(RightHandSide));
+
+        public IEnumerator<Symbol> GetEnumerator()
         {
             return RightHandSide.GetEnumerator();
         }

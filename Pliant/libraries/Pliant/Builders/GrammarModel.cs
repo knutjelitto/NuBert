@@ -89,7 +89,7 @@ namespace Pliant.Builders
                     "Unable to generate Grammar. The grammar definition is missing a Left Hand Symbol to the StartState production.");
             }
 
-            return new GrammarImpl(
+            return new ConcreteGrammar(
                 Start.LeftHandSide.NonTerminal,
                 productions,
                 ignoreRules,

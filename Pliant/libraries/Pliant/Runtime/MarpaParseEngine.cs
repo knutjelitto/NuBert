@@ -162,7 +162,7 @@ namespace Pliant.Runtime
             return fromAH.NullTransition;
         }
 
-        private static DottedRuleSet Goto(DottedRuleSet fromAH, ISymbol symbol)
+        private static DottedRuleSet Goto(DottedRuleSet fromAH, Symbol symbol)
         {
             if (symbol is NonTerminal nonTerminal && fromAH.Reductions.TryGetValue(nonTerminal, out var ruleSet))
             {
@@ -234,7 +234,7 @@ namespace Pliant.Runtime
 
         private CachedDottedRuleSetTransition CreateTopCachedItem(
             DeterministicState stateFrame,
-            ISymbol postDotSymbol)
+            Symbol postDotSymbol)
         {
             var origin = stateFrame.Origin;
             CachedDottedRuleSetTransition topCacheItem = null;
@@ -263,7 +263,7 @@ namespace Pliant.Runtime
                 topCacheItem == null ? stateFrame.Origin : origin);
         }
 
-        private void EarleyReductionOperation(int iLoc, DeterministicState fromEim, ISymbol transSym)
+        private void EarleyReductionOperation(int iLoc, DeterministicState fromEim, Symbol transSym)
         {
             var fromAH = fromEim.DottedRuleSet;
             var originLoc = fromEim.Origin;
@@ -309,9 +309,9 @@ namespace Pliant.Runtime
             var frameSet = Chart.Sets[iLoc];
             // leo eligibility needs to be cached before creating the cached transition
             // if the size of the list is != 1, do not enter the cached frame transition
-            var cachedTransitionsPool = SharedPools.Default<Dictionary<ISymbol, CachedDottedRuleSetTransition>>();
+            var cachedTransitionsPool = SharedPools.Default<Dictionary<Symbol, CachedDottedRuleSetTransition>>();
             var cachedTransitions = ObjectPoolExtensions.Allocate(cachedTransitionsPool);
-            var cachedCountPool = SharedPools.Default<Dictionary<ISymbol, int>>();
+            var cachedCountPool = SharedPools.Default<Dictionary<Symbol, int>>();
             var cachedCount = ObjectPoolExtensions.Allocate(cachedCountPool);
 
             for (var i = 0; i < frameSet.States.Count; i++)
@@ -385,7 +385,7 @@ namespace Pliant.Runtime
         private void ReductionPass(int iLoc)
         {
             var iES = Chart.Sets[iLoc];
-            var processed = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<ISymbol>>());
+            var processed = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<Symbol>>());
             for (var i = 0; i < iES.States.Count; i++)
             {
                 var workEIM = iES.States[i];
@@ -411,7 +411,7 @@ namespace Pliant.Runtime
                 processed.Clear();
             }
 
-            SharedPools.Default<HashSet<ISymbol>>().ClearAndFree(processed);
+            SharedPools.Default<HashSet<Symbol>>().ClearAndFree(processed);
             MemoizeTransitions(iLoc);
         }
 

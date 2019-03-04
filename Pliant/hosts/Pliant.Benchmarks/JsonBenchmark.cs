@@ -1,50 +1,49 @@
-﻿using BenchmarkDotNet.Attributes;
-using Pliant.Bnf;
+﻿using System;
+using System.IO;
+using BenchmarkDotNet.Attributes;
 using Pliant.Grammars;
 using Pliant.Json;
 using Pliant.Runtime;
-using System;
-using System.IO;
 
 namespace Pliant.Benchmarks
 {
     [Config(typeof(PliantBenchmarkConfig))]
     public class JsonBenchmark
     {
-        string _json;
-        Grammar _grammar;
-
-        [GlobalSetup]
-        public void Setup()
+        //[Benchmark]
+        public bool DeterministicParseEngineParse()
         {
-            _json = File.ReadAllText(
-                Path.Combine(Environment.CurrentDirectory, "10000.json"));
-            _grammar = new JsonGrammar();
+            return RunParse(new DeterministicParseEngine(this.grammar), this.jsonSource);
+        }
+
+        //[Benchmark]
+        public bool MarpaParseEngineParse()
+        {
+            return RunParse(new MarpaParseEngine(this.grammar), this.jsonSource);
         }
 
         [Benchmark]
         public bool ParseEngineParse()
         {
-            return RunParse(new ParseEngine(_grammar), _json);
+            return RunParse(new ParseEngine(this.grammar), this.jsonSource);
         }
-        
-        //[Benchmark]
-        public bool DeterministicParseEngineParse()
+
+        [GlobalSetup]
+        public void Setup()
         {
-            return RunParse(new DeterministicParseEngine(_grammar), _json);
+            this.jsonSource = File.ReadAllText(
+                Path.Combine(Environment.CurrentDirectory, "10000.json"));
+            this.grammar = new JsonGrammar();
         }
-        
-        //[Benchmark]
-        public bool MarpaParseEngineParse()
-        {
-            return RunParse(new MarpaParseEngine(_grammar), _json);
-        }
-        
+
         private bool RunParse(IParseEngine parseEngine, string input)
         {
             var parseRunner = new ParseRunner(parseEngine, input);
 
             return parseRunner.RunToEnd();
         }
+
+        private Grammar grammar;
+        private string jsonSource;
     }
 }

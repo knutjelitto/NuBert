@@ -2,7 +2,7 @@
 
 namespace Pliant.Forest
 {
-    public class TerminalForestNode : ForestNodeBase, ITerminalForestNode
+    public sealed class TerminalForestNode : ForestNodeBase, ITerminalForestNode
     {
         public TerminalForestNode(char capture, int origin, int location)
             : base(origin, location)

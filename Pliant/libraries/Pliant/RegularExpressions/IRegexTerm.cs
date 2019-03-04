@@ -9,17 +9,18 @@ namespace Pliant.RegularExpressions
     public sealed class RegexTermFactor : ValueEqualityBase<RegexTermFactor>, IRegexTerm
     {
         public RegexTermFactor(IRegexFactor factor)
-            : base(factor.GetHashCode())
         {
             Factor = factor;
         }
 
         public IRegexFactor Factor { get; }
 
-        public override bool ThisEquals(RegexTermFactor other)
+        protected override bool ThisEquals(RegexTermFactor other)
         {
             return Factor.Equals(other.Factor);
         }
+
+        protected override object ThisHashCode => Factor;
 
         public override string ToString()
         {
@@ -30,7 +31,6 @@ namespace Pliant.RegularExpressions
     public sealed class RegexTermFactorTerm : ValueEqualityBase<RegexTermFactorTerm>, IRegexTerm
     {
         public RegexTermFactorTerm(IRegexFactor factor, IRegexTerm term)
-            : base((factor, term))
         {
             Factor = factor;
             Term = term;
@@ -39,10 +39,12 @@ namespace Pliant.RegularExpressions
         public IRegexFactor Factor { get; }
         public IRegexTerm Term { get; }
 
-        public override bool ThisEquals(RegexTermFactorTerm other)
+        protected override bool ThisEquals(RegexTermFactorTerm other)
         {
             return Factor.Equals(other.Factor) && Term.Equals(other.Term);
         }
+
+        protected override object ThisHashCode => (Factor, Term);
 
         public override string ToString()
         {

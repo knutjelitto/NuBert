@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\Pliant.Json\Pliant.Json.csproj" />
     <ProjectReference Include="..\..\libraries\Pliant\Pliant.csproj" />
     <ProjectReference Include="..\Pliant.Tests.Common\Pliant.Tests.Common.csproj" />
   </ItemGroup>

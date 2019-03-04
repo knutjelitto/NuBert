@@ -4,7 +4,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Automata
 {
-    public class DfaLexeme : Lexeme
+    public sealed class DfaLexeme : Lexeme
     {
         public DfaLexeme(DfaLexer dfaLexer, int position)
             : base(dfaLexer, position)

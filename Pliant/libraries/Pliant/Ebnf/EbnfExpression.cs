@@ -12,15 +12,16 @@ namespace Pliant.Ebnf
         public IEbnfTerm Term { get; }
 
         public EbnfExpressionSimple(IEbnfTerm term)
-            : base(term.GetHashCode())
         {
             Term = term;
         }
 
-        public override bool ThisEquals(EbnfExpressionSimple other)
+        protected override bool ThisEquals(EbnfExpressionSimple other)
         {
             return Term.Equals(other.Term);
         }
+
+        protected override object ThisHashCode => Term;
 
         public override string ToString()
         {
@@ -31,7 +32,6 @@ namespace Pliant.Ebnf
     public sealed class EbnfExpressionAlteration : ValueEqualityBase<EbnfExpressionAlteration>, IEbnfExpression
     {
         public EbnfExpressionAlteration(IEbnfTerm term, IEbnfExpression expression)
-            : base((term, expression))
         {
             Term = term;
             Expression = expression;
@@ -40,11 +40,13 @@ namespace Pliant.Ebnf
         public IEbnfTerm Term { get; }
         public IEbnfExpression Expression { get; }
 
-        public override bool ThisEquals(EbnfExpressionAlteration other)
+        protected override bool ThisEquals(EbnfExpressionAlteration other)
         {
             return other.Term.Equals(Term) &&
                    other.Expression.Equals(Expression);
         }
+
+        protected override object ThisHashCode => (Term, Expression);
 
         public override string ToString()
         {

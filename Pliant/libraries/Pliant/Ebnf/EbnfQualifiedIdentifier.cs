@@ -12,16 +12,17 @@ namespace Pliant.Ebnf
         }
 
         public EbnfQualifiedIdentifier(params string[] identifiers)
-            : base(HashCode.Compute(identifiers))
         {
             Identifiers = identifiers;
         }
 
         public string[] Identifiers { get; }
 
-        public override bool ThisEquals(EbnfQualifiedIdentifier other)
+        protected override bool ThisEquals(EbnfQualifiedIdentifier other)
         {
             return Identifiers.SequenceEqual(other.Identifiers);
         }
+
+        protected override object ThisHashCode => HashCode.Compute(Identifiers);
     }
 }

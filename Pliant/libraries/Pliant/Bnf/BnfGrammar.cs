@@ -8,8 +8,6 @@ namespace Pliant.Bnf
 {
     public class BnfGrammar : GrammarWrapper
     {
-        private static readonly Grammar _bnfGrammar;
-
         static BnfGrammar()
         {
             /*
@@ -66,17 +64,22 @@ namespace Pliant.Bnf
                 whitespace
             };
 
-            _bnfGrammar = new GrammarImpl(grammar, productions, ignore, null);
+            _bnfGrammar = new ConcreteGrammar(grammar, productions, ignore, null);
         }
 
-        private static Lexer CreateNotSingleQuoteLexerRule()
+        public BnfGrammar()
+            : base(_bnfGrammar)
         {
-            var start = DfaState.Inner();
-            var final = DfaState.Final();
-            var terminal = new NegationTerminal(new CharacterTerminal('\''));
-            start.AddTransition(terminal, final);
-            final.AddTransition(terminal, final);
-            return new DfaLexer(start, "not-single-quote");
+        }
+
+        private static Lexer CreateEndOfLineLexerRule()
+        {
+            return new StringLiteralLexer("\r\n", new TokenType("eol"));
+        }
+
+        private static Lexer CreateImplementsLexerRule()
+        {
+            return new StringLiteralLexer("::=", new TokenType("implements"));
         }
 
         private static Lexer CreateNotDoubleQuoteLexerRule()
@@ -100,14 +103,14 @@ namespace Pliant.Bnf
             return new DfaLexer(start, "not-double-quote");
         }
 
-        private static Lexer CreateEndOfLineLexerRule()
+        private static Lexer CreateNotSingleQuoteLexerRule()
         {
-            return new StringLiteralLexer("\r\n", new TokenType("eol"));
-        }
-
-        private static Lexer CreateImplementsLexerRule()
-        {
-            return new StringLiteralLexer("::=", new TokenType("implements"));
+            var start = DfaState.Inner();
+            var final = DfaState.Final();
+            var terminal = new NegationTerminal(new CharacterTerminal('\''));
+            start.AddTransition(terminal, final);
+            final.AddTransition(terminal, final);
+            return new DfaLexer(start, "not-single-quote");
         }
 
         private static Lexer CreateRuleNameLexerRule()
@@ -119,11 +122,11 @@ namespace Pliant.Bnf
                 AsciiLetterTerminal.Instance,
                 zeroOrMoreLetterOrDigit);
             zeroOrMoreLetterOrDigit.AddTransition(
-                    new CharacterClassTerminal(
-                        AsciiLetterTerminal.Instance,
-                        DigitTerminal.Instance,
-                        new SetTerminal('-', '_')),
-                    zeroOrMoreLetterOrDigit);
+                new CharacterClassTerminal(
+                    AsciiLetterTerminal.Instance,
+                    DigitTerminal.Instance,
+                    new SetTerminal('-', '_')),
+                zeroOrMoreLetterOrDigit);
             var ruleName = new DfaLexer(ruleNameState, "rule-name");
             return ruleName;
         }
@@ -138,8 +141,6 @@ namespace Pliant.Bnf
             return new DfaLexer(startState, "[\\s]+");
         }
 
-        public BnfGrammar() 
-            : base(_bnfGrammar)
-        { }
+        private static readonly Grammar _bnfGrammar;
     }
 }

@@ -129,7 +129,7 @@ namespace Pliant.RegularExpressions
                 new Production(characterClassCharacter, escape)
             };
 
-            grammar = new GrammarImpl(regex, productions, null, null);
+            grammar = new ConcreteGrammar(regex, productions, null, null);
         }
         
         private static Lexer CreateNotMetaLexerRule()

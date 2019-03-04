@@ -8,8 +8,8 @@ namespace Pliant.Builders
     {
         public ReachabilityMatrix()
         {
-            this.matrix = new Dictionary<ISymbol, UniqueList<NonTerminalModel>>();
-            this.lookup = new Dictionary<ISymbol, ProductionModel>();
+            this.matrix = new Dictionary<Symbol, UniqueList<NonTerminalModel>>();
+            this.lookup = new Dictionary<Symbol, ProductionModel>();
         }
 
         public void AddProduction(ProductionModel production)
@@ -61,7 +61,7 @@ namespace Pliant.Builders
             set.AddUnique(production.LeftHandSide);
         }
 
-        private readonly Dictionary<ISymbol, ProductionModel> lookup;
-        private readonly Dictionary<ISymbol, UniqueList<NonTerminalModel>> matrix;
+        private readonly Dictionary<Symbol, ProductionModel> lookup;
+        private readonly Dictionary<Symbol, UniqueList<NonTerminalModel>> matrix;
     }
 }

@@ -7,7 +7,6 @@ namespace Pliant.Dotted
     public sealed class DottedRule : ValueEqualityBase<DottedRule>
     {
         public DottedRule(Production production, int dot)
-            : base((production, dot))
         {
             Production = production;
             Dot = dot;
@@ -20,16 +19,18 @@ namespace Pliant.Dotted
 
         public int Dot { get; }
 
-        public ISymbol PostDotSymbol { get; }
+        public Symbol PostDotSymbol { get; }
 
-        public ISymbol PreDotSymbol { get; }
+        public Symbol PreDotSymbol { get; }
 
         public Production Production { get; }
 
-        public override bool ThisEquals(DottedRule other)
+        protected override bool ThisEquals(DottedRule other)
         {
             return Production.Equals(other.Production) && Dot.Equals(other.Dot);
         }
+
+        protected override object ThisHashCode => (Production, Dot);
 
         public override string ToString()
         {
@@ -55,7 +56,7 @@ namespace Pliant.Dotted
             return builder.ToString();
         }
 
-        private static ISymbol GetPostDotSymbol(Production production, int dot)
+        private static Symbol GetPostDotSymbol(Production production, int dot)
         {
             if (dot >= production.Count)
             {
@@ -65,7 +66,7 @@ namespace Pliant.Dotted
             return production[dot];
         }
 
-        private static ISymbol GetPreDotSymbol(Production production, int dot)
+        private static Symbol GetPreDotSymbol(Production production, int dot)
         {
             if (dot <= 0 || production.Count == 0)
             {

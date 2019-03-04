@@ -40,7 +40,7 @@ namespace Pliant.Forest
             return intermediateNode;
         }
 
-        public ISymbolForestNode AddOrGetExistingSymbolNode(ISymbol symbol, int origin, int location)
+        public ISymbolForestNode AddOrGetExistingSymbolNode(Symbol symbol, int origin, int location)
         {
             var hash = ComputeHashCode(symbol, origin, location);
 
@@ -84,7 +84,7 @@ namespace Pliant.Forest
             return this._virtualNodes.TryGetValue(hash, out node);
         }
 
-        private static int ComputeHashCode(ISymbol symbol, int origin, int location)
+        private static int ComputeHashCode(Symbol symbol, int origin, int location)
         {
             return HashCode.Compute(
                 symbol.GetHashCode(),

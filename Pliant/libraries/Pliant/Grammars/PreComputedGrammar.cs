@@ -23,7 +23,7 @@ namespace Pliant.Grammars
 
         public DottedRuleSet Start { get; }
 
-        private static ISymbol GetPostDotSymbol(DottedRule state)
+        private static Symbol GetPostDotSymbol(DottedRule state)
         {
             return state.Production[state.Dot];
         }
@@ -219,7 +219,7 @@ namespace Pliant.Grammars
 
         private void ProcessSymbolTransitions(DottedRuleSet frame)
         {
-            var pool = SharedPools.Default<Dictionary<ISymbol, HashSet<DottedRule>>>();
+            var pool = SharedPools.Default<Dictionary<Symbol, HashSet<DottedRule>>>();
             var transitions = ObjectPoolExtensions.Allocate(pool);
 
             foreach (var nfaState in frame.Data)

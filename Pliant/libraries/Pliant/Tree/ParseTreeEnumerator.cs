@@ -253,6 +253,7 @@ namespace Pliant.Tree
             public List<ITreeNode> ReadWriteChildren { get; }
 
             public IReadOnlyList<ITreeNode> Children => ReadWriteChildren;
+
             public bool Is(QualifiedName name)
             {
                 return Symbol.Is(name);

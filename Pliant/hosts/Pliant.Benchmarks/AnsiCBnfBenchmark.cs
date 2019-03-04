@@ -1,33 +1,33 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using System.IO;
+using BenchmarkDotNet.Attributes;
 using Pliant.Bnf;
 using Pliant.Grammars;
 using Pliant.Runtime;
-using System;
-using System.IO;
 
 namespace Pliant.Benchmarks
 {
     [Config(typeof(PliantBenchmarkConfig))]
     public class AnsiCBnfBenchmark
     {
-        string _sampleBnf;
-        Grammar _grammar;
+        [Benchmark]
+        public bool Parse()
+        {
+            var parseEngine = new ParseEngine(this.grammar);
+            var parseRunner = new ParseRunner(parseEngine, this.sampleBnf);
+
+            return parseRunner.RunToEnd();
+        }
 
         [GlobalSetup]
         public void Setup()
         {
-            _sampleBnf = File.ReadAllText(
+            this.sampleBnf = File.ReadAllText(
                 Path.Combine(Environment.CurrentDirectory, "AnsiC.bnf"));
-            _grammar = new BnfGrammar();
+            this.grammar = new BnfGrammar();
         }
 
-        [Benchmark]
-        public bool Parse()
-        {
-            var parseEngine = new ParseEngine(_grammar);
-            var parseRunner = new ParseRunner(parseEngine, _sampleBnf);
-
-            return parseRunner.RunToEnd();
-        }
+        private Grammar grammar;
+        private string sampleBnf;
     }
 }

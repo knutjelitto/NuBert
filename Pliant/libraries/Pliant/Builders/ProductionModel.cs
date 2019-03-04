@@ -66,7 +66,7 @@ namespace Pliant.Builders
 
             foreach (var alteration in Alterations)
             {
-                var symbols = new List<ISymbol>();
+                var symbols = new List<Symbol>();
                 foreach (var symbolModel in alteration.Symbols)
                 {
                     symbols.Add(symbolModel.Symbol);

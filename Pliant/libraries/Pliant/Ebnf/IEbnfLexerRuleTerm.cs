@@ -12,21 +12,21 @@ namespace Pliant.Ebnf
         public IEbnfLexerRuleFactor Factor { get; }
 
         public EbnfLexerRuleTermSimple(IEbnfLexerRuleFactor factor)
-            : base(factor.GetHashCode())
         {
             Factor = factor;
         }
 
-        public override bool ThisEquals(EbnfLexerRuleTermSimple other)
+        protected override bool ThisEquals(EbnfLexerRuleTermSimple other)
         {
             return Factor.Equals(other.Factor);
         }
+
+        protected override object ThisHashCode => Factor;
     }
 
     public sealed class EbnfLexerRuleTermConcatenation : ValueEqualityBase<EbnfLexerRuleTermConcatenation>, IEbnfLexerRuleTerm
     {
         public EbnfLexerRuleTermConcatenation(IEbnfLexerRuleFactor factor, IEbnfLexerRuleTerm term)
-            : base((factor, term))
         {
             Factor = factor;
             Term = term;
@@ -35,9 +35,11 @@ namespace Pliant.Ebnf
         public IEbnfLexerRuleFactor Factor { get; }
         public IEbnfLexerRuleTerm Term { get; }
 
-        public override bool ThisEquals(EbnfLexerRuleTermConcatenation other)
+        protected override bool ThisEquals(EbnfLexerRuleTermConcatenation other)
         {
             return Factor.Equals(other.Factor) && Term.Equals(other.Term);
         }
+
+        protected override object ThisHashCode => (Factor, Term);
     }
 }

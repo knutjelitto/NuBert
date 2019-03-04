@@ -10,17 +10,18 @@ namespace Pliant.RegularExpressions
     public class RegexFactorAtom : ValueEqualityBase<RegexFactorAtom>, IRegexFactor
     {
         public RegexFactorAtom(RegexAtom atom)
-            : base(atom)
         {
             Atom = atom;
         }
 
         public RegexAtom Atom { get; }
 
-        public override bool ThisEquals(RegexFactorAtom other)
+        protected override bool ThisEquals(RegexFactorAtom other)
         {
             return Atom.Equals(other.Atom);
         }
+
+        protected override object ThisHashCode => Atom;
 
         public override string ToString()
         {
@@ -31,7 +32,6 @@ namespace Pliant.RegularExpressions
     public class RegexFactorIterator : ValueEqualityBase<RegexFactorIterator>, IRegexFactor
     {
         public RegexFactorIterator(RegexAtom atom, RegexIterator iterator)
-            : base((atom, iterator))
         {
             Atom = atom;
             Iterator = iterator;
@@ -40,10 +40,12 @@ namespace Pliant.RegularExpressions
         public RegexAtom Atom { get; }
         public RegexIterator Iterator { get; }
 
-        public override bool ThisEquals(RegexFactorIterator other)
+        protected override bool ThisEquals(RegexFactorIterator other)
         {
             return Atom.Equals(other.Atom) && Iterator.Equals(other.Iterator);
         }
+
+        protected override object ThisHashCode => (Atom, Iterator);
 
         public override string ToString()
         {

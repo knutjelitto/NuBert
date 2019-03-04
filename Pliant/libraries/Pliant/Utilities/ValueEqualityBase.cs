@@ -1,42 +1,13 @@
-﻿using System;
-
-namespace Pliant.Utilities
+﻿namespace Pliant.Utilities
 {
-    public struct ValueEquate<T>
-        where T : IEquatable<T>
-    {
-        private readonly T equatable;
-
-        public ValueEquate(T equatable, object obj)
-        {
-            this.equatable = equatable;
-            HashCode = obj.GetHashCode();
-        }
-
-        public bool IsEqual(object obj)
-        {
-            return obj is T other && this.equatable.Equals(other);
-        }
-
-        public int HashCode { get; }
-    }
-
     public abstract class ValueEqualityBase<T>
         where T : ValueEqualityBase<T>
     {
-        private readonly int hashCode;
+        private int? hashCode;
 
-        protected ValueEqualityBase(int hashCode)
-        {
-            this.hashCode = hashCode;
-        }
+        protected abstract bool ThisEquals(T other);
 
-        protected ValueEqualityBase(object obj)
-            : this(obj.GetHashCode())
-        {
-        }
-
-        public abstract bool ThisEquals(T other);
+        protected abstract object ThisHashCode { get; }
 
         public override bool Equals(object obj)
         {
@@ -45,7 +16,9 @@ namespace Pliant.Utilities
 
         public override int GetHashCode()
         {
-            return this.hashCode;
+            // ReSharper disable NonReadonlyMemberInGetHashCode
+            return this.hashCode ?? (this.hashCode = ThisHashCode.GetHashCode()).Value;
+            // ReSharper restore NonReadonlyMemberInGetHashCode
         }
     }
 }

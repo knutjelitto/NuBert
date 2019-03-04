@@ -12,21 +12,21 @@ namespace Pliant.Ebnf
         public IEbnfBlock Block { get; }
 
         public EbnfDefinitionSimple(IEbnfBlock block)
-            : base(block.GetHashCode())
         {
             Block = block;
         }
 
-        public override bool ThisEquals(EbnfDefinitionSimple other)
+        protected override bool ThisEquals(EbnfDefinitionSimple other)
         {
             return other.Block.Equals(Block);
         }
+
+        protected override object ThisHashCode => Block;
     }
 
     public sealed class EbnfDefinitionConcatenation : ValueEqualityBase<EbnfDefinitionConcatenation>, IEbnfDefinition
     {
         public EbnfDefinitionConcatenation(IEbnfBlock block, IEbnfDefinition definition)
-            : base((block, definition))
         {
             Block = block;
             Definition = definition;
@@ -35,10 +35,12 @@ namespace Pliant.Ebnf
         public IEbnfBlock Block { get; }
         public IEbnfDefinition Definition { get; }
 
-        public override bool ThisEquals(EbnfDefinitionConcatenation other)
+        protected override bool ThisEquals(EbnfDefinitionConcatenation other)
         {
             return Block.Equals(other.Block) &&
                    Definition.Equals(other.Definition);
         }
+
+        protected override object ThisHashCode => (Block, Definition);
     }
 }

@@ -9,8 +9,6 @@ namespace Pliant.Charts
     {
         protected State(DottedRule dottedRule, int origin)
         {
-            Assert.IsNotNull(dottedRule, nameof(dottedRule));
-            Assert.IsGreaterThanEqualToZero(origin, nameof(origin));
             DottedRule = dottedRule;
             Origin = origin;
         }
