@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Pliant.Collections;
 using Pliant.Dotted;
 using Pliant.Grammars;
@@ -50,7 +51,7 @@ namespace Pliant.Charts
             throw new InvalidOperationException();
         }
 
-        public NormalState FindSourceState(Symbol searchSymbol)
+        public NormalState FindUniqueSourceState(Symbol searchSymbol)
         {
             var sourceItemCount = 0;
             NormalState sourceItem = null;
@@ -73,18 +74,42 @@ namespace Pliant.Charts
             return sourceItem;
         }
 
-        public TransitionState FindTransitionState(Symbol searchSymbol)
+        public bool FindUniqueSourceState(Symbol searchSymbol, out NormalState sourceItem)
         {
-            foreach (var transition in Transitions)
+            var sourceItemCount = 0;
+            sourceItem = null;
+
+            foreach (var state in Predictions)
             {
-                var transitionState = transition;
-                if (transitionState.Recognized.Equals(searchSymbol))
+                if (state.IsSource(searchSymbol))
                 {
-                    return transitionState;
+                    var moreThanOneSourceItemExists = sourceItemCount > 0;
+                    if (moreThanOneSourceItemExists)
+                    {
+                        return false;
+                    }
+
+                    sourceItemCount++;
+                    sourceItem = state;
                 }
             }
 
-            return null;
+            return sourceItemCount == 1;
+        }
+
+        public bool FindTransitionState(Symbol searchSymbol, out TransitionState transitionState)
+        {
+            foreach (var transition in Transitions)
+            {
+                if (transition.Recognized.Equals(searchSymbol))
+                {
+                    transitionState = transition;
+                    return true;
+                }
+            }
+
+            transitionState = null;
+            return false;
         }
 
         private bool CompletionContains(DottedRule rule, int origin)

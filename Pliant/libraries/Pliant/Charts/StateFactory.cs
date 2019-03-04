@@ -1,4 +1,5 @@
-﻿using Pliant.Dotted;
+﻿using System.Diagnostics;
+using Pliant.Dotted;
 using Pliant.Forest;
 using Pliant.Grammars;
 
@@ -11,20 +12,24 @@ namespace Pliant.Charts
             DottedRuleRegistry = dottedRuleRegistry;
         }
 
-        public State NewState(Production production, int location, int origin)
+        public State NewState(Production production, int dot, int origin)
         {
-            var dottedRule = DottedRuleRegistry.Get(production, location);
-            return NewState(dottedRule, origin);
+            return NewState(DottedRuleRegistry.Get(production, dot), origin);
         }
 
-        public State NewState(DottedRule dottedRule, int origin, IForestNode forestNode = null)
+        public State NewState(DottedRule dottedRule, int origin)
         {
-            return forestNode == null
-                       ? new NormalState(dottedRule, origin)
-                       : new NormalState(dottedRule, origin, forestNode);
+            return new NormalState(dottedRule, origin);
         }
 
-        public State NextState(State state, IForestNode parseNode = null)
+        public State NewState(DottedRule dottedRule, int origin, IForestNode parseNode)
+        {
+            Debug.Assert(parseNode != null);
+
+            return new NormalState(dottedRule, origin, parseNode);
+        }
+
+        public State NextState(State state)
         {
             if (state.DottedRule.IsComplete)
             {
@@ -32,9 +37,7 @@ namespace Pliant.Charts
             }
 
             var dottedRule = DottedRuleRegistry.GetNext(state.DottedRule);
-            return parseNode == null
-                       ? new NormalState(dottedRule, state.Origin)
-                       : new NormalState(dottedRule, state.Origin, parseNode);
+            return new NormalState(dottedRule, state.Origin);
         }
 
         private DottedRuleRegistry DottedRuleRegistry { get; }

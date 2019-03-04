@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using Pliant.Charts;
 using Pliant.Grammars;
 using Pliant.Utilities;
@@ -93,6 +95,22 @@ namespace Pliant.Forest
         {
             var transitionState = path.TransitionState;
             var completedParseNode = path.ForestNode;
+
+            switch (completedParseNode)
+            {
+                case IntermediateForestNode _:
+                    Debug.Assert(true);
+                    break;
+                case SymbolForestNode _:
+                    Debug.Assert(true);
+                    break;
+                case VirtualForestNode _:
+                    Debug.Assert(true);
+                    break;
+                default:
+                    Debug.Assert(false);
+                    break;
+            }
 
             return transitionState.Reduction.ParseNode != null &&
                    Equals(completedParseNode, transitionState.Reduction.ParseNode) && 

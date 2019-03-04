@@ -21,8 +21,8 @@ namespace Pliant.Charts
         public int Index { get; }
 
         public TransitionState NextTransition { get; set; }
-        public Symbol Recognized { get; }
 
+        public Symbol Recognized { get; }
         public NormalState Reduction { get; }
 
         public override bool Equals(object obj)
@@ -57,8 +57,8 @@ namespace Pliant.Charts
         private int ComputeHashCode()
         {
             return HashCode.Compute(
-                DottedRule.Dot.GetHashCode(),
                 Origin.GetHashCode(),
+                DottedRule.Dot.GetHashCode(),
                 DottedRule.Production.GetHashCode(),
                 Recognized.GetHashCode(),
                 Reduction.GetHashCode(),

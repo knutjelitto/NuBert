@@ -159,8 +159,7 @@ namespace Pliant.Runtime
                 OptimizeReductionPath(searchSymbol, completed.Origin);
             }
 
-            var transitionState = earleySet.FindTransitionState(searchSymbol);
-            if (transitionState != null)
+            if (earleySet.FindTransitionState(searchSymbol, out var transitionState))
             {
                 LeoComplete(transitionState, completed, location);
             }
@@ -287,8 +286,8 @@ namespace Pliant.Runtime
             Location = 0;
             Chart = new Chart();
             this.expectedLexerRuleCache = new Dictionary<Indices, Lexer[]>();
-            var startProductions = Grammar.StartProductions();
-            foreach (var startProduction in startProductions)
+
+            foreach (var startProduction in Grammar.StartProductions())
             {
                 var startState = StateFactory.NewState(startProduction, 0, 0);
                 if (Chart.Enqueue(0, startState))
@@ -365,15 +364,15 @@ namespace Pliant.Runtime
         private void LeoComplete(TransitionState transitionState, State completed, int k)
         {
             var earleySet = Chart.EarleySets[transitionState.Index];
-            var rootTransitionState = earleySet.FindTransitionState(transitionState.DottedRule.PreDotSymbol) ?? transitionState;
+            if (!earleySet.FindTransitionState(transitionState.DottedRule.PreDotSymbol, out var rootTransitionState))
+            {
+                rootTransitionState = transitionState;
+            }
 
             var virtualParseNode = CreateVirtualParseNode(completed, k, rootTransitionState);
 
             var dottedRule = transitionState.DottedRule;
-            var topmostItem = StateFactory.NewState(
-                dottedRule,
-                transitionState.Origin,
-                virtualParseNode);
+            var topmostItem = StateFactory.NewState(dottedRule, transitionState.Origin, virtualParseNode);
 
             if (Chart.Enqueue(k, topmostItem))
             {
@@ -397,28 +396,27 @@ namespace Pliant.Runtime
             }
         }
 
-        private void OptimizeReductionPath(Symbol searchSymbol, int k)
+        private void OptimizeReductionPath(Symbol searchSymbol, int origin)
         {
             State t_rule = null;
             TransitionState previousTransitionState = null;
 
             var visited = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<State>>());
-            OptimizeReductionPathRecursive(searchSymbol, k, ref t_rule, ref previousTransitionState, visited);
+            OptimizeReductionPathRecursive(searchSymbol, origin, ref t_rule, ref previousTransitionState, visited);
             SharedPools.Default<HashSet<State>>().ClearAndFree(visited);
         }
 
         private void OptimizeReductionPathRecursive(
             Symbol searchSymbol,
-            int k,
+            int origin,
             ref State t_rule,
             ref TransitionState previousTransitionState,
             HashSet<State> visited)
         {
-            var earleySet = Chart.EarleySets[k];
+            var earleySet = Chart.EarleySets[origin];
 
             // if Ii contains a transitive item of the for [B -> b., A, k]
-            var transitionState = earleySet.FindTransitionState(searchSymbol);
-            if (transitionState != null)
+            if (earleySet.FindTransitionState(searchSymbol, out var transitionState))
             {
                 // then t_rule := B-> b.; t_pos = k;
                 previousTransitionState = transitionState;
@@ -427,19 +425,10 @@ namespace Pliant.Runtime
             }
 
             // else if Ii contains exactly one item of the form [B -> a.Ab, k]
-            var sourceState = earleySet.FindSourceState(searchSymbol);
-            if (sourceState == null)
-            {
-                return;
-            }
-
-            if (!visited.Add(sourceState))
-            {
-                return;
-            }
-
-            // and [B-> aA.b, k] is quasi complete (is b null)
-            if (!IsNextStateQuasiComplete(sourceState))
+            if (!earleySet.FindUniqueSourceState(searchSymbol, out var sourceState) ||
+                !visited.Add(sourceState) ||
+                // and [B-> aA.b, k] is quasi complete (if b nullable)
+                !IsNextStateQuasiComplete(sourceState))
             {
                 return;
             }
@@ -447,7 +436,7 @@ namespace Pliant.Runtime
             // then t_rule := [B->aAb.]; t_pos=k;
             t_rule = StateFactory.NextState(sourceState);
 
-            if (sourceState.Origin != k)
+            if (sourceState.Origin != origin)
             {
                 visited.Clear();
             }
@@ -482,12 +471,12 @@ namespace Pliant.Runtime
                     searchSymbol,
                     t_rule,
                     sourceState,
-                    k);
+                    origin);
             }
 
-            if (Chart.Enqueue(k, currentTransitionState))
+            if (Chart.Enqueue(origin, currentTransitionState))
             {
-                Log(transitionLogName, k, currentTransitionState);
+                Log(transitionLogName, origin, currentTransitionState);
             }
 
             previousTransitionState = currentTransitionState;
