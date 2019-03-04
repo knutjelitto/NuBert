@@ -8,7 +8,7 @@ namespace Pliant.LexerRules
     {
         static NumberLexerRule()
         {
-            var states = new DfaState[5]
+            var states = new[]
             {
                 DfaState.Inner(),
                 DfaState.Inner(),
@@ -33,16 +33,15 @@ namespace Pliant.LexerRules
 
             states[4].AddTransition(zeroThroughNine, states[4]);
 
-            Start = states[0];
+            startState = states[0];
         }
 
         public NumberLexerRule()
-            : base(Start, StaticTokenType)
+            : base(startState, pattern)
         {
         }
 
-        private const string _pattern = @"[-+]?[0-9]*[.]?[0-9]+";
-        private static readonly DfaState Start;
-        private static readonly TokenType StaticTokenType = new TokenType(_pattern);
+        private const string pattern = @"[-+]?[0-9]*[.]?[0-9]+";
+        private static readonly DfaState startState;
     }
 }

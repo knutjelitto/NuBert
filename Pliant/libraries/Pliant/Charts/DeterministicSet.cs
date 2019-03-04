@@ -8,25 +8,25 @@ namespace Pliant.Charts
     {
         public DeterministicSet(int location)
         {
-            this._states = new UniqueList<DeterministicState>();
-            this._transitions = new Dictionary<Symbol, CachedDottedRuleSetTransition>();
             Location = location;
+            this.states = new UniqueList<DeterministicState>();
+            this.transitions = new Dictionary<ISymbol, CachedDottedRuleSetTransition>();
         }
 
-        public IReadOnlyDictionary<Symbol, CachedDottedRuleSetTransition> CachedTransitions => this._transitions;
+        public IReadOnlyDictionary<ISymbol, CachedDottedRuleSetTransition> CachedTransitions => this.transitions;
 
         public int Location { get; }
 
-        public IReadOnlyList<DeterministicState> States => this._states;
+        public IReadOnlyList<DeterministicState> States => this.states;
 
         public void AddCachedTransition(CachedDottedRuleSetTransition cachedDottedRuleSetTransition)
         {
-            this._transitions.Add(cachedDottedRuleSetTransition.Symbol, cachedDottedRuleSetTransition);
+            this.transitions.Add(cachedDottedRuleSetTransition.Symbol, cachedDottedRuleSetTransition);
         }
 
-        public CachedDottedRuleSetTransition FindCachedDottedRuleSetTransition(Symbol searchSymbol)
+        public CachedDottedRuleSetTransition FindCachedDottedRuleSetTransition(ISymbol searchSymbol)
         {
-            if (this._transitions.TryGetValue(searchSymbol, out var transition))
+            if (this.transitions.TryGetValue(searchSymbol, out var transition))
             {
                 return transition;
             }
@@ -34,18 +34,17 @@ namespace Pliant.Charts
             return null;
         }
 
-        public bool IsLeoUnique(Symbol symbol)
+        public bool IsLeoUnique(ISymbol symbol)
         {
             return !CachedTransitions.ContainsKey(symbol);
         }
 
         internal bool Enqueue(DeterministicState frame)
         {
-            var hasEnqueued = this._states.AddUnique(frame);
-            return hasEnqueued;
+            return this.states.AddUnique(frame);
         }
 
-        private readonly UniqueList<DeterministicState> _states;
-        private readonly Dictionary<Symbol, CachedDottedRuleSetTransition> _transitions;
+        private readonly UniqueList<DeterministicState> states;
+        private readonly Dictionary<ISymbol, CachedDottedRuleSetTransition> transitions;
     }
 }

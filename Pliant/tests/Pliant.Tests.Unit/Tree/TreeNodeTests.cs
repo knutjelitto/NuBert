@@ -57,7 +57,7 @@ namespace Pliant.Tests.Unit.Tree
             var treeNode = GetTreeNode(grammar, input);
         }
 
-        private static InternalTreeNode GetTreeNode(IGrammar grammar, string input)
+        private static InternalTreeNode GetTreeNode(Grammar grammar, string input)
         {
             var parseEngine = new ParseEngine(grammar);
             var parseRunner = new ParseRunner(parseEngine, input);

@@ -14,8 +14,8 @@ namespace Pliant.Tests.Unit.Runtime
     [TestClass]
     public class DeterministicParseEngineTests
     {
-        private static readonly IGrammar ExpressionGrammar = new ExpressionGrammar();
-        private static readonly IGrammar NullableGrammar = new NullableGrammar();
+        private static readonly Grammar expressionGrammar = new ExpressionGrammar();
+        private static readonly Grammar nullableGrammar = new NullableGrammar();
 
         [TestMethod]
         public void DeterministicParseEngineCanParseRegex()
@@ -66,7 +66,7 @@ namespace Pliant.Tests.Unit.Runtime
         [TestMethod]
         public void DeterministicParseEngineCanParseNullableGrammar()
         {
-            var preComputedGrammar = new PreComputedGrammar(NullableGrammar);
+            var preComputedGrammar = new PreComputedGrammar(nullableGrammar);
             var parseEngine = new DeterministicParseEngine(preComputedGrammar);
 
             var input = "aaaa";
@@ -84,13 +84,13 @@ namespace Pliant.Tests.Unit.Runtime
         [TestMethod]
         public void DeterministicParseEngineShouldReturnExpectedLexerRulesGivenNullableGrammar()
         {
-            AssertExpectedLexerRulesReturnedFromInitializedParseEngine(NullableGrammar, 1);
+            AssertExpectedLexerRulesReturnedFromInitializedParseEngine(nullableGrammar, 1);
         }
 
         [TestMethod]
         public void DeterministicParseEngineShouldReturnExpectedLexerRulesGivenExpressionGrammar()
         {
-            AssertExpectedLexerRulesReturnedFromInitializedParseEngine(ExpressionGrammar, 4);
+            AssertExpectedLexerRulesReturnedFromInitializedParseEngine(expressionGrammar, 4);
         }
 
         [TestMethod]
@@ -182,7 +182,7 @@ namespace Pliant.Tests.Unit.Runtime
                 Assert.Fail($"Input was not accepted.");
         }
 
-        private static void AssertExpectedLexerRulesReturnedFromInitializedParseEngine(IGrammar grammar, int expectedCount)
+        private static void AssertExpectedLexerRulesReturnedFromInitializedParseEngine(Grammar grammar, int expectedCount)
         {
             var preComputedGrammar = new PreComputedGrammar(grammar);
             var parseEngine = new DeterministicParseEngine(preComputedGrammar);

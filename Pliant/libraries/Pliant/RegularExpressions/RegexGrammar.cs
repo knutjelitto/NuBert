@@ -6,7 +6,7 @@ namespace Pliant.RegularExpressions
 {
     public class RegexGrammar : GrammarWrapper
     {
-        private static readonly IGrammar Grammar;
+        private static readonly Grammar grammar;
 
         /*  Regex                      ->   Expression |
          *                                  '^' Expression |
@@ -129,7 +129,7 @@ namespace Pliant.RegularExpressions
                 new Production(characterClassCharacter, escape)
             };
 
-            Grammar = new Grammar(regex, productions, null, null);
+            grammar = new GrammarImpl(regex, productions, null, null);
         }
         
         private static Lexer CreateNotMetaLexerRule()
@@ -154,7 +154,7 @@ namespace Pliant.RegularExpressions
             return new DfaLexer(start, "escape");
         }
 
-        public RegexGrammar() : base(Grammar)
+        public RegexGrammar() : base(grammar)
         {
         }
     }

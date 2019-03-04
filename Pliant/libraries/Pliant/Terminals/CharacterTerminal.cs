@@ -23,7 +23,7 @@ namespace Pliant.Terminals
 
         public override IReadOnlyList<Interval> GetIntervals()
         {
-            return this._intervals ?? (this._intervals = new[] {new Interval(Character)});
+            return this.intervals ?? (this.intervals = new[] {new Interval(Character)});
         }
 
         public override bool IsMatch(char character)
@@ -36,6 +36,6 @@ namespace Pliant.Terminals
             return Character.ToString();
         }
 
-        private Interval[] _intervals;
+        private Interval[] intervals;
     }
 }

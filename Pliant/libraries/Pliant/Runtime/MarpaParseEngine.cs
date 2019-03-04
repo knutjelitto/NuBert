@@ -21,14 +21,14 @@ namespace Pliant.Runtime
             Initialize();
         }
 
-        public MarpaParseEngine(IGrammar grammar)
+        public MarpaParseEngine(Grammar grammar)
             : this(new PreComputedGrammar(grammar))
         {
         }
 
         public DeterministicChart Chart { get; }
 
-        public IGrammar Grammar => this._preComputedGrammar.Grammar;
+        public Grammar Grammar => this._preComputedGrammar.Grammar;
 
         public int Location { get; private set; }
 
@@ -157,19 +157,19 @@ namespace Pliant.Runtime
             return true;
         }
 
-        public void Reset()
-        {
-            Initialize();
-        }
-
         private static DottedRuleSet Goto(DottedRuleSet fromAH)
         {
             return fromAH.NullTransition;
         }
 
-        private static DottedRuleSet Goto(DottedRuleSet fromAH, Symbol symbol)
+        private static DottedRuleSet Goto(DottedRuleSet fromAH, ISymbol symbol)
         {
-            return fromAH.Reductions.GetOrReturnNull(symbol);
+            if (symbol is NonTerminal nonTerminal && fromAH.Reductions.TryGetValue(nonTerminal, out var ruleSet))
+            {
+                return ruleSet;
+            }
+
+            return null;
         }
 
         private static DottedRuleSet Goto(DottedRuleSet fromAH, IToken token)
@@ -234,7 +234,7 @@ namespace Pliant.Runtime
 
         private CachedDottedRuleSetTransition CreateTopCachedItem(
             DeterministicState stateFrame,
-            Symbol postDotSymbol)
+            ISymbol postDotSymbol)
         {
             var origin = stateFrame.Origin;
             CachedDottedRuleSetTransition topCacheItem = null;
@@ -263,7 +263,7 @@ namespace Pliant.Runtime
                 topCacheItem == null ? stateFrame.Origin : origin);
         }
 
-        private void EarleyReductionOperation(int iLoc, DeterministicState fromEim, Symbol transSym)
+        private void EarleyReductionOperation(int iLoc, DeterministicState fromEim, ISymbol transSym)
         {
             var fromAH = fromEim.DottedRuleSet;
             var originLoc = fromEim.Origin;
@@ -309,9 +309,9 @@ namespace Pliant.Runtime
             var frameSet = Chart.Sets[iLoc];
             // leo eligibility needs to be cached before creating the cached transition
             // if the size of the list is != 1, do not enter the cached frame transition
-            var cachedTransitionsPool = SharedPools.Default<Dictionary<Symbol, CachedDottedRuleSetTransition>>();
+            var cachedTransitionsPool = SharedPools.Default<Dictionary<ISymbol, CachedDottedRuleSetTransition>>();
             var cachedTransitions = ObjectPoolExtensions.Allocate(cachedTransitionsPool);
-            var cachedCountPool = SharedPools.Default<Dictionary<Symbol, int>>();
+            var cachedCountPool = SharedPools.Default<Dictionary<ISymbol, int>>();
             var cachedCount = ObjectPoolExtensions.Allocate(cachedCountPool);
 
             for (var i = 0; i < frameSet.States.Count; i++)
@@ -385,7 +385,7 @@ namespace Pliant.Runtime
         private void ReductionPass(int iLoc)
         {
             var iES = Chart.Sets[iLoc];
-            var processed = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<Symbol>>());
+            var processed = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<ISymbol>>());
             for (var i = 0; i < iES.States.Count; i++)
             {
                 var workEIM = iES.States[i];
@@ -411,7 +411,7 @@ namespace Pliant.Runtime
                 processed.Clear();
             }
 
-            SharedPools.Default<HashSet<Symbol>>().ClearAndFree(processed);
+            SharedPools.Default<HashSet<ISymbol>>().ClearAndFree(processed);
             MemoizeTransitions(iLoc);
         }
 

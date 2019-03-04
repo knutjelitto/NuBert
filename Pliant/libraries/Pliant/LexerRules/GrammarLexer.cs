@@ -6,18 +6,18 @@ namespace Pliant.LexerRules
 {
     public class GrammarLexer : Lexer
     {
-        public GrammarLexer(string tokenType, IGrammar grammar)
+        public GrammarLexer(string tokenType, Grammar grammar)
             : this(new TokenType(tokenType), grammar)
         {
         }
 
-        public GrammarLexer(TokenType tokenType, IGrammar grammar)
+        public GrammarLexer(TokenType tokenType, Grammar grammar)
             : base(tokenType)
         {
             Grammar = grammar;
         }
 
-        public IGrammar Grammar { get; }
+        public Grammar Grammar { get; }
 
         public override bool CanApply(char c)
         {

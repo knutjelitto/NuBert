@@ -5,12 +5,12 @@ namespace Pliant.Builders
 {
     public abstract class SymbolModel
     {
-        protected SymbolModel(Symbol symbol)
+        protected SymbolModel(ISymbol symbol)
         {
             Symbol = symbol;
         }
 
-        public Symbol Symbol { get; }
+        public ISymbol Symbol { get; }
 
         public override bool Equals(object obj)
         {

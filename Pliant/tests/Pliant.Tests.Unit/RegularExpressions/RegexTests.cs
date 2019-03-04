@@ -11,18 +11,18 @@ namespace Pliant.Tests.Unit.RegularExpressions
     [TestClass]
     public class RegexTests
     {
-        private IParseEngine _parseEngine;
-        private IGrammar _regexGrammar;
+        private IParseEngine parseEngine;
+        private readonly Grammar regexGrammar;
 
         [TestInitialize]
         public void Initialize_Regex_Tests()
         {
-            _parseEngine = new ParseEngine(_regexGrammar);
+            this.parseEngine = new ParseEngine(this.regexGrammar);
         }
 
         public RegexTests()
         {
-            _regexGrammar = new RegexGrammar();
+            this.regexGrammar = new RegexGrammar();
         }
 
         public TestContext TestContext { get; set; }
@@ -125,31 +125,31 @@ namespace Pliant.Tests.Unit.RegularExpressions
 
         private void FailParseAtPosition(string input, int position)
         {
-            var parseRunner = new ParseRunner(_parseEngine, input);
+            var parseRunner = new ParseRunner(this.parseEngine, input);
             for (int i = 0; i < input.Length; i++)
                 if (i < position)
                     Assert.IsTrue(parseRunner.Read(),
-                        $"Line 0, Column {_parseEngine.Location} : Invalid Character {input[i]}");
+                        $"Line 0, Column {this.parseEngine.Location} : Invalid Character {input[i]}");
                 else
                     Assert.IsFalse(parseRunner.Read());
         }
 
         private void ParseInput(string input)
         {
-            var parseRunner = new ParseRunner(_parseEngine, input);
+            var parseRunner = new ParseRunner(this.parseEngine, input);
             for (int i = 0; i < input.Length; i++)
                 if(!parseRunner.Read())
-                    Assert.Fail($"Line 0, Column {_parseEngine.Location} : Invalid Character {input[i]}");
+                    Assert.Fail($"Line 0, Column {this.parseEngine.Location} : Invalid Character {input[i]}");
         }
 
         private void Accept()
         {
-            Assert.IsTrue(_parseEngine.IsAccepted(), "input was not recognized");
+            Assert.IsTrue(this.parseEngine.IsAccepted(), "input was not recognized");
         }
 
         private void NotAccept()
         {
-            Assert.IsFalse(_parseEngine.IsAccepted(), "input was recognized");
+            Assert.IsFalse(this.parseEngine.IsAccepted(), "input was recognized");
         }
     }
 }

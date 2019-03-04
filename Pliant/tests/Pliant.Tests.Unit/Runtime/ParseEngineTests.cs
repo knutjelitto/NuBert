@@ -861,7 +861,7 @@ namespace Pliant.Tests.Unit.Runtime
             Assert.IsTrue(comparer.Equals(expected, actual));
         }
 
-        private static void AssertLeoAndClassicParseAlgorithmsCreateSameForest(string input, IGrammar grammar)
+        private static void AssertLeoAndClassicParseAlgorithmsCreateSameForest(string input, Grammar grammar)
         {
             var leoEngine = new ParseEngine(grammar);
             var classicEngine = new ParseEngine(grammar, new ParseEngineOptions(false));
@@ -911,7 +911,7 @@ namespace Pliant.Tests.Unit.Runtime
             return new Token(position, value.ToString(), new TokenType("digit"));
         }
 
-        private static IGrammar CreateExpressionGrammar()
+        private static Grammar CreateExpressionGrammar()
         {
             var digit = new TerminalLexerRule(DigitTerminal.Instance, new TokenType("digit"));
 
@@ -924,7 +924,7 @@ namespace Pliant.Tests.Unit.Runtime
             return grammar;
         }
 
-        private static IGrammar CreateRegularExpressionStubGrammar()
+        private static Grammar CreateRegularExpressionStubGrammar()
         {
             ProductionExpression R = "R", E = "E", T = "T", F = "F", A = "A", I = "I";
             R.Rule = (Expr)

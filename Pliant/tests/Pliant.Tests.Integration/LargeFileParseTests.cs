@@ -171,6 +171,6 @@ namespace Pliant.Tests.Integration.Runtime
 
         private ParseTester parseTester;
 
-        private static IGrammar grammar;
+        private static Grammar grammar;
     }
 }

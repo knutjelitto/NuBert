@@ -14,12 +14,12 @@ namespace Pliant.Runtime
 {
     public class ParseEngine : IParseEngine
     {
-        public ParseEngine(IGrammar grammar)
+        public ParseEngine(Grammar grammar)
             : this(grammar, new ParseEngineOptions())
         {
         }
 
-        public ParseEngine(IGrammar grammar, ParseEngineOptions options)
+        public ParseEngine(Grammar grammar, ParseEngineOptions options)
         {
             Grammar = grammar;
             Options = options;
@@ -30,7 +30,7 @@ namespace Pliant.Runtime
 
         public Chart Chart { get; private set; }
 
-        public IGrammar Grammar { get; }
+        public Grammar Grammar { get; }
 
         public int Location { get; private set; }
 
@@ -170,7 +170,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private IForestNode CreateNullParseNode(Symbol symbol, int location)
+        private IForestNode CreateNullParseNode(ISymbol symbol, int location)
         {
             var symbolNode = NodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
             var token = new Token(location, string.Empty, emptyTokenType);
@@ -353,12 +353,12 @@ namespace Pliant.Runtime
             return true;
         }
 
-        private bool IsSymbolNullable(Symbol symbol)
+        private bool IsSymbolNullable(ISymbol symbol)
         {
             return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsNullable(nonTerminal);
         }
 
-        private bool IsSymbolTransitiveNullable(Symbol symbol)
+        private bool IsSymbolTransitiveNullable(ISymbol symbol)
         {
             return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsTransitiveNullable(nonTerminal);
         }
@@ -398,7 +398,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void OptimizeReductionPath(Symbol searchSymbol, int k)
+        private void OptimizeReductionPath(ISymbol searchSymbol, int k)
         {
             State t_rule = null;
             TransitionState previousTransitionState = null;
@@ -409,7 +409,7 @@ namespace Pliant.Runtime
         }
 
         private void OptimizeReductionPathRecursive(
-            Symbol searchSymbol,
+            ISymbol searchSymbol,
             int k,
             ref State t_rule,
             ref TransitionState previousTransitionState,

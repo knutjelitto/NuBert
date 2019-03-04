@@ -8,7 +8,7 @@ namespace Pliant.Json
 {
     public class JsonGrammar : GrammarWrapper
     {
-        private static readonly IGrammar _grammar;
+        private static readonly Grammar _grammar;
 
         static JsonGrammar()
         {

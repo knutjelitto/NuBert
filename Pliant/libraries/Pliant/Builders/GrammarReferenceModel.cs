@@ -4,12 +4,12 @@ namespace Pliant.Builders
 {
     public sealed class GrammarReferenceModel : SymbolModel
     {
-        public GrammarReferenceModel(IGrammar grammar)
+        public GrammarReferenceModel(Grammar grammar)
             : base(grammar.Start)
         {
             Grammar = grammar;
         }
 
-        public IGrammar Grammar { get; }
+        public Grammar Grammar { get; }
     }
 }

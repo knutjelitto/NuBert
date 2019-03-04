@@ -18,15 +18,15 @@ namespace Pliant.Tests.Unit.Runtime
     [TestClass]
     public class ParseRunnerTests
     {
-        private static readonly GrammarLexer _whitespaceRule;
-        private static readonly GrammarLexer _wordRule;
-        private static readonly IGrammar _repeatingWordGrammar;
+        private static readonly GrammarLexer whitespaceRule;
+        private static readonly GrammarLexer wordRule;
+        private static readonly Grammar repeatingWordGrammar;
 
         static ParseRunnerTests()
         {
-            _whitespaceRule = CreateWhitespaceRule();
-            _wordRule = CreateWordRule();
-            _repeatingWordGrammar = CreateRepeatingWordGrammar();
+            whitespaceRule = CreateWhitespaceRule();
+            wordRule = CreateWordRule();
+            repeatingWordGrammar = CreateRepeatingWordGrammar();
         }
 
         private static GrammarLexer CreateWhitespaceRule()
@@ -63,7 +63,7 @@ namespace Pliant.Tests.Unit.Runtime
             return new GrammarLexer(nameof(word), wordGrammar);
         }
         
-        private static IGrammar CreateRepeatingWordGrammar()
+        private static Grammar CreateRepeatingWordGrammar()
         {
             var word = new WordLexerRule();
             ProductionExpression
@@ -119,10 +119,10 @@ namespace Pliant.Tests.Unit.Runtime
         {
             ProductionExpression S = "S";
             S.Rule =
-                _whitespaceRule
-                | (_whitespaceRule + S)
-                | _wordRule
-                | (_wordRule + S);
+                whitespaceRule
+                | (whitespaceRule + S)
+                | wordRule
+                | (wordRule + S);
             var grammar = new GrammarExpression(S, new[] { S }).ToGrammar();
             var input = "this is input";
             var parseEngine = new ParseEngine(grammar);
@@ -136,12 +136,12 @@ namespace Pliant.Tests.Unit.Runtime
             const string input = "a abc a a";
             ProductionExpression A = "A";
             A.Rule =
-                (_wordRule + A)
-                | _wordRule;
+                (wordRule + A)
+                | wordRule;
             var grammar = new GrammarExpression(
                     A,
                     new[] {A},
-                    new[] {_whitespaceRule})
+                    new[] {whitespaceRule})
                 .ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
@@ -220,12 +220,12 @@ namespace Pliant.Tests.Unit.Runtime
             const string input = "aa aa";
             ProductionExpression S = "S";
 
-            S.Rule = (_wordRule + S) | _wordRule;
+            S.Rule = (wordRule + S) | wordRule;
 
             var grammar = new GrammarExpression(
                 S,
                 new[] { S },
-                new[] { _whitespaceRule })
+                new[] { whitespaceRule })
                 .ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
@@ -284,11 +284,11 @@ namespace Pliant.Tests.Unit.Runtime
                 Environment.NewLine,
                 new TokenType("EOL"));
             ProductionExpression S = "S";
-            S.Rule = (Expr)_wordRule + endOfLine + _wordRule;
+            S.Rule = (Expr)wordRule + endOfLine + wordRule;
             var grammar = new GrammarExpression(
                 S,
                 new[] { S },
-                new[] { _whitespaceRule })
+                new[] { whitespaceRule })
                 .ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
@@ -412,7 +412,7 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static (IToken, IToken) RunTriviaTestRepeatingWordGrammarParse(string input)
         {
-            var parseTester = new ParseTester(_repeatingWordGrammar);
+            var parseTester = new ParseTester(repeatingWordGrammar);
             parseTester.RunParse(input);
             var parseForestRoot = parseTester.ParseEngine.GetParseForestRootNode();
 

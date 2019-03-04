@@ -5,12 +5,12 @@ namespace Pliant.Tokens
 {
     public class TerminalLexeme : Lexeme
     {
-        public TerminalLexeme(TerminalLexerRule lexerRule, int position)
-            : base(lexerRule, position)
+        public TerminalLexeme(TerminalLexerRule lexer, int position)
+            : base(lexer, position)
         {
             this._captureRendered = false;
             this._isAccepted = false;
-            Terminal = lexerRule.Terminal;
+            Terminal = lexer.Terminal;
         }
 
         public TerminalLexeme(Terminal terminal, TokenType tokenType, int position)

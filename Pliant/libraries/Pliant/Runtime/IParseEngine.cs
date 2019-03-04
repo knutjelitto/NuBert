@@ -45,7 +45,7 @@ namespace Pliant.Runtime
         /// <summary>
         /// Gets the grammar used by the parse engine.
         /// </summary>
-        IGrammar Grammar { get; }
+        Grammar Grammar { get; }
 
         /// <summary>
         /// Gets the location in the parse. The location is the current token index and not the character index in the parse.

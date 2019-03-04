@@ -6,7 +6,7 @@ namespace Pliant.Charts
     public sealed class TransitionState : State
     {
         public TransitionState(
-            Symbol recognized,
+            ISymbol recognized,
             State transition,
             NormalState reduction,
             int index)
@@ -21,7 +21,7 @@ namespace Pliant.Charts
         public int Index { get; }
 
         public TransitionState NextTransition { get; set; }
-        public Symbol Recognized { get; }
+        public ISymbol Recognized { get; }
 
         public NormalState Reduction { get; }
 

@@ -5,7 +5,7 @@ namespace Pliant.Tests.Common.Grammars
 {
     public class NullableGrammar : GrammarWrapper
     {
-        private static readonly IGrammar _grammar;
+        private static readonly Grammar grammar;
 
         static NullableGrammar()
         {
@@ -20,11 +20,11 @@ namespace Pliant.Tests.Common.Grammars
             A.Rule = 'a' | E;
             E.Rule = null;
 
-            _grammar = new GrammarExpression(SP).ToGrammar();
+            grammar = new GrammarExpression(SP).ToGrammar();
         }
 
         public NullableGrammar() 
-            : base(_grammar)
+            : base(grammar)
         {
         }
     }

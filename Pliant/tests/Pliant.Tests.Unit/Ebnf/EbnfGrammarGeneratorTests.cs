@@ -372,7 +372,7 @@ namespace Pliant.Tests.Unit.Ebnf
             Assert.AreEqual(grammar.Start.QualifiedName.Name, "S");
         }
 
-        private static IGrammar GenerateGrammar(IEbnfDefinition definition)
+        private static Grammar GenerateGrammar(IEbnfDefinition definition)
         {
             var generator = new EbnfGrammarGenerator();
             return generator.Generate(definition);

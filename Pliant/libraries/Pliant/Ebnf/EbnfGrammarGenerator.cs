@@ -19,7 +19,7 @@ namespace Pliant.Ebnf
             this.nfaToDfa = new SubsetConstructionAlgorithm();
         }
 
-        public IGrammar Generate(IEbnfDefinition ebnf)
+        public Grammar Generate(IEbnfDefinition ebnf)
         {
             var grammarModel = new GrammarModel();
             Definition(ebnf, grammarModel);

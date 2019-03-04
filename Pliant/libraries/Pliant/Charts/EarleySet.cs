@@ -50,7 +50,7 @@ namespace Pliant.Charts
             throw new InvalidOperationException();
         }
 
-        public NormalState FindSourceState(Symbol searchSymbol)
+        public NormalState FindSourceState(ISymbol searchSymbol)
         {
             var sourceItemCount = 0;
             NormalState sourceItem = null;
@@ -73,7 +73,7 @@ namespace Pliant.Charts
             return sourceItem;
         }
 
-        public TransitionState FindTransitionState(Symbol searchSymbol)
+        public TransitionState FindTransitionState(ISymbol searchSymbol)
         {
             foreach (var transition in Transitions)
             {

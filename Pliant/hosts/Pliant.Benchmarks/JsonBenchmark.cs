@@ -12,7 +12,7 @@ namespace Pliant.Benchmarks
     public class JsonBenchmark
     {
         string _json;
-        IGrammar _grammar;
+        Grammar _grammar;
 
         [GlobalSetup]
         public void Setup()

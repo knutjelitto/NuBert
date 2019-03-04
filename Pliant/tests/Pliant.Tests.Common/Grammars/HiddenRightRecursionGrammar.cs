@@ -5,7 +5,7 @@ namespace Pliant.Tests.Common.Grammars
 {
     public class HiddenRightRecursionGrammar : GrammarWrapper
     {
-        private static readonly IGrammar grammar;
+        private static readonly Grammar grammar;
 
         static HiddenRightRecursionGrammar()
         {

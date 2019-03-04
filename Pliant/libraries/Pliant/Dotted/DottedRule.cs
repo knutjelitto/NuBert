@@ -20,9 +20,9 @@ namespace Pliant.Dotted
 
         public int Dot { get; }
 
-        public Symbol PostDotSymbol { get; }
+        public ISymbol PostDotSymbol { get; }
 
-        public Symbol PreDotSymbol { get; }
+        public ISymbol PreDotSymbol { get; }
 
         public Production Production { get; }
 
@@ -55,7 +55,7 @@ namespace Pliant.Dotted
             return builder.ToString();
         }
 
-        private static Symbol GetPostDotSymbol(Production production, int dot)
+        private static ISymbol GetPostDotSymbol(Production production, int dot)
         {
             if (dot >= production.Count)
             {
@@ -65,7 +65,7 @@ namespace Pliant.Dotted
             return production[dot];
         }
 
-        private static Symbol GetPreDotSymbol(Production production, int dot)
+        private static ISymbol GetPreDotSymbol(Production production, int dot)
         {
             if (dot <= 0 || production.Count == 0)
             {

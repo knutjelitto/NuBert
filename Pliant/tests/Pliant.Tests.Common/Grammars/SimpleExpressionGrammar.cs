@@ -6,7 +6,7 @@ namespace Pliant.Tests.Common.Grammars
 {
     public class SimpleExpressionGrammar : GrammarWrapper
     {
-        private static readonly IGrammar grammar;
+        private static readonly Grammar grammar;
 
         static SimpleExpressionGrammar()
         {

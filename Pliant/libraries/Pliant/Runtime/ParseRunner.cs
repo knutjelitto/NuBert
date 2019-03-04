@@ -313,17 +313,17 @@ namespace Pliant.Runtime
 
         private bool MatchesNewIgnoreLexemes(char character)
         {
-            return MatchLexerRules(character, ParseEngine.Grammar.Ignores, this.ignoreLexemes);
+            return MatchLexers(character, ParseEngine.Grammar.Ignores, this.ignoreLexemes);
         }
 
         private bool MatchesNewTokenLexemes(char character)
         {
-            return MatchLexerRules(character, ParseEngine.GetExpectedLexerRules(), this.tokenLexemes);
+            return MatchLexers(character, ParseEngine.GetExpectedLexerRules(), this.tokenLexemes);
         }
 
         private bool MatchesNewTriviaLexemes(char character)
         {
-            return MatchLexerRules(character, ParseEngine.Grammar.Trivia, this.triviaLexemes);
+            return MatchLexers(character, ParseEngine.Grammar.Trivia, this.triviaLexemes);
         }
 
         private bool MatchExistingTokenLexemes(char character)
@@ -331,17 +331,18 @@ namespace Pliant.Runtime
             return MatchesExistingLexemes(character, this.tokenLexemes);
         }
 
-        private bool MatchLexerRules(char character, IEnumerable<Lexer> lexerRules, List<Lexeme> lexemes)
+        private bool MatchLexers(char character, IEnumerable<Lexer> lexers, ICollection<Lexeme> lexemes)
         {
             var anyMatches = false;
-            foreach (var lexerRule in lexerRules)
+
+            foreach (var lexer in lexers)
             {
-                if (!lexerRule.CanApply(character))
+                if (!lexer.CanApply(character))
                 {
                     continue;
                 }
 
-                var lexeme = lexerRule.CreateLexeme(Position);
+                var lexeme = lexer.CreateLexeme(Position);
 
                 if (!lexeme.Scan(character))
                 {

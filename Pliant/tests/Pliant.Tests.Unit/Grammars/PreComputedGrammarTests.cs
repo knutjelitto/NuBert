@@ -11,12 +11,12 @@ namespace Pliant.Tests.Unit.Grammars
     [TestClass]
     public class PreComputedGrammarTests
     {
-        private static IGrammar _jsonGrammar;
+        private static Grammar jsonGrammar;
 
         [ClassInitialize]
         public static void InitializeClass(TestContext testContext)
         {
-            _jsonGrammar = GetJsonGrammar();
+            jsonGrammar = GetJsonGrammar();
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace Pliant.Tests.Unit.Grammars
         public void PreComputedGrammarShouldLoadJsonGrammar()
         {
             // ReSharper disable once ObjectCreationAsStatement
-            new PreComputedGrammar(_jsonGrammar);
+            new PreComputedGrammar(jsonGrammar);
         }
 
         [TestMethod]
@@ -94,7 +94,7 @@ namespace Pliant.Tests.Unit.Grammars
             }
         }
         
-        private static IGrammar GetJsonGrammar()
+        private static Grammar GetJsonGrammar()
         {
             ProductionExpression
                 Json = "Json",

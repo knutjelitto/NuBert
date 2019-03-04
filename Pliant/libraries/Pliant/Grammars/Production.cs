@@ -6,26 +6,26 @@ using Pliant.Utilities;
 
 namespace Pliant.Grammars
 {
-    public sealed class Production : ValueEqualityBase<Production>, IReadOnlyList<Symbol>
+    public sealed class Production : ValueEqualityBase<Production>, IReadOnlyList<ISymbol>
     {
-        public Production(NonTerminal leftHandSide, IReadOnlyList<Symbol> rightHandSide)
+        public Production(NonTerminal leftHandSide, IReadOnlyList<ISymbol> rightHandSide)
             : base((leftHandSide, HashCode.Compute(rightHandSide)))
         {
             LeftHandSide = leftHandSide;
             RightHandSide = rightHandSide.ToArray();
         }
 
-        public Production(NonTerminal leftHandSide, params Symbol[] rightHandSide)
-            : this(leftHandSide, (IReadOnlyList<Symbol>)rightHandSide)
+        public Production(NonTerminal leftHandSide, params ISymbol[] rightHandSide)
+            : this(leftHandSide, (IReadOnlyList<ISymbol>)rightHandSide)
         {
         }
 
         public int Count => RightHandSide.Count;
 
         public NonTerminal LeftHandSide { get; }
-        public IReadOnlyList<Symbol> RightHandSide { get; }
+        public IReadOnlyList<ISymbol> RightHandSide { get; }
 
-        public Symbol this[int index] => RightHandSide[index];
+        public ISymbol this[int index] => RightHandSide[index];
 
         public override bool ThisEquals(Production other)
         {
@@ -33,7 +33,7 @@ namespace Pliant.Grammars
                    RightHandSide.SequenceEqual(other.RightHandSide);
         }
 
-        public IEnumerator<Symbol> GetEnumerator()
+        public IEnumerator<ISymbol> GetEnumerator()
         {
             return RightHandSide.GetEnumerator();
         }

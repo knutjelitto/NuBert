@@ -6,7 +6,7 @@ namespace Pliant.Tests.Common.Grammars
 {
     public class ExpressionGrammar : GrammarWrapper
     {
-        private static readonly IGrammar _grammar;
+        private static readonly Grammar grammar;
 
         static ExpressionGrammar()
         {
@@ -31,11 +31,11 @@ namespace Pliant.Tests.Common.Grammars
                 | number
                 | ('(' + E + ')');
 
-            _grammar = new GrammarExpression(S).ToGrammar();
+            grammar = new GrammarExpression(S).ToGrammar();
         }
 
         public ExpressionGrammar() 
-            : base(_grammar)
+            : base(grammar)
         {
         }
     }

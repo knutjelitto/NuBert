@@ -9,11 +9,11 @@ namespace Pliant.Runtime
 {
     public class ParseEngineLexeme : Lexeme
     {
-        public ParseEngineLexeme(GrammarLexer lexerRule)
-            : base(lexerRule, 0)
+        public ParseEngineLexeme(GrammarLexer lexer)
+            : base(lexer, 0)
         {
             this.capture = new StringBuilder();
-            this.parseEngine = new ParseEngine(lexerRule.Grammar);
+            this.parseEngine = new ParseEngine(lexer.Grammar);
         }
 
         public override string Value => this.capture.ToString();

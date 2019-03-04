@@ -29,7 +29,7 @@ namespace Pliant.Builders.Expressions
 
         public GrammarModel GrammarModel { get; private set; }
 
-        public IGrammar ToGrammar()
+        public Grammar ToGrammar()
         {
             return GrammarModel.ToGrammar();
         }

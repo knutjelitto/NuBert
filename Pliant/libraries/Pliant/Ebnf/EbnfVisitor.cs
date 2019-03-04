@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
+using Pliant.Tokens;
 using Pliant.Tree;
 
 namespace Pliant.Ebnf

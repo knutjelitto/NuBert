@@ -15,7 +15,7 @@ namespace Pliant.Tests.Common
         {
         }
 
-        public ParseTester(IGrammar grammar)
+        public ParseTester(Grammar grammar)
         {
             Grammar = grammar;
             ParseEngine = new ParseEngine(Grammar);
@@ -27,7 +27,7 @@ namespace Pliant.Tests.Common
             ParseEngine = parseEngine;
         }
 
-        private IGrammar Grammar { get; }
+        private Grammar Grammar { get; }
         public IParseEngine ParseEngine { get; }
         private IParseRunner ParseRunner { get; set; }
 

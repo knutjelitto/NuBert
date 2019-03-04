@@ -93,7 +93,7 @@ namespace Pliant.Tests.Unit.Ebnf
         :ignore
             = Whitespace;";
 
-        private static readonly IGrammar ebnfGrammar;
+        private static readonly Grammar ebnfGrammar;
 
         static EbnfTests()
         {

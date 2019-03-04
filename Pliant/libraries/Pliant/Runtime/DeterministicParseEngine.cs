@@ -13,7 +13,7 @@ namespace Pliant.Runtime
 {
     public class DeterministicParseEngine : IParseEngine
     {
-        public DeterministicParseEngine(IGrammar grammar)
+        public DeterministicParseEngine(Grammar grammar)
             : this(new PreComputedGrammar(grammar))
         {
         }
@@ -24,7 +24,7 @@ namespace Pliant.Runtime
             Initialize();
         }
 
-        public IGrammar Grammar => this.precomputedGrammar.Grammar;
+        public Grammar Grammar => this.precomputedGrammar.Grammar;
 
         public int Location { get; private set; }
 

@@ -238,7 +238,7 @@ namespace Pliant.Ebnf
             return whitespace;
         }
 
-        private static readonly IGrammar ebnfGrammar;
+        private static readonly Grammar ebnfGrammar;
         public static class TokenTypes
         {
             public static readonly TokenType Identifier = new TokenType("EbnfQualifiedIdentifier");

@@ -72,7 +72,7 @@ namespace NuBert.Check
                 return parseTree;
             }
 
-            private IGrammar MakeGrammar()
+            private Grammar MakeGrammar()
             {
                 var parser = new EbnfParser();
                 var source = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Expression.nug"));

@@ -16,13 +16,13 @@ namespace Pliant.Tests.Common.Grammars
             B.Rule = C | 'b';
             C.Rule = A | 'c';
 
-            _grammar = new GrammarExpression(A, new[] {A, B, C}).ToGrammar();
+            grammar = new GrammarExpression(A, new[] {A, B, C}).ToGrammar();
         }
 
-        public CycleGrammar() : base(_grammar)
+        public CycleGrammar() : base(grammar)
         {
         }
 
-        private static readonly IGrammar _grammar;
+        private static readonly Grammar grammar;
     }
 }

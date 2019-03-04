@@ -70,7 +70,7 @@ namespace Pliant.Builders
 
         public StartProductionSettingModel StartSetting { get; set; }
 
-        public IGrammar ToGrammar()
+        public Grammar ToGrammar()
         {
             SetStartProduction();
 
@@ -89,7 +89,7 @@ namespace Pliant.Builders
                     "Unable to generate Grammar. The grammar definition is missing a Left Hand Symbol to the StartState production.");
             }
 
-            return new Grammar(
+            return new GrammarImpl(
                 Start.LeftHandSide.NonTerminal,
                 productions,
                 ignoreRules,

@@ -5,12 +5,12 @@ namespace Pliant.Tokens
 {
     public class StringLiteralLexeme : Lexeme
     {
-        public StringLiteralLexeme(StringLiteralLexer lexerRule, int position)
-            : base(lexerRule, position)
+        public StringLiteralLexeme(StringLiteralLexer lexer, int position)
+            : base(lexer, position)
         {
             this.index = 0;
             this.capture = null;
-            Literal = lexerRule.Literal;
+            Literal = lexer.Literal;
         }
 
         public string Literal { get; }

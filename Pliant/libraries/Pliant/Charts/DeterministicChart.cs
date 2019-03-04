@@ -6,32 +6,27 @@ namespace Pliant.Charts
     {
         public DeterministicChart()
         {
-            this.preComputedSets = new List<DeterministicSet>();
+            this.sets = new List<DeterministicSet>();
         }
 
-        public IReadOnlyList<DeterministicSet> Sets => this.preComputedSets;
-
-        public void Clear()
-        {
-            this.preComputedSets.Clear();
-        }
+        public IReadOnlyList<DeterministicSet> Sets => this.sets;
 
         public bool Enqueue(int index, DeterministicState state)
         {
-            DeterministicSet preComputedSet;
-            if (this.preComputedSets.Count <= index)
+            DeterministicSet set;
+            if (this.sets.Count <= index)
             {
-                preComputedSet = new DeterministicSet(index);
-                this.preComputedSets.Add(preComputedSet);
+                set = new DeterministicSet(index);
+                this.sets.Add(set);
             }
             else
             {
-                preComputedSet = this.preComputedSets[index];
+                set = this.sets[index];
             }
 
-            return preComputedSet.Enqueue(state);
+            return set.Enqueue(state);
         }
 
-        private readonly List<DeterministicSet> preComputedSets;
+        private readonly List<DeterministicSet> sets;
     }
 }

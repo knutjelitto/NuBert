@@ -11,7 +11,7 @@ namespace Pliant.Benchmarks
     public class AnsiCBnfBenchmark
     {
         string _sampleBnf;
-        IGrammar _grammar;
+        Grammar _grammar;
 
         [GlobalSetup]
         public void Setup()

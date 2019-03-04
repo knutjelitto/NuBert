@@ -8,7 +8,7 @@ namespace Pliant.Bnf
 {
     public class BnfGrammar : GrammarWrapper
     {
-        private static readonly IGrammar _bnfGrammar;
+        private static readonly Grammar _bnfGrammar;
 
         static BnfGrammar()
         {
@@ -66,7 +66,7 @@ namespace Pliant.Bnf
                 whitespace
             };
 
-            _bnfGrammar = new Grammar(grammar, productions, ignore, null);
+            _bnfGrammar = new GrammarImpl(grammar, productions, ignore, null);
         }
 
         private static Lexer CreateNotSingleQuoteLexerRule()
@@ -76,7 +76,7 @@ namespace Pliant.Bnf
             var terminal = new NegationTerminal(new CharacterTerminal('\''));
             start.AddTransition(terminal, final);
             final.AddTransition(terminal, final);
-            return new DfaLexer(start, new TokenType("not-single-quote"));
+            return new DfaLexer(start, "not-single-quote");
         }
 
         private static Lexer CreateNotDoubleQuoteLexerRule()
@@ -97,7 +97,7 @@ namespace Pliant.Bnf
 
             escape.AddTransition(AnyTerminal.Instance, final);
 
-            return new DfaLexer(start, new TokenType("not-double-quote"));
+            return new DfaLexer(start, "not-double-quote");
         }
 
         private static Lexer CreateEndOfLineLexerRule()
@@ -124,7 +124,7 @@ namespace Pliant.Bnf
                         DigitTerminal.Instance,
                         new SetTerminal('-', '_')),
                     zeroOrMoreLetterOrDigit);
-            var ruleName = new DfaLexer(ruleNameState, new TokenType("rule-name"));
+            var ruleName = new DfaLexer(ruleNameState, "rule-name");
             return ruleName;
         }
 
@@ -135,7 +135,7 @@ namespace Pliant.Bnf
             var finalState = DfaState.Final();
             startState.AddTransition(whitespaceTerminal, finalState);
             finalState.AddTransition(whitespaceTerminal, finalState);
-            return new DfaLexer(startState, new TokenType("[\\s]+"));
+            return new DfaLexer(startState, "[\\s]+");
         }
 
         public BnfGrammar() 

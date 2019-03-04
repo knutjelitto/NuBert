@@ -7,7 +7,7 @@ namespace Pliant.Grammars
 {
     public class PreComputedGrammar
     {
-        public PreComputedGrammar(IGrammar grammar)
+        public PreComputedGrammar(Grammar grammar)
         {
             this.dottedRuleSetQueue = new ProcessOnceQueue<DottedRuleSet>();
             this.dottedRuleSets = new Dictionary<DottedRuleSet, DottedRuleSet>();
@@ -19,11 +19,11 @@ namespace Pliant.Grammars
             ProcessDottedRuleSetQueue();
         }
 
-        public IGrammar Grammar { get; }
+        public Grammar Grammar { get; }
 
         public DottedRuleSet Start { get; }
 
-        private static Symbol GetPostDotSymbol(DottedRule state)
+        private static ISymbol GetPostDotSymbol(DottedRule state)
         {
             return state.Production[state.Dot];
         }
@@ -171,7 +171,7 @@ namespace Pliant.Grammars
             return closure;
         }
 
-        private HashSet<DottedRule> Initialize(IGrammar grammar)
+        private HashSet<DottedRule> Initialize(Grammar grammar)
         {
             var pool = SharedPools.Default<HashSet<DottedRule>>();
 
@@ -219,7 +219,7 @@ namespace Pliant.Grammars
 
         private void ProcessSymbolTransitions(DottedRuleSet frame)
         {
-            var pool = SharedPools.Default<Dictionary<Symbol, HashSet<DottedRule>>>();
+            var pool = SharedPools.Default<Dictionary<ISymbol, HashSet<DottedRule>>>();
             var transitions = ObjectPoolExtensions.Allocate(pool);
 
             foreach (var nfaState in frame.Data)
