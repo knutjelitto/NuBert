@@ -92,9 +92,9 @@ namespace Pliant.Tests.Unit.Runtime
         public void MarpaParseEngineShouldParseEncapsulatedRepeatingRightRecursiveRule()
         {
             var number = new NumberLexerRule();
-            var openBracket = new TerminalLexerRule('[');
-            var closeBracket = new TerminalLexerRule(']');
-            var comma = new TerminalLexerRule(',');
+            var openBracket = new TerminalLexer('[');
+            var closeBracket = new TerminalLexer(']');
+            var comma = new TerminalLexer(',');
 
             ProductionExpression
                 A = "A",

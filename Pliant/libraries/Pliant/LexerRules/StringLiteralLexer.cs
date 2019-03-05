@@ -1,32 +1,22 @@
-﻿using Pliant.Grammars;
+﻿using Pliant.Automata;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public sealed class StringLiteralLexer : Lexer
+    public sealed class StringLiteralLexer : DfaLexer
     {
         public StringLiteralLexer(string literal, TokenType tokenType)
-            : base(tokenType)
+            : base(MakeAutomaton(literal), tokenType)
         {
-            Literal = literal;
         }
 
         public StringLiteralLexer(string literal)
-            : this(literal, new TokenType(literal))
+            : base(MakeAutomaton(literal), literal)
         {
         }
 
-        public string Literal { get; }
-
-        public override bool CanApply(char c)
-        {
-            return Literal.Length != 0 && Literal[0].Equals(c);
-        }
-
-        public override Lexeme CreateLexeme(int position)
-        {
-            return new StringLiteralLexeme(this, position);
-        }
+        public string Literal => TokenType.Id;
 
         public override bool Equals(object obj)
         {
@@ -42,6 +32,25 @@ namespace Pliant.LexerRules
         public override string ToString()
         {
             return Literal;
+        }
+
+        private static DfaState MakeAutomaton(string literal)
+        {
+            return MakeAutomaton(literal, 0);
+        }
+
+        private static DfaState MakeAutomaton(string literal, int index)
+        {
+            var state = DfaState.Inner();
+            if (index < literal.Length - 1)
+            {
+                state.AddTransition(new CharacterTerminal(literal[index]), MakeAutomaton(literal, index + 1));
+                return state;
+            }
+
+            var end = DfaState.Final();
+            state.AddTransition(new CharacterTerminal(literal[index]), end);
+            return state;
         }
     }
 }

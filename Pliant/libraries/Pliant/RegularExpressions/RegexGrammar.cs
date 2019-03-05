@@ -83,18 +83,18 @@ namespace Pliant.RegularExpressions
             var character = new NonTerminal(Character);
             var characterClassCharacter = new NonTerminal(CharacterClassCharacter);
 
-            var caret = new TerminalLexerRule('^');
-            var dollar = new TerminalLexerRule('$');
-            var pipe = new TerminalLexerRule('|');
-            var dot = new TerminalLexerRule('.');
-            var openParen = new TerminalLexerRule('(');
-            var closeParen = new TerminalLexerRule(')');
-            var star = new TerminalLexerRule('*');
-            var plus = new TerminalLexerRule('+');
-            var question = new TerminalLexerRule('?');
-            var openBracket = new TerminalLexerRule('[');
-            var closeBracket = new TerminalLexerRule(']');
-            var minus = new TerminalLexerRule('-');
+            var caret = new TerminalLexer('^');
+            var dollar = new TerminalLexer('$');
+            var pipe = new TerminalLexer('|');
+            var dot = new TerminalLexer('.');
+            var openParen = new TerminalLexer('(');
+            var closeParen = new TerminalLexer(')');
+            var star = new TerminalLexer('*');
+            var plus = new TerminalLexer('+');
+            var question = new TerminalLexer('?');
+            var openBracket = new TerminalLexer('[');
+            var closeBracket = new TerminalLexer(']');
+            var minus = new TerminalLexer('-');
 
             var productions = new[]
             {
@@ -134,14 +134,14 @@ namespace Pliant.RegularExpressions
         
         private static Lexer CreateNotMetaLexerRule()
         {
-            return new TerminalLexerRule(
+            return new TerminalLexer(
                 new NegationTerminal(new SetTerminal('.', '^', '$', '(', ')', '[', ']', '+', '*', '?', '\\', '/')),
                 "NotMeta");
         }
 
         private static Lexer CreateNotCloseBracketLexerRule()
         {
-            return new TerminalLexerRule(new NegationTerminal(new CharacterTerminal(']')), "NotCloseBracket");
+            return new TerminalLexer(new NegationTerminal(new CharacterTerminal(']')), "NotCloseBracket");
         }
 
         private static Lexer CreateEscapeCharacterLexerRule()

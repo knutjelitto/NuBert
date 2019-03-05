@@ -13,10 +13,7 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void TerminalLexemShouldWhileAcceptedContinuesToMatch()
         {
-            var terminalLexeme = new TerminalLexeme(
-                new CharacterTerminal('c'),
-                new TokenType("c"),
-                0);
+            var terminalLexeme = new TerminalLexer('c').CreateLexeme(0);
             Assert.IsFalse(terminalLexeme.IsAccepted());
             Assert.IsTrue(terminalLexeme.Scan('c'));
             Assert.IsTrue(terminalLexeme.IsAccepted());
@@ -26,17 +23,14 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void TerminalLexemeShouldInitializeCatpureToEmptyString()
         {
-            var terminalLexeme = new TerminalLexeme(new CharacterTerminal('c'), new TokenType("c"), 0);
+            var terminalLexeme = new TerminalLexer('c').CreateLexeme(0);
             Assert.AreEqual(string.Empty, terminalLexeme.Value);
         }
 
         [TestMethod]
         public void TerminalLexemeResetShouldClearPreExistingValues()
         {
-            var terminalLexeme = new TerminalLexeme(
-                new CharacterTerminal('c'),
-                new TokenType("c"),
-                0);
+            var terminalLexeme = new TerminalLexer('c').CreateLexeme(0);
             Assert.IsTrue(terminalLexeme.Scan('c'));
         }
     }

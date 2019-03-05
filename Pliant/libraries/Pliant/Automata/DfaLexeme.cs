@@ -74,7 +74,6 @@ namespace Pliant.Automata
 
         private string capture;
         private StringBuilder captureBuilder;
-
         private DfaState currentState;
     }
 }

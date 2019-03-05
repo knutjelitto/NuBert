@@ -1,29 +1,35 @@
-﻿using Pliant.Terminals;
+﻿using Pliant.Automata;
+using Pliant.Terminals;
 using Pliant.Tokens;
 
 namespace Pliant.Grammars
 {
-    public sealed class TerminalLexerRule : Lexer
+    public sealed class TerminalLexer : DfaLexer
     {
-        public TerminalLexerRule(char character)
+        public TerminalLexer(char character)
             : this(new CharacterTerminal(character), new TokenType(character.ToString()))
         {
         }
 
-        public TerminalLexerRule(Terminal terminal, TokenType tokenType)
-            : base(tokenType)
-        {
-            Terminal = terminal;
-        }
-
-        public TerminalLexerRule(Terminal terminal, string tokenTypeId)
+        public TerminalLexer(Terminal terminal, string tokenTypeId)
             : this(terminal, new TokenType(tokenTypeId))
         {
         }
 
-        public TerminalLexerRule(Terminal terminal)
+        public TerminalLexer(Terminal terminal)
             : this(terminal, terminal.ToString())
         {
+        }
+
+        public TerminalLexer(Terminal terminal, TokenType tokenType)
+            : base(MakeAutomaton(terminal), tokenType)
+        {
+            Terminal = terminal;
+        }
+
+        private static DfaState MakeAutomaton(Terminal terminal)
+        {
+            return DfaState.Inner().AddTransition(terminal, DfaState.Final());
         }
 
         public Terminal Terminal { get; }
@@ -33,14 +39,16 @@ namespace Pliant.Grammars
             return Terminal.IsMatch(c);
         }
 
+#if false
         public override Lexeme CreateLexeme(int position)
         {
             return new TerminalLexeme(this, position);
         }
+#endif
 
         public override bool Equals(object obj)
         {
-            return obj is TerminalLexerRule other &&
+            return obj is TerminalLexer other &&
                    Terminal.Equals(other.Terminal);
         }
 

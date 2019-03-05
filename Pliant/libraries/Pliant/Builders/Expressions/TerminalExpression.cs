@@ -15,7 +15,7 @@ namespace Pliant.Builders.Expressions
         }
         public static implicit operator TerminalExpression(Terminal terminal)
         {
-            return new TerminalExpression(new SymbolExpression(new LexerRuleModel(new TerminalLexerRule(terminal))));
+            return new TerminalExpression(new SymbolExpression(new LexerRuleModel(new TerminalLexer(terminal))));
         }
     }
 }

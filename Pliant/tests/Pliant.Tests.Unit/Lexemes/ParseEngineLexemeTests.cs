@@ -16,9 +16,7 @@ namespace Pliant.Tests.Unit
         public void ParseEngineLexemeShouldConsumeWhitespace()
         {
             ProductionExpression
-                // ReSharper disable once InconsistentNaming
                 S = "S",
-                // ReSharper disable once InconsistentNaming
                 W = "W";
 
             S.Rule = W | (W + S);
@@ -41,7 +39,9 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void ParseEngineLexemeShouldConsumeCharacterSequence()
         {
-            ProductionExpression sequence = "sequence";
+            ProductionExpression
+                sequence = "sequence";
+
             sequence.Rule = (Expr)'a' + 'b' + 'c' + '1' + '2' + '3';
 
             var grammar = new GrammarExpression(sequence, new[] { sequence }).ToGrammar();
@@ -62,26 +62,26 @@ namespace Pliant.Tests.Unit
             var lexemeList = new List<ParseEngineLexeme>();
 
             ProductionExpression
-                // ReSharper disable once InconsistentNaming
                 There = "there";
+
             There.Rule = (Expr)'t' + 'h' + 'e' + 'r' + 'e';
-            var thereGrammar = new GrammarExpression(There, new[] { There })
-                .ToGrammar();
-            var thereLexerRule = new GrammarLexer(new TokenType(There.ProductionModel.LeftHandSide.NonTerminal.Value), thereGrammar);
+
+            var thereGrammar = new GrammarExpression(There, new[] { There }).ToGrammar();
+            var thereLexerRule = new GrammarLexer(nameof(There), thereGrammar);
             var thereLexeme = new ParseEngineLexeme(thereLexerRule);
             lexemeList.Add(thereLexeme);
 
             ProductionExpression
-                // ReSharper disable once InconsistentNaming
                 Therefore = "therefore";
+
             Therefore.Rule = (Expr)'t' + 'h' + 'e' + 'r' + 'e' + 'f' + 'o' + 'r' + 'e';
-            var thereforeGrammar = new GrammarExpression(Therefore, new[] { Therefore })
-                .ToGrammar();
-            var thereforeLexerRule = new GrammarLexer(new TokenType(Therefore.ProductionModel.LeftHandSide.NonTerminal.Value), thereforeGrammar);
+
+            var thereforeGrammar = new GrammarExpression(Therefore, new[] { Therefore }).ToGrammar();
+            var thereforeLexerRule = new GrammarLexer(nameof(Therefore), thereforeGrammar);
             var thereforeLexeme = new ParseEngineLexeme(thereforeLexerRule);
             lexemeList.Add(thereforeLexeme);
 
-            var input = "therefore";
+            const string input = "therefore";
             var i = 0;
             for (; i < input.Length; i++)
             {

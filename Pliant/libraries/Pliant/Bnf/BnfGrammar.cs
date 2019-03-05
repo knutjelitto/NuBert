@@ -35,11 +35,11 @@ namespace Pliant.Bnf
             var term = new NonTerminal("term");
             var literal = new NonTerminal("literal");
 
-            var lessThan = new TerminalLexerRule('<');
-            var greaterThan = new TerminalLexerRule('>');
-            var doubleQuote = new TerminalLexerRule('"');
-            var slash = new TerminalLexerRule('\'');
-            var pipe = new TerminalLexerRule('|');
+            var lessThan = new TerminalLexer('<');
+            var greaterThan = new TerminalLexer('>');
+            var doubleQuote = new TerminalLexer('"');
+            var slash = new TerminalLexer('\'');
+            var pipe = new TerminalLexer('|');
 
             var productions = new[]
             {
@@ -92,11 +92,10 @@ namespace Pliant.Bnf
             var notQuoteTerminal = new NegationTerminal(new SetTerminal('"', '\\'));
             var escapeTerminal = new CharacterTerminal('\\');
 
-            start.AddTransition(notQuoteTerminal, final);
-            final.AddTransition(notQuoteTerminal, final);
-
-            start.AddTransition(escapeTerminal, escape);
-            final.AddTransition(escapeTerminal, escape);
+            start.AddTransition(notQuoteTerminal, final)
+                 .AddTransition(escapeTerminal, escape);
+            final.AddTransition(notQuoteTerminal, final)
+                 .AddTransition(escapeTerminal, escape);
 
             escape.AddTransition(AnyTerminal.Instance, final);
 
@@ -118,9 +117,7 @@ namespace Pliant.Bnf
             // /[a-zA-Z][a-zA-Z0-9-_]*/
             var ruleNameState = DfaState.Inner();
             var zeroOrMoreLetterOrDigit = DfaState.Final();
-            ruleNameState.AddTransition(
-                AsciiLetterTerminal.Instance,
-                zeroOrMoreLetterOrDigit);
+            ruleNameState.AddTransition(AsciiLetterTerminal.Instance, zeroOrMoreLetterOrDigit);
             zeroOrMoreLetterOrDigit.AddTransition(
                 new CharacterClassTerminal(
                     AsciiLetterTerminal.Instance,

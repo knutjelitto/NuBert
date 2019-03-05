@@ -21,7 +21,7 @@ namespace Pliant.Builders.Expressions
         public static explicit operator Expr(char value)
         {
 
-            return new Expr(new SymbolExpression(new LexerRuleModel(new TerminalLexerRule(value))));
+            return new Expr(new SymbolExpression(new LexerRuleModel(new TerminalLexer(value))));
         }
 
         public static explicit operator Expr(Lexer value)
@@ -31,7 +31,7 @@ namespace Pliant.Builders.Expressions
 
         public static explicit operator Expr(Terminal value)
         {
-            return new Expr(new SymbolExpression(new LexerRuleModel(new TerminalLexerRule(value))));
+            return new Expr(new SymbolExpression(new LexerRuleModel(new TerminalLexer(value))));
         }
 
         public static explicit operator Expr(GrammarReferenceExpression grammarReference)

@@ -32,9 +32,9 @@ namespace Pliant.Tests.Unit.Runtime
             var closeBracket = new TokenType("]");
             var dash = new TokenType("-");
 
-            for (int i=0;i<pattern.Length;i++)
+            for (var i=0;i<pattern.Length;i++)
             {
-                TokenType tokenType = null;
+                TokenType tokenType;
                 switch (pattern[i])
                 {
                     case '[':
@@ -50,10 +50,7 @@ namespace Pliant.Tests.Unit.Runtime
                         break;
 
                     default:
-                        if (i < 10)
-                            tokenType = notCloseBracket;
-                        else
-                            tokenType = notMeta;
+                        tokenType = i < 10 ? notCloseBracket : notMeta;
                         break;
                 }
                 var token = new Token(i, pattern[i].ToString(), tokenType);
@@ -72,7 +69,7 @@ namespace Pliant.Tests.Unit.Runtime
             var input = "aaaa";
             var tokenType = new TokenType("a");
 
-            for (int i = 0; i < input.Length; i++)
+            for (var i = 0; i < input.Length; i++)
             {
                 var result = parseEngine.Pulse(new Token(i, "a", tokenType));
                 Assert.IsTrue(result, $"Error at position {i}");
@@ -96,12 +93,12 @@ namespace Pliant.Tests.Unit.Runtime
         [TestMethod]
         public void DeterministicParseEngineShouldParseInSubCubicTimeGivenRightRecursiveGrammar()
         {
-            var a = new TerminalLexerRule(
+            var a = new TerminalLexer(
                 new CharacterTerminal('a'),
                 new TokenType("a"));
             ProductionExpression A = "A";
             A.Rule =
-                'a' + A
+                ('a' + A)
                 | Expr.Epsilon;
 
             var grammarExpression = new GrammarExpression(A, new[] { A });
@@ -141,9 +138,9 @@ namespace Pliant.Tests.Unit.Runtime
         public void DeterministicParseEngineShouldParseRepeatingRightRecursiveRule()
         {
             var number = new NumberLexerRule();
-            var openBracket = new TerminalLexerRule('[');
-            var closeBracket = new TerminalLexerRule(']');
-            var comma = new TerminalLexerRule(',');
+            var openBracket = new TerminalLexer('[');
+            var closeBracket = new TerminalLexer(']');
+            var comma = new TerminalLexer(',');
 
             ProductionExpression
                 A = "A",
@@ -152,7 +149,7 @@ namespace Pliant.Tests.Unit.Runtime
 
             A.Rule = openBracket + VR + closeBracket;
             VR.Rule = V
-                | V + comma + VR
+                | (V + comma + VR)
                 | Expr.Epsilon;
             V.Rule = number;
 
@@ -170,16 +167,18 @@ namespace Pliant.Tests.Unit.Runtime
                 new Token(4, "]", closeBracket.TokenType)
             };
 
-            for (var i = 0; i < tokens.Length; i++)
+            foreach (var token in tokens)
             {
-                var result = determinisicParseEngine.Pulse(tokens[i]);
+                var result = determinisicParseEngine.Pulse(token);
                 if (!result)
                     Assert.Fail($"Failure parsing at position {determinisicParseEngine.Location}");
             }
 
             var accepted = determinisicParseEngine.IsAccepted();
             if (!accepted)
-                Assert.Fail($"Input was not accepted.");
+            {
+                Assert.Fail("Input was not accepted.");
+            }
         }
 
         private static void AssertExpectedLexerRulesReturnedFromInitializedParseEngine(Grammar grammar, int expectedCount)

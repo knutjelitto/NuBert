@@ -518,7 +518,7 @@ namespace Pliant.Tests.Unit.Runtime
                 | (F + E)
                 | (Expr) null;
             F.Rule =
-                new TerminalLexerRule(new SetTerminal('a', 'b'));
+                new TerminalLexer(new SetTerminal('a', 'b'));
 
             var grammar = new GrammarExpression(E, new[] {E, F})
                 .ToGrammar();
@@ -914,7 +914,7 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static Grammar CreateExpressionGrammar()
         {
-            var digit = new TerminalLexerRule(DigitTerminal.Instance, new TokenType("digit"));
+            var digit = new TerminalLexer(DigitTerminal.Instance, new TokenType("digit"));
 
             ProductionExpression S = "S", M = "M", T = "T";
             S.Rule = (S + '+' + M) | M;

@@ -25,7 +25,7 @@ namespace Pliant.Runtime
 
         public override bool Scan(char c)
         {
-            var pool = SharedPools.Default<List<TerminalLexeme>>();
+            var pool = SharedPools.Default<List<Lexeme>>();
             // get expected lexems
             // PERF: Avoid Linq where, let and select expressions due to lambda allocation
             var expectedLexemes = pool.Allocate();
@@ -33,15 +33,15 @@ namespace Pliant.Runtime
 
             foreach (var rule in expectedLexerRules)
             {
-                if (rule is TerminalLexerRule terminalRule)
+                if (rule is TerminalLexer terminalRule)
                 {
-                    expectedLexemes.Add(new TerminalLexeme(terminalRule, Position));
+                    expectedLexemes.Add(terminalRule.CreateLexeme(Position));
                 }
             }
 
             // filter on first rule to pass (since all rules are one character per lexeme)
             // PERF: Avoid Linq FirstOrDefault due to lambda allocation
-            TerminalLexeme firstPassingRule = null;
+            Lexeme firstPassingRule = null;
             foreach (var lexeme in expectedLexemes)
             {
                 if (lexeme.Scan(c))
