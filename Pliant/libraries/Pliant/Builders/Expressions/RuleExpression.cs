@@ -44,7 +44,7 @@ namespace Pliant.Builders.Expressions
             return (Expr) literal;
         }
 
-        public static implicit operator RuleExpression(Lexer lexerRule)
+        public static implicit operator RuleExpression(LexerRule lexerRule)
         {
             return (Expr) lexerRule;
         }

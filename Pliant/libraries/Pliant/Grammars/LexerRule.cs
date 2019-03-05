@@ -2,9 +2,9 @@
 
 namespace Pliant.Grammars
 {
-    public abstract class Lexer : Symbol
+    public abstract class LexerRule : Symbol
     {
-        protected Lexer(TokenType tokenType)
+        protected LexerRule(TokenType tokenType)
         {
             TokenType = tokenType;
         }

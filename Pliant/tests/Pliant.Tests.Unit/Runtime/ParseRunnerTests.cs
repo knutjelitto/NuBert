@@ -18,8 +18,8 @@ namespace Pliant.Tests.Unit.Runtime
     [TestClass]
     public class ParseRunnerTests
     {
-        private static readonly GrammarLexer whitespaceRule;
-        private static readonly GrammarLexer wordRule;
+        private static readonly GrammarLexerRule whitespaceRule;
+        private static readonly GrammarLexerRule wordRule;
         private static readonly Grammar repeatingWordGrammar;
 
         static ParseRunnerTests()
@@ -29,7 +29,7 @@ namespace Pliant.Tests.Unit.Runtime
             repeatingWordGrammar = CreateRepeatingWordGrammar();
         }
 
-        private static GrammarLexer CreateWhitespaceRule()
+        private static GrammarLexerRule CreateWhitespaceRule()
         {
             ProductionExpression 
                 S = "S", 
@@ -42,10 +42,10 @@ namespace Pliant.Tests.Unit.Runtime
                 WhitespaceTerminal.Instance;
 
             var grammar = new GrammarExpression(S, new[] { S, whitespace }).ToGrammar();
-            return new GrammarLexer(nameof(whitespace), grammar);
+            return new GrammarLexerRule(nameof(whitespace), grammar);
         }
 
-        private static GrammarLexer CreateWordRule()
+        private static GrammarLexerRule CreateWordRule()
         {
             ProductionExpression 
                 W = "W", 
@@ -60,7 +60,7 @@ namespace Pliant.Tests.Unit.Runtime
                 | new RangeTerminal('0', '9');
 
             var wordGrammar = new GrammarExpression(W, new[] { W, word }).ToGrammar();
-            return new GrammarLexer(nameof(word), wordGrammar);
+            return new GrammarLexerRule(nameof(word), wordGrammar);
         }
         
         private static Grammar CreateRepeatingWordGrammar()
@@ -81,7 +81,7 @@ namespace Pliant.Tests.Unit.Runtime
                 .ToGrammar();
         }
 
-        private static Lexer CreateMultiLineCommentLexerRule()
+        private static LexerRule CreateMultiLineCommentLexerRule()
         {
             var states = new[]
             {
@@ -173,7 +173,7 @@ namespace Pliant.Tests.Unit.Runtime
             ProductionExpression A = "A";
             A.Rule = (Expr)'a' + 'a';
             var aGrammar = new GrammarExpression(A, new[] { A }).ToGrammar();
-            var a = new GrammarLexer("a", aGrammar);
+            var a = new GrammarLexerRule("a", aGrammar);
 
             ProductionExpression S = "S";
             S.Rule = (a + S) | a;
@@ -197,7 +197,7 @@ namespace Pliant.Tests.Unit.Runtime
 
             A.Rule = (Expr)'a' + 'a';
             var aGrammar = new GrammarExpression(A, new[] { A }).ToGrammar();
-            var a = new GrammarLexer("a", aGrammar);
+            var a = new GrammarLexerRule("a", aGrammar);
 
             S.Rule = (a + S) | a;
             var grammar = new GrammarExpression(S, new[] { S }).ToGrammar();
@@ -246,14 +246,14 @@ namespace Pliant.Tests.Unit.Runtime
                 ('a' + A)
                 | 'a';
             var aGrammar = new GrammarExpression(A, new[] { A }).ToGrammar();
-            var a = new GrammarLexer("a", aGrammar);
+            var a = new GrammarLexerRule("a", aGrammar);
 
             ProductionExpression B = "B";
             B.Rule =
                 ('b' + B)
                 | 'b';
             var bGrammar = new GrammarExpression(B, new[] { B }).ToGrammar();
-            var b = new GrammarLexer("b", bGrammar);
+            var b = new GrammarLexerRule("b", bGrammar);
 
             ProductionExpression S = "S";
             S.Rule = (Expr)

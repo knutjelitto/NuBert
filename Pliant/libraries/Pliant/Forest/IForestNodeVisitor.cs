@@ -2,8 +2,6 @@
 {
     public interface IForestNodeVisitor
     {
-        void Visit(ITerminalForestNode node);
-
         void Visit(ISymbolForestNode node);
 
         void Visit(IIntermediateForestNode node);

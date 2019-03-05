@@ -64,7 +64,7 @@ namespace Pliant.Json
         {
         }
 
-        private static Lexer CreateRegexDfa(string pattern)
+        private static LexerRule CreateRegexDfa(string pattern)
         {
             var regexParser = new RegexParser();
             var regex = regexParser.Parse(pattern);
@@ -73,7 +73,7 @@ namespace Pliant.Json
             return new DfaLexer(dfa, pattern);
         }
 
-        private static Lexer String()
+        private static LexerRule String()
         {
             // ["][^"]+["]
             const string pattern = "[\"][^\"]+[\"]";

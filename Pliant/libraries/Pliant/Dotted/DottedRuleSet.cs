@@ -12,8 +12,8 @@ namespace Pliant.Dotted
             this.set = set;
             this.reductions = new Dictionary<NonTerminal, DottedRuleSet>();
             this.tokenTransitions = new Dictionary<TokenType, DottedRuleSet>();
-            this.scans = new Dictionary<Lexer, DottedRuleSet>();
-            this.scanKeys = new List<Lexer>();
+            this.scans = new Dictionary<LexerRule, DottedRuleSet>();
+            this.scanKeys = new List<LexerRule>();
 
             this.hashCode = ComputeHashCode(set);
         }
@@ -24,7 +24,7 @@ namespace Pliant.Dotted
 
         public IReadOnlyDictionary<NonTerminal, DottedRuleSet> Reductions => this.reductions;
 
-        public IReadOnlyList<Lexer> ScanKeys => this.scanKeys;
+        public IReadOnlyList<LexerRule> ScanKeys => this.scanKeys;
 
         public IReadOnlyDictionary<TokenType, DottedRuleSet> TokenTransitions => this.tokenTransitions;
 
@@ -37,7 +37,7 @@ namespace Pliant.Dotted
                     this.reductions.Add(nonTerminal, target);
                 }
             }
-            else if (symbol is Lexer lexer)
+            else if (symbol is LexerRule lexer)
             {
                 if (!this.scans.ContainsKey(lexer))
                 {
@@ -70,8 +70,8 @@ namespace Pliant.Dotted
 
         private readonly int hashCode;
         private readonly Dictionary<NonTerminal, DottedRuleSet> reductions;
-        private readonly List<Lexer> scanKeys;
-        private readonly Dictionary<Lexer, DottedRuleSet> scans;
+        private readonly List<LexerRule> scanKeys;
+        private readonly Dictionary<LexerRule, DottedRuleSet> scans;
         private readonly HashSet<DottedRule> set;
         private readonly Dictionary<TokenType, DottedRuleSet> tokenTransitions;
     }

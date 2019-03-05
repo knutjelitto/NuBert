@@ -30,12 +30,12 @@ namespace Pliant.Builders.Expressions
             return AddWithAnd(lhs, (Expr)rhs);
         }
 
-        public static RuleExpression operator +(Lexer lhs, BaseExpression rhs)
+        public static RuleExpression operator +(LexerRule lhs, BaseExpression rhs)
         {
             return AddWithAnd((Expr)lhs, rhs);
         }
 
-        public static RuleExpression operator +(BaseExpression lhs, Lexer rhs)
+        public static RuleExpression operator +(BaseExpression lhs, LexerRule rhs)
         {
             return AddWithAnd(lhs, (Expr)rhs);
         }
@@ -75,12 +75,12 @@ namespace Pliant.Builders.Expressions
             return AddWithOr(lhs, (Expr)rhs);
         }
 
-        public static RuleExpression operator |(Lexer lhs, BaseExpression rhs)
+        public static RuleExpression operator |(LexerRule lhs, BaseExpression rhs)
         {
             return AddWithOr((Expr)lhs, rhs);
         }
 
-        public static RuleExpression operator |(BaseExpression lhs, Lexer rhs)
+        public static RuleExpression operator |(BaseExpression lhs, LexerRule rhs)
         {
             return AddWithOr(lhs, (Expr)rhs);
         }

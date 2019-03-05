@@ -315,7 +315,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Lexer 
+            LexerRule 
                 a = new StringLiteralLexer("a"),
                 b = new StringLiteralLexer("b");
             S.Rule = (Expr) a + b;
@@ -330,7 +330,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Lexer
+            LexerRule
                 a = new StringLiteralLexer("a");
             S.Rule = a + (Expr)"s";
 
@@ -344,7 +344,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Lexer
+            LexerRule
                 a = new StringLiteralLexer("a"),
                 b = new StringLiteralLexer("b");
             S.Rule = (Expr)a | b;
@@ -360,7 +360,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Lexer
+            LexerRule
                 a = new StringLiteralLexer("a");
             S.Rule = a | (Expr)"b";
 
@@ -375,7 +375,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Lexer
+            LexerRule
                 a = new StringLiteralLexer("a");
             S.Rule = (Expr)"b" | a;
 

@@ -7,7 +7,7 @@
             ForestDisambiguationAlgorithm = forestDisambiguationAlgorithm;
         }
 
-        public IForestDisambiguationAlgorithm ForestDisambiguationAlgorithm { get; }
+        private IForestDisambiguationAlgorithm ForestDisambiguationAlgorithm { get; }
 
         public override void Visit(IIntermediateForestNode intermediateNode)
         {
@@ -23,10 +23,6 @@
         {
             var currentAndNode = ForestDisambiguationAlgorithm.GetCurrentAndNode(symbolNode);
             Visit(currentAndNode);
-        }
-
-        public override void Visit(ITerminalForestNode terminalNode)
-        {
         }
     }
 }

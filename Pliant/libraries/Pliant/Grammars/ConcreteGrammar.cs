@@ -10,18 +10,18 @@ namespace Pliant.Grammars
         public ConcreteGrammar(
             NonTerminal start,
             IReadOnlyList<Production> productions,
-            IReadOnlyList<Lexer> ignoreRules,
-            IReadOnlyList<Lexer> triviaRules)
+            IReadOnlyList<LexerRule> ignoreRules,
+            IReadOnlyList<LexerRule> triviaRules)
         {
             Debug.Assert(productions != null);
 
             this.productions = new IndexedList<Production>();
-            this.ignores = new IndexedList<Lexer>();
-            this.trivia = new IndexedList<Lexer>();
+            this.ignores = new IndexedList<LexerRule>();
+            this.trivia = new IndexedList<LexerRule>();
 
             this.transitiveNullableSymbols = new UniqueList<NonTerminal>();
             this.symbolsReverseLookup = new Dictionary<NonTerminal, UniqueList<Production>>();
-            this.lexerRules = new IndexedList<Lexer>();
+            this.lexerRules = new IndexedList<LexerRule>();
             this.leftHandSideToProductions = new Dictionary<NonTerminal, List<Production>>();
             this.symbolPaths = new Dictionary<Symbol, UniqueList<Symbol>>();
 
@@ -37,17 +37,17 @@ namespace Pliant.Grammars
 
         public override DottedRuleRegistry DottedRules { get; }
 
-        public override IReadOnlyList<Lexer> Ignores => this.ignores;
+        public override IReadOnlyList<LexerRule> Ignores => this.ignores;
 
-        public override IReadOnlyList<Lexer> LexerRules => this.lexerRules;
+        public override IReadOnlyList<LexerRule> LexerRules => this.lexerRules;
 
         public override IReadOnlyList<Production> Productions => this.productions;
 
         public override NonTerminal Start { get; }
 
-        public override IReadOnlyList<Lexer> Trivia => this.trivia;
+        public override IReadOnlyList<LexerRule> Trivia => this.trivia;
 
-        public override int GetLexerIndex(Lexer lexer)
+        public override int GetLexerIndex(LexerRule lexer)
         {
             return this.lexerRules.IndexOf(lexer);
         }
@@ -102,10 +102,10 @@ namespace Pliant.Grammars
             return ProductionsFor(Start);
         }
 
-        private readonly IndexedList<Lexer> ignores;
-        private readonly IndexedList<Lexer> lexerRules;
+        private readonly IndexedList<LexerRule> ignores;
+        private readonly IndexedList<LexerRule> lexerRules;
         private readonly IndexedList<Production> productions;
-        private readonly IndexedList<Lexer> trivia;
+        private readonly IndexedList<LexerRule> trivia;
 
         private void FindNullableSymbols()
         {
@@ -156,7 +156,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private void AddIgnoreRules(IEnumerable<Lexer> ignoreRules)
+        private void AddIgnoreRules(IEnumerable<LexerRule> ignoreRules)
         {
             foreach (var ignoreRule in ignoreRules)
             {
@@ -165,7 +165,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private void AddLexerRule(Lexer lexerRule)
+        private void AddLexerRule(LexerRule lexerRule)
         {
             this.lexerRules.Add(lexerRule);
         }
@@ -186,7 +186,7 @@ namespace Pliant.Grammars
             for (var s = 0; s < production.Count; s++)
             {
                 var symbol = production[s];
-                if (symbol is Lexer lexerRule)
+                if (symbol is LexerRule lexerRule)
                 {
                     AddLexerRule(lexerRule);
                 }
@@ -211,7 +211,7 @@ namespace Pliant.Grammars
             indexedProductions.Add(production);
         }
 
-        private void AddTriviaRules(IEnumerable<Lexer> triviaRules)
+        private void AddTriviaRules(IEnumerable<LexerRule> triviaRules)
         {
             foreach (var triviaRule in triviaRules)
             {
@@ -262,7 +262,7 @@ namespace Pliant.Grammars
             }
         }
 
-        private static readonly Lexer[] emptyLexerRuleArray = { };
+        private static readonly LexerRule[] emptyLexerRuleArray = { };
         private static readonly Production[] emptyProductionArray = { };
         private readonly Dictionary<NonTerminal, List<Production>> leftHandSideToProductions;
 

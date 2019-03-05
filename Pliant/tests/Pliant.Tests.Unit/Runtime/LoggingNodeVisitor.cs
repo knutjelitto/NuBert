@@ -22,7 +22,9 @@ namespace Pliant.Tests.Unit.Runtime
         {
             VisitLog.Add(intermediateNode.ToString());
             foreach (var child in intermediateNode.Children)
+            {
                 Visit(child);
+            }
         }
 
         public override void Visit(ITokenForestNode tokenNode)
@@ -34,18 +36,17 @@ namespace Pliant.Tests.Unit.Runtime
         {
             VisitLog.Add(symbolNode.ToString());
             foreach (var child in symbolNode.Children)
+            {
                 Visit(child);
-        }
-
-        public override void Visit(ITerminalForestNode terminalNode)
-        {
-            VisitLog.Add(terminalNode.ToString());
+            }
         }
 
         public override void Visit(AndForestNode andNode)
         {
             foreach (var child in andNode.Children)
+            {
                 child.Accept(this);
+            }
         }
     }
 }

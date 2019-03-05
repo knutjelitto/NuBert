@@ -15,8 +15,6 @@
 
         public abstract void Visit(ISymbolForestNode symbolNode);
 
-        public virtual void Visit(ITerminalForestNode terminalNode) { }
-
         public virtual void Visit(ITokenForestNode tokenNode) { }
     }
 }

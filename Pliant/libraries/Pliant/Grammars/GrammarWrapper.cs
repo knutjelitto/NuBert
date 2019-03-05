@@ -14,15 +14,15 @@ namespace Pliant.Grammars
 
         public override NonTerminal Start => this.innerGrammar.Start;
 
-        public override IReadOnlyList<Lexer> Ignores => this.innerGrammar.Ignores;
+        public override IReadOnlyList<LexerRule> Ignores => this.innerGrammar.Ignores;
 
-        public override IReadOnlyList<Lexer> Trivia => this.innerGrammar.Trivia;
+        public override IReadOnlyList<LexerRule> Trivia => this.innerGrammar.Trivia;
 
-        public override IReadOnlyList<Lexer> LexerRules => this.innerGrammar.LexerRules;
+        public override IReadOnlyList<LexerRule> LexerRules => this.innerGrammar.LexerRules;
 
         public override DottedRuleRegistry DottedRules => this.innerGrammar.DottedRules;
 
-        public override int GetLexerIndex(Lexer lexer)
+        public override int GetLexerIndex(LexerRule lexer)
         {
             return this.innerGrammar.GetLexerIndex(lexer);
         }

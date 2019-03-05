@@ -22,7 +22,7 @@ namespace Pliant.Tests.Common.Forest
             this.whitespace = CreateWhitespaceRule();
         }
 
-        private static Lexer CreateWhitespaceRule()
+        private static LexerRule CreateWhitespaceRule()
         {
             var start = DfaState.Inner();
             var end = DfaState.Final();
@@ -120,11 +120,11 @@ namespace Pliant.Tests.Common.Forest
                       | (VP + CC + VP)
                       | (VP + VP + CC + VP)
                       | VBZ;
-            CC.Rule = new GrammarLexer(nameof(CC), and);
-            DT.Rule = new GrammarLexer(nameof(DT), aAn);
-            NN.Rule = new GrammarLexer(nameof(NN), panda);
-            NNS.Rule = new GrammarLexer(nameof(NNS), shootsLeaves);
-            VBZ.Rule = new GrammarLexer(nameof(VBZ), eatsShootsLeaves);
+            CC.Rule = new GrammarLexerRule(nameof(CC), and);
+            DT.Rule = new GrammarLexerRule(nameof(DT), aAn);
+            NN.Rule = new GrammarLexerRule(nameof(NN), panda);
+            NNS.Rule = new GrammarLexerRule(nameof(NNS), shootsLeaves);
+            VBZ.Rule = new GrammarLexerRule(nameof(VBZ), eatsShootsLeaves);
 
             var grammar = new GrammarExpression(
                     S,
@@ -145,6 +145,6 @@ namespace Pliant.Tests.Common.Forest
             Assert.IsTrue(parseRunner.ParseEngine.IsAccepted());
         }
 
-        private readonly Lexer whitespace;
+        private readonly LexerRule whitespace;
     }
 }

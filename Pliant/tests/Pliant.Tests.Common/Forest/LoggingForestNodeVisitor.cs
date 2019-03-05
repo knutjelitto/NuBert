@@ -69,11 +69,6 @@ namespace Pliant.Tests.Common.Forest
             }
         }
 
-        public void Visit(ITerminalForestNode node)
-        {
-            throw new NotImplementedException();
-        }
-
         private void PrintNode(IForestNode node)
         {
             switch (node.NodeType)

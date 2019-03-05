@@ -132,19 +132,19 @@ namespace Pliant.RegularExpressions
             grammar = new ConcreteGrammar(regex, productions, null, null);
         }
         
-        private static Lexer CreateNotMetaLexerRule()
+        private static LexerRule CreateNotMetaLexerRule()
         {
             return new TerminalLexer(
                 new NegationTerminal(new SetTerminal('.', '^', '$', '(', ')', '[', ']', '+', '*', '?', '\\', '/')),
                 "NotMeta");
         }
 
-        private static Lexer CreateNotCloseBracketLexerRule()
+        private static LexerRule CreateNotCloseBracketLexerRule()
         {
             return new TerminalLexer(new NegationTerminal(new CharacterTerminal(']')), "NotCloseBracket");
         }
 
-        private static Lexer CreateEscapeCharacterLexerRule()
+        private static LexerRule CreateEscapeCharacterLexerRule()
         {
             var start = DfaState.Inner();
             var escape = DfaState.Inner();

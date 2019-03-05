@@ -1,6 +1,5 @@
 ﻿using Pliant.Automata;
 using Pliant.Terminals;
-using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {

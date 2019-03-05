@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Pliant.Inputs;
 using Pliant.Tokens;
 
 namespace Pliant.Json
@@ -10,28 +11,27 @@ namespace Pliant.Json
     {
         public IEnumerable<IToken> Lex(string input)
         {
-            using (var reader = new StringReader(input))
+            foreach (var token in LexIntern(input))
             {
-                foreach (var token in Lex(reader))
-                {
-                    yield return token;
-                }
+                yield return token;
             }
         }
 
-        public IEnumerable<IToken> Lex(TextReader input)
+        public IEnumerable<IToken> LexIntern(string text)
         {
+            var input = new Reader(text);
+
             var position = 0;
             var builder = new StringBuilder();
 
             while (true)
             {
-                if (input.Peek() == -1)
+                if (!input.Valid)
                 {
                     yield break;
                 }
 
-                var c = (char) input.Read();
+                var c = input.Slurp();
                 if (char.IsDigit(c)
                     || '+' == c
                     || '-' == c)
@@ -40,12 +40,12 @@ namespace Pliant.Json
                     {
                         builder.Append(c);
                     }
-                    while (Accept(input, char.IsDigit, ref c));
+                    while (input.Accept(char.IsDigit, ref c));
 
-                    if (Accept(input, '.'))
+                    if (input.Accept('.'))
                     {
                         builder.Append('.');
-                        while (Accept(input, char.IsDigit, ref c))
+                        while (input.Accept(char.IsDigit, ref c))
                         {
                             builder.Append(c);
                         }
@@ -86,12 +86,12 @@ namespace Pliant.Json
 
                     case '"':
                         builder.Append(c);
-                        while (Accept(input, x => x != '"', ref c))
+                        while (input.Accept(x => x != '"', ref c))
                         {
                             builder.Append(c);
                         }
 
-                        if (!Accept(input, '"'))
+                        if (!input.Accept('"'))
                         {
                             yield break;
                         }
@@ -108,7 +108,7 @@ namespace Pliant.Json
                     case '\r':
                     case '\t':
                         builder.Append(c);
-                        while (Accept(input, char.IsWhiteSpace, ref c))
+                        while (input.Accept(char.IsWhiteSpace, ref c))
                         {
                             builder.Append(c);
                         }
@@ -119,15 +119,15 @@ namespace Pliant.Json
                         break;
 
                     case 'n':
-                        if (!Accept(input, 'u'))
+                        if (!input.Accept('u'))
                         {
                             yield break;
                         }
-                        if (!Accept(input, 'l'))
+                        if (!input.Accept('l'))
                         {
                             yield break;
                         }
-                        if (!Accept(input, 'l'))
+                        if (!input.Accept('l'))
                         {
                             yield break;
                         }
@@ -137,15 +137,15 @@ namespace Pliant.Json
                         break;
 
                     case 't':
-                        if (!Accept(input, 'r'))
+                        if (!input.Accept('r'))
                         {
                             yield break;
                         }
-                        if (!Accept(input, 'u'))
+                        if (!input.Accept('u'))
                         {
                             yield break;
                         }
-                        if (!Accept(input, 'e'))
+                        if (!input.Accept('e'))
                         {
                             yield break;
                         }
@@ -155,19 +155,19 @@ namespace Pliant.Json
                         break;
 
                     case 'f':
-                        if (!Accept(input, 'a'))
+                        if (!input.Accept('a'))
                         {
                             yield break;
                         }
-                        if (!Accept(input, 'l'))
+                        if (!input.Accept('l'))
                         {
                             yield break;
                         }
-                        if (!Accept(input, 's'))
+                        if (!input.Accept('s'))
                         {
                             yield break;
                         }
-                        if (!Accept(input, 'e'))
+                        if (!input.Accept('e'))
                         {
                             yield break;
                         }
@@ -181,6 +181,7 @@ namespace Pliant.Json
                 position++;
             }
         }
+
 
         public static readonly TokenType CloseBrace = new TokenType("}");
         public static readonly TokenType CloseBracket = new TokenType("]");

@@ -331,7 +331,7 @@ namespace Pliant.Runtime
             return MatchesExistingLexemes(character, this.tokenLexemes);
         }
 
-        private bool MatchLexers(char character, IEnumerable<Lexer> lexers, ICollection<Lexeme> lexemes)
+        private bool MatchLexers(char character, IEnumerable<LexerRule> lexers, ICollection<Lexeme> lexemes)
         {
             var anyMatches = false;
 

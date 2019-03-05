@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using Pliant.Grammars;
+using Pliant.Inputs;
 using Pliant.Utilities;
 
 namespace Pliant.Tokens
 {
     public abstract class Lexeme : IToken
     {
-        protected Lexeme(Lexer lexer, int position)
+        protected readonly Cursor First;
+
+        protected Lexeme(LexerRule lexer, int position)
         {
             TokenType = lexer.TokenType;
             Position = position;
@@ -67,7 +70,7 @@ namespace Pliant.Tokens
         }
 
         public abstract bool IsAccepted();
-        public abstract bool Scan(char c);
+        public abstract bool Scan(char character);
 
         private static readonly ITrivia[] emptyTriviaArray = { };
         private List<ITrivia> leadingTrivia;

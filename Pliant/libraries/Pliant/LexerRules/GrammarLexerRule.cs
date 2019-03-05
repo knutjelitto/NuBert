@@ -4,14 +4,14 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public class GrammarLexer : Lexer
+    public class GrammarLexerRule : LexerRule
     {
-        public GrammarLexer(string tokenType, Grammar grammar)
+        public GrammarLexerRule(string tokenType, Grammar grammar)
             : this(new TokenType(tokenType), grammar)
         {
         }
 
-        public GrammarLexer(TokenType tokenType, Grammar grammar)
+        public GrammarLexerRule(TokenType tokenType, Grammar grammar)
             : base(tokenType)
         {
             Grammar = grammar;

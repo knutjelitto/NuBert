@@ -162,14 +162,6 @@ namespace Pliant.Tree
                 }
             }
 
-            public override void Visit(ITerminalForestNode terminalNode)
-            {
-                var token = new Token(terminalNode.Origin,
-                    terminalNode.Capture.ToString(),
-                    new TokenType(terminalNode.ToString()));
-                VisitToken(terminalNode.Origin, terminalNode.Location, token);
-            }
-
             public override void Visit(ITokenForestNode tokenNode)
             {
                 VisitToken(tokenNode.Origin, tokenNode.Location, tokenNode.Token);

@@ -131,7 +131,7 @@ namespace Pliant.Tests.Integration.Runtime
             }
         }
 
-        private static Lexer CreateRegexDfa(string pattern)
+        private static LexerRule CreateRegexDfa(string pattern)
         {
             var regexParser = new RegexParser();
             var regex = regexParser.Parse(pattern);
@@ -144,6 +144,19 @@ namespace Pliant.Tests.Integration.Runtime
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "10000.json");
             var jsonLexer = new JsonLexer();
+#if true
+            var tokens = jsonLexer.Lex(File.ReadAllText(path));
+            foreach (var token in tokens)
+            {
+                if (!Equals(token.TokenType, JsonLexer.Whitespace))
+                {
+                    if (!parser.Pulse(token))
+                    {
+                        Assert.Fail($"unable to parse token {token.TokenType} at {token.Position}");
+                    }
+                }
+            }
+#else
             using (var stream = File.OpenRead(path))
             using (var reader = new StreamReader(stream))
             {
@@ -159,6 +172,7 @@ namespace Pliant.Tests.Integration.Runtime
                     }
                 }
             }
+#endif
 
             if (!parser.IsAccepted())
             {
@@ -166,11 +180,11 @@ namespace Pliant.Tests.Integration.Runtime
             }
         }
 
+        private static Grammar grammar;
+
         private ParseTester compressedParseTester;
         private ParseTester marpaParseTester;
 
         private ParseTester parseTester;
-
-        private static Grammar grammar;
     }
 }

@@ -4,12 +4,12 @@ namespace Pliant.Builders
 {
     public sealed class LexerRuleModel : SymbolModel
     {
-        public LexerRuleModel(Lexer lexerRule)
+        public LexerRuleModel(LexerRule lexerRule)
             : base(lexerRule)
         {
         }
 
-        public Lexer LexerRule => (Lexer) Symbol;
+        public LexerRule LexerRule => (LexerRule) Symbol;
 
         public override bool Equals(object obj)
         {

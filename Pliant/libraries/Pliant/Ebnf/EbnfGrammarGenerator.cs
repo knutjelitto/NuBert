@@ -195,7 +195,7 @@ namespace Pliant.Ebnf
             return new LexerRuleModel(lexerRule);
         }
 
-        private Lexer LexerRuleExpression(
+        private LexerRule LexerRuleExpression(
             QualifiedName fullyQualifiedName,
             IEbnfLexerRuleExpression ebnfLexerRule)
         {
@@ -360,7 +360,7 @@ namespace Pliant.Ebnf
         private bool TryRecognizeSimpleLiteralExpression(
             QualifiedName fullyQualifiedName,
             IEbnfLexerRuleExpression ebnfLexerRule,
-            out Lexer lexerRule)
+            out LexerRule lexerRule)
         {
             lexerRule = null;
 

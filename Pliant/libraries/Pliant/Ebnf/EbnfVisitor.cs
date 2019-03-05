@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Pliant.LexerRules;
 using Pliant.RegularExpressions;
-using Pliant.Tokens;
 using Pliant.Tree;
 
 namespace Pliant.Ebnf
@@ -280,6 +278,33 @@ namespace Pliant.Ebnf
             throw UnreachableCodeException();
         }
 
+        private IEnumerable<string> VisitQualifiedIdentifier(IInternalTreeNode node)
+        {
+            foreach (var child in node.Children)
+            {
+                switch (child)
+                {
+                    case IInternalTreeNode internalNode:
+                        if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
+                        {
+                            foreach (var identifier in VisitQualifiedIdentifier(internalNode))
+                            {
+                                yield return identifier;
+                            }
+                        }
+                        break;
+
+                    case ITokenTreeNode tokenNode:
+                        var token = tokenNode.Token;
+                        if (token.TokenType.Equals(EbnfGrammar.TokenTypes.Identifier))
+                        {
+                            yield return token.Value;
+                        }
+                        break;
+                }
+            }
+        }
+
         private EbnfQualifiedIdentifier VisitQualifiedIdentifierNode(IInternalTreeNode node)
         {
 #if true
@@ -317,33 +342,6 @@ namespace Pliant.Ebnf
 
             return new EbnfQualifiedIdentifierConcatenation(identifier, repetitionEbnfQualifiedIdentifier);
 #endif
-        }
-
-        private IEnumerable<string> VisitQualifiedIdentifier(IInternalTreeNode node)
-        {
-            foreach (var child in node.Children)
-            {
-                switch (child)
-                {
-                    case IInternalTreeNode internalNode:
-                        if (internalNode.Is(EbnfGrammar.QualifiedIdentifier))
-                        {
-                            foreach (var identifier in VisitQualifiedIdentifier(internalNode))
-                            {
-                                yield return identifier;
-                            }
-                        }
-                        break;
-
-                    case ITokenTreeNode tokenNode:
-                        var token = tokenNode.Token;
-                        if (token.TokenType.Equals(EbnfGrammar.TokenTypes.Identifier))
-                        {
-                            yield return token.Value;
-                        }
-                        break;
-                }
-            }
         }
 
         private EbnfFactorRepetition VisitRepetitionNode(IInternalTreeNode node)

@@ -12,7 +12,7 @@ namespace Pliant.Ebnf
     {
         static EbnfGrammar()
         {
-            Lexer
+            LexerRule
                 settingIdentifier = CreateSettingIdentifierLexerRule(),
                 identifier = CreateIdentifierLexerRule(),
                 whitespace = CreateWhitespaceLexerRule(),
@@ -150,7 +150,7 @@ namespace Pliant.Ebnf
         public static readonly QualifiedName Setting = new QualifiedName(Namespace, nameof(Setting));
         public static readonly QualifiedName Term = new QualifiedName(Namespace, nameof(Term));
 
-        private static Lexer CreateIdentifierLexerRule()
+        private static LexerRule CreateIdentifierLexerRule()
         {
             // /[a-zA-Z][a-zA-Z0-9-_]*/
             var identifierState = DfaState.Inner();
@@ -168,7 +168,7 @@ namespace Pliant.Ebnf
             return new DfaLexer(identifierState, TokenTypes.Identifier);
         }
 
-        private static Lexer CreateSingleLineComment()
+        private static LexerRule CreateSingleLineComment()
         {
             var slash = new CharacterTerminal('/');
             var newLine = new CharacterTerminal('\n');
@@ -185,7 +185,7 @@ namespace Pliant.Ebnf
             return new DfaLexer(start, TokenTypes.SingleLineComment);
         }
 
-        private static Lexer CreateMultiLineCommentLexerRule()
+        private static LexerRule CreateMultiLineCommentLexerRule()
         {
             var states = new DfaState[5];
             for (var i = 0; i < states.Length; i++)
@@ -209,7 +209,7 @@ namespace Pliant.Ebnf
             return new DfaLexer(states[0], TokenTypes.MultiLineComment);
         }
 
-        private static Lexer CreateSettingIdentifierLexerRule()
+        private static LexerRule CreateSettingIdentifierLexerRule()
         {
             // /:[a-zA-Z][a-zA-Z0-9]*/
             var start = DfaState.Inner();
@@ -227,7 +227,7 @@ namespace Pliant.Ebnf
             return new DfaLexer(start, TokenTypes.SettingIdentifier);
         }
 
-        private static Lexer CreateWhitespaceLexerRule()
+        private static LexerRule CreateWhitespaceLexerRule()
         {
             var whitespaceTerminal = WhitespaceTerminal.Instance;
             var startWhitespace = DfaState.Inner();

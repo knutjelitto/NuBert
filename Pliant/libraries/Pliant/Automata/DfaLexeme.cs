@@ -31,11 +31,11 @@ namespace Pliant.Automata
             return this.currentState.IsFinal;
         }
 
-        public override bool Scan(char c)
+        public override bool Scan(char character)
         {
             foreach (var transition in this.currentState.Transitions)
             {
-                if (transition.Terminal.IsMatch(c))
+                if (transition.Terminal.IsMatch(character))
                 {
                     if (!IsStringBuilderAllocated())
                     {
@@ -43,7 +43,7 @@ namespace Pliant.Automata
                     }
 
                     this.currentState = transition.Target;
-                    this.captureBuilder.Append(c);
+                    this.captureBuilder.Append(character);
                     return true;
                 }
             }

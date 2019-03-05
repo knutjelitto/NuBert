@@ -3,7 +3,7 @@ using Pliant.Tokens;
 
 namespace Pliant.Automata
 {
-    public class DfaLexer : Lexer
+    public class DfaLexer : LexerRule
     {
         public DfaLexer(DfaState startState, string tokenType)
             : this(startState, new TokenType(tokenType))

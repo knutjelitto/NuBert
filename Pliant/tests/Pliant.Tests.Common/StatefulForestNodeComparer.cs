@@ -34,11 +34,6 @@ namespace Pliant.Tests.Common
                         firstForestNode as ISymbolForestNode,
                         secondForestNode as ISymbolForestNode);
 
-                case ForestNodeType.Terminal:
-                    return AreTerminalNodesEqual(
-                        firstForestNode as ITerminalForestNode,
-                        secondForestNode as ITerminalForestNode);
-
                 case ForestNodeType.Token:
                     return AreTokenNodesEqual(
                         firstForestNode as ITokenForestNode,
@@ -51,12 +46,6 @@ namespace Pliant.Tests.Common
         public int GetHashCode(IForestNode obj)
         {
             return obj.GetHashCode();
-        }
-
-        private static bool AreTerminalNodesEqual(ITerminalForestNode firstTerminalForestNode,
-                                                  ITerminalForestNode secondTerminalForestNode)
-        {
-            return firstTerminalForestNode.Capture == secondTerminalForestNode.Capture;
         }
 
         private static bool AreTokenNodesEqual(ITokenForestNode firstTokenForestNode, ITokenForestNode secondForestTokenNode)

@@ -24,7 +24,7 @@ namespace Pliant.Tests.Unit
 
             var grammar = new GrammarExpression(S, new[] { S, W }).ToGrammar();
 
-            var lexerRule = new GrammarLexer("whitespace", grammar);
+            var lexerRule = new GrammarLexerRule("whitespace", grammar);
 
             var lexeme = new ParseEngineLexeme(lexerRule);
             var input = "\t\r\n\v\f ";
@@ -45,7 +45,7 @@ namespace Pliant.Tests.Unit
             sequence.Rule = (Expr)'a' + 'b' + 'c' + '1' + '2' + '3';
 
             var grammar = new GrammarExpression(sequence, new[] { sequence }).ToGrammar();
-            var lexerRule = new GrammarLexer(new TokenType("sequence"), grammar);
+            var lexerRule = new GrammarLexerRule(new TokenType("sequence"), grammar);
             var lexeme = new ParseEngineLexeme(lexerRule);
             var input = "abc123";
             foreach (var ch in input)
@@ -67,7 +67,7 @@ namespace Pliant.Tests.Unit
             There.Rule = (Expr)'t' + 'h' + 'e' + 'r' + 'e';
 
             var thereGrammar = new GrammarExpression(There, new[] { There }).ToGrammar();
-            var thereLexerRule = new GrammarLexer(nameof(There), thereGrammar);
+            var thereLexerRule = new GrammarLexerRule(nameof(There), thereGrammar);
             var thereLexeme = new ParseEngineLexeme(thereLexerRule);
             lexemeList.Add(thereLexeme);
 
@@ -77,7 +77,7 @@ namespace Pliant.Tests.Unit
             Therefore.Rule = (Expr)'t' + 'h' + 'e' + 'r' + 'e' + 'f' + 'o' + 'r' + 'e';
 
             var thereforeGrammar = new GrammarExpression(Therefore, new[] { Therefore }).ToGrammar();
-            var thereforeLexerRule = new GrammarLexer(nameof(Therefore), thereforeGrammar);
+            var thereforeLexerRule = new GrammarLexerRule(nameof(Therefore), thereforeGrammar);
             var thereforeLexeme = new ParseEngineLexeme(thereforeLexerRule);
             lexemeList.Add(thereforeLexeme);
 

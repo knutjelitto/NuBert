@@ -9,7 +9,7 @@ namespace Pliant.Runtime
 {
     public class ParseEngineLexeme : Lexeme
     {
-        public ParseEngineLexeme(GrammarLexer lexer)
+        public ParseEngineLexeme(GrammarLexerRule lexer)
             : base(lexer, 0)
         {
             this.capture = new StringBuilder();
@@ -23,7 +23,7 @@ namespace Pliant.Runtime
             return this.parseEngine.IsAccepted();
         }
 
-        public override bool Scan(char c)
+        public override bool Scan(char character)
         {
             var pool = SharedPools.Default<List<Lexeme>>();
             // get expected lexems
@@ -44,7 +44,7 @@ namespace Pliant.Runtime
             Lexeme firstPassingRule = null;
             foreach (var lexeme in expectedLexemes)
             {
-                if (lexeme.Scan(c))
+                if (lexeme.Scan(character))
                 {
                     firstPassingRule = lexeme;
                     break;
@@ -61,7 +61,7 @@ namespace Pliant.Runtime
             var result = this.parseEngine.Pulse(firstPassingRule);
             if (result)
             {
-                this.capture.Append(c);
+                this.capture.Append(character);
             }
 
             return result;

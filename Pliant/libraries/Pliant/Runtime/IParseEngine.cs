@@ -26,7 +26,7 @@ namespace Pliant.Runtime
         /// Returns the list of expected lexer rules based on the current state of the parse.
         /// </summary>
         /// <returns>The enumeration of lexer rules that apply at the current parse position.</returns>
-        IReadOnlyList<Lexer> GetExpectedLexerRules();
+        IReadOnlyList<LexerRule> GetExpectedLexerRules();
         
         /// <summary>
         /// Accepts one token and incrementally moves the parser forward if successful.

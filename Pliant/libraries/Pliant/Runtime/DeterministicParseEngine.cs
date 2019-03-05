@@ -28,7 +28,7 @@ namespace Pliant.Runtime
 
         public int Location { get; private set; }
 
-        public IReadOnlyList<Lexer> GetExpectedLexerRules()
+        public IReadOnlyList<LexerRule> GetExpectedLexerRules()
         {
             var frameSets = this.chart.Sets;
             var frameSetCount = frameSets.Count;
@@ -76,7 +76,7 @@ namespace Pliant.Runtime
 
             if (this.expectedLexerRuleCache == null)
             {
-                this.expectedLexerRuleCache = new Dictionary<int, Lexer[]>();
+                this.expectedLexerRuleCache = new Dictionary<int, LexerRule[]>();
             }
 
             // if the hash is found in the cached lexer rule lists, return the cached array
@@ -86,7 +86,7 @@ namespace Pliant.Runtime
             }
 
             // compute the new lexer rule array and add it to the cache
-            var array = new Lexer[count];
+            var array = new LexerRule[count];
             var returnItemIndex = 0;
             for (var i = 0; i < Grammar.LexerRules.Count; i++)
             {
@@ -317,10 +317,10 @@ namespace Pliant.Runtime
             this.chart.Enqueue(location + 1, new DeterministicState(target.NullTransition, location + 1));
         }
 
-        private static readonly Lexer[] EmptyLexerRules = { };
+        private static readonly LexerRule[] EmptyLexerRules = { };
         private DeterministicChart chart;
 
-        private Dictionary<int, Lexer[]> expectedLexerRuleCache;
+        private Dictionary<int, LexerRule[]> expectedLexerRuleCache;
         private BitArray expectedLexerRuleIndicies;
         private readonly PreComputedGrammar precomputedGrammar;
     }
