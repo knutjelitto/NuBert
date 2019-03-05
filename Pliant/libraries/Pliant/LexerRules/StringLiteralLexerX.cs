@@ -8,7 +8,7 @@ namespace Pliant.LexerRules
 {
     public sealed class StringLiteralLexerX : DfaLexer
     {
-        public StringLiteralLexerX(string literal, TokenType tokenType) : base(MakeAutomaton(literal), literal)
+        public StringLiteralLexerX(string literal, TokenType tokenType) : base(MakeAutomaton(literal), tokenType)
         {
         }
 
@@ -40,7 +40,7 @@ namespace Pliant.LexerRules
 
         public override Lexeme CreateLexeme(int position)
         {
-            return new StringLiteralLexeme((Lexer)this, position);
+            throw new NotImplementedException();
         }
 
         public override bool Equals(object obj)
