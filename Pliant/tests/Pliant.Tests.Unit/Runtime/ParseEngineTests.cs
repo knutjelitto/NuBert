@@ -225,7 +225,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseForestRoot = parseEngine.GetParseForestRootNode();
             var actual = parseForestRoot;
 
-            var a_1_2 = new TokenForestNode("a", 1, 2);
+            var a_1_2 = new TokenForestNode(MakeToken("a", 1), 1, 2);
             var expected =
                 new SymbolForestNode(
                     S.ProductionModel.LeftHandSide.NonTerminal,
@@ -236,7 +236,7 @@ namespace Pliant.Tests.Unit.Runtime
                             S.ProductionModel.LeftHandSide.NonTerminal,
                             0,
                             1,
-                            new AndForestNode(new TokenForestNode("a", 0, 1))),
+                            new AndForestNode(new TokenForestNode(MakeToken("a", 0), 0, 1))),
                         new SymbolForestNode(
                             T.ProductionModel.LeftHandSide.NonTerminal,
                             1,
@@ -248,8 +248,13 @@ namespace Pliant.Tests.Unit.Runtime
                                     B.ProductionModel.LeftHandSide.NonTerminal,
                                     2,
                                     2,
-                                    new AndForestNode(new TokenForestNode("", 2, 2)))))));
+                                    new AndForestNode(new TokenForestNode(MakeToken("", 2), 2, 2)))))));
             AssertForestsAreEqual(expected, actual);
+        }
+
+        private IToken MakeToken(string token, int origin)
+        {
+            return new VerbatimToken(origin, token, new TokenClass(token));
         }
 
         [TestMethod]
@@ -911,17 +916,17 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static IToken CreateCharacterToken(char character, int position)
         {
-            return new VerbatimToken(position, character.ToString(), new TokenType(character.ToString()));
+            return new VerbatimToken(position, character.ToString(), new TokenClass(character.ToString()));
         }
 
         private static IToken CreateDigitToken(int value, int position)
         {
-            return new VerbatimToken(position, value.ToString(), new TokenType("digit"));
+            return new VerbatimToken(position, value.ToString(), new TokenClass("digit"));
         }
 
         private static Grammar CreateExpressionGrammar()
         {
-            var digit = new TerminalLexer(DigitTerminal.Instance, new TokenType("digit"));
+            var digit = new TerminalLexer(DigitTerminal.Instance, new TokenClass("digit"));
 
             ProductionExpression S = "S", M = "M", T = "T";
             S.Rule = (S + '+' + M) | M;
@@ -986,7 +991,7 @@ namespace Pliant.Tests.Unit.Runtime
         private static IReadOnlyList<IToken> Tokenize(string input)
         {
             return input.Select((x, i) =>
-                    new VerbatimToken(i, x.ToString(), new TokenType(x.ToString())))
+                    new VerbatimToken(i, x.ToString(), new TokenClass(x.ToString())))
                 .ToArray();
         }
     }

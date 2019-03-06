@@ -137,7 +137,7 @@ namespace Pliant.Tests.Integration.Runtime
             var regex = regexParser.Parse(pattern);
             var regexCompiler = new RegexCompiler();
             var dfa = regexCompiler.Compile(regex);
-            return new DfaLexer(dfa, pattern);
+            return new DfaLexerRule(dfa, pattern);
         }
 
         private static void RunParseWithCustomLexer(IParseEngine parser)
@@ -148,11 +148,11 @@ namespace Pliant.Tests.Integration.Runtime
             var tokens = jsonLexer.Lex(File.ReadAllText(path));
             foreach (var token in tokens)
             {
-                if (!Equals(token.TokenType, JsonLexer.Whitespace))
+                if (!Equals(token.TokenClass, JsonLexer.Whitespace))
                 {
                     if (!parser.Pulse(token))
                     {
-                        Assert.Fail($"unable to parse token {token.TokenType} at {token.Position}");
+                        Assert.Fail($"unable to parse token {token.TokenClass} at {token.Position}");
                     }
                 }
             }

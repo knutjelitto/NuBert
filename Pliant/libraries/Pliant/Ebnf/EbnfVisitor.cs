@@ -50,7 +50,7 @@ namespace Pliant.Ebnf
             foreach (var tokenNode in node.Children.OfType<ITokenTreeNode>())
             {
                 var token = tokenNode.Token;
-                var tokenType = token.TokenType;
+                var tokenType = token.TokenClass;
 
                 // if token type is string token type remove surrounding quotes
                 if (tokenType.Equals(SimpleSingleQuoteStringLexerRule.TokenTypeDescriptor) ||
@@ -60,7 +60,7 @@ namespace Pliant.Ebnf
                 }
 
                 // TODO: Find a better solution for identifing the lexer rule based on id
-                if (tokenNode.Token.TokenType.Id.Length > 5)
+                if (tokenNode.Token.TokenClass.Id.Length > 5)
                 {
                     return token.Value;
                 }
@@ -296,7 +296,7 @@ namespace Pliant.Ebnf
 
                     case ITokenTreeNode tokenNode:
                         var token = tokenNode.Token;
-                        if (token.TokenType.Equals(EbnfGrammar.TokenTypes.Identifier))
+                        if (token.TokenClass.Equals(EbnfGrammar.TokenClasses.Identifier))
                         {
                             yield return token.Value;
                         }
@@ -397,7 +397,7 @@ namespace Pliant.Ebnf
                         break;
                     case ITokenTreeNode tokenNode:
                         var token = tokenNode.Token;
-                        if (token.TokenType.Equals(EbnfGrammar.TokenTypes.SettingIdentifier))
+                        if (token.TokenClass.Equals(EbnfGrammar.TokenClasses.SettingIdentifier))
                         {
                             settingIdentifier = new EbnfSettingIdentifier(token.Value);
                         }

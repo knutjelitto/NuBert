@@ -4,9 +4,9 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public sealed class StringLiteralLexer : DfaLexer
+    public sealed class StringLiteralLexer : DfaLexerRule
     {
-        public StringLiteralLexer(string literal, TokenType tokenType)
+        public StringLiteralLexer(string literal, TokenClass tokenType)
             : base(MakeAutomaton(literal), tokenType)
         {
         }

@@ -8,10 +8,10 @@ namespace Pliant.Inputs
         public Reader(string text)
         {
             this.text = text;
-            Current = new Cursor(this.text);
+            Current = new Input(this.text);
         }
 
-        public Cursor Current { get; private set; }
+        public Input Current { get; private set; }
 
         public bool More => Current.More;
         public bool Valid => Current.Valid;

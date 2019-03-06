@@ -9,8 +9,8 @@ namespace Pliant.Runtime
 {
     public class GrammarLexeme : Lexeme
     {
-        public GrammarLexeme(GrammarLexerRule lexer)
-            : base(lexer, 0)
+        public GrammarLexeme(GrammarLexerRule lexer, int position)
+            : base(lexer, position)
         {
             this.capture = new StringBuilder();
             this.parseEngine = new ParseEngine(lexer.Grammar);

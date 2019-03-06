@@ -26,15 +26,15 @@ namespace Pliant.Tests.Unit.Runtime
             
             var pattern = "[a-z][0-9]abc123";
 
-            var openBracket = new TokenType("[");
-            var notMeta = new TokenType("NotMeta"); // maybe make this token type a readonly property on the regex grammar?
-            var notCloseBracket = new TokenType("NotCloseBracket"); // maybe make this token type a readonly property on the regex grammar?            
-            var closeBracket = new TokenType("]");
-            var dash = new TokenType("-");
+            var openBracket = new TokenClass("[");
+            var notMeta = new TokenClass("NotMeta"); // maybe make this token type a readonly property on the regex grammar?
+            var notCloseBracket = new TokenClass("NotCloseBracket"); // maybe make this token type a readonly property on the regex grammar?            
+            var closeBracket = new TokenClass("]");
+            var dash = new TokenClass("-");
 
             for (var i=0;i<pattern.Length;i++)
             {
-                TokenType tokenType;
+                TokenClass tokenType;
                 switch (pattern[i])
                 {
                     case '[':
@@ -67,7 +67,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseEngine = new DeterministicParseEngine(preComputedGrammar);
 
             var input = "aaaa";
-            var tokenType = new TokenType("a");
+            var tokenType = new TokenClass("a");
 
             for (var i = 0; i < input.Length; i++)
             {
@@ -95,7 +95,7 @@ namespace Pliant.Tests.Unit.Runtime
         {
             var a = new TerminalLexer(
                 new CharacterTerminal('a'),
-                new TokenType("a"));
+                new TokenClass("a"));
             ProductionExpression A = "A";
             A.Rule =
                 ('a' + A)

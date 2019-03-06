@@ -183,19 +183,19 @@ namespace Pliant.Json
         }
 
 
-        public static readonly TokenType CloseBrace = new TokenType("}");
-        public static readonly TokenType CloseBracket = new TokenType("]");
-        public static readonly TokenType Colon = new TokenType(":");
-        public static readonly TokenType Comma = new TokenType(",");
-        public static readonly TokenType Error = new TokenType("error");
-        public static readonly TokenType False = new TokenType("false");
-        public static readonly TokenType Null = new TokenType("null");
-        public static readonly TokenType Number = new TokenType(@"[-+]?[0-9]*[.]?[0-9]+");
-        public static readonly TokenType OpenBrace = new TokenType("{");
-        public static readonly TokenType OpenBracket = new TokenType("[");
-        public static readonly TokenType String = new TokenType("[\"][^\"]+[\"]");
-        public static readonly TokenType True = new TokenType("true");
-        public static readonly TokenType Whitespace = new TokenType(@"[\s]+");
+        public static readonly TokenClass CloseBrace = new TokenClass("}");
+        public static readonly TokenClass CloseBracket = new TokenClass("]");
+        public static readonly TokenClass Colon = new TokenClass(":");
+        public static readonly TokenClass Comma = new TokenClass(",");
+        public static readonly TokenClass Error = new TokenClass("error");
+        public static readonly TokenClass False = new TokenClass("false");
+        public static readonly TokenClass Null = new TokenClass("null");
+        public static readonly TokenClass Number = new TokenClass(@"[-+]?[0-9]*[.]?[0-9]+");
+        public static readonly TokenClass OpenBrace = new TokenClass("{");
+        public static readonly TokenClass OpenBracket = new TokenClass("[");
+        public static readonly TokenClass String = new TokenClass("[\"][^\"]+[\"]");
+        public static readonly TokenClass True = new TokenClass("true");
+        public static readonly TokenClass Whitespace = new TokenClass(@"[\s]+");
 
         private static bool Accept(TextReader textReader, char c)
         {

@@ -19,8 +19,8 @@ namespace Pliant.Tests.Unit.Automata
             dfa.AddTransition(WhitespaceTerminal.Instance, final);
             final.AddTransition(WhitespaceTerminal.Instance, final);
 
-            var dfaLexerRule = new DfaLexer(dfa, new TokenType("whitespace"));
-            var whitespaceLexeme = new DfaLexeme(dfaLexerRule, 0);
+            var dfaLexerRule = new DfaLexerRule(dfa, new TokenClass("whitespace"));
+            var whitespaceLexeme = dfaLexerRule.CreateLexeme(0);
             foreach (var character in randomWhitespace)
             {
                 Assert.IsTrue(whitespaceLexeme.Scan(character));
@@ -39,8 +39,8 @@ namespace Pliant.Tests.Unit.Automata
             final.AddTransition(new RangeTerminal('A', 'Z'), final);
             final.AddTransition(DigitTerminal.Instance, final);
 
-            var dfaLexerRule = new DfaLexer(dfa, new TokenType("Identifier"));
-            var indentifierLexeme = new DfaLexeme(dfaLexerRule, 0);
+            var dfaLexerRule = new DfaLexerRule(dfa, new TokenClass("Identifier"));
+            var indentifierLexeme = dfaLexerRule.CreateLexeme(0);
             foreach (var character in wordInput)
             {
                 Assert.IsTrue(indentifierLexeme.Scan(character));
@@ -56,8 +56,8 @@ namespace Pliant.Tests.Unit.Automata
             dfa.AddTransition(new RangeTerminal('a', 'z'), final);
             final.AddTransition(new RangeTerminal('a', 'z'), final);
 
-            var dfaLexerRule = new DfaLexer(dfa, new TokenType("lowerCase"));
-            var letterLexeme = new DfaLexeme(dfaLexerRule, 0);
+            var dfaLexerRule = new DfaLexerRule(dfa, new TokenClass("lowerCase"));
+            var letterLexeme = dfaLexerRule.CreateLexeme(0);
             Assert.IsFalse(letterLexeme.Scan(numberInput[0]));
             Assert.AreEqual(string.Empty, letterLexeme.Value);
         }
@@ -66,9 +66,8 @@ namespace Pliant.Tests.Unit.Automata
         public void DfaLexemeResetShouldResetLexemeValues()
         {
             var numberLexerRule = new NumberLexerRule();
-            var whitespaceLexerRule = new WhitespaceLexerRule();
 
-            var lexeme = new DfaLexeme(numberLexerRule, 0);
+            var lexeme = numberLexerRule.CreateLexeme(0);
             const string numberInput = "0123456";
             foreach (var character in numberInput)
             {

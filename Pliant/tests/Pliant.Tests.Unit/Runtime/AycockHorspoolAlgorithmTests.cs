@@ -15,7 +15,7 @@ namespace Pliant.Tests.Unit.Runtime
         {
             var a = new TerminalLexer(
                 new CharacterTerminal('a'),
-                new TokenType("a"));
+                new TokenClass("a"));
 
             ProductionExpression
                 SPrime = "S'",

@@ -7,11 +7,11 @@ namespace Pliant.LexerRules
     public class GrammarLexerRule : LexerRule
     {
         public GrammarLexerRule(string tokenType, Grammar grammar)
-            : this(new TokenType(tokenType), grammar)
+            : this(new TokenClass(tokenType), grammar)
         {
         }
 
-        public GrammarLexerRule(TokenType tokenType, Grammar grammar)
+        public GrammarLexerRule(TokenClass tokenType, Grammar grammar)
             : base(tokenType)
         {
             Grammar = grammar;
@@ -36,7 +36,7 @@ namespace Pliant.LexerRules
 
         public override Lexeme CreateLexeme(int position)
         {
-            return new GrammarLexeme(this);
+            return new GrammarLexeme(this, position);
         }
 
         public override string ToString()

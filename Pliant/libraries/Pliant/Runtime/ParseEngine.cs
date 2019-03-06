@@ -171,8 +171,7 @@ namespace Pliant.Runtime
         private IForestNode CreateNullParseNode(Symbol symbol, int location)
         {
             var symbolNode = NodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
-            var nullToken = new VerbatimToken(location, string.Empty, emptyTokenType);
-            var nullNode = new TokenForestNode(nullToken, location, location);
+            var nullNode = new EpsilonForestNode(location, location);
             symbolNode.AddUniqueFamily(nullNode);
             return symbolNode;
         }
@@ -598,7 +597,7 @@ namespace Pliant.Runtime
             var origin = scan.Origin;
             var currentSymbol = scan.DottedRule.PostDotSymbol;
 
-            if (currentSymbol is LexerRule lexer && token.TokenType.Equals(lexer.TokenType))
+            if (currentSymbol is LexerRule lexer && token.TokenClass.Equals(lexer.TokenType))
             {
                 var dottedRule = DottedRules.GetNext(scan.DottedRule);
                 if (Chart.ContainsNormal(location + 1, dottedRule, origin))
@@ -632,8 +631,6 @@ namespace Pliant.Runtime
         }
 
         private static readonly LexerRule[] emptyLexerRules = { };
-
-        private static readonly TokenType emptyTokenType = new TokenType(string.Empty);
 
         private Dictionary<Indices, LexerRule[]> expectedLexerRuleCache;
 

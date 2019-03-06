@@ -1,13 +1,15 @@
-﻿namespace Pliant.Inputs
+﻿using System.Diagnostics;
+
+namespace Pliant.Inputs
 {
-    public struct Cursor
+    public struct Input
     {
-        public Cursor(string text)
+        public Input(string text)
             : this(text, 0)
         {
         }
 
-        private Cursor(string text, int index)
+        private Input(string text, int index)
         {
             this.text = text;
             this.index = index;
@@ -18,19 +20,21 @@
         public int Position => this.index;
         public char Value => this.text[this.index];
 
-        public Cursor Next()
+        public Input Next()
         {
-            return new Cursor(this.text, this.index + 1);
+            return new Input(this.text, this.index + 1);
         }
 
-        public string Upto(Cursor end)
+        public string Upto(Input end)
         {
-            return this.text.Substring(this.index, end.index - this.index + 1);
+            Debug.Assert(ReferenceEquals(this.text, end.text));
+            Debug.Assert(end.index <= this.text.Length);
+            return this.text.Substring(this.index, end.index - this.index);
         }
 
-        public static implicit operator char(Cursor cursor)
+        public static implicit operator char(Input input)
         {
-            return cursor.Value;
+            return input.Value;
         }
 
         private readonly int index;

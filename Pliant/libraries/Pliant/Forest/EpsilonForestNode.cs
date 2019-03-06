@@ -3,13 +3,15 @@ using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
-    public sealed class TokenForestNode : ForestNode, ITokenForestNode
+    public sealed class EpsilonForestNode :  ForestNode, ITokenForestNode
     {
-        public TokenForestNode(IToken token, int origin, int location)
+        private static readonly TokenClass epsilonTokenType = new TokenClass(string.Empty);
+
+        public EpsilonForestNode(int origin, int location)
             : base(origin, location)
         {
-            Token = token;
-            this.hashCode = (NodeType, Origin, Location, Token).GetHashCode();
+            Token = new VerbatimToken(location, string.Empty, epsilonTokenType);
+            this.hashCode = (Origin, Location).GetHashCode();
         }
 
         public override ForestNodeType NodeType => ForestNodeType.Token;
@@ -22,11 +24,9 @@ namespace Pliant.Forest
 
         public override bool Equals(object obj)
         {
-            return obj is TokenForestNode other &&
+            return obj is EpsilonForestNode other &&
                    Origin.Equals(other.Origin) &&
-                   Location.Equals(other.Location) &&
-                   NodeType.Equals(other.NodeType) && 
-                   Token.Equals(other.Token);
+                   Location.Equals(other.Location);
         }
 
         public override int GetHashCode()

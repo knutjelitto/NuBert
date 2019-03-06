@@ -165,7 +165,7 @@ namespace Pliant.Ebnf
                     new SetTerminal("-_")),
                 zeroOrMoreLetterOrDigit);
 
-            return new DfaLexer(identifierState, TokenTypes.Identifier);
+            return new DfaLexerRule(identifierState, TokenClasses.Identifier);
         }
 
         private static LexerRule CreateSingleLineComment()
@@ -182,7 +182,7 @@ namespace Pliant.Ebnf
             oneSlash.AddTransition(slash, twoSlash);
             twoSlash.AddTransition(notNewLine, twoSlash);
 
-            return new DfaLexer(start, TokenTypes.SingleLineComment);
+            return new DfaLexerRule(start, TokenClasses.SingleLineComment);
         }
 
         private static LexerRule CreateMultiLineCommentLexerRule()
@@ -206,7 +206,7 @@ namespace Pliant.Ebnf
             states[3].AddTransition(notSlash, states[2]);
             states[3].AddTransition(slash, states[4]);
 
-            return new DfaLexer(states[0], TokenTypes.MultiLineComment);
+            return new DfaLexerRule(states[0], TokenClasses.MultiLineComment);
         }
 
         private static LexerRule CreateSettingIdentifierLexerRule()
@@ -224,7 +224,7 @@ namespace Pliant.Ebnf
                     AsciiLetterTerminal.Instance,
                     DigitTerminal.Instance),
                 zeroOrMoreLetterOrDigit);
-            return new DfaLexer(start, TokenTypes.SettingIdentifier);
+            return new DfaLexerRule(start, TokenClasses.SettingIdentifier);
         }
 
         private static LexerRule CreateWhitespaceLexerRule()
@@ -234,18 +234,18 @@ namespace Pliant.Ebnf
             var finalWhitespace = DfaState.Final();
             startWhitespace.AddTransition(whitespaceTerminal, finalWhitespace);
             finalWhitespace.AddTransition(whitespaceTerminal, finalWhitespace);
-            var whitespace = new DfaLexer(startWhitespace, TokenTypes.Whitespace);
+            var whitespace = new DfaLexerRule(startWhitespace, TokenClasses.Whitespace);
             return whitespace;
         }
 
         private static readonly Grammar ebnfGrammar;
-        public static class TokenTypes
+        public static class TokenClasses
         {
-            public static readonly TokenType Identifier = new TokenType("EbnfQualifiedIdentifier");
-            public static readonly TokenType MultiLineComment = new TokenType(@"\/[*]([*][^\/]|[^*])*[*][\/]");
-            public static readonly TokenType SingleLineComment = new TokenType(@"\/\/.*$");
-            public static readonly TokenType SettingIdentifier = new TokenType("settingIdentifier");
-            public static readonly TokenType Whitespace = new TokenType("whitespace");
+            public static readonly TokenClass Identifier = new TokenClass("EbnfQualifiedIdentifier");
+            public static readonly TokenClass MultiLineComment = new TokenClass(@"\/[*]([*][^\/]|[^*])*[*][\/]");
+            public static readonly TokenClass SingleLineComment = new TokenClass(@"\/\/.*$");
+            public static readonly TokenClass SettingIdentifier = new TokenClass("settingIdentifier");
+            public static readonly TokenClass Whitespace = new TokenClass("whitespace");
         }
     }
 }

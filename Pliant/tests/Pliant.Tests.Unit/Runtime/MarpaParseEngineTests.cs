@@ -21,7 +21,7 @@ namespace Pliant.Tests.Unit.Runtime
             var tokens = input.Select((a, i) => 
             {
                 var value = a.ToString();
-                return new VerbatimToken(i, value, new TokenType(value));
+                return new VerbatimToken(i, value, new TokenClass(value));
             }).ToArray();
 
             for (var t = 0; t < tokens.Length; t++)
@@ -53,15 +53,15 @@ namespace Pliant.Tests.Unit.Runtime
 
             var pattern = "[a-z][0-9]abc123";
 
-            var openBracket = new TokenType("[");
-            var notMeta = new TokenType("NotMeta"); // maybe make this token type a readonly property on the regex grammar?
-            var notCloseBracket = new TokenType("NotCloseBracket"); // maybe make this token type a readonly property on the regex grammar?            
-            var closeBracket = new TokenType("]");
-            var dash = new TokenType("-");
+            var openBracket = new TokenClass("[");
+            var notMeta = new TokenClass("NotMeta"); // maybe make this token type a readonly property on the regex grammar?
+            var notCloseBracket = new TokenClass("NotCloseBracket"); // maybe make this token type a readonly property on the regex grammar?            
+            var closeBracket = new TokenClass("]");
+            var dash = new TokenClass("-");
 
             for (var i = 0; i < pattern.Length; i++)
             {
-                TokenType tokenType;
+                TokenClass tokenType;
                 switch (pattern[i])
                 {
                     case '[':
@@ -151,7 +151,7 @@ namespace Pliant.Tests.Unit.Runtime
             var grammar = new GrammarExpression(S, new[] { S, A }).ToGrammar();
             var marpaParseEngine = new MarpaParseEngine(grammar);
 
-            var bTokenType = new TokenType("b");
+            var bTokenType = new TokenClass("b");
             var tokens = new[] 
             {
                 new VerbatimToken(0, "b", bTokenType),

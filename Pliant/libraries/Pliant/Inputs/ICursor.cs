@@ -12,6 +12,6 @@ namespace Pliant.Inputs
         bool More { get; }
         ICursor Next();
 
-        string Upto(Cursor end);
+        string Upto(Input end);
     }
 }

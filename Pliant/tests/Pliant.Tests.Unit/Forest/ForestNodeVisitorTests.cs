@@ -28,7 +28,7 @@ namespace Pliant.Tests.Common.Forest
             var end = DfaState.Final();
             start.AddTransition(WhitespaceTerminal.Instance, end);
             end.AddTransition(WhitespaceTerminal.Instance, end);
-            return new DfaLexer(start, new TokenType("whitespace"));
+            return new DfaLexerRule(start, new TokenClass("whitespace"));
         }
 
         [TestMethod]

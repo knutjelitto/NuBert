@@ -174,7 +174,7 @@ namespace Pliant.Runtime
 
         private static DottedRuleSet Goto(DottedRuleSet fromAH, IToken token)
         {
-            return fromAH.TokenTransitions.GetOrReturnNull(token.TokenType);
+            return fromAH.TokenTransitions.GetOrReturnNull(token.TokenClass);
         }
 
         private void AddEimPair(int iLoc, DottedRuleSet confirmedAH, int origLoc)

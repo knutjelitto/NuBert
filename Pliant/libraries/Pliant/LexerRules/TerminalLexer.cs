@@ -4,15 +4,15 @@ using Pliant.Tokens;
 
 namespace Pliant.Grammars
 {
-    public sealed class TerminalLexer : DfaLexer
+    public sealed class TerminalLexer : DfaLexerRule
     {
         public TerminalLexer(char character)
-            : this(new CharacterTerminal(character), new TokenType(character.ToString()))
+            : this(new CharacterTerminal(character), new TokenClass(character.ToString()))
         {
         }
 
         public TerminalLexer(Terminal terminal, string tokenTypeId)
-            : this(terminal, new TokenType(tokenTypeId))
+            : this(terminal, new TokenClass(tokenTypeId))
         {
         }
 
@@ -21,7 +21,7 @@ namespace Pliant.Grammars
         {
         }
 
-        public TerminalLexer(Terminal terminal, TokenType tokenType)
+        public TerminalLexer(Terminal terminal, TokenClass tokenType)
             : base(MakeAutomaton(terminal), tokenType)
         {
             Terminal = terminal;

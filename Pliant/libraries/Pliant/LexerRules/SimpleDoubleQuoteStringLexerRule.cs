@@ -4,10 +4,10 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public class SimpleDoubleQuoteStringLexerRule : DfaLexer
+    public class SimpleDoubleQuoteStringLexerRule : DfaLexerRule
     {
         // ["][^"]*["]
-        public static readonly TokenType TokenTypeDescriptor = new TokenType(@"[""][^""]*[""]");
+        public static readonly TokenClass TokenTypeDescriptor = new TokenClass(@"[""][^""]*[""]");
         private static readonly DfaState Start;
 
         static SimpleDoubleQuoteStringLexerRule()

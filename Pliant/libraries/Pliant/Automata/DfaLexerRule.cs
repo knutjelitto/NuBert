@@ -3,14 +3,14 @@ using Pliant.Tokens;
 
 namespace Pliant.Automata
 {
-    public class DfaLexer : LexerRule
+    public class DfaLexerRule : LexerRule
     {
-        public DfaLexer(DfaState startState, string tokenType)
-            : this(startState, new TokenType(tokenType))
+        public DfaLexerRule(DfaState startState, string tokenType)
+            : this(startState, new TokenClass(tokenType))
         {
         }
 
-        public DfaLexer(DfaState startState, TokenType tokenType)
+        public DfaLexerRule(DfaState startState, TokenClass tokenType)
             : base(tokenType)
         {
             StartState = startState;
@@ -38,7 +38,7 @@ namespace Pliant.Automata
 
         public override bool Equals(object obj)
         {
-            return obj is DfaLexer other && TokenType.Equals(other.TokenType);
+            return obj is DfaLexerRule other && TokenType.Equals(other.TokenType);
         }
 
         public override int GetHashCode()

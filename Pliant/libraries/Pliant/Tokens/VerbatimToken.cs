@@ -1,34 +1,32 @@
 ﻿using System.Collections.Generic;
+using Pliant.Utilities;
 
 namespace Pliant.Tokens
 {
-    public sealed class VerbatimToken : Trivia, IToken
+    public sealed class VerbatimToken : ValueEqualityBase<VerbatimToken>, IToken
     {
-        public VerbatimToken(int position, string value, TokenType tokenType)
-            : base(position, value, tokenType)
+        public VerbatimToken(int position, string value, TokenClass tokenClass)
         {
-            LeadingTrivia = null;
-            TrailingTrivia = null;
-            this.hashCode = (position, value, tokenType).GetHashCode();
+            Position = position;
+            Value = value;
+            TokenClass = tokenClass;
         }
 
-        public IReadOnlyList<ITrivia> LeadingTrivia { get; }
+        public IReadOnlyList<ITrivia> LeadingTrivia => noTrivia;
+        public int Position { get; }
+        public TokenClass TokenClass { get; }
+        public IReadOnlyList<ITrivia> TrailingTrivia => noTrivia;
+        public string Value { get; }
 
-        public IReadOnlyList<ITrivia> TrailingTrivia { get; }
+        protected override object ThisHashCode => (Position, Value, TokenClass);
 
-        public override bool Equals(object obj)
+        protected override bool ThisEquals(VerbatimToken other)
         {
-            return obj is VerbatimToken other &&
-                   Position.Equals(other.Position) &&
-                   Value.Equals(other.Value) && 
-                   TokenType.Equals(other.TokenType);
+            return Position.Equals(other.Position) &&
+                   Value.Equals(other.Value) &&
+                   TokenClass.Equals(other.TokenClass);
         }
 
-        public override int GetHashCode()
-        {
-            return this.hashCode;
-        }
-
-        private readonly int hashCode;
+        private static readonly ITrivia[] noTrivia = { };
     }
 }

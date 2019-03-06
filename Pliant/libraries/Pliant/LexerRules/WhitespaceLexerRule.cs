@@ -4,10 +4,10 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public class WhitespaceLexerRule : DfaLexer
+    public class WhitespaceLexerRule : DfaLexerRule
     {
         private static readonly DfaState _start;
-        private static readonly TokenType _staticTokenType = new TokenType(@"[\s]+");
+        private static readonly TokenClass _staticTokenType = new TokenClass(@"[\s]+");
 
         static WhitespaceLexerRule()
         {

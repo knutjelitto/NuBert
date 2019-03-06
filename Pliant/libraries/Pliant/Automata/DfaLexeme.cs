@@ -6,7 +6,7 @@ namespace Pliant.Automata
 {
     public sealed class DfaLexeme : Lexeme
     {
-        public DfaLexeme(DfaLexer dfaLexer, int position)
+        public DfaLexeme(DfaLexerRule dfaLexer, int position)
             : base(dfaLexer, position)
         {
             this.captureBuilder = ObjectPoolExtensions.Allocate(SharedPools.Default<StringBuilder>());

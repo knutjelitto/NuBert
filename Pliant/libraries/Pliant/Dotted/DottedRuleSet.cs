@@ -11,7 +11,7 @@ namespace Pliant.Dotted
         {
             this.set = set;
             this.reductions = new Dictionary<NonTerminal, DottedRuleSet>();
-            this.tokenTransitions = new Dictionary<TokenType, DottedRuleSet>();
+            this.tokenTransitions = new Dictionary<TokenClass, DottedRuleSet>();
             this.scans = new Dictionary<LexerRule, DottedRuleSet>();
             this.scanKeys = new List<LexerRule>();
 
@@ -26,7 +26,7 @@ namespace Pliant.Dotted
 
         public IReadOnlyList<LexerRule> ScanKeys => this.scanKeys;
 
-        public IReadOnlyDictionary<TokenType, DottedRuleSet> TokenTransitions => this.tokenTransitions;
+        public IReadOnlyDictionary<TokenClass, DottedRuleSet> TokenTransitions => this.tokenTransitions;
 
         public void AddTransition(Symbol symbol, DottedRuleSet target)
         {
@@ -73,6 +73,6 @@ namespace Pliant.Dotted
         private readonly List<LexerRule> scanKeys;
         private readonly Dictionary<LexerRule, DottedRuleSet> scans;
         private readonly HashSet<DottedRule> set;
-        private readonly Dictionary<TokenType, DottedRuleSet> tokenTransitions;
+        private readonly Dictionary<TokenClass, DottedRuleSet> tokenTransitions;
     }
 }

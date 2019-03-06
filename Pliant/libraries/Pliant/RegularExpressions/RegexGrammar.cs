@@ -151,7 +151,7 @@ namespace Pliant.RegularExpressions
             var final = DfaState.Final();
             start.AddTransition(new CharacterTerminal('\\'), escape);
             escape.AddTransition(AnyTerminal.Instance, final);
-            return new DfaLexer(start, "escape");
+            return new DfaLexerRule(start, "escape");
         }
 
         public RegexGrammar() : base(grammar)

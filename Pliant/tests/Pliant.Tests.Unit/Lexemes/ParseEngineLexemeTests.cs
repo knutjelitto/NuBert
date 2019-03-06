@@ -27,8 +27,8 @@ namespace Pliant.Tests.Unit.Lexemes
             var grammar = new GrammarExpression(S, new[] { S, W }).ToGrammar();
 
             var lexerRule = new GrammarLexerRule("whitespace", grammar);
+            var lexeme = lexerRule.CreateLexeme(0);
 
-            var lexeme = new GrammarLexeme(lexerRule);
             var input = "\t\r\n\v\f ";
             for (var i = 0; i < input.Length; i++)
             {
@@ -47,8 +47,8 @@ namespace Pliant.Tests.Unit.Lexemes
             sequence.Rule = (Expr)'a' + 'b' + 'c' + '1' + '2' + '3';
 
             var grammar = new GrammarExpression(sequence, new[] { sequence }).ToGrammar();
-            var lexerRule = new GrammarLexerRule(new TokenType("sequence"), grammar);
-            var lexeme = new GrammarLexeme(lexerRule);
+            var lexerRule = new GrammarLexerRule(new TokenClass("sequence"), grammar);
+            var lexeme = lexerRule.CreateLexeme(0);
             var input = "abc123";
             foreach (var ch in input)
             {
@@ -61,7 +61,7 @@ namespace Pliant.Tests.Unit.Lexemes
         [TestMethod]
         public void ParseEngineLexemeShouldMatchLongestAcceptableTokenWhenGivenAmbiguity()
         {
-            var lexemeList = new List<GrammarLexeme>();
+            var lexemeList = new List<Lexeme>();
 
             ProductionExpression
                 There = "there";
@@ -70,7 +70,7 @@ namespace Pliant.Tests.Unit.Lexemes
 
             var thereGrammar = new GrammarExpression(There, new[] { There }).ToGrammar();
             var thereLexerRule = new GrammarLexerRule(nameof(There), thereGrammar);
-            var thereLexeme = new GrammarLexeme(thereLexerRule);
+            var thereLexeme = thereLexerRule.CreateLexeme(0);
             lexemeList.Add(thereLexeme);
 
             ProductionExpression
@@ -80,7 +80,7 @@ namespace Pliant.Tests.Unit.Lexemes
 
             var thereforeGrammar = new GrammarExpression(Therefore, new[] { Therefore }).ToGrammar();
             var thereforeLexerRule = new GrammarLexerRule(nameof(Therefore), thereforeGrammar);
-            var thereforeLexeme = new GrammarLexeme(thereforeLexerRule);
+            var thereforeLexeme = thereforeLexerRule.CreateLexeme(0);
             lexemeList.Add(thereforeLexeme);
 
             const string input = "therefore";

@@ -50,8 +50,8 @@ namespace Pliant.Tests.Common
 
         private static bool AreTokenNodesEqual(ITokenForestNode firstTokenForestNode, ITokenForestNode secondForestTokenNode)
         {
-            return firstTokenForestNode.Token.TokenType.Id ==
-                   secondForestTokenNode.Token.TokenType.Id
+            return firstTokenForestNode.Token.TokenClass.Id ==
+                   secondForestTokenNode.Token.TokenClass.Id
                    && firstTokenForestNode.Token.Value ==
                    secondForestTokenNode.Token.Value;
         }

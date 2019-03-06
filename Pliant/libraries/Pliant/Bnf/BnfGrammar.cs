@@ -74,12 +74,12 @@ namespace Pliant.Bnf
 
         private static LexerRule CreateEndOfLineLexerRule()
         {
-            return new StringLiteralLexer("\r\n", new TokenType("eol"));
+            return new StringLiteralLexer("\r\n", new TokenClass("eol"));
         }
 
         private static LexerRule CreateImplementsLexerRule()
         {
-            return new StringLiteralLexer("::=", new TokenType("implements"));
+            return new StringLiteralLexer("::=", new TokenClass("implements"));
         }
 
         private static LexerRule CreateNotDoubleQuoteLexerRule()
@@ -99,7 +99,7 @@ namespace Pliant.Bnf
 
             escape.AddTransition(AnyTerminal.Instance, final);
 
-            return new DfaLexer(start, "not-double-quote");
+            return new DfaLexerRule(start, "not-double-quote");
         }
 
         private static LexerRule CreateNotSingleQuoteLexerRule()
@@ -109,7 +109,7 @@ namespace Pliant.Bnf
             var terminal = new NegationTerminal(new CharacterTerminal('\''));
             start.AddTransition(terminal, final);
             final.AddTransition(terminal, final);
-            return new DfaLexer(start, "not-single-quote");
+            return new DfaLexerRule(start, "not-single-quote");
         }
 
         private static LexerRule CreateRuleNameLexerRule()
@@ -124,7 +124,7 @@ namespace Pliant.Bnf
                     DigitTerminal.Instance,
                     new SetTerminal("-_")),
                 zeroOrMoreLetterOrDigit);
-            var ruleName = new DfaLexer(ruleNameState, "rule-name");
+            var ruleName = new DfaLexerRule(ruleNameState, "rule-name");
             return ruleName;
         }
 
@@ -135,7 +135,7 @@ namespace Pliant.Bnf
             var finalState = DfaState.Final();
             startState.AddTransition(whitespaceTerminal, finalState);
             finalState.AddTransition(whitespaceTerminal, finalState);
-            return new DfaLexer(startState, "[\\s]+");
+            return new DfaLexerRule(startState, "[\\s]+");
         }
 
         private static readonly Grammar _bnfGrammar;

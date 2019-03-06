@@ -4,6 +4,6 @@
     {
         int Position { get; }
         string Value { get; }
-        TokenType TokenType { get; }
+        TokenClass TokenClass { get; }
     }
 }

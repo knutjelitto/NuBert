@@ -7,11 +7,11 @@ namespace Pliant.Tokens
 {
     public abstract class Lexeme : IToken
     {
-        protected readonly Cursor First;
+        protected readonly Input First;
 
         protected Lexeme(LexerRule lexer, int position)
         {
-            TokenType = lexer.TokenType;
+            TokenClass = lexer.TokenType;
             Position = position;
         }
 
@@ -30,7 +30,7 @@ namespace Pliant.Tokens
 
         public int Position { get; }
 
-        public TokenType TokenType { get; }
+        public TokenClass TokenClass { get; }
 
         public IReadOnlyList<ITrivia> TrailingTrivia
         {

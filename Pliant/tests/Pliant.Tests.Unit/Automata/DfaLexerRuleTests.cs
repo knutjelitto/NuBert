@@ -21,7 +21,7 @@ namespace Pliant.Tests.Unit.Automata
             states[0].AddTransition(WhitespaceTerminal.Instance, states[1]);
             states[1].AddTransition(WhitespaceTerminal.Instance, states[1]);
 
-            var dfaLexerRule = new DfaLexer(states[0], new TokenType(@"\s+"));
+            var dfaLexerRule = new DfaLexerRule(states[0], new TokenClass(@"\s+"));
 
             Assert.IsTrue(dfaLexerRule.CanApply(' '));
             Assert.IsTrue(dfaLexerRule.CanApply('\t'));

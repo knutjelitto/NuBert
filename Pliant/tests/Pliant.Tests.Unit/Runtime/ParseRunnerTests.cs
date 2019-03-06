@@ -111,7 +111,7 @@ namespace Pliant.Tests.Unit.Runtime
             states[3].AddTransition(notSlash, states[2]);
             states[3].AddTransition(slash, states[4]);
             
-            return new DfaLexer(states[0], new TokenType(@"\/[*]([*][^\/]|[^*])*[*][\/]"));
+            return new DfaLexerRule(states[0], new TokenClass(@"\/[*]([*][^\/]|[^*])*[*][\/]"));
         }
 
         [TestMethod]
@@ -282,7 +282,7 @@ namespace Pliant.Tests.Unit.Runtime
 
             var endOfLine = new StringLiteralLexer(
                 Environment.NewLine,
-                new TokenType("EOL"));
+                new TokenClass("EOL"));
             ProductionExpression S = "S";
             S.Rule = (Expr)wordRule + endOfLine + wordRule;
             var grammar = new GrammarExpression(
@@ -334,7 +334,7 @@ namespace Pliant.Tests.Unit.Runtime
             var tokenParseNode = parseNodeAndNode.Children[0] as ITokenForestNode;
             Assert.IsNotNull(tokenParseNode);
             var token = tokenParseNode.Token;
-            Assert.AreEqual(EbnfGrammar.TokenTypes.Identifier, token.TokenType);
+            Assert.AreEqual(EbnfGrammar.TokenClasses.Identifier, token.TokenClass);
             Assert.AreEqual("ows", token.Value);
         }
 

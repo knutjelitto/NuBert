@@ -299,7 +299,7 @@ namespace Pliant.Runtime
         private void ScanDottedRuleSet(int location, IToken token, int parent, DottedRuleSet dottedRuleSet)
         {
             //PERF: This could perhaps be improved with an int array and direct index lookup based on "token.TokenType.Id"?...
-            if (!dottedRuleSet.TokenTransitions.TryGetValue(token.TokenType, out var target))
+            if (!dottedRuleSet.TokenTransitions.TryGetValue(token.TokenClass, out var target))
             {
                 return;
             }

@@ -151,7 +151,7 @@ namespace Pliant.Ebnf
                 case EbnfFactorRegex regex:
                     var nfa = this.regexToNfa.Transform(regex.Regex);
                     var dfa = this.nfaToDfa.Transform(nfa);
-                    var dfaLexerRule = new DfaLexer(dfa, regex.Regex.ToString());
+                    var dfaLexerRule = new DfaLexerRule(dfa, regex.Regex.ToString());
                     currentProduction.AddWithAnd(new LexerRuleModel(dfaLexerRule));
                     break;
             }
@@ -207,7 +207,7 @@ namespace Pliant.Ebnf
             var nfa = LexerRuleExpression(ebnfLexerRule);
             var dfa = this.nfaToDfa.Transform(nfa);
 
-            return new DfaLexer(dfa, fullyQualifiedName.FullName);
+            return new DfaLexerRule(dfa, fullyQualifiedName.FullName);
         }
 
         private Nfa LexerRuleExpression(IEbnfLexerRuleExpression expression)
@@ -375,7 +375,7 @@ namespace Pliant.Ebnf
                 var factor = term.Factor;
                 if (factor is EbnfLexerRuleFactorLiteral literal)
                 {
-                    lexerRule = new StringLiteralLexer(literal.Value, new TokenType(fullyQualifiedName.FullName));
+                    lexerRule = new StringLiteralLexer(literal.Value, new TokenClass(fullyQualifiedName.FullName));
 
                     return true;
                 }

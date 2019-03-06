@@ -3,7 +3,7 @@ using Pliant.Terminals;
 
 namespace Pliant.LexerRules
 {
-    public class NumberLexerRule : DfaLexer
+    public class NumberLexerRule : DfaLexerRule
     {
         static NumberLexerRule()
         {

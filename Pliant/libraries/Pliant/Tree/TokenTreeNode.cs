@@ -23,7 +23,7 @@ namespace Pliant.Tree
 
         public override string ToString()
         {
-            return $"{Token.TokenType.Id}({Origin}, {Location}) = {Token.Value}";
+            return $"{Token.TokenClass.Id}({Origin}, {Location}) = {Token.Value}";
         }
 
         private readonly ITokenForestNode _innerNode;

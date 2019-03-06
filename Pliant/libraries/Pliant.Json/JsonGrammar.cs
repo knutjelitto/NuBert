@@ -70,7 +70,7 @@ namespace Pliant.Json
             var regex = regexParser.Parse(pattern);
             var regexCompiler = new RegexCompiler();
             var dfa = regexCompiler.Compile(regex);
-            return new DfaLexer(dfa, pattern);
+            return new DfaLexerRule(dfa, pattern);
         }
 
         private static LexerRule String()
