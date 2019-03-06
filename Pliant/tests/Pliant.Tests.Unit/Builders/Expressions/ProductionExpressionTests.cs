@@ -391,7 +391,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             Terminal
-                a = new SetTerminal('a', 'b');
+                a = new SetTerminal("ab");
             S.Rule = a + (Expr)"b";
 
             Assert.IsNotNull(S.ProductionModel);
@@ -405,7 +405,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             Terminal
-                a = new SetTerminal('a', 'b');
+                a = new SetTerminal("ab");
             S.Rule = (Expr)"b"+ a;
 
             Assert.IsNotNull(S.ProductionModel);
@@ -419,7 +419,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             Terminal
-                a = new SetTerminal('a', 'b');
+                a = new SetTerminal("ab");
             S.Rule = a | (Expr)"b";
 
             Assert.IsNotNull(S.ProductionModel);
@@ -434,7 +434,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             Terminal
-                a = new SetTerminal('a', 'b');
+                a = new SetTerminal("ab");
             S.Rule = (Expr)"b" | a;
 
             Assert.IsNotNull(S.ProductionModel);

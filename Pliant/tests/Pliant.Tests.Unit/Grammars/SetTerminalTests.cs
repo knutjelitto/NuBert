@@ -9,7 +9,7 @@ namespace Pliant.Tests.Unit.Grammars
         [TestMethod]
         public void SetTerminalShouldRecognizeCharacterInSet()
         {
-            var setTerminal = new SetTerminal('a', 'z');
+            var setTerminal = new SetTerminal("az");
             Assert.IsTrue(setTerminal.IsMatch('a'));
             Assert.IsTrue(setTerminal.IsMatch('z'));
         }
@@ -17,7 +17,7 @@ namespace Pliant.Tests.Unit.Grammars
         [TestMethod]
         public void SetTerminalShouldNotRecognizeCharacterOutOfSet()
         {
-            var setTerminal = new SetTerminal('a', 'z');
+            var setTerminal = new SetTerminal("az");
             Assert.IsFalse(setTerminal.IsMatch('b'));
         }
 
@@ -25,7 +25,7 @@ namespace Pliant.Tests.Unit.Grammars
         [TestMethod]
         public void SetTerminalGetIntervalsShouldReturnMergedIntervalWhenCharactersOverlap()
         {
-            var setTerminal = new SetTerminal('a', 'b', 'c', 'd', 'e', 'z');
+            var setTerminal = new SetTerminal("abcdez");
             var intervals = setTerminal.GetIntervals();
             Assert.AreEqual(2, intervals.Count);
             Assert.AreEqual('a', intervals[0].Min);
@@ -37,19 +37,19 @@ namespace Pliant.Tests.Unit.Grammars
         [TestMethod]
         public void SetTerminalShouldUseIntervalsForToString()
         {
-            var setTerminal = new SetTerminal('a', 'b', 'c', 'd', 'e', 'z');
+            var setTerminal = new SetTerminal("abcdez");
 
             Assert.AreEqual("[a-ez]", setTerminal.ToString());
 
-            setTerminal = new SetTerminal('z', 'a', 'b', 'c', 'd', 'e');
+            setTerminal = new SetTerminal("zabcde");
 
             Assert.AreEqual("[a-ez]", setTerminal.ToString());
 
-            setTerminal = new SetTerminal('a', 'b', 'c', 'd', 'e');
+            setTerminal = new SetTerminal("abcde");
 
             Assert.AreEqual("[a-e]", setTerminal.ToString());
 
-            setTerminal = new SetTerminal('z');
+            setTerminal = new SetTerminal("z");
 
             Assert.AreEqual("[z]", setTerminal.ToString());
         }

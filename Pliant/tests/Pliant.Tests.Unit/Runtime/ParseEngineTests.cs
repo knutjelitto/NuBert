@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
 using Pliant.Charts;
@@ -11,6 +13,8 @@ using Pliant.Tests.Common;
 using Pliant.Tests.Common.Grammars;
 using Pliant.Tokens;
 using Pliant.Tree;
+// ReSharper disable InconsistentNaming
+// ReSharper disable StringLiteralTypo
 
 namespace Pliant.Tests.Unit.Runtime
 {
@@ -279,9 +283,9 @@ namespace Pliant.Tests.Unit.Runtime
             ParseInput(parseEngine, input);
 
             var parseForestRoot = parseEngine.GetParseForestRootNode();
-            var pasreForestNode = parseForestRoot;
+            var parseForestNode = parseForestRoot;
 
-            CastAndCountChildren<ISymbolForestNode>(pasreForestNode, 2);
+            CastAndCountChildren<ISymbolForestNode>(parseForestNode, 2);
         }
 
         [TestMethod]
@@ -518,7 +522,7 @@ namespace Pliant.Tests.Unit.Runtime
                 | (F + E)
                 | (Expr) null;
             F.Rule =
-                new TerminalLexer(new SetTerminal('a', 'b'));
+                new TerminalLexer(new SetTerminal("ab"));
 
             var grammar = new GrammarExpression(E, new[] {E, F})
                 .ToGrammar();
@@ -858,6 +862,9 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static void AssertForestsAreEqual(IForestNode expected, IForestNode actual)
         {
+            Assert.IsNotNull(expected != null, nameof(expected) + " != null");
+            Assert.IsNotNull(actual != null, nameof(actual) + " != null");
+
             var comparer = new StatefulForestNodeComparer();
             Assert.IsTrue(comparer.Equals(expected, actual));
         }
@@ -877,9 +884,9 @@ namespace Pliant.Tests.Unit.Runtime
             var leoParseForestRoot = leoEngine.GetParseForestRootNode();
             var classicParseForestRoot = classicEngine.GetParseForestRootNode();
             Assert.IsTrue(nodeComparer.Equals(
-                              classicParseForestRoot,
-                              leoParseForestRoot),
-                          "Leo and Classic Parse Forest mismatch");
+                    classicParseForestRoot,
+                    leoParseForestRoot),
+                "Leo and Classic Parse Forest mismatch");
         }
 
         private static void AssertNodeProperties(ISymbolForestNode node, string nodeName, int origin, int location)
@@ -904,12 +911,12 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static IToken CreateCharacterToken(char character, int position)
         {
-            return new Token(position, character.ToString(), new TokenType(character.ToString()));
+            return new VerbatimToken(position, character.ToString(), new TokenType(character.ToString()));
         }
 
         private static IToken CreateDigitToken(int value, int position)
         {
-            return new Token(position, value.ToString(), new TokenType("digit"));
+            return new VerbatimToken(position, value.ToString(), new TokenType("digit"));
         }
 
         private static Grammar CreateExpressionGrammar()
@@ -979,8 +986,8 @@ namespace Pliant.Tests.Unit.Runtime
         private static IReadOnlyList<IToken> Tokenize(string input)
         {
             return input.Select((x, i) =>
-                                    new Token(i, x.ToString(), new TokenType(x.ToString())))
-                        .ToArray();
+                    new VerbatimToken(i, x.ToString(), new TokenType(x.ToString())))
+                .ToArray();
         }
     }
 }

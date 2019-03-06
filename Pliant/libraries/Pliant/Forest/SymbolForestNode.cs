@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Pliant.Grammars;
-using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
@@ -12,7 +11,7 @@ namespace Pliant.Forest
             Debug.Assert(symbol is NonTerminal);
 
             Symbol = symbol;
-            this._hashCode = ComputeHashCode();
+            this.hashCode = (NodeType, Origin, Location, Symbol).GetHashCode();
         }
 
         public override ForestNodeType NodeType => ForestNodeType.Symbol;
@@ -35,7 +34,7 @@ namespace Pliant.Forest
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
         public override string ToString()
@@ -43,15 +42,6 @@ namespace Pliant.Forest
             return $"({Symbol}, {Origin}, {Location})";
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                ((int) NodeType).GetHashCode(),
-                Location.GetHashCode(),
-                Origin.GetHashCode(),
-                Symbol.GetHashCode());
-        }
-
-        private readonly int _hashCode;
+        private readonly int hashCode;
     }
 }

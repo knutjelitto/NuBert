@@ -1,13 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Pliant.Builders.Expressions;
-using Pliant.Runtime;
-using Pliant.Tokens;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Pliant.Builders.Expressions;
 using Pliant.LexerRules;
+using Pliant.Runtime;
 using Pliant.Terminals;
+using Pliant.Tokens;
 
-namespace Pliant.Tests.Unit
+// ReSharper disable InconsistentNaming
+
+namespace Pliant.Tests.Unit.Lexemes
 {
     [TestClass]
     public class ParseEngineLexemeTests
@@ -26,7 +28,7 @@ namespace Pliant.Tests.Unit
 
             var lexerRule = new GrammarLexerRule("whitespace", grammar);
 
-            var lexeme = new ParseEngineLexeme(lexerRule);
+            var lexeme = new GrammarLexeme(lexerRule);
             var input = "\t\r\n\v\f ";
             for (var i = 0; i < input.Length; i++)
             {
@@ -46,7 +48,7 @@ namespace Pliant.Tests.Unit
 
             var grammar = new GrammarExpression(sequence, new[] { sequence }).ToGrammar();
             var lexerRule = new GrammarLexerRule(new TokenType("sequence"), grammar);
-            var lexeme = new ParseEngineLexeme(lexerRule);
+            var lexeme = new GrammarLexeme(lexerRule);
             var input = "abc123";
             foreach (var ch in input)
             {
@@ -59,7 +61,7 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void ParseEngineLexemeShouldMatchLongestAcceptableTokenWhenGivenAmbiguity()
         {
-            var lexemeList = new List<ParseEngineLexeme>();
+            var lexemeList = new List<GrammarLexeme>();
 
             ProductionExpression
                 There = "there";
@@ -68,7 +70,7 @@ namespace Pliant.Tests.Unit
 
             var thereGrammar = new GrammarExpression(There, new[] { There }).ToGrammar();
             var thereLexerRule = new GrammarLexerRule(nameof(There), thereGrammar);
-            var thereLexeme = new ParseEngineLexeme(thereLexerRule);
+            var thereLexeme = new GrammarLexeme(thereLexerRule);
             lexemeList.Add(thereLexeme);
 
             ProductionExpression
@@ -78,7 +80,7 @@ namespace Pliant.Tests.Unit
 
             var thereforeGrammar = new GrammarExpression(Therefore, new[] { Therefore }).ToGrammar();
             var thereforeLexerRule = new GrammarLexerRule(nameof(Therefore), thereforeGrammar);
-            var thereforeLexeme = new ParseEngineLexeme(thereforeLexerRule);
+            var thereforeLexeme = new GrammarLexeme(thereforeLexerRule);
             lexemeList.Add(thereforeLexeme);
 
             const string input = "therefore";

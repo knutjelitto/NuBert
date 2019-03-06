@@ -7,9 +7,9 @@ using Pliant.Utilities;
 
 namespace Pliant.Runtime
 {
-    public class ParseEngineLexeme : Lexeme
+    public class GrammarLexeme : Lexeme
     {
-        public ParseEngineLexeme(GrammarLexerRule lexer)
+        public GrammarLexeme(GrammarLexerRule lexer)
             : base(lexer, 0)
         {
             this.capture = new StringBuilder();

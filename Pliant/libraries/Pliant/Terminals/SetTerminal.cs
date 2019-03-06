@@ -6,17 +6,7 @@ namespace Pliant.Terminals
 {
     public sealed class SetTerminal : Terminal
     {
-        public SetTerminal(params char[] characters)
-            : this(characters.AsEnumerable())
-        {
-        }
-
-        public SetTerminal(char first, char second)
-        {
-            this.characterSet = new HashSet<char> {first, second};
-        }
-
-        private SetTerminal(IEnumerable<char> characterSet)
+        public SetTerminal(IEnumerable<char> characterSet)
         {
             this.characterSet = new HashSet<char>(characterSet);
             this.intervals = CreateIntervals(this.characterSet);

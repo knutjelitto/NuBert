@@ -51,7 +51,7 @@ namespace Pliant.Json
                         }
                     }
 
-                    yield return new Token(position, builder.ToString(), Number);
+                    yield return new VerbatimToken(position, builder.ToString(), Number);
 
                     position += builder.Length;
                     builder.Clear();
@@ -61,27 +61,27 @@ namespace Pliant.Json
                 switch (c)
                 {
                     case '[':
-                        yield return new Token(position, OpenBracket.Id, OpenBracket);
+                        yield return new VerbatimToken(position, OpenBracket.Id, OpenBracket);
                         break;
 
                     case ']':
-                        yield return new Token(position, CloseBracket.Id, CloseBracket);
+                        yield return new VerbatimToken(position, CloseBracket.Id, CloseBracket);
                         break;
 
                     case '{':
-                        yield return new Token(position, OpenBrace.Id, OpenBrace);
+                        yield return new VerbatimToken(position, OpenBrace.Id, OpenBrace);
                         break;
 
                     case '}':
-                        yield return new Token(position, CloseBrace.Id, CloseBrace);
+                        yield return new VerbatimToken(position, CloseBrace.Id, CloseBrace);
                         break;
 
                     case ',':
-                        yield return new Token(position, Comma.Id, Comma);
+                        yield return new VerbatimToken(position, Comma.Id, Comma);
                         break;
 
                     case ':':
-                        yield return new Token(position, Colon.Id, Colon);
+                        yield return new VerbatimToken(position, Colon.Id, Colon);
                         break;
 
                     case '"':
@@ -97,7 +97,7 @@ namespace Pliant.Json
                         }
 
                         builder.Append('"');
-                        yield return new Token(position, builder.ToString(), String);
+                        yield return new VerbatimToken(position, builder.ToString(), String);
 
                         position += builder.Length;
                         builder.Clear();
@@ -112,7 +112,7 @@ namespace Pliant.Json
                         {
                             builder.Append(c);
                         }
-                        yield return new Token(position, builder.ToString(), Whitespace);
+                        yield return new VerbatimToken(position, builder.ToString(), Whitespace);
 
                         position += builder.Length;
                         builder.Clear();
@@ -131,7 +131,7 @@ namespace Pliant.Json
                         {
                             yield break;
                         }
-                        yield return new Token(position, Null.Id, Null);
+                        yield return new VerbatimToken(position, Null.Id, Null);
 
                         position += 3;
                         break;
@@ -149,7 +149,7 @@ namespace Pliant.Json
                         {
                             yield break;
                         }
-                        yield return new Token(position, True.Id, True);
+                        yield return new VerbatimToken(position, True.Id, True);
 
                         position += 3;
                         break;
@@ -172,7 +172,7 @@ namespace Pliant.Json
                             yield break;
                         }
 
-                        yield return new Token(position, False.Id, False);
+                        yield return new VerbatimToken(position, False.Id, False);
 
                         position += 4;
                         break;

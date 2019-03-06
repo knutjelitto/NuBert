@@ -36,7 +36,7 @@ namespace Pliant.LexerRules
 
         public override Lexeme CreateLexeme(int position)
         {
-            return new ParseEngineLexeme(this);
+            return new GrammarLexeme(this);
         }
 
         public override string ToString()

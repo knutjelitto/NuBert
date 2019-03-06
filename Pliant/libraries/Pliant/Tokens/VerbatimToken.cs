@@ -2,9 +2,9 @@
 
 namespace Pliant.Tokens
 {
-    public sealed class Token : Trivia, IToken
+    public sealed class VerbatimToken : Trivia, IToken
     {
-        public Token(int position, string value, TokenType tokenType)
+        public VerbatimToken(int position, string value, TokenType tokenType)
             : base(position, value, tokenType)
         {
             LeadingTrivia = null;
@@ -18,7 +18,7 @@ namespace Pliant.Tokens
 
         public override bool Equals(object obj)
         {
-            return obj is Token other &&
+            return obj is VerbatimToken other &&
                    Position.Equals(other.Position) &&
                    Value.Equals(other.Value) && 
                    TokenType.Equals(other.TokenType);

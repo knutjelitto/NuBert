@@ -46,7 +46,7 @@ namespace Pliant.Tests.Unit
             var production = new Production(new NonTerminal("Z"), 
                 new CharacterTerminal('a'), 
                 new NonTerminal("B"),
-                new SetTerminal('a','z'));
+                new SetTerminal("az"));
             var hashCode = production.GetHashCode();
             Assert.AreEqual(hashCode, production.GetHashCode());
         }

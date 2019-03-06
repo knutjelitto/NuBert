@@ -89,7 +89,7 @@ namespace Pliant.Bnf
             var escape = DfaState.Inner();
             var final = DfaState.Final();
 
-            var notQuoteTerminal = new NegationTerminal(new SetTerminal('"', '\\'));
+            var notQuoteTerminal = new NegationTerminal(new SetTerminal("\"\\"));
             var escapeTerminal = new CharacterTerminal('\\');
 
             start.AddTransition(notQuoteTerminal, final)
@@ -122,7 +122,7 @@ namespace Pliant.Bnf
                 new CharacterClassTerminal(
                     AsciiLetterTerminal.Instance,
                     DigitTerminal.Instance,
-                    new SetTerminal('-', '_')),
+                    new SetTerminal("-_")),
                 zeroOrMoreLetterOrDigit);
             var ruleName = new DfaLexer(ruleNameState, "rule-name");
             return ruleName;

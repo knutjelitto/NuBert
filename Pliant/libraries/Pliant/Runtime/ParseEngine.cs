@@ -171,7 +171,7 @@ namespace Pliant.Runtime
         private IForestNode CreateNullParseNode(Symbol symbol, int location)
         {
             var symbolNode = NodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
-            var nullToken = new Token(location, string.Empty, emptyTokenType);
+            var nullToken = new VerbatimToken(location, string.Empty, emptyTokenType);
             var nullNode = new TokenForestNode(nullToken, location, location);
             symbolNode.AddUniqueFamily(nullNode);
             return symbolNode;

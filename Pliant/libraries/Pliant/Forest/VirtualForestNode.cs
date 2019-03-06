@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using Pliant.Charts;
 using Pliant.Grammars;
-using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
@@ -27,11 +25,11 @@ namespace Pliant.Forest
             State targetState)
             : base(targetState.Origin, location)
         {
-            this._paths = new List<VirtualForestNodePath>();
+            this.paths = new List<VirtualForestNodePath>();
 
             Symbol = targetState.DottedRule.Production.LeftHandSide;
 
-            this._hashCode = ComputeHashCode();
+            this.hashCode = (Origin, Location, NodeType, Symbol).GetHashCode();
             var path = new VirtualForestNodePath(transitionState, completedParseNode);
             AddUniquePath(path);
         }
@@ -70,7 +68,7 @@ namespace Pliant.Forest
                 CloneUniqueChildSubTree(path.ForestNode as IInternalForestNode);
             }
 
-            this._paths.Add(path);
+            this.paths.Add(path);
         }
 
         public override bool Equals(object obj)
@@ -84,7 +82,7 @@ namespace Pliant.Forest
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
         public override string ToString()
@@ -120,13 +118,11 @@ namespace Pliant.Forest
 
         private void CloneUniqueChildSubTree(IInternalForestNode internalCompletedParseNode)
         {
-            for (var a = 0; a < internalCompletedParseNode.Children.Count; a++)
+            foreach (var andNode in internalCompletedParseNode.Children)
             {
-                var andNode = internalCompletedParseNode.Children[a];
                 var newAndNode = new AndForestNode();
-                for (var c = 0; c < andNode.Children.Count; c++)
+                foreach (var child in andNode.Children)
                 {
-                    var child = andNode.Children[c];
                     newAndNode.AddChild(child);
                 }
 
@@ -134,20 +130,10 @@ namespace Pliant.Forest
             }
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                ((int) NodeType).GetHashCode(),
-                Location.GetHashCode(),
-                Origin.GetHashCode(),
-                Symbol.GetHashCode());
-        }
-
         private bool IsUniquePath(VirtualForestNodePath path)
         {
-            for (var p = 0; p < this._paths.Count; p++)
+            foreach (var otherPath in this.paths)
             {
-                var otherPath = this._paths[p];
                 if (path.Equals(otherPath))
                 {
                     return false;
@@ -159,9 +145,9 @@ namespace Pliant.Forest
 
         private void LazyLoadChildren()
         {
-            for (var i = 0; i < this._paths.Count; i++)
+            foreach (var path in this.paths)
             {
-                LazyLoadPath(this._paths[i]);
+                LazyLoadPath(path);
             }
         }
 
@@ -197,7 +183,7 @@ namespace Pliant.Forest
             return this.children.Count == 0;
         }
 
-        private readonly int _hashCode;
-        private readonly List<VirtualForestNodePath> _paths;
+        private readonly int hashCode;
+        private readonly List<VirtualForestNodePath> paths;
     }
 }

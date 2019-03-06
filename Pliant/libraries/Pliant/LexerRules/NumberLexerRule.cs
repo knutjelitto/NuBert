@@ -19,7 +19,7 @@ namespace Pliant.LexerRules
             var zeroThroughNine = new RangeTerminal('0', '9');
 
             states[0].AddTransition(new CharacterTerminal('.'), states[3]);
-            states[0].AddTransition(new SetTerminal('+', '-'), states[1]);
+            states[0].AddTransition(new SetTerminal("+-"), states[1]);
             states[0].AddTransition(zeroThroughNine, states[2]);
 
             states[1].AddTransition(new CharacterTerminal('.'), states[3]);

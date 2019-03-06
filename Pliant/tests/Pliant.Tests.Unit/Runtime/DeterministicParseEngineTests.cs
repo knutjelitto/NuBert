@@ -53,7 +53,7 @@ namespace Pliant.Tests.Unit.Runtime
                         tokenType = i < 10 ? notCloseBracket : notMeta;
                         break;
                 }
-                var token = new Token(i, pattern[i].ToString(), tokenType);
+                var token = new VerbatimToken(i, pattern[i].ToString(), tokenType);
                 var result = parseEngine.Pulse(token);
                 Assert.IsTrue(result, $"Error at position {i}");
             }
@@ -71,7 +71,7 @@ namespace Pliant.Tests.Unit.Runtime
 
             for (var i = 0; i < input.Length; i++)
             {
-                var result = parseEngine.Pulse(new Token(i, "a", tokenType));
+                var result = parseEngine.Pulse(new VerbatimToken(i, "a", tokenType));
                 Assert.IsTrue(result, $"Error at position {i}");
             }
 
@@ -160,11 +160,11 @@ namespace Pliant.Tests.Unit.Runtime
 
             var tokens = new[]
             {
-                new Token(0, "[", openBracket.TokenType),
-                new Token(1, "1", number.TokenType),
-                new Token(2, ",", comma.TokenType),
-                new Token(3, "2", number.TokenType),
-                new Token(4, "]", closeBracket.TokenType)
+                new VerbatimToken(0, "[", openBracket.TokenType),
+                new VerbatimToken(1, "1", number.TokenType),
+                new VerbatimToken(2, ",", comma.TokenType),
+                new VerbatimToken(3, "2", number.TokenType),
+                new VerbatimToken(4, "]", closeBracket.TokenType)
             };
 
             foreach (var token in tokens)

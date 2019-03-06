@@ -4,7 +4,6 @@ namespace Pliant.Terminals
 {
     public class WordTerminal : Terminal
     {
-        public static readonly WordTerminal Instance = new WordTerminal();
         private WordTerminal()
         {
         }
@@ -17,10 +16,12 @@ namespace Pliant.Terminals
         public override bool IsMatch(char character)
         {
             return 'a' <= character && character <= 'z' ||
-                   'A' <= character && character <= 'Z' || 
-                   '0' <= character && character <= '9' || 
+                   'A' <= character && character <= 'Z' ||
+                   '0' <= character && character <= '9' ||
                    '_' == character;
         }
+
+        public static readonly WordTerminal Instance = new WordTerminal();
 
         private static readonly Interval[] intervals =
         {

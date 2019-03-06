@@ -10,7 +10,7 @@ namespace Pliant.Forest
             : base(origin, location)
         {
             DottedRule = dottedRule;
-            this._hashCode = ComputeHashCode();
+            this.hashCode = (NodeType, DottedRule, Origin, Location).GetHashCode();
         }
 
         public DottedRule DottedRule { get; }
@@ -33,7 +33,7 @@ namespace Pliant.Forest
 
         public override int GetHashCode()
         {
-            return this._hashCode;
+            return this.hashCode;
         }
 
         public override string ToString()
@@ -41,15 +41,6 @@ namespace Pliant.Forest
             return $"({DottedRule}, {Origin}, {Location})";
         }
 
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                ((int) NodeType).GetHashCode(),
-                Location.GetHashCode(),
-                Origin.GetHashCode(),
-                DottedRule.GetHashCode());
-        }
-
-        private readonly int _hashCode;
+        private readonly int hashCode;
     }
 }

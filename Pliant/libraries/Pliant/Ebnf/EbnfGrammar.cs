@@ -162,7 +162,7 @@ namespace Pliant.Ebnf
                 new CharacterClassTerminal(
                     AsciiLetterTerminal.Instance,
                     DigitTerminal.Instance,
-                    new SetTerminal('-', '_')),
+                    new SetTerminal("-_")),
                 zeroOrMoreLetterOrDigit);
 
             return new DfaLexer(identifierState, TokenTypes.Identifier);
