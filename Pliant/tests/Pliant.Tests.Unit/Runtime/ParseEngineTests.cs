@@ -225,7 +225,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseForestRoot = parseEngine.GetParseForestRootNode();
             var actual = parseForestRoot;
 
-            var a_1_2 = new TokenForestNode(MakeToken("a", 1), 1, 2);
+            var a_1_2 = new TokenForestNode(MakeToken("a", 1));
             var expected =
                 new SymbolForestNode(
                     S.ProductionModel.LeftHandSide.NonTerminal,
@@ -236,7 +236,7 @@ namespace Pliant.Tests.Unit.Runtime
                             S.ProductionModel.LeftHandSide.NonTerminal,
                             0,
                             1,
-                            new AndForestNode(new TokenForestNode(MakeToken("a", 0), 0, 1))),
+                            new AndForestNode(new TokenForestNode(MakeToken("a", 0)))),
                         new SymbolForestNode(
                             T.ProductionModel.LeftHandSide.NonTerminal,
                             1,
@@ -248,7 +248,7 @@ namespace Pliant.Tests.Unit.Runtime
                                     B.ProductionModel.LeftHandSide.NonTerminal,
                                     2,
                                     2,
-                                    new AndForestNode(new TokenForestNode(MakeToken("", 2), 2, 2)))))));
+                                    new AndForestNode(new TokenForestNode(MakeToken("", 2))))))));
             AssertForestsAreEqual(expected, actual);
         }
 

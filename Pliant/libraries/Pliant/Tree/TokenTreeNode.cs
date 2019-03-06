@@ -7,14 +7,14 @@ namespace Pliant.Tree
     {
         public TokenTreeNode(ITokenForestNode innerNode)
         {
-            this._innerNode = innerNode;
+            this.innerNode = innerNode;
         }
 
-        public int Location => this._innerNode.Location;
+        public int Location => this.innerNode.Location;
 
-        public int Origin => this._innerNode.Origin;
+        public int Origin => this.innerNode.Origin;
 
-        public IToken Token => this._innerNode.Token;
+        public IToken Token => this.innerNode.Token;
 
         public void Accept(ITreeNodeVisitor visitor)
         {
@@ -26,6 +26,6 @@ namespace Pliant.Tree
             return $"{Token.TokenClass.Id}({Origin}, {Location}) = {Token.Value}";
         }
 
-        private readonly ITokenForestNode _innerNode;
+        private readonly ITokenForestNode innerNode;
     }
 }

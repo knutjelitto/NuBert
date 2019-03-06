@@ -58,7 +58,7 @@ namespace Pliant.Forest
                 return tokenNode;
             }
 
-            tokenNode = new TokenForestNode(token, token.Position, token.Value.Length);
+            tokenNode = new TokenForestNode(token);
             this._tokenNodes.Add(token, tokenNode);
             return tokenNode;
         }

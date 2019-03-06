@@ -5,8 +5,8 @@ namespace Pliant.Forest
 {
     public sealed class TokenForestNode : ForestNode, ITokenForestNode
     {
-        public TokenForestNode(IToken token, int origin, int location)
-            : base(origin, location)
+        public TokenForestNode(IToken token)
+            : base(token.Position, token.Value.Length)
         {
             Token = token;
             this.hashCode = (NodeType, Origin, Location, Token).GetHashCode();
