@@ -171,7 +171,7 @@ namespace Pliant.Runtime
         private IForestNode CreateNullParseNode(Symbol symbol, int location)
         {
             var symbolNode = NodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
-            var nullNode = new EpsilonForestNode(location, location);
+            var nullNode = new EpsilonForestNode(location);
             symbolNode.AddUniqueFamily(nullNode);
             return symbolNode;
         }

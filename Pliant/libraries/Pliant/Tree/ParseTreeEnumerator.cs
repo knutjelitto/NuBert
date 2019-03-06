@@ -164,7 +164,7 @@ namespace Pliant.Tree
 
             public override void Visit(ITokenForestNode tokenNode)
             {
-                VisitToken(tokenNode.Origin, tokenNode.Location, tokenNode.Token);
+                VisitToken(tokenNode.Location, tokenNode.Token);
             }
 
             private int GetOrSetChildIndex(IInternalForestNode symbolNode)
@@ -199,12 +199,9 @@ namespace Pliant.Tree
                 return childIndex;
             }
 
-            private void VisitToken(int origin, int location, IToken token)
+            private void VisitToken(int location, IToken token)
             {
-                var tokenTreeNodeImpl = new TokenTreeNodeImpl(
-                    origin,
-                    location,
-                    token);
+                var tokenTreeNodeImpl = new TokenTreeNodeImpl(location, token);
 
                 var parent = this.nodeStack.Peek();
                 parent.ReadWriteChildren.Add(tokenTreeNodeImpl);
@@ -220,15 +217,12 @@ namespace Pliant.Tree
 
         private abstract class TreeNodeImpl : ITreeNode
         {
-            protected TreeNodeImpl(int origin, int location)
+            protected TreeNodeImpl(int location)
             {
-                Origin = origin;
                 Location = location;
             }
 
             public int Location { get; }
-
-            public int Origin { get; }
 
             public abstract void Accept(ITreeNodeVisitor visitor);
         }
@@ -236,8 +230,9 @@ namespace Pliant.Tree
         private class InternalTreeNodeImpl : TreeNodeImpl, IInternalTreeNode
         {
             public InternalTreeNodeImpl(int origin, int location, NonTerminal symbol)
-                : base(origin, location)
+                : base(location)
             {
+                Origin = origin;
                 Symbol = symbol;
                 ReadWriteChildren = new List<ITreeNode>();
             }
@@ -251,6 +246,7 @@ namespace Pliant.Tree
                 return Symbol.Is(name);
             }
 
+            public int Origin { get; }
             public NonTerminal Symbol { get; }
 
             public override void Accept(ITreeNodeVisitor visitor)
@@ -261,8 +257,8 @@ namespace Pliant.Tree
 
         private class TokenTreeNodeImpl : TreeNodeImpl, ITokenTreeNode
         {
-            public TokenTreeNodeImpl(int origin, int location, IToken token)
-                : base(origin, location)
+            public TokenTreeNodeImpl(int location, IToken token)
+                : base(location)
             {
                 Token = token;
             }

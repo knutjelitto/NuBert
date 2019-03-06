@@ -7,6 +7,8 @@ namespace Pliant.Forest
     /// </summary>
     public interface IInternalForestNode : IForestNode
     {
+        int Origin { get; }
+
         IReadOnlyList<AndForestNode> Children { get; }
 
         void AddUniqueFamily(IForestNode trigger);

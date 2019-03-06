@@ -9,13 +9,13 @@ namespace Pliant.Tests.Common.Forest
     {
         public LoggingForestNodeVisitor(TextWriter streamWriter)
         {
-            this._visited = new HashSet<IForestNode>();
-            this._writer = streamWriter;
+            this.visited = new HashSet<IForestNode>();
+            this.writer = streamWriter;
         }
 
         public void Visit(ITokenForestNode tokenNode)
         {
-            this._visited.Add(tokenNode);
+            this.visited.Add(tokenNode);
         }
 
         public void Visit(AndForestNode andNode)
@@ -29,7 +29,7 @@ namespace Pliant.Tests.Common.Forest
 
         public void Visit(IIntermediateForestNode node)
         {
-            if (!this._visited.Add(node))
+            if (!this.visited.Add(node))
             {
                 return;
             }
@@ -43,7 +43,7 @@ namespace Pliant.Tests.Common.Forest
 
         public void Visit(ISymbolForestNode node)
         {
-            if (!this._visited.Add(node))
+            if (!this.visited.Add(node))
             {
                 return;
             }
@@ -51,7 +51,7 @@ namespace Pliant.Tests.Common.Forest
             for (var a = 0; a < node.Children.Count; a++)
             {
                 PrintNode(node);
-                this._writer.Write(" ->");
+                this.writer.Write(" ->");
                 var andNode = node.Children[a];
                 for (var c = 0; c < andNode.Children.Count; c++)
                 {
@@ -59,7 +59,7 @@ namespace Pliant.Tests.Common.Forest
                     PrintNode(child);
                 }
 
-                this._writer.WriteLine();
+                this.writer.WriteLine();
             }
 
             for (var i = 0; i < node.Children.Count; i++)
@@ -83,7 +83,7 @@ namespace Pliant.Tests.Common.Forest
                     var flatList = GetFlattenedList(intermediate);
                     for (var i = 0; i < flatList.Count; i++)
                     {
-                        this._writer.Write(" ");
+                        this.writer.Write(" ");
                         PrintNode(flatList[i]);
                     }
 
@@ -92,15 +92,15 @@ namespace Pliant.Tests.Common.Forest
                 case ForestNodeType.Symbol:
                     var symbolForestNode = node as ISymbolForestNode;
                     var symbolForestNodeString = GetSymbolNodeString(symbolForestNode);
-                    this._writer.Write(" ");
-                    this._writer.Write(symbolForestNodeString);
+                    this.writer.Write(" ");
+                    this.writer.Write(symbolForestNodeString);
                     break;
 
                 case ForestNodeType.Token:
                     var tokenForestNode = node as ITokenForestNode;
                     var tokenForestNodeString = GetTokenNodeString(tokenForestNode);
-                    this._writer.Write(" ");
-                    this._writer.Write(tokenForestNodeString);
+                    this.writer.Write(" ");
+                    this.writer.Write(tokenForestNodeString);
                     break;
             }
         }
@@ -143,10 +143,10 @@ namespace Pliant.Tests.Common.Forest
 
         private static string GetTokenNodeString(ITokenForestNode node)
         {
-            return $"('{node.Token.Value}', {node.Origin}, {node.Location})";
+            return $"('{node.Token.Value}', {node.Location})";
         }
 
-        private readonly HashSet<IForestNode> _visited;
-        private readonly TextWriter _writer;
+        private readonly HashSet<IForestNode> visited;
+        private readonly TextWriter writer;
     }
 }

@@ -7,11 +7,11 @@ namespace Pliant.Forest
     {
         private static readonly TokenClass epsilonTokenType = new TokenClass(string.Empty);
 
-        public EpsilonForestNode(int origin, int location)
-            : base(origin, location)
+        public EpsilonForestNode(int location)
+            : base(location)
         {
             Token = new VerbatimToken(location, string.Empty, epsilonTokenType);
-            this.hashCode = (Origin, Location).GetHashCode();
+            this.hashCode = (Location).GetHashCode();
         }
 
         public override ForestNodeType NodeType => ForestNodeType.Token;
@@ -25,7 +25,6 @@ namespace Pliant.Forest
         public override bool Equals(object obj)
         {
             return obj is EpsilonForestNode other &&
-                   Origin.Equals(other.Origin) &&
                    Location.Equals(other.Location);
         }
 

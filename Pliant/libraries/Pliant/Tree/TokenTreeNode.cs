@@ -12,8 +12,6 @@ namespace Pliant.Tree
 
         public int Location => this.innerNode.Location;
 
-        public int Origin => this.innerNode.Origin;
-
         public IToken Token => this.innerNode.Token;
 
         public void Accept(ITreeNodeVisitor visitor)
@@ -23,7 +21,7 @@ namespace Pliant.Tree
 
         public override string ToString()
         {
-            return $"{Token.TokenClass.Id}({Origin}, {Location}) = {Token.Value}";
+            return $"{Token.TokenClass}({Location}) = {Token.Value}";
         }
 
         private readonly ITokenForestNode innerNode;

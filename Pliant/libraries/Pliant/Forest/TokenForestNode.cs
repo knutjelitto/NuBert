@@ -6,10 +6,10 @@ namespace Pliant.Forest
     public sealed class TokenForestNode : ForestNode, ITokenForestNode
     {
         public TokenForestNode(IToken token)
-            : base(token.Position, token.Value.Length)
+            : base(token.Position)
         {
             Token = token;
-            this.hashCode = (NodeType, Origin, Location, Token).GetHashCode();
+            this.hashCode = (NodeType, Location, Token).GetHashCode();
         }
 
         public override ForestNodeType NodeType => ForestNodeType.Token;
@@ -23,7 +23,6 @@ namespace Pliant.Forest
         public override bool Equals(object obj)
         {
             return obj is TokenForestNode other &&
-                   Origin.Equals(other.Origin) &&
                    Location.Equals(other.Location) &&
                    NodeType.Equals(other.NodeType) && 
                    Token.Equals(other.Token);
