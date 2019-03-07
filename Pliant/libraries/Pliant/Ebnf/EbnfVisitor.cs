@@ -50,11 +50,11 @@ namespace Pliant.Ebnf
             foreach (var tokenNode in node.Children.OfType<ITokenTreeNode>())
             {
                 var token = tokenNode.Token;
-                var tokenType = token.TokenClass;
+                var tokenClass = token.TokenClass;
 
                 // if token type is string token type remove surrounding quotes
-                if (tokenType.Equals(SimpleSingleQuoteStringLexerRule.TokenTypeDescriptor) ||
-                    tokenType.Equals(SimpleDoubleQuoteStringLexerRule.TokenTypeDescriptor))
+                if (tokenClass.Equals(SimpleSingleQuoteStringLexerRule.Class) ||
+                    tokenClass.Equals(SimpleDoubleQuoteStringLexerRule.Class))
                 {
                     return token.Value.Substring(1, token.Value.Length - 2);
                 }

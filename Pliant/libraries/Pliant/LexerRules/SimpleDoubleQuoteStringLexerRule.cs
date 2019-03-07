@@ -7,27 +7,27 @@ namespace Pliant.LexerRules
     public class SimpleDoubleQuoteStringLexerRule : DfaLexerRule
     {
         // ["][^"]*["]
-        public static readonly TokenClass TokenTypeDescriptor = new TokenClass(@"[""][^""]*[""]");
-        private static readonly DfaState Start;
+        public static readonly TokenClass Class = new TokenClass(@"[""][^""]*[""]");
+        private static readonly DfaState enter;
 
         static SimpleDoubleQuoteStringLexerRule()
         {
             var start = DfaState.Inner();
-            var innner = DfaState.Inner();
+            var inner = DfaState.Inner();
             var final = DfaState.Final();
 
             var quote = new CharacterTerminal('"');
             var notQuote = new NegationTerminal(quote);
 
-            start.AddTransition(quote, innner);
-            innner.AddTransition(notQuote, innner);
-            innner.AddTransition(quote, final);
+            start.AddTransition(quote, inner);
+            inner.AddTransition(notQuote, inner);
+            inner.AddTransition(quote, final);
 
-            Start = start;
+            enter = start;
         }
 
         public SimpleDoubleQuoteStringLexerRule()
-            : base(Start, TokenTypeDescriptor)
+            : base(enter, Class)
         {
         }
     }
