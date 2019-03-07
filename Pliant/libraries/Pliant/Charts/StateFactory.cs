@@ -16,7 +16,7 @@ namespace Pliant.Charts
         {
             if (dottedRule.IsComplete)
             {
-                return new CompletionState(dottedRule, origin, parseNode);
+                return new CompletedState(dottedRule, origin, parseNode);
             }
 
             if (dottedRule.PostDotSymbol is NonTerminal)

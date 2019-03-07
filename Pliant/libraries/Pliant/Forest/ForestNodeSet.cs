@@ -77,7 +77,7 @@ namespace Pliant.Forest
             out VirtualForestNode node)
         {
             var targetState = transitionState.GetTargetState();
-            var key = (targetState.DottedRule.Production.LeftHandSide, targetState.Origin, location);
+            var key = (targetState.LeftHandSide, targetState.Origin, location);
             return this._virtualNodes.TryGetValue(key, out node);
         }
 

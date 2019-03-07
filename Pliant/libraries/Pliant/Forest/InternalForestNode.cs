@@ -24,7 +24,7 @@ namespace Pliant.Forest
         {
             if (ReferenceEquals(source, this))
             {
-                source = Children[0].Children[0];
+                source = Children[0].First;
             }
 
             AddUniqueAndNode(source, trigger);
@@ -32,7 +32,7 @@ namespace Pliant.Forest
 
         private static bool IsMatchedSubTree(IForestNode firstChild, IForestNode secondChild, AndForestNode andNode)
         {
-            var firstCompareNode = andNode.Children[0];
+            var firstCompareNode = andNode.First;
 
             // if first child matches the compare node, continue
             // otherwise return false
@@ -46,7 +46,7 @@ namespace Pliant.Forest
                 return true;
             }
 
-            var secondCompareNode = andNode.Children[1];
+            var secondCompareNode = andNode.Second;
 
             // return true if the second child matches
             // otherwise return false
@@ -78,12 +78,7 @@ namespace Pliant.Forest
             }
 
             // not found so return new and node
-            var newAndNode = new AndForestNode();
-            newAndNode.AddChild(firstChild);
-            if (childCount > 1)
-            {
-                newAndNode.AddChild(secondChild);
-            }
+            var newAndNode = (childCount == 1) ? new AndForestNode(firstChild) : new AndForestNode(firstChild, secondChild) ;
 
             this.children.Add(newAndNode);
         }

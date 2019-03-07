@@ -20,9 +20,8 @@ namespace Pliant.Tests.Common.Forest
 
         public void Visit(AndForestNode andNode)
         {
-            for (var i = 0; i < andNode.Children.Count; i++)
+            foreach (var child in andNode.Children)
             {
-                var child = andNode.Children[i];
                 child.Accept(this);
             }
         }
@@ -53,28 +52,25 @@ namespace Pliant.Tests.Common.Forest
                 PrintNode(node);
                 this.writer.Write(" ->");
                 var andNode = node.Children[a];
-                for (var c = 0; c < andNode.Children.Count; c++)
+                foreach (var child in andNode.Children)
                 {
-                    var child = andNode.Children[c];
                     PrintNode(child);
                 }
 
                 this.writer.WriteLine();
             }
 
-            for (var i = 0; i < node.Children.Count; i++)
+            foreach (var child in node.Children)
             {
-                var child = node.Children[i];
                 Visit(child);
             }
         }
 
         private void PrintNode(IForestNode node)
         {
-            switch (node.NodeType)
+            switch (node)
             {
-                case ForestNodeType.Intermediate:
-                    var intermediate = node as IIntermediateForestNode;
+                case IIntermediateForestNode intermediate:
                     if (intermediate.Children.Count > 1)
                     {
                         throw new Exception("Intermediate node has more children than expected. ");
@@ -89,15 +85,13 @@ namespace Pliant.Tests.Common.Forest
 
                     break;
 
-                case ForestNodeType.Symbol:
-                    var symbolForestNode = node as ISymbolForestNode;
+                case ISymbolForestNode symbolForestNode:
                     var symbolForestNodeString = GetSymbolNodeString(symbolForestNode);
                     this.writer.Write(" ");
                     this.writer.Write(symbolForestNodeString);
                     break;
 
-                case ForestNodeType.Token:
-                    var tokenForestNode = node as ITokenForestNode;
+                case ITokenForestNode tokenForestNode:
                     var tokenForestNodeString = GetTokenNodeString(tokenForestNode);
                     this.writer.Write(" ");
                     this.writer.Write(tokenForestNodeString);
@@ -112,13 +106,12 @@ namespace Pliant.Tests.Common.Forest
             for (var a = 0; a < intermediate.Children.Count; a++)
             {
                 var andNode = intermediate.Children[a];
-                for (var c = 0; c < andNode.Children.Count; c++)
+                foreach (var child in andNode.Children)
                 {
-                    var child = andNode.Children[c];
-                    switch (child.NodeType)
+                    switch (child)
                     {
-                        case ForestNodeType.Intermediate:
-                            var childList = GetFlattenedList(child as IIntermediateForestNode);
+                        case IIntermediateForestNode intermediateChild:
+                            var childList = GetFlattenedList(intermediateChild);
                             children.AddRange(childList);
                             break;
                         default:

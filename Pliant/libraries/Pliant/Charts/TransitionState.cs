@@ -5,32 +5,28 @@ namespace Pliant.Charts
 {
     public sealed class TransitionState : State
     {
-        public TransitionState(
-            Symbol recognized,
-            State transition,
-            StateBase reduction,
-            int index)
+        public TransitionState(Symbol recognized, State transition, RuleState reduction, int index)
             : base(transition.DottedRule, transition.Origin, null)
         {
             Reduction = reduction;
             Recognized = recognized;
             Index = index;
-            this.hashCode = ComputeHashCode();
+            this.hashCode = (DottedRule, Origin, Recognized, Reduction, Index).GetHashCode();
         }
 
         public int Index { get; }
-
         public TransitionState NextTransition { get; set; }
-
         public Symbol Recognized { get; }
-        public StateBase Reduction { get; }
+        public RuleState Reduction { get; }
 
         public override bool Equals(object obj)
         {
-            return obj is TransitionState transitionState &&
-                   GetHashCode() == transitionState.GetHashCode() &&
-                   Recognized.Equals(transitionState.Recognized) &&
-                   Index == transitionState.Index;
+            return obj is TransitionState other &&
+                   DottedRule.Equals(other.DottedRule) &&
+                   Origin.Equals(other.Origin) &&
+                   Recognized.Equals(other.Recognized) &&
+                   Reduction.Equals(other.Reduction) &&
+                   Index.Equals(other.Index);
         }
 
         public override int GetHashCode()
@@ -52,17 +48,6 @@ namespace Pliant.Charts
         public override string ToString()
         {
             return $"{Recognized} : {Reduction}";
-        }
-
-        private int ComputeHashCode()
-        {
-            return HashCode.Compute(
-                Origin.GetHashCode(),
-                DottedRule.Dot.GetHashCode(),
-                DottedRule.Production.GetHashCode(),
-                Recognized.GetHashCode(),
-                Reduction.GetHashCode(),
-                Index.GetHashCode());
         }
 
         public override bool Enqueue(EarleySet set)

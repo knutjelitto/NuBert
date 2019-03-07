@@ -1,13 +1,19 @@
 ﻿using Pliant.Dotted;
 using Pliant.Forest;
+using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public class PredictionState : StateBase
+    public class PredictionState : RuleState
     {
         public PredictionState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
             : base(dottedRule, origin, parseNode)
         {
+        }
+
+        public bool IsSource(Symbol searchSymbol)
+        {
+            return !DottedRule.IsComplete && DottedRule.PostDotSymbol.Is(searchSymbol);
         }
 
         public override bool Enqueue(EarleySet set)

@@ -4,9 +4,9 @@ using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public abstract class StateBase : State
+    public abstract class RuleState : State
     {
-        protected StateBase(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        protected RuleState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
             : base(dottedRule, origin, parseNode)
         {
             this.hashCode = (DottedRule, Origin).GetHashCode();
@@ -14,7 +14,7 @@ namespace Pliant.Charts
 
         public override bool Equals(object obj)
         {
-            return obj is StateBase other &&
+            return obj is RuleState other &&
                    DottedRule.Equals(other.DottedRule) &&
                    Origin.Equals(other.Origin);
         }
@@ -22,12 +22,6 @@ namespace Pliant.Charts
         public override int GetHashCode()
         {
             return this.hashCode;
-        }
-
-        public bool IsSource(Symbol searchSymbol)
-        {
-            var dottedRule = DottedRule;
-            return !dottedRule.IsComplete && dottedRule.PostDotSymbol.Is(searchSymbol);
         }
 
         public override string ToString()

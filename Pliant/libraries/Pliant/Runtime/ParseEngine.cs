@@ -74,7 +74,7 @@ namespace Pliant.Runtime
             // PERF: Avoid Linq expressions due to lambda allocation
             foreach (var completion in lastSet.Completions)
             {
-                if (completion.Origin == 0 && completion.DottedRule.Production.LeftHandSide.Is(Grammar.Start))
+                if (completion.Origin == 0 && completion.LeftHandSide.Is(Grammar.Start))
                 {
                     return completion.ParseNode as IInternalForestNode;
                 }
@@ -90,7 +90,7 @@ namespace Pliant.Runtime
             // PERF: Avoid LINQ Any due to lambda allocation
             foreach (var completion in lastSet.Completions)
             {
-                if (completion.Origin == 0 && completion.DottedRule.Production.LeftHandSide.Is(Grammar.Start))
+                if (completion.Origin == 0 && completion.LeftHandSide.Is(Grammar.Start))
                 {
                     return true;
                 }
@@ -143,15 +143,15 @@ namespace Pliant.Runtime
             return $"{origin.ToString().PadRight(9)}{state.ToString().PadRight(100)}{operation}";
         }
 
-        private void Complete(StateBase completed, int location)
+        private void Complete(CompletedState completed, int location)
         {
             if (completed.ParseNode == null)
             {
-                completed.ParseNode = CreateNullParseNode(completed.DottedRule.Production.LeftHandSide, location);
+                completed.SetParseNode(CreateNullParseNode(completed.LeftHandSide, location));
             }
 
             var earleySet = Chart[completed.Origin];
-            var searchSymbol = completed.DottedRule.Production.LeftHandSide;
+            var searchSymbol = completed.LeftHandSide;
 
             if (Options.OptimizeRightRecursion)
             {
@@ -222,34 +222,30 @@ namespace Pliant.Runtime
             return internalNode;
         }
 
-        private VirtualForestNode CreateVirtualParseNode(State completed, int location, TransitionState rootTransitionState)
+        private VirtualForestNode CreateVirtualParseNode(CompletedState completed, int location, TransitionState rootTransitionState)
         {
-            if (!NodeSet.TryGetExistingVirtualNode(
-                    location,
-                    rootTransitionState,
-                    out var virtualParseNode))
+            if (!NodeSet.TryGetExistingVirtualNode(location, rootTransitionState, out var virtualParseNode))
             {
                 virtualParseNode = new VirtualForestNode(rootTransitionState, location, completed.ParseNode);
                 NodeSet.AddNewVirtualNode(virtualParseNode);
             }
             else
             {
-                virtualParseNode.AddUniquePath(
-                    new VirtualForestNodePath(rootTransitionState, completed.ParseNode));
+                virtualParseNode.AddUniquePath(new VirtualForestNodePath(rootTransitionState, completed.ParseNode));
             }
 
             return virtualParseNode;
         }
 
-        private void EarleyComplete(StateBase completed, int location)
+        private void EarleyComplete(CompletedState completed, int location)
         {
-            var sourceEarleySet = Chart[completed.Origin];
+            var earleySet = Chart[completed.Origin];
 
             // Predictions may grow
-            for (var p = 0; p < sourceEarleySet.Predictions.Count; p++)
+            for (var p = 0; p < earleySet.Predictions.Count; p++)
             {
-                var prediction = sourceEarleySet.Predictions[p];
-                if (!prediction.IsSource(completed.DottedRule.Production.LeftHandSide))
+                var prediction = earleySet.Predictions[p];
+                if (!prediction.IsSource(completed.LeftHandSide))
                 {
                     continue;
                 }
@@ -258,6 +254,7 @@ namespace Pliant.Runtime
                 var origin = prediction.Origin;
 
                 // this will not create a node if the state already exists
+
                 var parseNode = CreateParseNode(
                     dottedRule,
                     origin,
@@ -360,7 +357,7 @@ namespace Pliant.Runtime
             return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsTransitiveNullable(nonTerminal);
         }
 
-        private void LeoComplete(TransitionState transitionState, State completed, int location)
+        private void LeoComplete(TransitionState transitionState, CompletedState completed, int location)
         {
             var earleySet = Chart[transitionState.Index];
             if (!earleySet.FindTransitionState(transitionState.DottedRule.PreDotSymbol, out var rootTransitionState))
@@ -443,7 +440,7 @@ namespace Pliant.Runtime
 
             // T_Update(I0...Ik, B);
             OptimizeReductionPathRecursive(
-                sourceState.DottedRule.Production.LeftHandSide,
+                sourceState.LeftHandSide,
                 sourceState.Origin,
                 ref t_rule,
                 ref previousTransitionState,
@@ -482,7 +479,7 @@ namespace Pliant.Runtime
             previousTransitionState = transition;
         }
 
-        private void Predict(StateBase evidence, int location)
+        private void Predict(PredictionState evidence, int location)
         {
             var dottedRule = evidence.DottedRule;
             var nonTerminal = dottedRule.PostDotSymbol as NonTerminal;
@@ -500,7 +497,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void PredictAycockHorspool(StateBase evidence, int location)
+        private void PredictAycockHorspool(RuleState evidence, int location)
         {
             var nullParseNode = CreateNullParseNode(evidence.DottedRule.PostDotSymbol, location);
             var dottedRule = DottedRules.GetNext(evidence.DottedRule);
@@ -508,8 +505,7 @@ namespace Pliant.Runtime
             //var evidenceParseNode = evidence.ParseNode as IInternalForestNode;
             IForestNode parseNode;
             if (evidence.ParseNode is IInternalForestNode evidenceParseNode &&
-                evidenceParseNode.Children.Count > 0
-                && evidenceParseNode.Children[0].Children.Count > 0)
+                evidenceParseNode.Children.Count > 0)
             {
                 parseNode = CreateParseNode(
                     dottedRule,
@@ -592,7 +588,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void Scan(StateBase scan, int location, IToken token)
+        private void Scan(RuleState scan, int location, IToken token)
         {
             var origin = scan.Origin;
             var currentSymbol = scan.DottedRule.PostDotSymbol;

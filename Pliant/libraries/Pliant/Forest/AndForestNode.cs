@@ -1,20 +1,36 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Pliant.Forest
 {
     public class AndForestNode
     {
-        public AndForestNode(params IForestNode[] nodes)
+        public AndForestNode(IForestNode first, IForestNode second)
         {
-            this.children = new List<IForestNode>(nodes);
+            Debug.Assert(first != null && second != null);
+            this.children = new List<IForestNode> {first, second};
+        }
+
+        public AndForestNode(IForestNode first)
+        {
+            Debug.Assert(first != null);
+            this.children = new List<IForestNode> { first };
+        }
+
+        public IForestNode First => this.children[0];
+        public IForestNode Second => this.children[1];
+
+        public AndForestNode Clone()
+        {
+            if (this.children.Count == 1)
+            {
+                return new AndForestNode(this.children[0]);
+            }
+
+            return new AndForestNode(this.children[0], this.children[1]);
         }
 
         public IReadOnlyList<IForestNode> Children => this.children;
-
-        public void AddChild(IForestNode orNode)
-        {
-            this.children.Add(orNode);
-        }
 
         private readonly List<IForestNode> children;
     }

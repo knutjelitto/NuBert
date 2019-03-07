@@ -7,19 +7,6 @@ namespace Pliant.Utilities
         private const uint seed = 2166136261;
         private const int incremental = 16777619;
         
-        public static int Compute(int first, int second, int third, int fourth)
-        {
-            unchecked
-            {
-                var hash = (int)seed;
-                hash = (hash * incremental) ^ first;
-                hash = (hash * incremental) ^ second;
-                hash = (hash * incremental) ^ third;
-                hash = (hash * incremental) ^ fourth;
-                return hash;
-            }
-        }
-
         public static int Compute(int first, int second, int third, int fourth, int fifth, int sixth)
         {
             unchecked

@@ -27,7 +27,7 @@ namespace Pliant.Forest
         {
             this.paths = new List<VirtualForestNodePath>();
 
-            Symbol = targetState.DottedRule.Production.LeftHandSide;
+            Symbol = targetState.LeftHandSide;
 
             this.hashCode = (Origin, Location, NodeType, Symbol).GetHashCode();
             var path = new VirtualForestNodePath(transitionState, completedParseNode);
@@ -120,11 +120,7 @@ namespace Pliant.Forest
         {
             foreach (var andNode in internalCompletedParseNode.Children)
             {
-                var newAndNode = new AndForestNode();
-                foreach (var child in andNode.Children)
-                {
-                    newAndNode.AddChild(child);
-                }
+                var newAndNode = andNode.Clone();
 
                 this.children.Add(newAndNode);
             }

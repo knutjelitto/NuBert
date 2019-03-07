@@ -331,7 +331,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseNode = onlyCompletion.ParseNode as IInternalForestNode;
             Assert.IsNotNull(parseNode);
             var parseNodeAndNode = parseNode.Children[0];
-            var tokenParseNode = parseNodeAndNode.Children[0] as ITokenForestNode;
+            var tokenParseNode = parseNodeAndNode.First as ITokenForestNode;
             Assert.IsNotNull(tokenParseNode);
             var token = tokenParseNode.Token;
             Assert.AreEqual(EbnfGrammar.TokenClasses.Identifier, token.TokenClass);

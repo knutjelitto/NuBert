@@ -9,13 +9,13 @@ namespace Pliant.Charts
     {
         public EarleySet()
         {
-            this.completions = new StateList<CompletionState>();
+            this.completions = new StateList<CompletedState>();
             this.predictions = new StateList<PredictionState>();
             this.scans = new StateList<ScanState>();
             this.transitions = new UniqueList<TransitionState>();
         }
 
-        public IReadOnlyList<CompletionState> Completions => this.completions;
+        public IReadOnlyList<CompletedState> Completions => this.completions;
 
         public IReadOnlyList<PredictionState> Predictions => this.predictions;
 
@@ -23,7 +23,7 @@ namespace Pliant.Charts
 
         public IReadOnlyList<TransitionState> Transitions => this.transitions;
 
-        public bool Add(CompletionState state)
+        public bool Add(CompletedState state)
         {
             return this.completions.AddUnique(state);
         }
@@ -56,14 +56,14 @@ namespace Pliant.Charts
                        : ScansContains(dottedRule, origin);
         }
 
-        public bool FindUniqueSourceState(Symbol searchSymbol, out StateBase sourceItem)
+        public bool FindUniqueSourceState(Symbol searchSymbol, out PredictionState sourceItem)
         {
             var sourceItemCount = 0;
             sourceItem = null;
 
-            foreach (var state in Predictions)
+            foreach (var prediction in Predictions)
             {
-                if (state.IsSource(searchSymbol))
+                if (prediction.IsSource(searchSymbol))
                 {
                     var moreThanOneSourceItemExists = sourceItemCount > 0;
                     if (moreThanOneSourceItemExists)
@@ -72,7 +72,7 @@ namespace Pliant.Charts
                     }
 
                     sourceItemCount++;
-                    sourceItem = state;
+                    sourceItem = prediction;
                 }
             }
 
@@ -109,7 +109,7 @@ namespace Pliant.Charts
             return this.scans.Contains(rule, origin);
         }
 
-        private readonly StateList<CompletionState> completions;
+        private readonly StateList<CompletedState> completions;
         private readonly StateList<PredictionState> predictions;
         private readonly StateList<ScanState> scans;
         private readonly UniqueList<TransitionState> transitions;
