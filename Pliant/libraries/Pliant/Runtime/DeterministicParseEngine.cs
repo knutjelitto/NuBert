@@ -51,12 +51,10 @@ namespace Pliant.Runtime
             }
 
             var frameSet = frameSets[frameSets.Count - 1];
-            for (var i = 0; i < frameSet.States.Count; i++)
+            foreach (var stateFrame in frameSet.States)
             {
-                var stateFrame = frameSet.States[i];
-                for (var j = 0; j < stateFrame.DottedRuleSet.ScanKeys.Count; j++)
+                foreach (var lexerRule in stateFrame.DottedRuleSet.ScanKeys)
                 {
-                    var lexerRule = stateFrame.DottedRuleSet.ScanKeys[j];
                     var index = Grammar.GetLexerIndex(lexerRule);
                     if (index < 0)
                     {
@@ -102,7 +100,7 @@ namespace Pliant.Runtime
             return array;
         }
 
-        public IInternalForestNode GetParseForestRootNode()
+        public ISymbolForestNode GetParseForestRootNode()
         {
             throw new NotImplementedException();
         }
@@ -137,9 +135,9 @@ namespace Pliant.Runtime
 
         public bool Pulse(IReadOnlyList<IToken> tokens)
         {
-            for (var i = 0; i < tokens.Count; i++)
+            foreach (var token in tokens)
             {
-                Scan(Location, tokens[i]);
+                Scan(Location, token);
             }
 
             var tokenRecognized = this.chart.Sets.Count > Location + 1;

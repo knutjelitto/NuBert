@@ -36,8 +36,8 @@ namespace Pliant.Runtime
 
         public IReadOnlyList<LexerRule> GetExpectedLexerRules()
         {
-            var currentEarleySet = Chart.LastSet();
-            var scanStates = currentEarleySet.Scans;
+            var earleySet = Chart.LastSet();
+            var scanStates = earleySet.Scans;
 
             if (scanStates.Count == 0)
             {
@@ -51,7 +51,6 @@ namespace Pliant.Runtime
                           .Where(index => index >= 0);
 
             var indices = new Indices(numbers);
-
 
             // if the hash is found in the cached lexer rule lists, return the cached array
             if (this.expectedLexerRuleCache.TryGetValue(indices, out var cachedLexerRules))
@@ -67,7 +66,7 @@ namespace Pliant.Runtime
             return array;
         }
 
-        public IInternalForestNode GetParseForestRootNode()
+        public ISymbolForestNode GetParseForestRootNode()
         {
             var lastSet = Chart.LastSet();
 
@@ -76,7 +75,8 @@ namespace Pliant.Runtime
             {
                 if (completion.Origin == 0 && completion.LeftHandSide.Is(Grammar.Start))
                 {
-                    return completion.ParseNode as IInternalForestNode;
+                    Debug.Assert(completion.ParseNode is ISymbolForestNode);
+                    return (ISymbolForestNode) completion.ParseNode;
                 }
             }
 
@@ -168,10 +168,10 @@ namespace Pliant.Runtime
             }
         }
 
-        private IForestNode CreateNullParseNode(Symbol symbol, int location)
+        private IForestNode CreateNullParseNode(NonTerminal symbol, int location)
         {
             var symbolNode = NodeSet.AddOrGetExistingSymbolNode(symbol, location, location);
-            var nullNode = new EpsilonForestNode(location);
+            var nullNode = new SymbolForestNode(symbol, location, location); //new EpsilonForestNode(location);
             symbolNode.AddUniqueFamily(nullNode);
             return symbolNode;
         }
@@ -242,7 +242,8 @@ namespace Pliant.Runtime
             var earleySet = Chart[completed.Origin];
 
             // Predictions may grow
-            for (var p = 0; p < earleySet.Predictions.Count; p++)
+            var p = 0;
+            for (;p < earleySet.Predictions.Count;++p)
             {
                 var prediction = earleySet.Predictions[p];
                 if (!prediction.IsSource(completed.LeftHandSide))
@@ -481,8 +482,8 @@ namespace Pliant.Runtime
 
         private void Predict(PredictionState evidence, int location)
         {
-            var dottedRule = evidence.DottedRule;
-            var nonTerminal = dottedRule.PostDotSymbol as NonTerminal;
+            var nonTerminal = evidence.DottedRule.PostDotSymbol as NonTerminal;
+            Debug.Assert(nonTerminal != null);
             var rulesForNonTerminal = Grammar.ProductionsFor(nonTerminal);
 
             foreach (var production in rulesForNonTerminal)
@@ -499,13 +500,12 @@ namespace Pliant.Runtime
 
         private void PredictAycockHorspool(RuleState evidence, int location)
         {
-            var nullParseNode = CreateNullParseNode(evidence.DottedRule.PostDotSymbol, location);
+            var nullParseNode = CreateNullParseNode(evidence.DottedRule.PostDotSymbol as NonTerminal, location);
             var dottedRule = DottedRules.GetNext(evidence.DottedRule);
 
             //var evidenceParseNode = evidence.ParseNode as IInternalForestNode;
             IForestNode parseNode;
-            if (evidence.ParseNode is IInternalForestNode evidenceParseNode &&
-                evidenceParseNode.Children.Count > 0)
+            if (evidence.ParseNode is IInternalForestNode evidenceParseNode && evidenceParseNode.Children.Count > 0)
             {
                 parseNode = CreateParseNode(
                     dottedRule,
@@ -554,9 +554,9 @@ namespace Pliant.Runtime
             }
         }
 
-        private void ReductionPass(int position)
+        private void ReductionPass(int location)
         {
-            var earleySet = Chart[position];
+            var earleySet = Chart[location];
             var resume = true;
 
             var p = 0;
@@ -567,19 +567,14 @@ namespace Pliant.Runtime
                 // is there a new completion?
                 if (c < earleySet.Completions.Count)
                 {
-                    var completion = earleySet.Completions[c];
-                    Complete(completion, position);
-                    c++;
+                    var completion = earleySet.Completions[c++];
+                    Complete(completion, location);
                 }
                 // is there a new prediction?
                 else if (p < earleySet.Predictions.Count)
                 {
-                    var predictions = earleySet.Predictions;
-
-                    var evidence = predictions[p];
-                    Predict(evidence, position);
-
-                    p++;
+                    var evidence = earleySet.Predictions[p++];
+                    Predict(evidence, location);
                 }
                 else
                 {
@@ -588,12 +583,12 @@ namespace Pliant.Runtime
             }
         }
 
-        private void Scan(RuleState scan, int location, IToken token)
+        private void Scan(ScanState scan, int location, IToken token)
         {
             var origin = scan.Origin;
             var currentSymbol = scan.DottedRule.PostDotSymbol;
 
-            if (currentSymbol is LexerRule lexer && token.TokenClass.Equals(lexer.TokenType))
+            if (currentSymbol is LexerRule lexerRule && token.TokenClass.Equals(lexerRule.TokenClass))
             {
                 var dottedRule = DottedRules.GetNext(scan.DottedRule);
                 if (Chart.ContainsNormal(location + 1, dottedRule, origin))
@@ -620,6 +615,7 @@ namespace Pliant.Runtime
         private void ScanPass(int location, IToken token)
         {
             var earleySet = Chart[location];
+
             foreach (var scanState in earleySet.Scans)
             {
                 Scan(scanState, location, token);

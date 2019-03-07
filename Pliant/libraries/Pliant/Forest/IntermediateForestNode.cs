@@ -1,6 +1,4 @@
 ﻿using Pliant.Dotted;
-using Pliant.Grammars;
-using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
@@ -10,12 +8,10 @@ namespace Pliant.Forest
             : base(origin, location)
         {
             DottedRule = dottedRule;
-            this.hashCode = (NodeType, DottedRule, Origin, Location).GetHashCode();
+            this.hashCode = (DottedRule, Origin, Location).GetHashCode();
         }
 
         public DottedRule DottedRule { get; }
-
-        public override ForestNodeType NodeType => ForestNodeType.Intermediate;
 
         public override void Accept(IForestNodeVisitor visitor)
         {
@@ -24,11 +20,10 @@ namespace Pliant.Forest
 
         public override bool Equals(object obj)
         {
-            return obj is IIntermediateForestNode other && 
-                   Location == other.Location && 
-                   NodeType == other.NodeType && 
-                   Origin == other.Origin && 
-                   DottedRule.Equals(other.DottedRule);
+            return obj is IIntermediateForestNode other &&
+                   DottedRule.Equals(other.DottedRule) &&
+                   Origin == other.Origin &&
+                   Location == other.Location;
         }
 
         public override int GetHashCode()

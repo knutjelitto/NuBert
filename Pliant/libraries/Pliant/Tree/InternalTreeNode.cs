@@ -8,17 +8,17 @@ namespace Pliant.Tree
     public sealed class InternalTreeNode : IInternalTreeNode
     {
         public InternalTreeNode(
-            IInternalForestNode internalNode,
+            ISymbolForestNode internalNode,
             IForestDisambiguationAlgorithm stateManager)
         {
             this.disambiguationAlgorithm = stateManager;
             this.internalNode = internalNode;
-            this.children = new List<ITreeNode>();
+            this.children = null;
             SetSymbol(this.internalNode);
         }
 
         public InternalTreeNode(
-            IInternalForestNode internalNode)
+            ISymbolForestNode internalNode)
             : this(internalNode, new SelectFirstChildDisambiguationAlgorithm())
         {
         }
@@ -33,8 +33,9 @@ namespace Pliant.Tree
         {
             get
             {
-                if (ShouldLoadChildren())
+                if (this.children == null)
                 {
+                    this.children = new List<ITreeNode>();
                     var andNode = this.disambiguationAlgorithm.GetCurrentAndNode(this.internalNode);
                     LazyLoadChildren(andNode);
                 }
@@ -85,8 +86,8 @@ namespace Pliant.Tree
                         break;
 
                     // create a tree token node for token forest nodes
-                    case ITokenForestNode token:
-                        this.children.Add(new TokenTreeNode(token));
+                    case ITokenForestNode tokenNode:
+                        this.children.Add(new TokenTreeNode(tokenNode));
                         break;
 
                     default:
@@ -95,18 +96,13 @@ namespace Pliant.Tree
             }
         }
 
-        private bool ShouldLoadChildren()
-        {
-            return this.children.Count == 0;
-        }
-
         public override string ToString()
         {
             return $"({Symbol}, {Origin}, {Location})";
         }
 
-        private readonly List<ITreeNode> children;
+        private List<ITreeNode> children;
         private readonly IForestDisambiguationAlgorithm disambiguationAlgorithm;
-        private readonly IInternalForestNode internalNode;
+        private readonly ISymbolForestNode internalNode;
     }
 }

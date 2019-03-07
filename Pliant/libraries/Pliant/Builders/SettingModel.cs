@@ -1,12 +1,14 @@
-﻿namespace Pliant.Builders
+﻿using Pliant.Grammars;
+
+namespace Pliant.Builders
 {
     public abstract class SettingModel
     {
-        protected SettingModel(string value)
+        protected SettingModel(QualifiedName value)
         {
             Value = value;
         }
 
-        public string Value { get; }
+        public QualifiedName Value { get; }
     }
 }

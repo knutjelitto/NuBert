@@ -3,7 +3,6 @@ using Pliant.Charts;
 using Pliant.Dotted;
 using Pliant.Grammars;
 using Pliant.Tokens;
-using Pliant.Utilities;
 
 namespace Pliant.Forest
 {
@@ -11,7 +10,7 @@ namespace Pliant.Forest
     {
         public ForestNodeSet()
         {
-            this._symbolNodes = new Dictionary<(Symbol, int, int), ISymbolForestNode>();
+            this._symbolNodes = new Dictionary<(NonTerminal, int, int), ISymbolForestNode>();
             this._intermediateNodes = new Dictionary<(DottedRule, int, int), IIntermediateForestNode>();
             this._virtualNodes = new Dictionary<(Symbol, int, int), VirtualForestNode>();
             this._tokenNodes = new Dictionary<IToken, ITokenForestNode>();
@@ -37,7 +36,7 @@ namespace Pliant.Forest
             return intermediateNode;
         }
 
-        public ISymbolForestNode AddOrGetExistingSymbolNode(Symbol symbol, int origin, int location)
+        public ISymbolForestNode AddOrGetExistingSymbolNode(NonTerminal symbol, int origin, int location)
         {
             var key = (symbol, origin, location);
 
@@ -82,7 +81,7 @@ namespace Pliant.Forest
         }
 
         private readonly Dictionary<(DottedRule, int, int), IIntermediateForestNode> _intermediateNodes;
-        private readonly Dictionary<(Symbol, int, int), ISymbolForestNode> _symbolNodes;
+        private readonly Dictionary<(NonTerminal, int, int), ISymbolForestNode> _symbolNodes;
         private readonly Dictionary<IToken, ITokenForestNode> _tokenNodes;
         private readonly Dictionary<(Symbol, int, int), VirtualForestNode> _virtualNodes;
     }

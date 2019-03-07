@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 using Pliant.Runtime;
 using Pliant.Terminals;
 using Pliant.Tokens;
@@ -34,7 +35,7 @@ namespace Pliant.Tests.Unit.Runtime
             var grammar = expression.ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
-            parseEngine.Pulse(new VerbatimToken(0, "a", a.TokenType));
+            parseEngine.Pulse(new VerbatimToken(0, "a", a.TokenClass));
 
             //var privateObject = new PrivateObject(parseEngine);
             //var chart = privateObject.GetField("_chart") as Chart;

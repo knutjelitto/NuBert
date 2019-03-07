@@ -8,8 +8,8 @@ namespace Pliant.Builders
     {
         public ReachabilityMatrix()
         {
-            this.matrix = new Dictionary<Symbol, UniqueList<NonTerminalModel>>();
-            this.lookup = new Dictionary<Symbol, ProductionModel>();
+            this.matrix = new Dictionary<NonTerminal, UniqueList<NonTerminalModel>>();
+            this.lookup = new Dictionary<NonTerminal, ProductionModel>();
         }
 
         public void AddProduction(ProductionModel production)
@@ -28,9 +28,9 @@ namespace Pliant.Builders
             {
                 foreach (var symbol in alteration.Symbols)
                 {
-                    if (symbol is NonTerminalModel)
+                    if (symbol is NonTerminalModel nonTerminalModel)
                     {
-                        AddProductionToNewOrExistingSymbolSet(production, symbol);
+                        AddProductionToNewOrExistingSymbolSet(production, nonTerminalModel);
                     }
                 }
             }
@@ -55,13 +55,13 @@ namespace Pliant.Builders
             return this.matrix.ContainsKey(nonTerminalModel.NonTerminal);
         }
 
-        private void AddProductionToNewOrExistingSymbolSet(ProductionModel production, SymbolModel symbol)
+        private void AddProductionToNewOrExistingSymbolSet(ProductionModel production, NonTerminalModel symbol)
         {
-            var set = this.matrix.AddOrGetExisting(symbol.Symbol);
+            var set = this.matrix.AddOrGetExisting(symbol.NonTerminal);
             set.AddUnique(production.LeftHandSide);
         }
 
-        private readonly Dictionary<Symbol, ProductionModel> lookup;
-        private readonly Dictionary<Symbol, UniqueList<NonTerminalModel>> matrix;
+        private readonly Dictionary<NonTerminal, ProductionModel> lookup;
+        private readonly Dictionary<NonTerminal, UniqueList<NonTerminalModel>> matrix;
     }
 }

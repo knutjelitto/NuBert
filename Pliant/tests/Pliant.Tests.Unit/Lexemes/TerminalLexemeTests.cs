@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 using Pliant.Terminals;
 using Pliant.Tokens;
 

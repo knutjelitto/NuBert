@@ -73,8 +73,7 @@ namespace Pliant.Tests.Unit.Tree
 
             var internalNode = parseForest;
 
-            var disambiguationAlgorithm = new SelectFirstChildDisambiguationAlgorithm();
-            var treeNode = new InternalTreeNode(internalNode, disambiguationAlgorithm);
+            var treeNode = new InternalTreeNode(internalNode);
             return treeNode;            
         }
     }

@@ -17,24 +17,26 @@ namespace Pliant.Tests.Common
                 return true;
             }
 
-            if (firstForestNode.NodeType != secondForestNode.NodeType)
+            if (firstForestNode is IIntermediateForestNode && !(secondForestNode is IIntermediateForestNode) ||
+                firstForestNode is ISymbolForestNode && !(secondForestNode is ISymbolForestNode) ||
+                firstForestNode is ITokenForestNode && !(secondForestNode is ITokenForestNode))
             {
                 return false;
             }
 
-            switch (firstForestNode.NodeType)
+            switch (firstForestNode)
             {
-                case ForestNodeType.Intermediate:
+                case IIntermediateForestNode _:
                     return AreIntermediateNodesEqual(
                         firstForestNode as IIntermediateForestNode,
                         secondForestNode as IIntermediateForestNode);
 
-                case ForestNodeType.Symbol:
+                case ISymbolForestNode _:
                     return AreSymbolNodesEqual(
                         firstForestNode as ISymbolForestNode,
                         secondForestNode as ISymbolForestNode);
 
-                case ForestNodeType.Token:
+                case ITokenForestNode _:
                     return AreTokenNodesEqual(
                         firstForestNode as ITokenForestNode,
                         secondForestNode as ITokenForestNode);

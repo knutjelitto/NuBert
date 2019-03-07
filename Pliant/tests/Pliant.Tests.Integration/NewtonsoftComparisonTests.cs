@@ -1,9 +1,6 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using System.IO;
 
 namespace Pliant.Tests.Integration
 {
@@ -13,8 +10,6 @@ namespace Pliant.Tests.Integration
     [TestClass]
     public class NewtonsoftComparisonTests
     {
-        public TestContext TestContext { get; set; }
-
         [TestMethod]
         [DeploymentItem(@"10000.json")]
         public void NewtonsoftCanParseLargeJsonFile()

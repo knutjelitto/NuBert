@@ -5,7 +5,5 @@ namespace Pliant.Forest
     public interface IForestNode : IForestNodeVisitable
     {
         int Location { get; }
-
-        ForestNodeType NodeType { get; }
     }
 }

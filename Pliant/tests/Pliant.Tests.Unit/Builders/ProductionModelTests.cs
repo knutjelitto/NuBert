@@ -10,7 +10,7 @@ namespace Pliant.Tests.Unit.Builders
         [TestMethod]
         public void ProductionModelToProductionsShouldReturnNullableProductionWhenRuleIsEmpty()
         {
-            var E = new ProductionModel("E");
+            var E = ProductionModel.From("E");
             Assert.AreEqual(1, E.ToProductions().Count());
         }
     }

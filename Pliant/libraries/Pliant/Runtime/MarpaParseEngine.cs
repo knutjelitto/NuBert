@@ -106,7 +106,7 @@ namespace Pliant.Runtime
             return array;
         }
 
-        public IInternalForestNode GetParseForestRootNode()
+        public ISymbolForestNode GetParseForestRootNode()
         {
             throw new NotImplementedException();
         }

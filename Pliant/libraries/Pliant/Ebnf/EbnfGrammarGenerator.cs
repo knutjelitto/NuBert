@@ -139,7 +139,7 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfFactorIdentifier identifier:
-                    var nonTerminal = GetQualifiedName(identifier.QualifiedIdentifier);
+                    var nonTerminal = new NonTerminal(GetQualifiedName(identifier.QualifiedIdentifier));
                     currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
                     break;
 
@@ -161,7 +161,7 @@ namespace Pliant.Ebnf
         {
             var name = grouping.ToString();
             var nonTerminal = new NonTerminal(name);
-            var groupingProduction = new ProductionModel(nonTerminal);
+            var groupingProduction = ProductionModel.From(nonTerminal);
 
             currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
 
@@ -281,7 +281,7 @@ namespace Pliant.Ebnf
         {
             var name = optional.ToString();
             var nonTerminal = new NonTerminal(name);
-            var optionalProduction = new ProductionModel(nonTerminal);
+            var optionalProduction = ProductionModel.From(nonTerminal);
 
             currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
 
@@ -299,7 +299,7 @@ namespace Pliant.Ebnf
         {
             var name = repetition.ToString();
             var nonTerminal = new NonTerminal(name);
-            var repetitionProduction = new ProductionModel(nonTerminal);
+            var repetitionProduction = ProductionModel.From(nonTerminal);
 
             currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
 
@@ -318,7 +318,7 @@ namespace Pliant.Ebnf
         private IEnumerable<ProductionModel> Rule(EbnfRule rule)
         {
             var nonTerminal = GetQualifiedName(rule.Identifier);
-            var productionModel = new ProductionModel(nonTerminal);
+            var productionModel = ProductionModel.From(nonTerminal);
             foreach (var production in Expression(rule.Expression, productionModel))
             {
                 yield return production;

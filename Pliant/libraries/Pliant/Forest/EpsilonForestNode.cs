@@ -14,7 +14,6 @@ namespace Pliant.Forest
             this.hashCode = (Location).GetHashCode();
         }
 
-        public override ForestNodeType NodeType => ForestNodeType.Token;
         public IToken Token { get; }
 
         public override void Accept(IForestNodeVisitor visitor)

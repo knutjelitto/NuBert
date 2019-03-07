@@ -41,7 +41,7 @@ namespace Pliant.Dotted
             {
                 if (!this.scans.ContainsKey(lexer))
                 {
-                    this.tokenTransitions.Add(lexer.TokenType, target);
+                    this.tokenTransitions.Add(lexer.TokenClass, target);
                     this.scans.Add(lexer, target);
                     this.scanKeys.Add(lexer);
                 }

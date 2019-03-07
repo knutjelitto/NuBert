@@ -30,55 +30,30 @@ namespace Pliant.Forest
             AddUniqueAndNode(source, trigger);
         }
 
-        private static bool IsMatchedSubTree(IForestNode firstChild, IForestNode secondChild, AndForestNode andNode)
+        private static bool IsMatchedSubTree(AndForestNode andNode, IForestNode first, IForestNode second)
         {
-            var firstCompareNode = andNode.First;
-
-            // if first child matches the compare node, continue
-            // otherwise return false
-            if (!firstChild.Equals(firstCompareNode))
-            {
-                return false;
-            }
-
-            if (secondChild == null)
-            {
-                return true;
-            }
-
-            var secondCompareNode = andNode.Second;
-
-            // return true if the second child matches
-            // otherwise return false
-            return secondChild.Equals(secondCompareNode);
+            return first.Equals(andNode.First) && (second == null || second.Equals(andNode.Second));
         }
 
-        private void AddUniqueAndNode(IForestNode child)
+        private void AddUniqueAndNode(IForestNode first, IForestNode second = null)
         {
-            AddUniqueAndNode(child, null);
-        }
+            var childCount = 1 + (second == null ? 0 : 1);
 
-        private void AddUniqueAndNode(IForestNode firstChild, IForestNode secondChild)
-        {
-            var childCount = 1 + (secondChild == null ? 0 : 1);
-
-            for (var c = 0; c < this.children.Count; c++)
+            foreach (var andNode in this.children)
             {
-                var andNode = this.children[c];
-
                 if (andNode.Children.Count != childCount)
                 {
                     continue;
                 }
 
-                if (IsMatchedSubTree(firstChild, secondChild, andNode))
+                if (IsMatchedSubTree(andNode, first, second))
                 {
                     return;
                 }
             }
 
-            // not found so return new and node
-            var newAndNode = (childCount == 1) ? new AndForestNode(firstChild) : new AndForestNode(firstChild, secondChild) ;
+            // not found so add new and node
+            var newAndNode = AndForestNode.Make(first, second);
 
             this.children.Add(newAndNode);
         }

@@ -7,12 +7,12 @@ namespace Pliant.Builders
         public const string SettingKey = ":start";
 
         public StartProductionSettingModel(ProductionModel productionModel)
-            : base(productionModel.LeftHandSide.NonTerminal.Value)
+            : this(productionModel.LeftHandSide.NonTerminal.QualifiedName)
         {
         }
 
-        public StartProductionSettingModel(QualifiedName fullyQualifiedName)
-            : base(fullyQualifiedName.FullName)
+        public StartProductionSettingModel(QualifiedName qualifiedName)
+            : base(qualifiedName)
         {
         }
     }

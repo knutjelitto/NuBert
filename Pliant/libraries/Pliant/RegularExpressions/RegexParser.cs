@@ -29,9 +29,7 @@ namespace Pliant.RegularExpressions
 
             var parseForest = parseEngine.GetParseForestRootNode();
 
-            var parseTree = new InternalTreeNode(
-                parseForest,
-                new SelectFirstChildDisambiguationAlgorithm());
+            var parseTree = new InternalTreeNode(parseForest);
 
             var regexVisitor = new RegexVisitor();
             parseTree.Accept(regexVisitor);

@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
 using Pliant.Charts;
 using Pliant.Forest;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 using Pliant.Runtime;
 using Pliant.Terminals;
 using Pliant.Tests.Common;
 using Pliant.Tests.Common.Grammars;
 using Pliant.Tokens;
 using Pliant.Tree;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable StringLiteralTypo
 
@@ -174,9 +174,9 @@ namespace Pliant.Tests.Unit.Runtime
             Assert.IsNotNull(B_0_0_1);
             Assert.AreEqual(1, B_0_0_1.Children.Count);
 
-            var nullToken = B_0_0_1.First as ITokenForestNode;
+            var nullToken = B_0_0_1.First as ISymbolForestNode;
             Assert.IsNotNull(nullToken);
-            Assert.AreEqual(string.Empty, nullToken.Token.Value);
+            Assert.AreEqual(0, nullToken.Children.Count);
 
             var T_1_4_1 = T_1_4.Children[0];
             Assert.IsNotNull(T_1_4_1);
@@ -248,13 +248,8 @@ namespace Pliant.Tests.Unit.Runtime
                                     B.ProductionModel.LeftHandSide.NonTerminal,
                                     2,
                                     2,
-                                    new AndForestNode(new TokenForestNode(MakeToken("", 2))))))));
+                                    new AndForestNode(new SymbolForestNode(B.ProductionModel.LeftHandSide.NonTerminal, 2, 2)))))));
             AssertForestsAreEqual(expected, actual);
-        }
-
-        private IToken MakeToken(string token, int origin)
-        {
-            return new VerbatimToken(origin, token, new TokenClass(token));
         }
 
         [TestMethod]
@@ -889,9 +884,9 @@ namespace Pliant.Tests.Unit.Runtime
             var leoParseForestRoot = leoEngine.GetParseForestRootNode();
             var classicParseForestRoot = classicEngine.GetParseForestRootNode();
             Assert.IsTrue(nodeComparer.Equals(
-                    classicParseForestRoot,
-                    leoParseForestRoot),
-                "Leo and Classic Parse Forest mismatch");
+                              classicParseForestRoot,
+                              leoParseForestRoot),
+                          "Leo and Classic Parse Forest mismatch");
         }
 
         private static void AssertNodeProperties(ISymbolForestNode node, string nodeName, int origin, int location)
@@ -991,8 +986,13 @@ namespace Pliant.Tests.Unit.Runtime
         private static IReadOnlyList<IToken> Tokenize(string input)
         {
             return input.Select((x, i) =>
-                    new VerbatimToken(i, x.ToString(), new TokenClass(x.ToString())))
-                .ToArray();
+                                    new VerbatimToken(i, x.ToString(), new TokenClass(x.ToString())))
+                        .ToArray();
+        }
+
+        private IToken MakeToken(string token, int origin)
+        {
+            return new VerbatimToken(origin, token, new TokenClass(token));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Pliant.Tokens
 
         protected Lexeme(LexerRule lexer, int position)
         {
-            TokenClass = lexer.TokenType;
+            TokenClass = lexer.TokenClass;
             Position = position;
         }
 

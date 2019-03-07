@@ -1,5 +1,6 @@
 ﻿using Pliant.Automata;
 using Pliant.Grammars;
+using Pliant.LexerRules;
 using Pliant.Terminals;
 
 namespace Pliant.RegularExpressions

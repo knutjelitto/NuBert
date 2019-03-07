@@ -2,7 +2,7 @@
 using Pliant.Terminals;
 using Pliant.Tokens;
 
-namespace Pliant.Grammars
+namespace Pliant.LexerRules
 {
     public sealed class TerminalLexer : DfaLexerRule
     {
@@ -21,8 +21,8 @@ namespace Pliant.Grammars
         {
         }
 
-        public TerminalLexer(Terminal terminal, TokenClass tokenType)
-            : base(MakeAutomaton(terminal), tokenType)
+        public TerminalLexer(Terminal terminal, TokenClass tokenClass)
+            : base(MakeAutomaton(terminal), tokenClass)
         {
             Terminal = terminal;
         }
@@ -54,12 +54,12 @@ namespace Pliant.Grammars
 
         public override int GetHashCode()
         {
-            return (TokenType, Terminal).GetHashCode();
+            return (TokenClass, Terminal).GetHashCode();
         }
 
         public override string ToString()
         {
-            return TokenType.ToString();
+            return TokenClass.ToString();
         }
     }
 }

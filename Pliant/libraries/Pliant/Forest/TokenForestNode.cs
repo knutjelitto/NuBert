@@ -9,10 +9,9 @@ namespace Pliant.Forest
             : base(token.Position)
         {
             Token = token;
-            this.hashCode = (NodeType, Location, Token).GetHashCode();
+            this.hashCode = (Location, Token).GetHashCode();
         }
 
-        public override ForestNodeType NodeType => ForestNodeType.Token;
         public IToken Token { get; }
 
         public override void Accept(IForestNodeVisitor visitor)
@@ -24,7 +23,6 @@ namespace Pliant.Forest
         {
             return obj is TokenForestNode other &&
                    Location.Equals(other.Location) &&
-                   NodeType.Equals(other.NodeType) && 
                    Token.Equals(other.Token);
         }
 

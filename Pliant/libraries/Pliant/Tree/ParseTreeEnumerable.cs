@@ -6,7 +6,7 @@ namespace Pliant.Tree
 {
     public class ParseTreeEnumerable : IEnumerable<ITreeNode>
     {
-        public ParseTreeEnumerable(IInternalForestNode internalForestNode)
+        public ParseTreeEnumerable(ISymbolForestNode internalForestNode)
         {
             this._internalForestNode = internalForestNode;
         }
@@ -21,6 +21,6 @@ namespace Pliant.Tree
             return new ParseTreeEnumerator(this._internalForestNode);
         }
 
-        private readonly IInternalForestNode _internalForestNode;
+        private readonly ISymbolForestNode _internalForestNode;
     }
 }

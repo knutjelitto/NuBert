@@ -114,11 +114,11 @@ namespace Pliant.Tests.Unit.Runtime
 
             var tokens = new [] 
             {
-                new VerbatimToken(0, "[", openBracket.TokenType),
-                new VerbatimToken(1, "1", number.TokenType),
-                new VerbatimToken(2, ",", comma.TokenType),
-                new VerbatimToken(3, "2", number.TokenType),
-                new VerbatimToken(4, "]", closeBracket.TokenType)
+                new VerbatimToken(0, "[", openBracket.TokenClass),
+                new VerbatimToken(1, "1", number.TokenClass),
+                new VerbatimToken(2, ",", comma.TokenClass),
+                new VerbatimToken(3, "2", number.TokenClass),
+                new VerbatimToken(4, "]", closeBracket.TokenClass)
             };
 
             foreach (var token in tokens)

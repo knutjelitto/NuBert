@@ -5,26 +5,26 @@ namespace Pliant.Builders
 {
     public sealed class ProductionModel : SymbolModel
     {
-        public ProductionModel(NonTerminal leftHandSide)
-            : this(new NonTerminalModel(leftHandSide))
-        {
-        }
-
-        public ProductionModel(string leftHandSide)
-            : this(new NonTerminal(leftHandSide))
-        {
-        }
-
-        public ProductionModel(QualifiedName fullyQualifiedName)
-            : this(new NonTerminalModel(fullyQualifiedName))
-        {
-        }
-
         private ProductionModel(NonTerminalModel leftHandSide)
             : base(leftHandSide.NonTerminal)
         {
             LeftHandSide = leftHandSide;
             Alterations = new List<AlterationModel>();
+        }
+
+        public static ProductionModel From(string name)
+        {
+            return From(new QualifiedName(name));
+        }
+
+        public static ProductionModel From(QualifiedName name)
+        {
+            return From(new NonTerminal(name));
+        }
+
+        public static ProductionModel From(NonTerminal nonTerminal)
+        {
+            return new ProductionModel(new NonTerminalModel(nonTerminal));
         }
 
         public List<AlterationModel> Alterations { get; }

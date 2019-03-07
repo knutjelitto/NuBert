@@ -6,8 +6,8 @@ namespace Pliant.LexerRules
 {
     public sealed class StringLiteralLexer : DfaLexerRule
     {
-        public StringLiteralLexer(string literal, TokenClass tokenType)
-            : base(MakeAutomaton(literal), tokenType)
+        public StringLiteralLexer(string literal, TokenClass tokenClass)
+            : base(MakeAutomaton(literal), tokenClass)
         {
         }
 
@@ -16,7 +16,7 @@ namespace Pliant.LexerRules
         {
         }
 
-        public string Literal => TokenType.Id;
+        public string Literal => TokenClass.Id;
 
         public override bool Equals(object obj)
         {
@@ -26,7 +26,7 @@ namespace Pliant.LexerRules
 
         public override int GetHashCode()
         {
-            return (TokenType, Literal).GetHashCode();
+            return (TokenClass, Literal).GetHashCode();
         }
 
         public override string ToString()

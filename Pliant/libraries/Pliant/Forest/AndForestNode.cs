@@ -17,6 +17,16 @@ namespace Pliant.Forest
             this.children = new List<IForestNode> { first };
         }
 
+        public static AndForestNode Make(IForestNode first, IForestNode second)
+        {
+            if (second == null)
+            {
+                return new AndForestNode(first);
+            }
+
+            return new AndForestNode(first, second);
+        }
+
         public IForestNode First => this.children[0];
         public IForestNode Second => this.children[1];
 

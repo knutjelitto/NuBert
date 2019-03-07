@@ -29,7 +29,7 @@ namespace Pliant.Forest
 
             Symbol = targetState.LeftHandSide;
 
-            this.hashCode = (Origin, Location, NodeType, Symbol).GetHashCode();
+            this.hashCode = (Origin, Location, Symbol).GetHashCode();
             var path = new VirtualForestNodePath(transitionState, completedParseNode);
             AddUniquePath(path);
         }
@@ -46,8 +46,6 @@ namespace Pliant.Forest
                 return this.children;
             }
         }
-
-        public override ForestNodeType NodeType => ForestNodeType.Symbol;
 
         public Symbol Symbol { get; }
 
@@ -75,7 +73,6 @@ namespace Pliant.Forest
         {
             return obj is ISymbolForestNode other &&
                    Location == other.Location &&
-                   NodeType == other.NodeType &&
                    Origin == other.Origin &&
                    Symbol.Equals(other.Symbol);
         }

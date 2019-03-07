@@ -6,13 +6,8 @@ namespace Pliant.Builders
     {
         public const string SettingKey = ":trivia";
 
-        public TriviaSettingModel(LexerRuleModel lexerRuleModel)
-            : base(lexerRuleModel.LexerRule.TokenType.Id)
-        {
-        }
-
         public TriviaSettingModel(QualifiedName fullyQualifiedName)
-            : base(fullyQualifiedName.FullName)
+            : base(fullyQualifiedName)
         {
         }
     }

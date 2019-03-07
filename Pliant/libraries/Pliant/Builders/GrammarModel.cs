@@ -13,7 +13,7 @@ namespace Pliant.Builders
             this.productionModels = new List<ProductionModel>();
             this.lexerRuleModels = new List<LexerRuleModel>();
 
-            this.ignoreSettingModels = new List<IgnoreSettingModel>();
+            this.ignoreSettings = new List<IgnoreSettingModel>();
             this.triviaSettings = new List<TriviaSettingModel>();
         }
 
@@ -23,7 +23,7 @@ namespace Pliant.Builders
             Start = start;
         }
 
-        public IReadOnlyCollection<IgnoreSettingModel> IgnoreSettingModels => this.ignoreSettingModels;
+        public IReadOnlyCollection<IgnoreSettingModel> IgnoreSettings => this.ignoreSettings;
 
         public IReadOnlyCollection<LexerRuleModel> LexerRuleModels => this.lexerRuleModels;
 
@@ -46,7 +46,7 @@ namespace Pliant.Builders
 
         public void AddIgnoreSetting(IgnoreSettingModel ignore)
         {
-            this.ignoreSettingModels.Add(ignore);
+            this.ignoreSettings.Add(ignore);
         }
 
         public void AddTriviaSetting(TriviaSettingModel trivia)
@@ -97,28 +97,28 @@ namespace Pliant.Builders
         }
 
         // ReSharper disable once IdentifierTypo
-        private void AssertStartProductionExistsForStartSetting(ReachabilityMatrix reachabilityMatrix)
+        private void AssertStartProductionExistsForStartSetting()
         {
-            if (!reachabilityMatrix.ProductionExistsForSymbol(new NonTerminalModel(StartSetting.Value)))
+            if (!this.reachabilityMatrix.ProductionExistsForSymbol(new NonTerminalModel(new NonTerminal(StartSetting.Value))))
             {
                 throw new Exception("no start production found for start symbol");
             }
         }
 
         // ReSharper disable once IdentifierTypo
-        private void AssertStartProductionExistsForStartSymbol(ReachabilityMatrix reachabilityMatrix)
+        private void AssertStartProductionExistsForStartSymbol()
         {
-            if (!reachabilityMatrix.ProductionExistsForSymbol(Start.LeftHandSide))
+            if (!this.reachabilityMatrix.ProductionExistsForSymbol(Start.LeftHandSide))
             {
                 throw new Exception("no start production found for start symbol");
             }
         }
 
-        private ProductionModel FindProduction(string value)
+        private ProductionModel FindProduction(QualifiedName name)
         {
             foreach (var productionModel in this.productionModels)
             {
-                if (productionModel.LeftHandSide.NonTerminal.Is(value))
+                if (productionModel.LeftHandSide.NonTerminal.Is(name))
                 {
                     return productionModel;
                 }
@@ -129,15 +129,15 @@ namespace Pliant.Builders
 
         private List<LexerRule> GetIgnoreRulesFromIgnoreRulesModel()
         {
-            return GetLexerRulesFromSettings(this.ignoreSettingModels);
+            return GetLexerRulesFromSettings(this.ignoreSettings);
         }
 
-        private LexerRule GetLexerRuleByName(string value)
+        private LexerRule GetLexerRuleByName(QualifiedName value)
         {
             foreach (var lexerRuleModel in this.lexerRuleModels)
             {
                 var lexerRule = lexerRuleModel.LexerRule;
-                if (lexerRule.TokenType.Id.Equals(value))
+                if (lexerRule.TokenClass.Id.Equals(value.FullName))
                 {
                     return lexerRule;
                 }
@@ -220,7 +220,7 @@ namespace Pliant.Builders
                     PopulateMissingProductionsFromStart(Start);
                 }
 
-                AssertStartProductionExistsForStartSymbol(this.reachabilityMatrix);
+                AssertStartProductionExistsForStartSymbol();
             }
             else if (StartSettingExists())
             {
@@ -230,7 +230,7 @@ namespace Pliant.Builders
                         "Unable to determine start symbol. No productions exist and a start symbol was not specified.");
                 }
 
-                AssertStartProductionExistsForStartSetting(this.reachabilityMatrix);
+                AssertStartProductionExistsForStartSetting();
                 Start = FindProduction(StartSetting.Value);
             }
             else
@@ -249,7 +249,7 @@ namespace Pliant.Builders
             return Start != null;
         }
 
-        private readonly List<IgnoreSettingModel> ignoreSettingModels;
+        private readonly List<IgnoreSettingModel> ignoreSettings;
         private readonly List<LexerRuleModel> lexerRuleModels;
         private readonly List<ProductionModel> productionModels;
 

@@ -1,20 +1,15 @@
-﻿using System.Diagnostics;
-using Pliant.Grammars;
+﻿using Pliant.Grammars;
 
 namespace Pliant.Forest
 {
     public sealed class SymbolForestNode : InternalForestNode, ISymbolForestNode
     {
-        public SymbolForestNode(Symbol symbol, int origin, int location, params AndForestNode[] children)
+        public SymbolForestNode(NonTerminal symbol, int origin, int location, params AndForestNode[] children)
             : base(origin, location, children)
         {
-            Debug.Assert(symbol is NonTerminal);
-
             Symbol = symbol;
-            this.hashCode = (NodeType, Origin, Location, Symbol).GetHashCode();
+            this.hashCode = (Origin, Location, Symbol).GetHashCode();
         }
-
-        public override ForestNodeType NodeType => ForestNodeType.Symbol;
 
         public Symbol Symbol { get; }
 
@@ -25,10 +20,9 @@ namespace Pliant.Forest
 
         public override bool Equals(object obj)
         {
-            return obj is ISymbolForestNode symbolNode && 
-                   Location == symbolNode.Location && 
-                   NodeType == symbolNode.NodeType && 
-                   Origin == symbolNode.Origin && 
+            return obj is ISymbolForestNode symbolNode &&
+                   Origin == symbolNode.Origin &&
+                   Location == symbolNode.Location &&
                    Symbol.Equals(symbolNode.Symbol);
         }
 

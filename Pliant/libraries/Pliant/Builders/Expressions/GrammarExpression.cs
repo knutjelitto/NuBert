@@ -66,7 +66,7 @@ namespace Pliant.Builders.Expressions
             {
                 foreach (var ignoreRule in ignore)
                 {
-                    GrammarModel.AddIgnoreSetting(new IgnoreSettingModel(ignoreRule));
+                    GrammarModel.AddIgnoreSetting(new IgnoreSettingModel(new QualifiedName(ignoreRule.LexerRule.TokenClass.Id)));
                     GrammarModel.AddLexerRule(ignoreRule);
                 }
             }
@@ -75,7 +75,7 @@ namespace Pliant.Builders.Expressions
             {
                 foreach (var triviaRule in trivia)
                 {
-                    GrammarModel.AddTriviaSetting(new TriviaSettingModel(triviaRule));
+                    GrammarModel.AddTriviaSetting(new TriviaSettingModel(new QualifiedName(triviaRule.LexerRule.TokenClass.Id)));
                     GrammarModel.AddLexerRule(triviaRule);
                 }
             }

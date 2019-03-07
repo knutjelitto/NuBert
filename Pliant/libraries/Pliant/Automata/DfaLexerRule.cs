@@ -10,8 +10,8 @@ namespace Pliant.Automata
         {
         }
 
-        public DfaLexerRule(DfaState startState, TokenClass tokenType)
-            : base(tokenType)
+        public DfaLexerRule(DfaState startState, TokenClass tokenClass)
+            : base(tokenClass)
         {
             StartState = startState;
         }
@@ -38,17 +38,17 @@ namespace Pliant.Automata
 
         public override bool Equals(object obj)
         {
-            return obj is DfaLexerRule other && TokenType.Equals(other.TokenType);
+            return obj is DfaLexerRule other && TokenClass.Equals(other.TokenClass);
         }
 
         public override int GetHashCode()
         {
-            return TokenType.GetHashCode();
+            return TokenClass.GetHashCode();
         }
 
         public override string ToString()
         {
-            return TokenType.ToString();
+            return TokenClass.ToString();
         }
     }
 }

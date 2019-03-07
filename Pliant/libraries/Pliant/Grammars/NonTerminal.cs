@@ -22,14 +22,14 @@
 
         public string Value => QualifiedName.FullName;
 
-        public bool Is(string otherName)
+        public bool Is(string otherFullName)
         {
-            return Value == otherName;
+            return Value == otherFullName;
         }
 
         public bool Is(QualifiedName otherName)
         {
-            return Is(otherName.FullName);
+            return QualifiedName.Equals(otherName);
         }
 
         public bool Is(NonTerminal other)

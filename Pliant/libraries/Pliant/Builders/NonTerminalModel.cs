@@ -9,16 +9,6 @@ namespace Pliant.Builders
         {
         }
 
-        public NonTerminalModel(string value)
-            : this(new NonTerminal(value))
-        {
-        }
-
-        public NonTerminalModel(QualifiedName fullyQualifiedName)
-            : this(new NonTerminal(fullyQualifiedName))
-        {
-        }
-
         public NonTerminal NonTerminal => (NonTerminal) Symbol;
 
         public override bool Equals(object obj)

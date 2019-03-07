@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Pliant.Forest;
 using Pliant.Grammars;
@@ -8,7 +9,7 @@ namespace Pliant.Tree
 {
     public class ParseTreeEnumerator : IEnumerator<ITreeNode>
     {
-        public ParseTreeEnumerator(IInternalForestNode forestRoot)
+        public ParseTreeEnumerator(ISymbolForestNode forestRoot)
         {
             this._forestRoot = forestRoot;
             this._status = ParseTreeEnumeratorState.New;
@@ -19,16 +20,16 @@ namespace Pliant.Tree
         {
             get
             {
-                switch (this._status)
+                if (this._status == ParseTreeEnumeratorState.Current)
                 {
-                    case ParseTreeEnumeratorState.Current:
-                        return this._visitor.Root;
-
-                    default:
-                        return null;
+                    return this._visitor.Root;
                 }
+
+                throw new InvalidOperationException();
             }
         }
+
+        object IEnumerator.Current => Current;
 
         public void Dispose()
         {
@@ -43,14 +44,7 @@ namespace Pliant.Tree
                 return false;
             }
 
-            if (this._forestRoot is IIntermediateForestNode intermediateNode)
-            {
-                this._visitor.Visit(intermediateNode);
-            }
-            else if (this._forestRoot is ISymbolForestNode symbolNode)
-            {
-                this._visitor.Visit(symbolNode);
-            }
+            this._visitor.Visit(this._forestRoot);
 
             if (this._visitor.Root == null)
             {
@@ -68,12 +62,9 @@ namespace Pliant.Tree
             this._visitor.Reset();
         }
 
-        object IEnumerator.Current => Current;
-        private IInternalForestNode _forestRoot;
+        private ISymbolForestNode _forestRoot;
         private ParseTreeEnumeratorState _status;
         private ForestNodeVisitorImpl _visitor;
-
-        #region  not sortable (modify ReSharper template to catch these cases)
 
         private enum ParseTreeEnumeratorState
         {
@@ -172,7 +163,7 @@ namespace Pliant.Tree
                 if (!this.paths.TryGetValue(symbolNode, out var childIndex))
                 {
                     this.paths.Add(symbolNode, 0);
-                    return childIndex;
+                    return 0;
                 }
 
                 var isLocked = !ReferenceEquals(null, this._lock);
@@ -207,12 +198,13 @@ namespace Pliant.Tree
                 parent.ReadWriteChildren.Add(tokenTreeNodeImpl);
             }
 
-            private readonly Stack<InternalTreeNodeImpl> nodeStack;
-            private readonly Dictionary<IInternalForestNode, int> paths;
-            private readonly HashSet<IInternalForestNode> visited;
             private IInternalForestNode _lock;
 
             private int count;
+
+            private readonly Stack<InternalTreeNodeImpl> nodeStack;
+            private readonly Dictionary<IInternalForestNode, int> paths;
+            private readonly HashSet<IInternalForestNode> visited;
         }
 
         private abstract class TreeNodeImpl : ITreeNode
@@ -237,21 +229,21 @@ namespace Pliant.Tree
                 ReadWriteChildren = new List<ITreeNode>();
             }
 
-            public List<ITreeNode> ReadWriteChildren { get; }
-
             public IReadOnlyList<ITreeNode> Children => ReadWriteChildren;
 
-            public bool Is(QualifiedName name)
-            {
-                return Symbol.Is(name);
-            }
-
             public int Origin { get; }
+
+            public List<ITreeNode> ReadWriteChildren { get; }
             public NonTerminal Symbol { get; }
 
             public override void Accept(ITreeNodeVisitor visitor)
             {
                 visitor.Visit(this);
+            }
+
+            public bool Is(QualifiedName name)
+            {
+                return Symbol.Is(name);
             }
         }
 
@@ -270,7 +262,5 @@ namespace Pliant.Tree
                 visitor.Visit(this);
             }
         }
-
-        #endregion
     }
 }

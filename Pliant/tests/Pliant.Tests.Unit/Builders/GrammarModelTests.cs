@@ -12,7 +12,7 @@ namespace Pliant.Tests.Unit.Builders
         public void GrammarModelShouldAddProductionModel()
         {
             var grammar = new GrammarModel();
-            grammar.AddProduction(new ProductionModel(""));
+            grammar.AddProduction(ProductionModel.From(""));
             Assert.AreEqual(1, grammar.ProductionModels.Count);
         }
 
@@ -21,10 +21,10 @@ namespace Pliant.Tests.Unit.Builders
         {
             var grammar = new GrammarModel();
             var lexerRuleModel = new LexerRuleModel(new StringLiteralLexer("this is a literal"));
-            grammar.AddIgnoreSetting(new IgnoreSettingModel(lexerRuleModel));
+            grammar.AddIgnoreSetting(new IgnoreSettingModel(new QualifiedName("AAA")));
             grammar.AddLexerRule(lexerRuleModel);
             Assert.AreEqual(1, grammar.LexerRuleModels.Count);
-            Assert.AreEqual(1, grammar.IgnoreSettingModels.Count);
+            Assert.AreEqual(1, grammar.IgnoreSettings.Count);
         }
 
         [TestMethod]
@@ -32,9 +32,9 @@ namespace Pliant.Tests.Unit.Builders
         {
             var grammarModel = new GrammarModel();
 
-            var S = new ProductionModel("S");
-            var A = new ProductionModel("A");
-            var B = new ProductionModel("B");
+            var S = ProductionModel.From("S");
+            var A = ProductionModel.From("A");
+            var B = ProductionModel.From("B");
 
             var a = new StringLiteralLexer("a");
             var b = new StringLiteralLexer("b");
@@ -52,7 +52,7 @@ namespace Pliant.Tests.Unit.Builders
 
             var lexerRuleModel = new LexerRuleModel(space);
             grammarModel.AddLexerRule(lexerRuleModel);
-            grammarModel.AddIgnoreSetting(new IgnoreSettingModel(lexerRuleModel));
+            grammarModel.AddIgnoreSetting(new IgnoreSettingModel(new QualifiedName(lexerRuleModel.LexerRule.TokenClass.Id)));
 
             grammarModel.Start = S;
 
@@ -64,8 +64,8 @@ namespace Pliant.Tests.Unit.Builders
         [TestMethod]
         public void GrammarModelToGrammarShouldResolverProductionReferencesFromOtherGrammars()
         {
-            var S = new ProductionModel(new QualifiedName("ns1", "S"));
-            var A = new ProductionModel(new QualifiedName("ns1", "A"));
+            var S = ProductionModel.From(new QualifiedName("ns1", "S"));
+            var A = ProductionModel.From(new QualifiedName("ns1", "A"));
             S.Alterations.Add(
                 new AlterationModel(
                     new[] { A }));
@@ -83,8 +83,8 @@ namespace Pliant.Tests.Unit.Builders
 
             var ns1ProductionReference = new GrammarReferenceModel(ns1GrammarModel.ToGrammar());
 
-            var Z = new ProductionModel(new QualifiedName("ns2", "Z"));
-            var X = new ProductionModel(new QualifiedName("ns2", "X"));
+            var Z = ProductionModel.From(new QualifiedName("ns2", "Z"));
+            var X = ProductionModel.From(new QualifiedName("ns2", "X"));
             X.Alterations.Add(
                 new AlterationModel(
                     new SymbolModel[]
@@ -107,7 +107,7 @@ namespace Pliant.Tests.Unit.Builders
         [TestMethod]
         public void GrammarModelToGrammarShouldAddProductionWhenEmptyDefinition()
         {
-            var S = new ProductionModel("S");
+            var S = ProductionModel.From("S");
             var grammarModel = new GrammarModel(S);
             var grammar = grammarModel.ToGrammar();
             Assert.AreEqual(1, grammar.Productions.Count);
@@ -116,10 +116,10 @@ namespace Pliant.Tests.Unit.Builders
         [TestMethod]
         public void GrammarModelConstructorGivenOnlyStartProductionShouldDiscoverLinkedProductions()
         {
-            var S = new ProductionModel("S");
-            var A = new ProductionModel("A");
-            var B = new ProductionModel("B");
-            var C = new ProductionModel("C");
+            var S = ProductionModel.From("S");
+            var A = ProductionModel.From("A");
+            var B = ProductionModel.From("B");
+            var C = ProductionModel.From("C");
             S.AddWithAnd(A);
             A.AddWithAnd(B);
             A.AddWithOr(C);
@@ -135,8 +135,8 @@ namespace Pliant.Tests.Unit.Builders
         [TestMethod]
         public void GrammarModelConstructorGivenOnlyStartProductionShouldTraverseRecursiveStructureOnlyOnce()
         {
-            var S = new ProductionModel("S");
-            var A = new ProductionModel("A");
+            var S = ProductionModel.From("S");
+            var A = ProductionModel.From("A");
             S.AddWithAnd(S);
             S.AddWithOr(A);
             A.AddWithAnd(new LexerRuleModel(new StringLiteralLexer("a")));
@@ -150,9 +150,9 @@ namespace Pliant.Tests.Unit.Builders
         [TestMethod]
         public void GrammarModelGivenNullStartShouldResolveStartFromProductions()
         {
-            var S = new ProductionModel("S");
-            var A = new ProductionModel("A");
-            var B = new ProductionModel("B");
+            var S = ProductionModel.From("S");
+            var A = ProductionModel.From("A");
+            var B = ProductionModel.From("B");
 
             S.AddWithAnd(A);
             S.AddWithAnd(B);

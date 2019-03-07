@@ -7,12 +7,12 @@ namespace Pliant.Builders.Expressions
     {
         private ProductionExpression(NonTerminal leftHandSide)
         {
-            ProductionModel = new ProductionModel(leftHandSide);
+            ProductionModel = ProductionModel.From(leftHandSide);
         }
 
-        private ProductionExpression(QualifiedName fullyQualifiedName)
+        private ProductionExpression(QualifiedName qualifiedName)
+            : this(new NonTerminal(qualifiedName))
         {
-            ProductionModel = new ProductionModel(fullyQualifiedName);
         }
 
         public ProductionModel ProductionModel { get; }
