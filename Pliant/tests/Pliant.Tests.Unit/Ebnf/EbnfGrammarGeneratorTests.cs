@@ -382,12 +382,12 @@ namespace Pliant.Tests.Unit.Ebnf
         {
             public NonTerminal GetSymbolForOptional(EbnfFactorOptional optional)
             {
-                return new NonTerminal(Guid.NewGuid().ToString());
+                return NonTerminal.From(Guid.NewGuid().ToString());
             }
 
             public NonTerminal GetSymbolForRepetition(EbnfFactorRepetition repetition)
             {
-                return new NonTerminal(Guid.NewGuid().ToString());
+                return NonTerminal.From(Guid.NewGuid().ToString());
             }
         }
     }

@@ -144,7 +144,7 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfFactorLiteral literal:
-                    var stringLiteralRule = new StringLiteralLexer(literal.Value);
+                    var stringLiteralRule = new StringLiteralLexerRule(literal.Value);
                     currentProduction.AddWithAnd(new LexerRuleModel(stringLiteralRule));
                     break;
 
@@ -160,7 +160,7 @@ namespace Pliant.Ebnf
         private IEnumerable<ProductionModel> Grouping(EbnfFactorGrouping grouping, ProductionModel currentProduction)
         {
             var name = grouping.ToString();
-            var nonTerminal = new NonTerminal(name);
+            var nonTerminal = NonTerminal.From(name);
             var groupingProduction = ProductionModel.From(nonTerminal);
 
             currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
@@ -280,7 +280,7 @@ namespace Pliant.Ebnf
         private IEnumerable<ProductionModel> Optional(EbnfFactorOptional optional, ProductionModel currentProduction)
         {
             var name = optional.ToString();
-            var nonTerminal = new NonTerminal(name);
+            var nonTerminal = NonTerminal.From(name);
             var optionalProduction = ProductionModel.From(nonTerminal);
 
             currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
@@ -298,7 +298,7 @@ namespace Pliant.Ebnf
         private IEnumerable<ProductionModel> Repetition(EbnfFactorRepetition repetition, ProductionModel currentProduction)
         {
             var name = repetition.ToString();
-            var nonTerminal = new NonTerminal(name);
+            var nonTerminal = NonTerminal.From(name);
             var repetitionProduction = ProductionModel.From(nonTerminal);
 
             currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
@@ -375,7 +375,7 @@ namespace Pliant.Ebnf
                 var factor = term.Factor;
                 if (factor is EbnfLexerRuleFactorLiteral literal)
                 {
-                    lexerRule = new StringLiteralLexer(literal.Value, new TokenClass(fullyQualifiedName.FullName));
+                    lexerRule = new StringLiteralLexerRule(literal.Value, new TokenClass(fullyQualifiedName.FullName));
 
                     return true;
                 }

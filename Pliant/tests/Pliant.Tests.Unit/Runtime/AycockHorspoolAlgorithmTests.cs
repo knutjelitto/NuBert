@@ -14,7 +14,7 @@ namespace Pliant.Tests.Unit.Runtime
         [TestMethod]
         public void AycockHorspoolAlgorithmShouldAcceptVulnerableGrammar()
         {
-            var a = new TerminalLexer(
+            var a = new TerminalLexerRule(
                 new CharacterTerminal('a'),
                 new TokenClass("a"));
 

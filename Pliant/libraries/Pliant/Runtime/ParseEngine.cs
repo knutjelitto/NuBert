@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using Pliant.Charts;
 using Pliant.Diagnostics;
-using Pliant.Dotted;
 using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Tokens;
+using Pliant.Tree;
 using Pliant.Utilities;
 
 namespace Pliant.Runtime
@@ -34,44 +34,22 @@ namespace Pliant.Runtime
 
         public int Location { get; private set; }
 
-        public IReadOnlyList<LexerRule> GetExpectedLexerRules()
+        public IEnumerable<LexerRule> GetExpectedLexerRules()
         {
-            var earleySet = Chart.LastSet();
-            var scanStates = earleySet.Scans;
+            return Chart.Current.Scans
+                        .Select(state => state.DottedRule.PostDotSymbol)
+                        .OfType<LexerRule>();
+        }
 
-            if (scanStates.Count == 0)
-            {
-                return emptyLexerRules;
-            }
-
-            var numbers = scanStates
-                          .Select(state => state.DottedRule.PostDotSymbol)
-                          .OfType<LexerRule>()
-                          .Select(lexerRule => Grammar.GetLexerIndex(lexerRule))
-                          .Where(index => index >= 0);
-
-            var indices = new Indices(numbers);
-
-            // if the hash is found in the cached lexer rule lists, return the cached array
-            if (this.expectedLexerRuleCache.TryGetValue(indices, out var cachedLexerRules))
-            {
-                return cachedLexerRules;
-            }
-
-            // compute the new lexer rule array and add it to the cache
-            var array = indices.GetLexerRules(Grammar.LexerRules);
-
-            this.expectedLexerRuleCache.Add(indices, array);
-
-            return array;
+        public IInternalTreeNode GetParseTree(IForestDisambiguationAlgorithm disambiguate = null)
+        {
+            return new InternalTreeNode(GetParseForestRootNode(), disambiguate ?? new SelectFirstChildDisambiguationAlgorithm());
         }
 
         public ISymbolForestNode GetParseForestRootNode()
         {
-            var lastSet = Chart.LastSet();
-
             // PERF: Avoid Linq expressions due to lambda allocation
-            foreach (var completion in lastSet.Completions)
+            foreach (var completion in Chart.Current.Completions)
             {
                 if (completion.Origin == 0 && completion.LeftHandSide.Is(Grammar.Start))
                 {
@@ -85,10 +63,8 @@ namespace Pliant.Runtime
 
         public bool IsAccepted()
         {
-            var lastSet = Chart.LastSet();
-
             // PERF: Avoid LINQ Any due to lambda allocation
-            foreach (var completion in lastSet.Completions)
+            foreach (var completion in Chart.Current.Completions)
             {
                 if (completion.Origin == 0 && completion.LeftHandSide.Is(Grammar.Start))
                 {
@@ -263,7 +239,7 @@ namespace Pliant.Runtime
                     completed.ParseNode,
                     location);
 
-                if (Chart.ContainsNormal(location, dottedRule, origin))
+                if (Chart.Contains(location, dottedRule, origin))
                 {
                     continue;
                 }
@@ -281,7 +257,6 @@ namespace Pliant.Runtime
         {
             Location = 0;
             Chart = new Chart();
-            this.expectedLexerRuleCache = new Dictionary<Indices, LexerRule[]>();
 
             foreach (var startProduction in Grammar.StartProductions())
             {
@@ -301,7 +276,7 @@ namespace Pliant.Runtime
         /// </summary>
         /// <param name="state">the state to check for quasi completeness</param>
         /// <returns>true if quasi complete, false otherwise</returns>
-        private bool IsNextStateQuasiComplete(State state)
+        private bool IsNextStateQuasiComplete(PredictionState state)
         {
             var production = state.DottedRule.Production;
 
@@ -338,8 +313,7 @@ namespace Pliant.Runtime
                 //
                 // to fix this, check if S can derive S. Basically if we are in the StartState state
                 // and the StartState state is found and is nullable, exit with false
-                if (Grammar.Start.Is(production.LeftHandSide) &&
-                    Grammar.Start.Is(nextSymbol))
+                if (Grammar.Start.Is(production) && Grammar.Start.Is(nextSymbol))
                 {
                     return false;
                 }
@@ -361,7 +335,7 @@ namespace Pliant.Runtime
         private void LeoComplete(TransitionState transitionState, CompletedState completed, int location)
         {
             var earleySet = Chart[transitionState.Index];
-            if (!earleySet.FindTransitionState(transitionState.DottedRule.PreDotSymbol, out var rootTransitionState))
+            if (!earleySet.FindTransitionState((NonTerminal)transitionState.DottedRule.PreDotSymbol, out var rootTransitionState))
             {
                 rootTransitionState = transitionState;
             }
@@ -394,7 +368,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void OptimizeReductionPath(Symbol searchSymbol, int origin)
+        private void OptimizeReductionPath(NonTerminal searchSymbol, int origin)
         {
             State t_rule = null;
             TransitionState previousTransitionState = null;
@@ -405,7 +379,7 @@ namespace Pliant.Runtime
         }
 
         private void OptimizeReductionPathRecursive(
-            Symbol searchSymbol,
+            NonTerminal nonTerminal,
             int origin,
             ref State t_rule,
             ref TransitionState previousTransitionState,
@@ -414,7 +388,7 @@ namespace Pliant.Runtime
             var earleySet = Chart[origin];
 
             // if Ii contains a transitive item of the for [B -> b., A, k]
-            if (earleySet.FindTransitionState(searchSymbol, out var transitionState))
+            if (earleySet.FindTransitionState(nonTerminal, out var transitionState))
             {
                 // then t_rule := B-> b.; t_pos = k;
                 previousTransitionState = transitionState;
@@ -423,7 +397,7 @@ namespace Pliant.Runtime
             }
 
             // else if Ii contains exactly one item of the form [B -> a.Ab, k]
-            if (!earleySet.FindUniqueSourceState(searchSymbol, out var sourceState) ||
+            if (!earleySet.FindUniqueSourceState(nonTerminal, out var sourceState) ||
                 !visited.Add(sourceState) ||
                 // and [B-> aA.b, k] is quasi complete (if b nullable)
                 !IsNextStateQuasiComplete(sourceState))
@@ -456,7 +430,7 @@ namespace Pliant.Runtime
             if (previousTransitionState != null)
             {
                 transition = new TransitionState(
-                    searchSymbol,
+                    nonTerminal,
                     t_rule,
                     sourceState,
                     previousTransitionState.Index);
@@ -466,7 +440,7 @@ namespace Pliant.Runtime
             else
             {
                 transition = new TransitionState(
-                    searchSymbol,
+                    nonTerminal,
                     t_rule,
                     sourceState,
                     origin);
@@ -524,7 +498,7 @@ namespace Pliant.Runtime
                     location);
             }
 
-            if (Chart.ContainsNormal(location, dottedRule, evidence.Origin))
+            if (Chart.Contains(location, dottedRule, evidence.Origin))
             {
                 return;
             }
@@ -540,7 +514,7 @@ namespace Pliant.Runtime
         private void PredictProduction(int location, Production production)
         {
             var dottedRule = DottedRules.Get(production, 0);
-            if (Chart.ContainsNormal(location, dottedRule, 0))
+            if (Chart.Contains(location, dottedRule, 0))
             {
                 return;
             }
@@ -585,13 +559,12 @@ namespace Pliant.Runtime
 
         private void Scan(ScanState scan, int location, IToken token)
         {
-            var origin = scan.Origin;
             var currentSymbol = scan.DottedRule.PostDotSymbol;
 
             if (currentSymbol is LexerRule lexerRule && token.TokenClass.Equals(lexerRule.TokenClass))
             {
                 var dottedRule = DottedRules.GetNext(scan.DottedRule);
-                if (Chart.ContainsNormal(location + 1, dottedRule, origin))
+                if (Chart.Contains(location + 1, dottedRule, scan.Origin))
                 {
                     return;
                 }
@@ -622,47 +595,11 @@ namespace Pliant.Runtime
             }
         }
 
-        private static readonly LexerRule[] emptyLexerRules = { };
-
-        private Dictionary<Indices, LexerRule[]> expectedLexerRuleCache;
-
         private ForestNodeSet NodeSet { get; }
 
         private const string predictionLogName = "Predict";
         private const string startLogName = "StartState";
         private const string completeLogName = "Complete";
         private const string transitionLogName = "Transition";
-
-        private class Indices
-        {
-            private readonly SortedSet<int> indices;
-            private readonly int hashCode;
-
-            public Indices(IEnumerable<int> indices)
-            {
-                this.indices = new SortedSet<int>(indices);
-                this.hashCode = 0;
-                foreach (var index in this.indices)
-                {
-                    this.hashCode = HashCode.ComputeIncrementalHash(index, this.hashCode, this.hashCode == 0);
-                }
-            }
-
-            public LexerRule[] GetLexerRules(IReadOnlyList<LexerRule> rules)
-            {
-                return this.indices.Select(index => rules[index]).ToArray();
-            }
-
-            public override bool Equals(object obj)
-            {
-                // ReSharper disable once PossibleNullReferenceException
-                return this.indices.SequenceEqual(((Indices) obj).indices);
-            }
-
-            public override int GetHashCode()
-            {
-                return this.hashCode;
-            }
-        }
     }
 }

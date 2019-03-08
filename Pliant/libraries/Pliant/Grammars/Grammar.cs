@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Pliant.Dotted;
+using Pliant.Charts;
 
 namespace Pliant.Grammars
 {

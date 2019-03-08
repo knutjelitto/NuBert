@@ -1,11 +1,10 @@
 ﻿using Pliant.Grammars;
-using Pliant.Utilities;
 
 namespace Pliant.Charts
 {
     public sealed class TransitionState : State
     {
-        public TransitionState(Symbol recognized, State transition, RuleState reduction, int index)
+        public TransitionState(NonTerminal recognized, State transition, RuleState reduction, int index)
             : base(transition.DottedRule, transition.Origin, null)
         {
             Reduction = reduction;
@@ -16,7 +15,7 @@ namespace Pliant.Charts
 
         public int Index { get; }
         public TransitionState NextTransition { get; set; }
-        public Symbol Recognized { get; }
+        public NonTerminal Recognized { get; }
         public RuleState Reduction { get; }
 
         public override bool Equals(object obj)

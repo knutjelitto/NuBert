@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Pliant.Forest
 {
@@ -17,6 +18,7 @@ namespace Pliant.Forest
 
         public void AddUniqueFamily(IForestNode trigger)
         {
+            Debug.Assert(!(this is IntermediateForestNode) || Children.Count == 0);
             AddUniqueAndNode(trigger);
         }
 
@@ -55,6 +57,7 @@ namespace Pliant.Forest
             // not found so add new and node
             var newAndNode = AndForestNode.Make(first, second);
 
+            Debug.Assert(!(this is IntermediateForestNode) || this.children.Count == 0);
             this.children.Add(newAndNode);
         }
 

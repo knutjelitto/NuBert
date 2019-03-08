@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Charts;
-using Pliant.Dotted;
 using Pliant.Grammars;
 
 namespace Pliant.Tests.Unit
@@ -14,7 +13,7 @@ namespace Pliant.Tests.Unit
             var state = new PredictionState(
                 new DottedRule(
                     new Production(
-                        new NonTerminal("A"), new NonTerminal("B"), new NonTerminal("C")),
+                        NonTerminal.From("A"), NonTerminal.From("B"), NonTerminal.From("C")),
                     1),
                 0);
             Assert.AreEqual("A -> B\u25CFC\t\t(0)", state.ToString());

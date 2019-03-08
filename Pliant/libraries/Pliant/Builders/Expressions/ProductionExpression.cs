@@ -50,7 +50,7 @@ namespace Pliant.Builders.Expressions
 
         public static implicit operator ProductionExpression(string leftHandSide)
         {
-            return new ProductionExpression(new NonTerminal(leftHandSide));
+            return new ProductionExpression(NonTerminal.From(leftHandSide));
         }
 
         public static implicit operator ProductionExpression(QualifiedName fullyQualifiedName)

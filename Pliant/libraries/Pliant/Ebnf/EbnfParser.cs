@@ -27,9 +27,7 @@ namespace Pliant.Ebnf
                     $"Ebnf parse not accepted. Error at line {parseRunner.Line}, column {parseRunner.Column}.");
             }
 
-            var parseForest = parseEngine.GetParseForestRootNode();
-
-            var parseTree = new InternalTreeNode(parseForest);
+            var parseTree = parseEngine.GetParseTree();
 
             var ebnfVisitor = new EbnfVisitor();
             parseTree.Accept(ebnfVisitor);

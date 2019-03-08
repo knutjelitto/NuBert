@@ -10,7 +10,7 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void ProductionToStringShouldGenerateCorrectlyFormattedString()
         {
-            var production = new Production(new NonTerminal("A"), new NonTerminal("B"));
+            var production = new Production(NonTerminal.From("A"), NonTerminal.From("B"));
             Assert.AreEqual("A -> B", production.ToString());
         }
 
@@ -18,16 +18,16 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void ProductionGetHashCodeShouldProduceSameValueForEmptyProductionWithSameLeftHandSide()
         {
-            var production1 = new Production(new NonTerminal("A"));
-            var production2 = new Production(new NonTerminal("A"));
+            var production1 = new Production(NonTerminal.From("A"));
+            var production2 = new Production(NonTerminal.From("A"));
             Assert.AreEqual(production1.GetHashCode(), production2.GetHashCode());
         }
 
         [TestMethod]
         public void ProductionGetHashCodeShouldProduceSameValueForSameRightHandSides()
         {
-            var production1 = new Production(new NonTerminal("A"), new CharacterTerminal('a'), new NonTerminal("B"));
-            var production2 = new Production(new NonTerminal("A"), new CharacterTerminal('a'), new NonTerminal("B"));
+            var production1 = new Production(NonTerminal.From("A"), new CharacterTerminal('a'), NonTerminal.From("B"));
+            var production2 = new Production(NonTerminal.From("A"), new CharacterTerminal('a'), NonTerminal.From("B"));
 
             Assert.AreEqual(production1.GetHashCode(), production2.GetHashCode());
         }
@@ -35,17 +35,18 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void ProductionGetHashCodeShouldNotProduceSameValueForDifferentLeftHandSides()
         {
-            var production1 = new Production(new NonTerminal("A"));
-            var production2 = new Production(new NonTerminal("B"));
+            var production1 = new Production(NonTerminal.From("A"));
+            var production2 = new Production(NonTerminal.From("B"));
             Assert.AreNotEqual(production1.GetHashCode(), production2.GetHashCode());
         }
 
         [TestMethod]
         public void ProductionGetHashCodeShouldProduceSameValueForSameObject()
         {
-            var production = new Production(new NonTerminal("Z"), 
-                new CharacterTerminal('a'), 
-                new NonTerminal("B"),
+            var production = new Production(
+                NonTerminal.From("Z"),
+                new CharacterTerminal('a'),
+                NonTerminal.From("B"),
                 new SetTerminal("az"));
             var hashCode = production.GetHashCode();
             Assert.AreEqual(hashCode, production.GetHashCode());

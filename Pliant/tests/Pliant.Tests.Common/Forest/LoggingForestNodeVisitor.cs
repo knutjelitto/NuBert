@@ -33,9 +33,8 @@ namespace Pliant.Tests.Common.Forest
                 return;
             }
 
-            for (var i = 0; i < node.Children.Count; i++)
+            foreach (var child in node.Children)
             {
-                var child = node.Children[i];
                 Visit(child);
             }
         }
@@ -47,14 +46,14 @@ namespace Pliant.Tests.Common.Forest
                 return;
             }
 
-            for (var a = 0; a < node.Children.Count; a++)
+            foreach (var child in node.Children)
             {
                 PrintNode(node);
                 this.writer.Write(" ->");
-                var andNode = node.Children[a];
-                foreach (var child in andNode.Children)
+                var andNode = child;
+                foreach (var andChild in andNode.Children)
                 {
-                    PrintNode(child);
+                    PrintNode(andChild);
                 }
 
                 this.writer.WriteLine();
@@ -76,11 +75,10 @@ namespace Pliant.Tests.Common.Forest
                         throw new Exception("Intermediate node has more children than expected. ");
                     }
 
-                    var flatList = GetFlattenedList(intermediate);
-                    for (var i = 0; i < flatList.Count; i++)
+                    foreach (var flat in GetFlattenedList(intermediate))
                     {
                         this.writer.Write(" ");
-                        PrintNode(flatList[i]);
+                        PrintNode(flat);
                     }
 
                     break;
@@ -103,9 +101,8 @@ namespace Pliant.Tests.Common.Forest
         private static IList<IForestNode> GetFlattenedList(IIntermediateForestNode intermediate)
         {
             var children = new List<IForestNode>();
-            for (var a = 0; a < intermediate.Children.Count; a++)
+            foreach (var andNode in intermediate.Children)
             {
-                var andNode = intermediate.Children[a];
                 foreach (var child in andNode.Children)
                 {
                     switch (child)
@@ -127,11 +124,6 @@ namespace Pliant.Tests.Common.Forest
         private static string GetSymbolNodeString(ISymbolForestNode node)
         {
             return $"({node.Symbol}, {node.Origin}, {node.Location})";
-        }
-
-        private static string GetIntermediateNodeString(IIntermediateForestNode node)
-        {
-            return $"({node.DottedRule}, {node.Origin}, {node.Location})";
         }
 
         private static string GetTokenNodeString(ITokenForestNode node)

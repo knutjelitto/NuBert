@@ -65,11 +65,7 @@ namespace NuBert.Check
                         $"expression parse not accepted. Error at line {parseRunner.Line+1}, column {parseRunner.Column+1}.");
                 }
 
-                var parseForest = parseEngine.GetParseForestRootNode();
-
-                var parseTree = new InternalTreeNode(parseForest);
-
-                return parseTree;
+                return parseEngine.GetParseTree();
             }
 
             private Grammar MakeGrammar()

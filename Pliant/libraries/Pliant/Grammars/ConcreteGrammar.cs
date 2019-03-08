@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using Pliant.Charts;
 using Pliant.Collections;
-using Pliant.Dotted;
 
 namespace Pliant.Grammars
 {

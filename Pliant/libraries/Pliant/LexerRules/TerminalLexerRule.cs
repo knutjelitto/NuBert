@@ -4,24 +4,24 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public sealed class TerminalLexer : DfaLexerRule
+    public sealed class TerminalLexerRule : DfaLexerRule
     {
-        public TerminalLexer(char character)
+        public TerminalLexerRule(char character)
             : this(new CharacterTerminal(character), new TokenClass(character.ToString()))
         {
         }
 
-        public TerminalLexer(Terminal terminal, string tokenTypeId)
+        public TerminalLexerRule(Terminal terminal, string tokenTypeId)
             : this(terminal, new TokenClass(tokenTypeId))
         {
         }
 
-        public TerminalLexer(Terminal terminal)
+        public TerminalLexerRule(Terminal terminal)
             : this(terminal, terminal.ToString())
         {
         }
 
-        public TerminalLexer(Terminal terminal, TokenClass tokenClass)
+        public TerminalLexerRule(Terminal terminal, TokenClass tokenClass)
             : base(MakeAutomaton(terminal), tokenClass)
         {
             Terminal = terminal;
@@ -48,7 +48,7 @@ namespace Pliant.LexerRules
 
         public override bool Equals(object obj)
         {
-            return obj is TerminalLexer other &&
+            return obj is TerminalLexerRule other &&
                    Terminal.Equals(other.Terminal);
         }
 

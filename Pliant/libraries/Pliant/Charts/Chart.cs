@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Pliant.Dotted;
 
 namespace Pliant.Charts
 {
@@ -26,15 +25,11 @@ namespace Pliant.Charts
 
         public EarleySet this[int index] => this.sets[index];
 
-        public EarleySet LastSet()
-        {
-            return this.sets[this.sets.Count - 1];
-        }
+        public EarleySet Current => this.sets[this.sets.Count - 1];
 
-        public bool ContainsNormal(int location, DottedRule dottedRule, int origin)
+        public bool Contains(int location, DottedRule dottedRule, int origin)
         {
-            var earleySet = GetEarleySet(location);
-            return earleySet.ContainsNormal(dottedRule, origin);
+            return GetEarleySet(location).Contains(dottedRule, origin);
         }
 
         public bool Enqueue(int location, State state)

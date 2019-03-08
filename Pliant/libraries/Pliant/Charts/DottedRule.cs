@@ -2,7 +2,7 @@
 using Pliant.Grammars;
 using Pliant.Utilities;
 
-namespace Pliant.Dotted
+namespace Pliant.Charts
 {
     public sealed class DottedRule : ValueEqualityBase<DottedRule>
     {

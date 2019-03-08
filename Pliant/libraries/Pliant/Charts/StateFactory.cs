@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using Pliant.Dotted;
-using Pliant.Forest;
+﻿using Pliant.Forest;
 using Pliant.Grammars;
 
 namespace Pliant.Charts
@@ -11,6 +9,8 @@ namespace Pliant.Charts
         {
             DottedRuleRegistry = dottedRuleRegistry;
         }
+
+        private DottedRuleRegistry DottedRuleRegistry { get; }
 
         public State NewState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
         {
@@ -32,7 +32,7 @@ namespace Pliant.Charts
             return NewState(DottedRuleRegistry.Get(production, dot), origin);
         }
 
-        public State NextState(State state)
+        public State NextState(RuleState state)
         {
             if (state.DottedRule.IsComplete)
             {
@@ -42,7 +42,5 @@ namespace Pliant.Charts
             var dottedRule = DottedRuleRegistry.GetNext(state.DottedRule);
             return NewState(dottedRule, state.Origin);
         }
-
-        private DottedRuleRegistry DottedRuleRegistry { get; }
     }
 }

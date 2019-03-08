@@ -1,5 +1,4 @@
-﻿using Pliant.Dotted;
-using Pliant.Forest;
+﻿using Pliant.Forest;
 
 namespace Pliant.Charts
 {

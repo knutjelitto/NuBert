@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Pliant.Dotted;
 
 namespace Pliant.Charts
 {
@@ -11,11 +10,11 @@ namespace Pliant.Charts
 
         public T this[int index] => this.list[index];
 
-        public bool AddUnique(T normalState)
+        public bool AddUnique(T state)
         {
-            if (this.lookup.TryGetValue(normalState.DottedRule, out var origins))
+            if (this.lookup.TryGetValue(state.DottedRule, out var origins))
             {
-                if (origins.TryGetValue(normalState.Origin, out var _))
+                if (origins.TryGetValue(state.Origin, out var _))
                 {
                     return false;
                 }
@@ -23,11 +22,11 @@ namespace Pliant.Charts
             else
             {
                 origins = new Dictionary<int, int>();
-                this.lookup.Add(normalState.DottedRule, origins);
+                this.lookup.Add(state.DottedRule, origins);
             }
 
-            origins.Add(normalState.Origin, this.list.Count);
-            this.list.Add(normalState);
+            origins.Add(state.Origin, this.list.Count);
+            this.list.Add(state);
 
             return true;
         }

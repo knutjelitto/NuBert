@@ -2,20 +2,15 @@
 {
     public sealed class NonTerminal : Symbol
     {
-        private NonTerminal(string qualifier, string name)
-            : this(new QualifiedName(qualifier, name))
-        {
-        }
-
-        public NonTerminal(string name)
-            : this(string.Empty, name)
-        {
-        }
-
         public NonTerminal(QualifiedName qualifiedName)
         {
             QualifiedName = qualifiedName;
             this.hashCode = Value.GetHashCode();
+        }
+
+        public static NonTerminal From(string name)
+        {
+            return new NonTerminal(new QualifiedName(string.Empty, name));
         }
 
         public QualifiedName QualifiedName { get; }
@@ -35,6 +30,11 @@
         public bool Is(NonTerminal other)
         {
             return Is(other.QualifiedName);
+        }
+
+        public bool Is(Production production)
+        {
+            return Is(production.LeftHandSide);
         }
 
         public override bool Equals(object obj)

@@ -12,7 +12,7 @@ namespace Pliant.Tests.Unit.Tokens
         [TestMethod]
         public void StringLiteralLexemeResetShouldResetLexemeValues()
         {
-            var abc123LexerRule = new StringLiteralLexer("abc123");
+            var abc123LexerRule = new StringLiteralLexerRule("abc123");
 
             //var lexeme = new StringLiteralLexeme(abc123LexerRule, 0);
             var lexeme = abc123LexerRule.CreateLexeme(0);

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Pliant.Charts;
-using Pliant.Dotted;
 using Pliant.Grammars;
 using Pliant.Tokens;
 
@@ -13,7 +12,7 @@ namespace Pliant.Forest
             this._symbolNodes = new Dictionary<(NonTerminal, int, int), ISymbolForestNode>();
             this._intermediateNodes = new Dictionary<(DottedRule, int, int), IIntermediateForestNode>();
             this._virtualNodes = new Dictionary<(Symbol, int, int), VirtualForestNode>();
-            this._tokenNodes = new Dictionary<IToken, ITokenForestNode>();
+            this._tokenNodes = new Dictionary<IToken, TokenForestNode>();
         }
 
         public void AddNewVirtualNode(VirtualForestNode virtualNode)
@@ -82,7 +81,7 @@ namespace Pliant.Forest
 
         private readonly Dictionary<(DottedRule, int, int), IIntermediateForestNode> _intermediateNodes;
         private readonly Dictionary<(NonTerminal, int, int), ISymbolForestNode> _symbolNodes;
-        private readonly Dictionary<IToken, ITokenForestNode> _tokenNodes;
+        private readonly Dictionary<IToken, TokenForestNode> _tokenNodes;
         private readonly Dictionary<(Symbol, int, int), VirtualForestNode> _virtualNodes;
     }
 }

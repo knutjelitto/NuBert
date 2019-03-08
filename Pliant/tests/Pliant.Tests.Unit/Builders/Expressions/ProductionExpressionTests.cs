@@ -316,8 +316,8 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             LexerRule 
-                a = new StringLiteralLexer("a"),
-                b = new StringLiteralLexer("b");
+                a = new StringLiteralLexerRule("a"),
+                b = new StringLiteralLexerRule("b");
             S.Rule = (Expr) a + b;
 
             Assert.IsNotNull(S.ProductionModel);
@@ -331,7 +331,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             LexerRule
-                a = new StringLiteralLexer("a");
+                a = new StringLiteralLexerRule("a");
             S.Rule = a + (Expr)"s";
 
             Assert.IsNotNull(S.ProductionModel);
@@ -345,8 +345,8 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             LexerRule
-                a = new StringLiteralLexer("a"),
-                b = new StringLiteralLexer("b");
+                a = new StringLiteralLexerRule("a"),
+                b = new StringLiteralLexerRule("b");
             S.Rule = (Expr)a | b;
 
             Assert.IsNotNull(S.ProductionModel);
@@ -361,7 +361,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             LexerRule
-                a = new StringLiteralLexer("a");
+                a = new StringLiteralLexerRule("a");
             S.Rule = a | (Expr)"b";
 
             Assert.IsNotNull(S.ProductionModel);
@@ -376,7 +376,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
             ProductionExpression
                 S = "S";
             LexerRule
-                a = new StringLiteralLexer("a");
+                a = new StringLiteralLexerRule("a");
             S.Rule = (Expr)"b" | a;
 
             Assert.IsNotNull(S.ProductionModel);

@@ -262,7 +262,7 @@ namespace Pliant.Tests.Unit.Runtime
         {
             var input = "word \t\r\n word";
 
-            var endOfLine = new StringLiteralLexer(
+            var endOfLine = new StringLiteralLexerRule(
                 Environment.NewLine,
                 new TokenClass("EOL"));
             ProductionExpression S = "S";

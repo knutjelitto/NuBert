@@ -26,20 +26,20 @@ namespace Pliant.Bnf
             var notDoubleQuote = CreateNotDoubleQuoteLexerRule();
             var notSingleQuote = CreateNotSingleQuoteLexerRule();
 
-            var grammar = new NonTerminal("grammar");
-            var rule = new NonTerminal("rule");
-            var identifier = new NonTerminal("EbnfQualifiedIdentifier");
-            var expression = new NonTerminal("expression");
-            var lineEnd = new NonTerminal("line-end");
-            var list = new NonTerminal("list");
-            var term = new NonTerminal("term");
-            var literal = new NonTerminal("literal");
+            var grammar = NonTerminal.From("grammar");
+            var rule = NonTerminal.From("rule");
+            var identifier = NonTerminal.From("EbnfQualifiedIdentifier");
+            var expression = NonTerminal.From("expression");
+            var lineEnd = NonTerminal.From("line-end");
+            var list = NonTerminal.From("list");
+            var term = NonTerminal.From("term");
+            var literal = NonTerminal.From("literal");
 
-            var lessThan = new TerminalLexer('<');
-            var greaterThan = new TerminalLexer('>');
-            var doubleQuote = new TerminalLexer('"');
-            var slash = new TerminalLexer('\'');
-            var pipe = new TerminalLexer('|');
+            var lessThan = new TerminalLexerRule('<');
+            var greaterThan = new TerminalLexerRule('>');
+            var doubleQuote = new TerminalLexerRule('"');
+            var slash = new TerminalLexerRule('\'');
+            var pipe = new TerminalLexerRule('|');
 
             var productions = new[]
             {
@@ -74,12 +74,12 @@ namespace Pliant.Bnf
 
         private static LexerRule CreateEndOfLineLexerRule()
         {
-            return new StringLiteralLexer("\r\n", new TokenClass("eol"));
+            return new StringLiteralLexerRule("\r\n", new TokenClass("eol"));
         }
 
         private static LexerRule CreateImplementsLexerRule()
         {
-            return new StringLiteralLexer("::=", new TokenClass("implements"));
+            return new StringLiteralLexerRule("::=", new TokenClass("implements"));
         }
 
         private static LexerRule CreateNotDoubleQuoteLexerRule()

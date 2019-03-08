@@ -12,26 +12,6 @@ namespace Pliant.Collections
             this._innerList = new List<T>();
         }
 
-        public IndexedList(IEnumerable<T> enumerable)
-            : this()
-        {
-            if (enumerable is IReadOnlyList<T>)
-            {
-                var list = enumerable as IReadOnlyList<T>;
-                for (var i = 0; i < list.Count; i++)
-                {
-                    Add(list[i]);
-                }
-            }
-            else
-            {
-                foreach (var item in enumerable)
-                {
-                    Add(item);
-                }
-            }
-        }
-
         public T this[int index]
         {
             get => this._innerList[index];

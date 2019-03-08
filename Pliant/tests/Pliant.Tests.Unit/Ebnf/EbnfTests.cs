@@ -250,7 +250,7 @@ namespace Pliant.Tests.Unit.Ebnf
         {
             var node = ParseInput(@"
             SomeRule = 'a' 'b' 'c' ;
-            ") as ISymbolForestNode;
+            ");
             Assert.IsNotNull(node);
             
             var visitor = new LoggingNodeVisitor(
@@ -261,7 +261,7 @@ namespace Pliant.Tests.Unit.Ebnf
             Assert.IsTrue(log.Count > 0);
         }
 
-        private IForestNode ParseInput(string input)
+        private ISymbolForestNode ParseInput(string input)
         {
             var parseRunner = new ParseRunner(this.parseEngine, input);
             while (!parseRunner.EndOfStream())

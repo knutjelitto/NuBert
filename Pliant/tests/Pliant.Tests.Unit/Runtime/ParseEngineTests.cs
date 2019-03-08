@@ -126,7 +126,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseEngine = new ParseEngine(grammar);
             ParseInput(parseEngine, tokens);
 
-            var S_0_4 = parseEngine.GetParseForestRootNode() as ISymbolForestNode;
+            var S_0_4 = parseEngine.GetParseForestRootNode();
             Assert.IsNotNull(S_0_4);
             AssertNodeProperties(S_0_4, nameof(S), 0, 4);
             Assert.AreEqual(2, S_0_4.Children.Count);
@@ -285,7 +285,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseForestRoot = parseEngine.GetParseForestRootNode();
             var parseForestNode = parseForestRoot;
 
-            CastAndCountChildren<ISymbolForestNode>(parseForestNode, 2);
+            CountChildren(parseForestNode, 2);
         }
 
         [TestMethod]
@@ -309,7 +309,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseForestRoot = parseEngine.GetParseForestRootNode();
             var root = parseForestRoot;
 
-            var S_0_2 = root as ISymbolForestNode;
+            var S_0_2 = root;
             Assert.IsNotNull(S_0_2);
             Assert.AreEqual(1, S_0_2.Children.Count);
 
@@ -367,7 +367,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseForestRoot = parseEngine.GetParseForestRootNode();
             var root = parseForestRoot;
 
-            var S_0_4 = root as ISymbolForestNode;
+            var S_0_4 = root;
             Assert.IsNotNull(S_0_4);
             Assert.AreEqual(1, S_0_4.Children.Count);
 
@@ -456,7 +456,7 @@ namespace Pliant.Tests.Unit.Runtime
             /*  S_0_1 -> A_0_1
              *  A_0_1 -> 'a'
              */
-            var S_0_1 = parseEngine.GetParseForestRootNode() as ISymbolForestNode;
+            var S_0_1 = parseEngine.GetParseForestRootNode();
             Assert.IsNotNull(S_0_1);
             Assert.AreEqual(1, S_0_1.Children.Count);
 
@@ -522,7 +522,7 @@ namespace Pliant.Tests.Unit.Runtime
                 | (F + E)
                 | (Expr) null;
             F.Rule =
-                new TerminalLexer(new SetTerminal("ab"));
+                new TerminalLexerRule(new SetTerminal("ab"));
 
             var grammar = new GrammarExpression(E, new[] {E, F})
                 .ToGrammar();
@@ -596,7 +596,7 @@ namespace Pliant.Tests.Unit.Runtime
 
             var parseForestRoot = parseEngine.GetParseForestRootNode();
             var root = parseForestRoot;
-            var R_0_4 = CastAndCountChildren<ISymbolForestNode>(root, 1);
+            var R_0_4 = CountChildren(root, 1);
             AssertNodeProperties(R_0_4, "R", 0, 4);
             var E_0_4 = GetAndCastChildAtIndex<ISymbolForestNode>(R_0_4, 0);
             AssertNodeProperties(E_0_4, "E", 0, 4);
@@ -674,7 +674,7 @@ namespace Pliant.Tests.Unit.Runtime
             // A_0_2 -> B_0_1 C_1_2
             // B_0_1 -> '.'_0_1
             // C_1_2 -> '+'_1_2
-            var S_0_2 = parseForest as ISymbolForestNode;
+            var S_0_2 = parseForest;
             Assert.IsNotNull(S_0_2);
             Assert.AreEqual(1, S_0_2.Children.Count);
 
@@ -811,7 +811,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseForestRoot = parseEngine.GetParseForestRootNode();
             var parseForest = parseForestRoot;
 
-            var R_0_3 = CastAndCountChildren<ISymbolForestNode>(parseForest, 1);
+            var R_0_3 = CountChildren(parseForest, 1);
             AssertNodeProperties(R_0_3, "R", 0, 3);
             var E_0_3 = GetAndCastChildAtIndex<ISymbolForestNode>(R_0_3, 0);
             AssertNodeProperties(E_0_3, "E", 0, 3);
@@ -847,7 +847,7 @@ namespace Pliant.Tests.Unit.Runtime
             var parseNode = parseEngine.GetParseForestRootNode();
             Assert.IsNotNull(parseNode);
 
-            var S_0_1 = parseNode as ISymbolForestNode;
+            var S_0_1 = parseNode;
             Assert.IsNotNull(S_0_1);
             Assert.AreEqual(1, S_0_1.Children.Count);
 
@@ -897,16 +897,14 @@ namespace Pliant.Tests.Unit.Runtime
             Assert.AreEqual(location, node.Location, "Location Match Failed.");
         }
 
-        private static T CastAndCountChildren<T>(IForestNode node, int childCount)
-            where T : class, IInternalForestNode
+        private static ISymbolForestNode CountChildren(ISymbolForestNode node, int childCount)
         {
-            var tNode = node as T;
             Assert.IsNotNull(node);
-            Assert.AreEqual(1, tNode.Children.Count);
-            var firstAndNode = tNode.Children[0];
+            Assert.AreEqual(1, node.Children.Count);
+            var firstAndNode = node.Children[0];
             Assert.IsNotNull(firstAndNode);
             Assert.AreEqual(childCount, firstAndNode.Children.Count);
-            return tNode;
+            return node;
         }
 
         private static IToken CreateCharacterToken(char character, int position)
@@ -921,7 +919,7 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static Grammar CreateExpressionGrammar()
         {
-            var digit = new TerminalLexer(DigitTerminal.Instance, new TokenClass("digit"));
+            var digit = new TerminalLexerRule(DigitTerminal.Instance, new TokenClass("digit"));
 
             ProductionExpression S = "S", M = "M", T = "T";
             S.Rule = (S + '+' + M) | M;

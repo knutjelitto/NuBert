@@ -10,18 +10,6 @@ namespace Pliant.Benchmarks
     [Config(typeof(PliantBenchmarkConfig))]
     public class JsonBenchmark
     {
-        //[Benchmark]
-        public bool DeterministicParseEngineParse()
-        {
-            return RunParse(new DeterministicParseEngine(this.grammar), this.jsonSource);
-        }
-
-        //[Benchmark]
-        public bool MarpaParseEngineParse()
-        {
-            return RunParse(new MarpaParseEngine(this.grammar), this.jsonSource);
-        }
-
         [Benchmark]
         public bool ParseEngineParse()
         {

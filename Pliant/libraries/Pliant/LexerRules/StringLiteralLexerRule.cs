@@ -4,14 +4,14 @@ using Pliant.Tokens;
 
 namespace Pliant.LexerRules
 {
-    public sealed class StringLiteralLexer : DfaLexerRule
+    public sealed class StringLiteralLexerRule : DfaLexerRule
     {
-        public StringLiteralLexer(string literal, TokenClass tokenClass)
+        public StringLiteralLexerRule(string literal, TokenClass tokenClass)
             : base(MakeAutomaton(literal), tokenClass)
         {
         }
 
-        public StringLiteralLexer(string literal)
+        public StringLiteralLexerRule(string literal)
             : base(MakeAutomaton(literal), literal)
         {
         }
@@ -20,7 +20,7 @@ namespace Pliant.LexerRules
 
         public override bool Equals(object obj)
         {
-            return obj is StringLiteralLexer other &&
+            return obj is StringLiteralLexerRule other &&
                    Literal.Equals(other.Literal);
         }
 

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Pliant.Collections;
-using Pliant.Dotted;
 using Pliant.Grammars;
 
 namespace Pliant.Charts
@@ -43,7 +42,7 @@ namespace Pliant.Charts
             return this.transitions.AddUnique(state);
         }
 
-        public bool ContainsNormal(DottedRule dottedRule, int origin)
+        public bool Contains(DottedRule dottedRule, int origin)
         {
             if (dottedRule.IsComplete)
             {
@@ -79,7 +78,7 @@ namespace Pliant.Charts
             return sourceItemCount == 1;
         }
 
-        public bool FindTransitionState(Symbol searchSymbol, out TransitionState transitionState)
+        public bool FindTransitionState(NonTerminal searchSymbol, out TransitionState transitionState)
         {
             foreach (var transition in Transitions)
             {

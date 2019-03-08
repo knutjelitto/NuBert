@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pliant.Builders.Expressions;
 using Pliant.Charts;
-using Pliant.Dotted;
 using Pliant.Grammars;
 using Pliant.Terminals;
 
