@@ -478,42 +478,6 @@ namespace Pliant.Tests.Unit.Runtime
         }
 
         [TestMethod]
-        public void ParseEngineRightRecursionShouldNotBeCubicComplexity()
-        {
-            ProductionExpression A = "A";
-            A.Rule =
-                ('a' + A)
-                | (Expr) null;
-
-            var grammar = new GrammarExpression(A, new[] {A})
-                .ToGrammar();
-
-            var input = Tokenize("aaaaa");
-            var recognizer = new ParseEngine(grammar);
-            ParseInput(recognizer, input);
-
-            var chart = GetChartFromParseEngine(recognizer);
-            // -- 0 --
-            // A ->.a A		    (0)	 # StartState
-            // A ->.			(0)	 # StartState
-            //
-            // ...
-            // -- n --
-            // n	A -> a.A		(n-1) # Scan a
-            // n	A ->.a A		(n)	  # Predict
-            // n	A ->.			(n)	  # Predict
-            // n	A -> a A.		(n)	  # Predict
-            // n	A : A -> a A.	(0)	  # Transition
-            // n	A -> a A.		(0)	  # Complete
-            Assert.AreEqual(input.Count + 1, chart.Count);
-            var lastEarleySet = chart[chart.Count - 1];
-            Assert.AreEqual(3, lastEarleySet.Completions.Count);
-            Assert.AreEqual(1, lastEarleySet.Transitions.Count);
-            Assert.AreEqual(1, lastEarleySet.Predictions.Count);
-            Assert.AreEqual(1, lastEarleySet.Scans.Count);
-        }
-
-        [TestMethod]
         public void ParseEngineShouldCreateSameParseTreeForNullableRightRecursiveRule()
         {
             ProductionExpression E = "E", F = "F";
@@ -909,17 +873,17 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static IToken CreateCharacterToken(char character, int position)
         {
-            return new VerbatimToken(position, character.ToString(), new TokenClass(character.ToString()));
+            return new VerbatimToken(new TokenName(character.ToString()), position, character.ToString());
         }
 
         private static IToken CreateDigitToken(int value, int position)
         {
-            return new VerbatimToken(position, value.ToString(), new TokenClass("digit"));
+            return new VerbatimToken(new TokenName("digit"), position, value.ToString());
         }
 
         private static Grammar CreateExpressionGrammar()
         {
-            var digit = new TerminalLexerRule(DigitTerminal.Instance, new TokenClass("digit"));
+            var digit = new TerminalLexerRule(DigitTerminal.Instance, new TokenName("digit"));
 
             ProductionExpression S = "S", M = "M", T = "T";
             S.Rule = (S + '+' + M) | M;
@@ -984,13 +948,13 @@ namespace Pliant.Tests.Unit.Runtime
         private static IReadOnlyList<IToken> Tokenize(string input)
         {
             return input.Select((x, i) =>
-                                    new VerbatimToken(i, x.ToString(), new TokenClass(x.ToString())))
+                                    new VerbatimToken(new TokenName(x.ToString()), i, x.ToString()))
                         .ToArray();
         }
 
         private IToken MakeToken(string token, int origin)
         {
-            return new VerbatimToken(origin, token, new TokenClass(token));
+            return new VerbatimToken(new TokenName(token), origin, token);
         }
     }
 }

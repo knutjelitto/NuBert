@@ -11,14 +11,7 @@ namespace Pliant.Forest
         {
             this._symbolNodes = new Dictionary<(NonTerminal, int, int), ISymbolForestNode>();
             this._intermediateNodes = new Dictionary<(DottedRule, int, int), IIntermediateForestNode>();
-            this._virtualNodes = new Dictionary<(Symbol, int, int), VirtualForestNode>();
             this._tokenNodes = new Dictionary<IToken, TokenForestNode>();
-        }
-
-        public void AddNewVirtualNode(VirtualForestNode virtualNode)
-        {
-            var key = (virtualNode.Symbol, virtualNode.Origin, virtualNode.Location);
-            this._virtualNodes.Add(key, virtualNode);
         }
 
         public IIntermediateForestNode AddOrGetExistingIntermediateNode(DottedRule dottedRule, int origin, int location)
@@ -65,23 +58,11 @@ namespace Pliant.Forest
         {
             this._symbolNodes.Clear();
             this._intermediateNodes.Clear();
-            this._virtualNodes.Clear();
             this._tokenNodes.Clear();
-        }
-
-        public bool TryGetExistingVirtualNode(
-            int location,
-            TransitionState transitionState,
-            out VirtualForestNode node)
-        {
-            var targetState = transitionState.GetTargetState();
-            var key = (targetState.LeftHandSide, targetState.Origin, location);
-            return this._virtualNodes.TryGetValue(key, out node);
         }
 
         private readonly Dictionary<(DottedRule, int, int), IIntermediateForestNode> _intermediateNodes;
         private readonly Dictionary<(NonTerminal, int, int), ISymbolForestNode> _symbolNodes;
         private readonly Dictionary<IToken, TokenForestNode> _tokenNodes;
-        private readonly Dictionary<(Symbol, int, int), VirtualForestNode> _virtualNodes;
     }
 }

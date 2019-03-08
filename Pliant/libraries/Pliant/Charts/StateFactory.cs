@@ -12,7 +12,7 @@ namespace Pliant.Charts
 
         private DottedRuleRegistry DottedRuleRegistry { get; }
 
-        public State NewState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        public EarleyItem NewState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
         {
             if (dottedRule.IsComplete)
             {
@@ -27,12 +27,12 @@ namespace Pliant.Charts
             return new ScanState(dottedRule, origin, parseNode);
         }
 
-        public State NewState(Production production, int dot, int origin)
+        public EarleyItem NewState(Production production, int dot, int origin)
         {
             return NewState(DottedRuleRegistry.Get(production, dot), origin);
         }
 
-        public State NextState(RuleState state)
+        public EarleyItem NextState(EarleyItem state)
         {
             if (state.DottedRule.IsComplete)
             {

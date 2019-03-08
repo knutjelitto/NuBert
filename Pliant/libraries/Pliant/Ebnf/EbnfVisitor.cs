@@ -50,17 +50,17 @@ namespace Pliant.Ebnf
             foreach (var tokenNode in node.Children.OfType<ITokenTreeNode>())
             {
                 var token = tokenNode.Token;
-                var tokenClass = token.TokenClass;
+                var tokenName = token.TokenName;
 
                 // if token type is string token type remove surrounding quotes
-                if (tokenClass.Equals(SimpleSingleQuoteStringLexerRule.Class) ||
-                    tokenClass.Equals(SimpleDoubleQuoteStringLexerRule.Class))
+                if (tokenName.Equals(SimpleSingleQuoteStringLexerRule.Class) ||
+                    tokenName.Equals(SimpleDoubleQuoteStringLexerRule.Class))
                 {
                     return token.Value.Substring(1, token.Value.Length - 2);
                 }
 
                 // TODO: Find a better solution for identifing the lexer rule based on id
-                if (tokenNode.Token.TokenClass.Id.Length > 5)
+                if (tokenNode.Token.TokenName.Id.Length > 5)
                 {
                     return token.Value;
                 }
@@ -296,7 +296,7 @@ namespace Pliant.Ebnf
 
                     case ITokenTreeNode tokenNode:
                         var token = tokenNode.Token;
-                        if (token.TokenClass.Equals(EbnfGrammar.TokenClasses.Identifier))
+                        if (token.TokenName.Equals(EbnfGrammar.TokenClasses.Identifier))
                         {
                             yield return token.Value;
                         }
@@ -397,7 +397,7 @@ namespace Pliant.Ebnf
                         break;
                     case ITokenTreeNode tokenNode:
                         var token = tokenNode.Token;
-                        if (token.TokenClass.Equals(EbnfGrammar.TokenClasses.SettingIdentifier))
+                        if (token.TokenName.Equals(EbnfGrammar.TokenClasses.SettingIdentifier))
                         {
                             settingIdentifier = new EbnfSettingIdentifier(token.Value);
                         }

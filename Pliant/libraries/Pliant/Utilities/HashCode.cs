@@ -32,18 +32,5 @@ namespace Pliant.Utilities
                 return hash;
             }
         }
-
-        public static int ComputeIncrementalHash(int hashCode, int accumulator, bool isFirstValue = false)
-        {
-            unchecked
-            {
-                if (isFirstValue)
-                {
-                    accumulator = (int)seed;
-                }
-                accumulator = (accumulator * incremental) ^ hashCode;
-                return accumulator;
-            }
-        }
     }
 }

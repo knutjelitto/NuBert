@@ -241,11 +241,11 @@ namespace Pliant.Ebnf
         private static readonly Grammar ebnfGrammar;
         public static class TokenClasses
         {
-            public static readonly TokenClass Identifier = new TokenClass("EbnfQualifiedIdentifier");
-            public static readonly TokenClass MultiLineComment = new TokenClass(@"\/[*]([*][^\/]|[^*])*[*][\/]");
-            public static readonly TokenClass SingleLineComment = new TokenClass(@"\/\/.*$");
-            public static readonly TokenClass SettingIdentifier = new TokenClass("settingIdentifier");
-            public static readonly TokenClass Whitespace = new TokenClass("whitespace");
+            public static readonly TokenName Identifier = new TokenName("EbnfQualifiedIdentifier");
+            public static readonly TokenName MultiLineComment = new TokenName(@"\/[*]([*][^\/]|[^*])*[*][\/]");
+            public static readonly TokenName SingleLineComment = new TokenName(@"\/\/.*$");
+            public static readonly TokenName SettingIdentifier = new TokenName("settingIdentifier");
+            public static readonly TokenName Whitespace = new TokenName("whitespace");
         }
     }
 }

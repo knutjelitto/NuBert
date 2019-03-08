@@ -3,7 +3,7 @@ using Pliant.Grammars;
 
 namespace Pliant.Charts
 {
-    public class PredictionState : RuleState
+    public class PredictionState : EarleyItem
     {
         public PredictionState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
             : base(dottedRule, origin, parseNode)

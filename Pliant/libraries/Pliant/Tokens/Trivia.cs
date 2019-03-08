@@ -2,15 +2,15 @@
 {
     public abstract class Trivia : ITrivia
     {
-        protected Trivia(int position, string value, TokenClass tokenType)
+        protected Trivia(int position, string value, TokenName tokenType)
         {
             Value = value;
             Position = position;
-            TokenClass = tokenType;
+            TokenName = tokenType;
         }
 
         public int Position { get; }
-        public TokenClass TokenClass { get; }
+        public TokenName TokenName { get; }
         public virtual string Value { get; }
     }
 }

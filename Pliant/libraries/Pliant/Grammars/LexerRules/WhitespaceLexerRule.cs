@@ -7,7 +7,7 @@ namespace Pliant.LexerRules
     public class WhitespaceLexerRule : DfaLexerRule
     {
         private static readonly DfaState _start;
-        private static readonly TokenClass _staticTokenType = new TokenClass(@"[\s]+");
+        private static readonly TokenName _staticTokenType = new TokenName(@"[\s]+");
 
         static WhitespaceLexerRule()
         {

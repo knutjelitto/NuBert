@@ -52,7 +52,7 @@ namespace Pliant.Tests.Unit.Builders
 
             var lexerRuleModel = new LexerRuleModel(space);
             grammarModel.AddLexerRule(lexerRuleModel);
-            grammarModel.AddIgnoreSetting(new IgnoreSettingModel(new QualifiedName(lexerRuleModel.LexerRule.TokenClass.Id)));
+            grammarModel.AddIgnoreSetting(new IgnoreSettingModel(new QualifiedName(lexerRuleModel.LexerRule.TokenName.Id)));
 
             grammarModel.Start = S;
 

@@ -74,12 +74,12 @@ namespace Pliant.Bnf
 
         private static LexerRule CreateEndOfLineLexerRule()
         {
-            return new StringLiteralLexerRule("\r\n", new TokenClass("eol"));
+            return new StringLiteralLexerRule("\r\n", new TokenName("eol"));
         }
 
         private static LexerRule CreateImplementsLexerRule()
         {
-            return new StringLiteralLexerRule("::=", new TokenClass("implements"));
+            return new StringLiteralLexerRule("::=", new TokenName("implements"));
         }
 
         private static LexerRule CreateNotDoubleQuoteLexerRule()

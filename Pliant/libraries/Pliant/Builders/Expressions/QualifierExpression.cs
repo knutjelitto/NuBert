@@ -4,7 +4,7 @@ namespace Pliant.Builders.Expressions
 {
     public sealed class QualifierExpression
     {
-        public QualifierExpression(string qualifier)
+        private QualifierExpression(string qualifier)
         {
             Qualifier = qualifier;
         }

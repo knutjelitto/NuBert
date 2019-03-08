@@ -7,7 +7,7 @@ namespace Pliant.LexerRules
     public class SimpleDoubleQuoteStringLexerRule : DfaLexerRule
     {
         // ["][^"]*["]
-        public static readonly TokenClass Class = new TokenClass(@"[""][^""]*[""]");
+        public static readonly TokenName Class = new TokenName(@"[""][^""]*[""]");
         private static readonly DfaState enter;
 
         static SimpleDoubleQuoteStringLexerRule()

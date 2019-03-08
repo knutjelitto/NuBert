@@ -2,16 +2,16 @@
 
 namespace Pliant.Tokens
 {
-    public sealed class TokenClass : ValueEqualityBase<TokenClass>
+    public sealed class TokenName : ValueEqualityBase<TokenName>
     {
-        public TokenClass(string classId)
+        public TokenName(string classId)
         {
             Id = classId;
         }
 
         public string Id { get; }
 
-        protected override bool ThisEquals(TokenClass other)
+        protected override bool ThisEquals(TokenName other)
         {
             return Id.Equals(other.Id);
         }

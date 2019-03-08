@@ -10,7 +10,7 @@ namespace Pliant.Automata
             : base(dfaLexer, position)
         {
             this.captureBuilder = ObjectPoolExtensions.Allocate(SharedPools.Default<StringBuilder>());
-            this.currentState = dfaLexer.StartState;
+            this.currentState = dfaLexer.Start;
         }
 
         public override string Value

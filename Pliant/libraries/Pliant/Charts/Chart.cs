@@ -32,7 +32,7 @@ namespace Pliant.Charts
             return GetEarleySet(location).Contains(dottedRule, origin);
         }
 
-        public bool Enqueue(int location, State state)
+        public bool Enqueue(int location, EarleyItem state)
         {
             return state.Enqueue(GetEarleySet(location));
         }

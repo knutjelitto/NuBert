@@ -74,13 +74,13 @@ namespace Pliant.Tests.Integration
                 Assert.AreEqual(input[i], tokens[i].Value[0]);
             }
 
-            Assert.AreEqual(JsonLexer.OpenBracket, tokens[0].TokenClass);
-            Assert.AreEqual(JsonLexer.Number, tokens[1].TokenClass);
-            Assert.AreEqual(JsonLexer.Comma, tokens[2].TokenClass);
-            Assert.AreEqual(JsonLexer.Number, tokens[3].TokenClass);
-            Assert.AreEqual(JsonLexer.Comma, tokens[4].TokenClass);
-            Assert.AreEqual(JsonLexer.Number, tokens[5].TokenClass);
-            Assert.AreEqual(JsonLexer.CloseBracket, tokens[6].TokenClass);
+            Assert.AreEqual(JsonLexer.OpenBracket, tokens[0].TokenName);
+            Assert.AreEqual(JsonLexer.Number, tokens[1].TokenName);
+            Assert.AreEqual(JsonLexer.Comma, tokens[2].TokenName);
+            Assert.AreEqual(JsonLexer.Number, tokens[3].TokenName);
+            Assert.AreEqual(JsonLexer.Comma, tokens[4].TokenName);
+            Assert.AreEqual(JsonLexer.Number, tokens[5].TokenName);
+            Assert.AreEqual(JsonLexer.CloseBracket, tokens[6].TokenName);
         }
 
         [TestMethod]
@@ -90,15 +90,15 @@ namespace Pliant.Tests.Integration
             var jsonLexer = new JsonLexer();
             var tokens = jsonLexer.Lex(input).ToArray();
             Assert.AreEqual(9, tokens.Length);
-            Assert.AreEqual(JsonLexer.OpenBrace, tokens[0].TokenClass);
-            Assert.AreEqual(JsonLexer.String, tokens[1].TokenClass);
-            Assert.AreEqual(JsonLexer.Colon, tokens[2].TokenClass);
-            Assert.AreEqual(JsonLexer.String, tokens[3].TokenClass);
-            Assert.AreEqual(JsonLexer.Comma, tokens[4].TokenClass);
-            Assert.AreEqual(JsonLexer.String, tokens[5].TokenClass);
-            Assert.AreEqual(JsonLexer.Colon, tokens[6].TokenClass);
-            Assert.AreEqual(JsonLexer.Number, tokens[7].TokenClass);
-            Assert.AreEqual(JsonLexer.CloseBrace, tokens[8].TokenClass);
+            Assert.AreEqual(JsonLexer.OpenBrace, tokens[0].TokenName);
+            Assert.AreEqual(JsonLexer.String, tokens[1].TokenName);
+            Assert.AreEqual(JsonLexer.Colon, tokens[2].TokenName);
+            Assert.AreEqual(JsonLexer.String, tokens[3].TokenName);
+            Assert.AreEqual(JsonLexer.Comma, tokens[4].TokenName);
+            Assert.AreEqual(JsonLexer.String, tokens[5].TokenName);
+            Assert.AreEqual(JsonLexer.Colon, tokens[6].TokenName);
+            Assert.AreEqual(JsonLexer.Number, tokens[7].TokenName);
+            Assert.AreEqual(JsonLexer.CloseBrace, tokens[8].TokenName);
         }
     }
 }

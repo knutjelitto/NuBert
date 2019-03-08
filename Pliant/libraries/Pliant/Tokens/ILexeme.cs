@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Pliant.Tokens
 {
-    public interface IToken : ITrivia
+    public interface ILexeme : IToken
     {
-        TokenName TokenName { get; }
         IReadOnlyList<ITrivia> LeadingTrivia { get; }
         IReadOnlyList<ITrivia> TrailingTrivia { get; }
     }

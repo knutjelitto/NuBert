@@ -16,7 +16,7 @@ namespace Pliant.Tests.Unit.Runtime
         {
             var a = new TerminalLexerRule(
                 new CharacterTerminal('a'),
-                new TokenClass("a"));
+                new TokenName("a"));
 
             ProductionExpression
                 SPrime = "S'",
@@ -35,7 +35,7 @@ namespace Pliant.Tests.Unit.Runtime
             var grammar = expression.ToGrammar();
 
             var parseEngine = new ParseEngine(grammar);
-            parseEngine.Pulse(new VerbatimToken(0, "a", a.TokenClass));
+            parseEngine.Pulse(new VerbatimToken(a.TokenName, 0, "a"));
 
             //var privateObject = new PrivateObject(parseEngine);
             //var chart = privateObject.GetField("_chart") as Chart;

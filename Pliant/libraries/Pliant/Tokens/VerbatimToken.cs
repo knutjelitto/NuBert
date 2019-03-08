@@ -5,26 +5,26 @@ namespace Pliant.Tokens
 {
     public sealed class VerbatimToken : ValueEqualityBase<VerbatimToken>, IToken
     {
-        public VerbatimToken(int position, string value, TokenClass tokenClass)
+        public VerbatimToken(TokenName tokenName, int position, string value)
         {
             Position = position;
             Value = value;
-            TokenClass = tokenClass;
+            TokenName = tokenName;
         }
 
         public IReadOnlyList<ITrivia> LeadingTrivia => noTrivia;
         public int Position { get; }
-        public TokenClass TokenClass { get; }
+        public TokenName TokenName { get; }
         public IReadOnlyList<ITrivia> TrailingTrivia => noTrivia;
         public string Value { get; }
 
-        protected override object ThisHashCode => (Position, Value, TokenClass);
+        protected override object ThisHashCode => (Position, Value, TokenName);
 
         protected override bool ThisEquals(VerbatimToken other)
         {
             return Position.Equals(other.Position) &&
                    Value.Equals(other.Value) &&
-                   TokenClass.Equals(other.TokenClass);
+                   TokenName.Equals(other.TokenName);
         }
 
         private static readonly ITrivia[] noTrivia = { };

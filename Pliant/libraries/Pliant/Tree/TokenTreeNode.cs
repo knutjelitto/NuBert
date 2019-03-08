@@ -21,7 +21,7 @@ namespace Pliant.Tree
 
         public override string ToString()
         {
-            return $"{Token.TokenClass}({Location}) = {Token.Value}";
+            return $"{Token.TokenName}({Location}) = {Token.Value}";
         }
 
         private readonly ITokenForestNode innerNode;

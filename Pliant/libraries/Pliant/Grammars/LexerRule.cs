@@ -4,12 +4,12 @@ namespace Pliant.Grammars
 {
     public abstract class LexerRule : Symbol
     {
-        protected LexerRule(TokenClass tokenClass)
+        protected LexerRule(TokenName tokenName)
         {
-            TokenClass = tokenClass;
+            TokenName = tokenName;
         }
 
-        public TokenClass TokenClass { get; }
+        public TokenName TokenName { get; }
 
         public abstract bool CanApply(char c);
 

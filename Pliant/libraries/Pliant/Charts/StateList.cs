@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Pliant.Charts
 {
     public class StateList<T> : IReadOnlyList<T>
-        where T : RuleState
+        where T : EarleyItem
     {
         public int Count => this.list.Count;
 

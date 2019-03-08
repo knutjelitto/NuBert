@@ -11,39 +11,17 @@ namespace Pliant.Tokens
 
         protected Lexeme(LexerRule lexer, int position)
         {
-            TokenClass = lexer.TokenClass;
+            TokenName = lexer.TokenName;
             Position = position;
         }
 
-        public IReadOnlyList<ITrivia> LeadingTrivia
-        {
-            get
-            {
-                if (this.leadingTrivia == null)
-                {
-                    return emptyTriviaArray;
-                }
-
-                return this.leadingTrivia;
-            }
-        }
+        public IReadOnlyList<ITrivia> LeadingTrivia => this.leadingTrivia ?? (IReadOnlyList<ITrivia>) emptyTriviaArray;
 
         public int Position { get; }
 
-        public TokenClass TokenClass { get; }
+        public TokenName TokenName { get; }
 
-        public IReadOnlyList<ITrivia> TrailingTrivia
-        {
-            get
-            {
-                if (this.trailingTrivia == null)
-                {
-                    return emptyTriviaArray;
-                }
-
-                return this.trailingTrivia;
-            }
-        }
+        public IReadOnlyList<ITrivia> TrailingTrivia => this.trailingTrivia ?? (IReadOnlyList<ITrivia>) emptyTriviaArray;
 
         public abstract string Value { get; }
 

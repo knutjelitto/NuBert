@@ -7,12 +7,12 @@ namespace Pliant.LexerRules
     public sealed class TerminalLexerRule : DfaLexerRule
     {
         public TerminalLexerRule(char character)
-            : this(new CharacterTerminal(character), new TokenClass(character.ToString()))
+            : this(new CharacterTerminal(character), new TokenName(character.ToString()))
         {
         }
 
         public TerminalLexerRule(Terminal terminal, string tokenTypeId)
-            : this(terminal, new TokenClass(tokenTypeId))
+            : this(terminal, new TokenName(tokenTypeId))
         {
         }
 
@@ -21,8 +21,8 @@ namespace Pliant.LexerRules
         {
         }
 
-        public TerminalLexerRule(Terminal terminal, TokenClass tokenClass)
-            : base(MakeAutomaton(terminal), tokenClass)
+        public TerminalLexerRule(Terminal terminal, TokenName tokenName)
+            : base(MakeAutomaton(terminal), tokenName)
         {
             Terminal = terminal;
         }
@@ -54,12 +54,12 @@ namespace Pliant.LexerRules
 
         public override int GetHashCode()
         {
-            return (TokenClass, Terminal).GetHashCode();
+            return (TokenName, Terminal).GetHashCode();
         }
 
         public override string ToString()
         {
-            return TokenClass.ToString();
+            return TokenName.ToString();
         }
     }
 }

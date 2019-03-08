@@ -137,7 +137,7 @@ namespace Pliant.Builders
             foreach (var lexerRuleModel in this.lexerRuleModels)
             {
                 var lexerRule = lexerRuleModel.LexerRule;
-                if (lexerRule.TokenClass.Id.Equals(value.FullName))
+                if (lexerRule.TokenName.Id.Equals(value.FullName))
                 {
                     return lexerRule;
                 }
@@ -250,6 +250,7 @@ namespace Pliant.Builders
         }
 
         private readonly List<IgnoreSettingModel> ignoreSettings;
+        private readonly List<TriviaSettingModel> triviaSettings;
         private readonly List<LexerRuleModel> lexerRuleModels;
         private readonly List<ProductionModel> productionModels;
 
@@ -257,7 +258,5 @@ namespace Pliant.Builders
         private readonly ReachabilityMatrix reachabilityMatrix;
 
         private ProductionModel startProduction;
-
-        private readonly List<TriviaSettingModel> triviaSettings;
     }
 }

@@ -68,11 +68,11 @@ namespace Pliant.Tests.Integration.Runtime
             var tokens = jsonLexer.Lex(File.ReadAllText(path));
             foreach (var token in tokens)
             {
-                if (!Equals(token.TokenClass, JsonLexer.Whitespace))
+                if (!Equals(token.TokenName, JsonLexer.Whitespace))
                 {
                     if (!parser.Pulse(token))
                     {
-                        Assert.Fail($"unable to parse token {token.TokenClass} at {token.Position}");
+                        Assert.Fail($"unable to parse token {token.TokenName} at {token.Position}");
                     }
                 }
             }

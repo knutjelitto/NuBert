@@ -8,7 +8,7 @@ namespace Pliant.LexerRules
     {
         // ['][^']*[']
         private const string _pattern = @"['][^']*[']";
-        public static readonly TokenClass Class = new TokenClass(_pattern);
+        public static readonly TokenName Class = new TokenName(_pattern);
         private static readonly DfaState _start;
 
         static SimpleSingleQuoteStringLexerRule()

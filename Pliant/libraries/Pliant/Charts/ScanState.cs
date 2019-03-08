@@ -2,7 +2,7 @@
 
 namespace Pliant.Charts
 {
-    public class ScanState : RuleState
+    public class ScanState : EarleyItem
     {
         public ScanState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
             : base(dottedRule, origin, parseNode)

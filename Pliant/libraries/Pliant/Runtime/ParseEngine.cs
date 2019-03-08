@@ -8,7 +8,6 @@ using Pliant.Forest;
 using Pliant.Grammars;
 using Pliant.Tokens;
 using Pliant.Tree;
-using Pliant.Utilities;
 
 namespace Pliant.Runtime
 {
@@ -114,7 +113,7 @@ namespace Pliant.Runtime
 
         private StateFactory StateFactory { get; }
 
-        private static string GetOriginStateOperationString(string operation, int origin, State state)
+        private static string GetOriginStateOperationString(string operation, int origin, EarleyItem state)
         {
             return $"{origin.ToString().PadRight(9)}{state.ToString().PadRight(100)}{operation}";
         }
@@ -126,22 +125,7 @@ namespace Pliant.Runtime
                 completed.SetParseNode(CreateNullParseNode(completed.LeftHandSide, location));
             }
 
-            var earleySet = Chart[completed.Origin];
-            var searchSymbol = completed.LeftHandSide;
-
-            if (Options.OptimizeRightRecursion)
-            {
-                OptimizeReductionPath(searchSymbol, completed.Origin);
-            }
-
-            if (earleySet.FindTransitionState(searchSymbol, out var transitionState))
-            {
-                LeoComplete(transitionState, completed, location);
-            }
-            else
-            {
-                EarleyComplete(completed, location);
-            }
+            EarleyComplete(completed, location);
         }
 
         private IForestNode CreateNullParseNode(NonTerminal symbol, int location)
@@ -196,21 +180,6 @@ namespace Pliant.Runtime
             }
 
             return internalNode;
-        }
-
-        private VirtualForestNode CreateVirtualParseNode(CompletedState completed, int location, TransitionState rootTransitionState)
-        {
-            if (!NodeSet.TryGetExistingVirtualNode(location, rootTransitionState, out var virtualParseNode))
-            {
-                virtualParseNode = new VirtualForestNode(rootTransitionState, location, completed.ParseNode);
-                NodeSet.AddNewVirtualNode(virtualParseNode);
-            }
-            else
-            {
-                virtualParseNode.AddUniquePath(new VirtualForestNodePath(rootTransitionState, completed.ParseNode));
-            }
-
-            return virtualParseNode;
         }
 
         private void EarleyComplete(CompletedState completed, int location)
@@ -271,6 +240,7 @@ namespace Pliant.Runtime
             ReductionPass(Location);
         }
 
+#if false
         /// <summary>
         ///     Implements a check for leo quasi complete items
         /// </summary>
@@ -321,17 +291,21 @@ namespace Pliant.Runtime
 
             return true;
         }
+#endif
 
+#if false
         private bool IsSymbolNullable(Symbol symbol)
         {
             return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsNullable(nonTerminal);
         }
+#endif
 
         private bool IsSymbolTransitiveNullable(Symbol symbol)
         {
             return symbol == null || symbol is NonTerminal nonTerminal && Grammar.IsTransitiveNullable(nonTerminal);
         }
 
+#if false
         private void LeoComplete(TransitionState transitionState, CompletedState completed, int location)
         {
             var earleySet = Chart[transitionState.Index];
@@ -351,8 +325,9 @@ namespace Pliant.Runtime
                 Log(completeLogName, location, topmostItem);
             }
         }
+#endif
 
-        private void Log(string operation, int origin, State state)
+        private void Log(string operation, int origin, EarleyItem state)
         {
             if (Options.LoggingEnabled)
             {
@@ -360,98 +335,12 @@ namespace Pliant.Runtime
             }
         }
 
-        private void LogScan(int origin, State state, IToken token)
+        private void LogScan(int origin, EarleyItem state, IToken token)
         {
             if (Options.LoggingEnabled)
             {
                 Debug.WriteLine($"{GetOriginStateOperationString("Scan", origin, state)} \"{token.Value}\"");
             }
-        }
-
-        private void OptimizeReductionPath(NonTerminal searchSymbol, int origin)
-        {
-            State t_rule = null;
-            TransitionState previousTransitionState = null;
-
-            var visited = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<State>>());
-            OptimizeReductionPathRecursive(searchSymbol, origin, ref t_rule, ref previousTransitionState, visited);
-            SharedPools.Default<HashSet<State>>().ClearAndFree(visited);
-        }
-
-        private void OptimizeReductionPathRecursive(
-            NonTerminal nonTerminal,
-            int origin,
-            ref State t_rule,
-            ref TransitionState previousTransitionState,
-            HashSet<State> visited)
-        {
-            var earleySet = Chart[origin];
-
-            // if Ii contains a transitive item of the for [B -> b., A, k]
-            if (earleySet.FindTransitionState(nonTerminal, out var transitionState))
-            {
-                // then t_rule := B-> b.; t_pos = k;
-                previousTransitionState = transitionState;
-                t_rule = transitionState;
-                return;
-            }
-
-            // else if Ii contains exactly one item of the form [B -> a.Ab, k]
-            if (!earleySet.FindUniqueSourceState(nonTerminal, out var sourceState) ||
-                !visited.Add(sourceState) ||
-                // and [B-> aA.b, k] is quasi complete (if b nullable)
-                !IsNextStateQuasiComplete(sourceState))
-            {
-                return;
-            }
-
-            // then t_rule := [B->aAb.]; t_pos=k;
-            t_rule = StateFactory.NextState(sourceState);
-
-            if (sourceState.Origin != origin)
-            {
-                visited.Clear();
-            }
-
-            // T_Update(I0...Ik, B);
-            OptimizeReductionPathRecursive(
-                sourceState.LeftHandSide,
-                sourceState.Origin,
-                ref t_rule,
-                ref previousTransitionState,
-                visited);
-
-            if (t_rule == null)
-            {
-                return;
-            }
-
-            TransitionState transition;
-            if (previousTransitionState != null)
-            {
-                transition = new TransitionState(
-                    nonTerminal,
-                    t_rule,
-                    sourceState,
-                    previousTransitionState.Index);
-
-                previousTransitionState.NextTransition = transition;
-            }
-            else
-            {
-                transition = new TransitionState(
-                    nonTerminal,
-                    t_rule,
-                    sourceState,
-                    origin);
-            }
-
-            if (Chart.Enqueue(origin, transition))
-            {
-                Log(transitionLogName, origin, transition);
-            }
-
-            previousTransitionState = transition;
         }
 
         private void Predict(PredictionState evidence, int location)
@@ -472,7 +361,7 @@ namespace Pliant.Runtime
             }
         }
 
-        private void PredictAycockHorspool(RuleState evidence, int location)
+        private void PredictAycockHorspool(EarleyItem evidence, int location)
         {
             var nullParseNode = CreateNullParseNode(evidence.DottedRule.PostDotSymbol as NonTerminal, location);
             var dottedRule = DottedRules.GetNext(evidence.DottedRule);
@@ -561,7 +450,7 @@ namespace Pliant.Runtime
         {
             var currentSymbol = scan.DottedRule.PostDotSymbol;
 
-            if (currentSymbol is LexerRule lexerRule && token.TokenClass.Equals(lexerRule.TokenClass))
+            if (currentSymbol is LexerRule lexerRule && token.TokenName.Equals(lexerRule.TokenName))
             {
                 var dottedRule = DottedRules.GetNext(scan.DottedRule);
                 if (Chart.Contains(location + 1, dottedRule, scan.Origin))
@@ -600,6 +489,5 @@ namespace Pliant.Runtime
         private const string predictionLogName = "Predict";
         private const string startLogName = "StartState";
         private const string completeLogName = "Complete";
-        private const string transitionLogName = "Transition";
     }
 }

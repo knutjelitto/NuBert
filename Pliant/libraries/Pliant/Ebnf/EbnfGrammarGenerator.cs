@@ -26,9 +26,9 @@ namespace Pliant.Ebnf
             return grammarModel.ToGrammar();
         }
 
-        private static QualifiedName GetQualifiedName(EbnfQualifiedIdentifier qualifiedEbnfQualifiedIdentifier)
+        private static QualifiedName GetQualifiedName(EbnfQualifiedIdentifier qualifiedIdentifier)
         {
-            var identifiers = qualifiedEbnfQualifiedIdentifier.Identifiers;
+            var identifiers = qualifiedIdentifier.Identifiers;
 
             if (identifiers.Length <= 1)
             {
@@ -375,7 +375,7 @@ namespace Pliant.Ebnf
                 var factor = term.Factor;
                 if (factor is EbnfLexerRuleFactorLiteral literal)
                 {
-                    lexerRule = new StringLiteralLexerRule(literal.Value, new TokenClass(fullyQualifiedName.FullName));
+                    lexerRule = new StringLiteralLexerRule(literal.Value, new TokenName(fullyQualifiedName.FullName));
 
                     return true;
                 }

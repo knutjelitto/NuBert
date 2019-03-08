@@ -51,7 +51,7 @@ namespace Pliant.Json
                         }
                     }
 
-                    yield return new VerbatimToken(position, builder.ToString(), Number);
+                    yield return new VerbatimToken(Number, position, builder.ToString());
 
                     position += builder.Length;
                     builder.Clear();
@@ -61,27 +61,27 @@ namespace Pliant.Json
                 switch (c)
                 {
                     case '[':
-                        yield return new VerbatimToken(position, OpenBracket.Id, OpenBracket);
+                        yield return new VerbatimToken(OpenBracket, position, OpenBracket.Id);
                         break;
 
                     case ']':
-                        yield return new VerbatimToken(position, CloseBracket.Id, CloseBracket);
+                        yield return new VerbatimToken(CloseBracket, position, CloseBracket.Id);
                         break;
 
                     case '{':
-                        yield return new VerbatimToken(position, OpenBrace.Id, OpenBrace);
+                        yield return new VerbatimToken(OpenBrace, position, OpenBrace.Id);
                         break;
 
                     case '}':
-                        yield return new VerbatimToken(position, CloseBrace.Id, CloseBrace);
+                        yield return new VerbatimToken(CloseBrace, position, CloseBrace.Id);
                         break;
 
                     case ',':
-                        yield return new VerbatimToken(position, Comma.Id, Comma);
+                        yield return new VerbatimToken(Comma, position, Comma.Id);
                         break;
 
                     case ':':
-                        yield return new VerbatimToken(position, Colon.Id, Colon);
+                        yield return new VerbatimToken(Colon, position, Colon.Id);
                         break;
 
                     case '"':
@@ -97,7 +97,7 @@ namespace Pliant.Json
                         }
 
                         builder.Append('"');
-                        yield return new VerbatimToken(position, builder.ToString(), String);
+                        yield return new VerbatimToken(String, position, builder.ToString());
 
                         position += builder.Length;
                         builder.Clear();
@@ -112,7 +112,7 @@ namespace Pliant.Json
                         {
                             builder.Append(c);
                         }
-                        yield return new VerbatimToken(position, builder.ToString(), Whitespace);
+                        yield return new VerbatimToken(Whitespace, position, builder.ToString());
 
                         position += builder.Length;
                         builder.Clear();
@@ -131,7 +131,7 @@ namespace Pliant.Json
                         {
                             yield break;
                         }
-                        yield return new VerbatimToken(position, Null.Id, Null);
+                        yield return new VerbatimToken(Null, position, Null.Id);
 
                         position += 3;
                         break;
@@ -149,7 +149,7 @@ namespace Pliant.Json
                         {
                             yield break;
                         }
-                        yield return new VerbatimToken(position, True.Id, True);
+                        yield return new VerbatimToken(True, position, True.Id);
 
                         position += 3;
                         break;
@@ -172,7 +172,7 @@ namespace Pliant.Json
                             yield break;
                         }
 
-                        yield return new VerbatimToken(position, False.Id, False);
+                        yield return new VerbatimToken(False, position, False.Id);
 
                         position += 4;
                         break;
@@ -183,19 +183,19 @@ namespace Pliant.Json
         }
 
 
-        public static readonly TokenClass CloseBrace = new TokenClass("}");
-        public static readonly TokenClass CloseBracket = new TokenClass("]");
-        public static readonly TokenClass Colon = new TokenClass(":");
-        public static readonly TokenClass Comma = new TokenClass(",");
-        public static readonly TokenClass Error = new TokenClass("error");
-        public static readonly TokenClass False = new TokenClass("false");
-        public static readonly TokenClass Null = new TokenClass("null");
-        public static readonly TokenClass Number = new TokenClass(@"[-+]?[0-9]*[.]?[0-9]+");
-        public static readonly TokenClass OpenBrace = new TokenClass("{");
-        public static readonly TokenClass OpenBracket = new TokenClass("[");
-        public static readonly TokenClass String = new TokenClass("[\"][^\"]+[\"]");
-        public static readonly TokenClass True = new TokenClass("true");
-        public static readonly TokenClass Whitespace = new TokenClass(@"[\s]+");
+        public static readonly TokenName CloseBrace = new TokenName("}");
+        public static readonly TokenName CloseBracket = new TokenName("]");
+        public static readonly TokenName Colon = new TokenName(":");
+        public static readonly TokenName Comma = new TokenName(",");
+        public static readonly TokenName Error = new TokenName("error");
+        public static readonly TokenName False = new TokenName("false");
+        public static readonly TokenName Null = new TokenName("null");
+        public static readonly TokenName Number = new TokenName(@"[-+]?[0-9]*[.]?[0-9]+");
+        public static readonly TokenName OpenBrace = new TokenName("{");
+        public static readonly TokenName OpenBracket = new TokenName("[");
+        public static readonly TokenName String = new TokenName("[\"][^\"]+[\"]");
+        public static readonly TokenName True = new TokenName("true");
+        public static readonly TokenName Whitespace = new TokenName(@"[\s]+");
 
         private static bool Accept(TextReader textReader, char c)
         {
