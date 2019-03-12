@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using Pliant.Grammars;
 
 namespace Pliant.Terminals
 {
-    public sealed class CharacterClassTerminal : Terminal
+    public sealed class CharacterClassTerminal : AtomTerminal
     {
-        public CharacterClassTerminal(params Terminal[] terminals)
+        public CharacterClassTerminal(params AtomTerminal[] terminals)
         {
-            this.terminals = new List<Terminal>(terminals);
+            this.terminals = new List<AtomTerminal>(terminals);
         }
 
         public override IReadOnlyList<Interval> GetIntervals()
@@ -14,12 +15,12 @@ namespace Pliant.Terminals
             return this.intervals ?? (this.intervals = CreateIntervals(this.terminals));
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             // PERF: Avoid LINQ Any due to Lambda allocation
             foreach (var terminal in this.terminals)
             {
-                if (terminal.IsMatch(character))
+                if (terminal.CanApply(character))
                 {
                     return true;
                 }
@@ -28,7 +29,7 @@ namespace Pliant.Terminals
             return false;
         }
 
-        private static IReadOnlyList<Interval> CreateIntervals(IReadOnlyList<Terminal> terminals)
+        private static IReadOnlyList<Interval> CreateIntervals(IReadOnlyList<AtomTerminal> terminals)
         {
             var intervalList = new List<Interval>();
             foreach (var terminal in terminals)
@@ -41,6 +42,6 @@ namespace Pliant.Terminals
         }
 
         private IReadOnlyList<Interval> intervals;
-        private readonly List<Terminal> terminals;
+        private readonly List<AtomTerminal> terminals;
     }
 }

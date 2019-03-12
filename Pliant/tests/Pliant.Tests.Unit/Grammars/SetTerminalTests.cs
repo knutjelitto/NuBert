@@ -10,15 +10,15 @@ namespace Pliant.Tests.Unit.Grammars
         public void SetTerminalShouldRecognizeCharacterInSet()
         {
             var setTerminal = new SetTerminal("az");
-            Assert.IsTrue(setTerminal.IsMatch('a'));
-            Assert.IsTrue(setTerminal.IsMatch('z'));
+            Assert.IsTrue(setTerminal.CanApply('a'));
+            Assert.IsTrue(setTerminal.CanApply('z'));
         }
 
         [TestMethod]
         public void SetTerminalShouldNotRecognizeCharacterOutOfSet()
         {
             var setTerminal = new SetTerminal("az");
-            Assert.IsFalse(setTerminal.IsMatch('b'));
+            Assert.IsFalse(setTerminal.CanApply('b'));
         }
 
 

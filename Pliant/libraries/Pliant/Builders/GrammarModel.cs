@@ -99,7 +99,7 @@ namespace Pliant.Builders
         // ReSharper disable once IdentifierTypo
         private void AssertStartProductionExistsForStartSetting()
         {
-            if (!this.reachabilityMatrix.ProductionExistsForSymbol(new NonTerminalModel(new NonTerminal(StartSetting.Value))))
+            if (!this.reachabilityMatrix.ProductionExistsForSymbol(new NonTerminalModel(NonTerminal.From(StartSetting.Value))))
             {
                 throw new Exception("no start production found for start symbol");
             }

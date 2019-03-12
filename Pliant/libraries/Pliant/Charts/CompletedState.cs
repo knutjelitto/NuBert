@@ -4,7 +4,7 @@ namespace Pliant.Charts
 {
     public class CompletedState : EarleyItem
     {
-        public CompletedState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        public CompletedState(DottedRule dottedRule, int origin, IForestNode parseNode)
             : base(dottedRule, origin, parseNode)
         {
         }

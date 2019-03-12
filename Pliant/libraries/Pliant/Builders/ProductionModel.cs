@@ -19,7 +19,7 @@ namespace Pliant.Builders
 
         public static ProductionModel From(QualifiedName name)
         {
-            return From(new NonTerminal(name));
+            return From(NonTerminal.From(name));
         }
 
         public static ProductionModel From(NonTerminal nonTerminal)
@@ -59,7 +59,7 @@ namespace Pliant.Builders
         {
             if (Alterations == null || Alterations.Count == 0)
             {
-                yield return new Production(LeftHandSide.NonTerminal);
+                yield return Production.From(LeftHandSide.NonTerminal);
 
                 yield break;
             }
@@ -80,7 +80,7 @@ namespace Pliant.Builders
                     }
                 }
 
-                yield return new Production(LeftHandSide.NonTerminal, symbols);
+                yield return Production.From(LeftHandSide.NonTerminal, symbols.ToArray());
             }
         }
     }

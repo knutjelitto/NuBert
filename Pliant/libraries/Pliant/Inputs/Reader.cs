@@ -24,6 +24,12 @@ namespace Pliant.Inputs
             return c;
         }
 
+        public void Advance()
+        {
+            Debug.Assert(Current.Valid);
+            Current = Current.Next();
+        }
+
         public bool Accept(Func<char, bool> predicate, ref char c)
         {
             if (predicate != null && Valid && predicate(Current))

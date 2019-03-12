@@ -22,6 +22,11 @@ namespace Pliant.Grammars
         public string Name { get; }
         public string Qualifier { get; }
 
+        public bool Is(string fullName)
+        {
+            return FullName.Equals(fullName);
+        }
+
         protected override bool ThisEquals(QualifiedName other)
         {
             return FullName.Equals(other.FullName);

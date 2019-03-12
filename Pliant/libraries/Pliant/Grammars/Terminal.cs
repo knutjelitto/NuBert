@@ -4,6 +4,6 @@ namespace Pliant.Grammars
 {
     public abstract class Terminal : Symbol
     {
-        public abstract bool IsMatch(char character);
+        public abstract bool CanApply(char character);
     }
 }

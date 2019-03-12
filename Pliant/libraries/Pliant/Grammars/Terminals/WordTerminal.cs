@@ -2,7 +2,7 @@
 
 namespace Pliant.Terminals
 {
-    public class WordTerminal : Terminal
+    public class WordTerminal : AtomTerminal
     {
         private WordTerminal()
         {
@@ -13,7 +13,7 @@ namespace Pliant.Terminals
             return intervals;
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             return 'a' <= character && character <= 'z' ||
                    'A' <= character && character <= 'Z' ||

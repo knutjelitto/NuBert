@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if false
+using System.Collections.Generic;
 using Pliant.Grammars;
 
 namespace Pliant.Terminals
@@ -10,3 +11,4 @@ namespace Pliant.Terminals
         public abstract IReadOnlyList<Interval> GetIntervals();
     }
 }
+#endif

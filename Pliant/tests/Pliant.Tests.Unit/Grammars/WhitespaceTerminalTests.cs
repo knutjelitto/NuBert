@@ -14,28 +14,28 @@ namespace Pliant.Tests.Unit
         public void WhitespaceTerminalShouldMatchTabCharacter()
         {
             var whitespaceTerminal = WhitespaceTerminal.Instance;
-            Assert.IsTrue(whitespaceTerminal.IsMatch('\t'));
+            Assert.IsTrue(whitespaceTerminal.CanApply('\t'));
         }
 
         [TestMethod]
         public void WhitespaceTerminalShouldMatchNewLineCharacter()
         {
             var whitespaceTerminal = WhitespaceTerminal.Instance;
-            Assert.IsTrue(whitespaceTerminal.IsMatch('\r'));
+            Assert.IsTrue(whitespaceTerminal.CanApply('\r'));
         }
 
         [TestMethod]
         public void WhitespaceTerminalShouldMatchLineFeed()
         {
             var whitespaceTerminal = WhitespaceTerminal.Instance;
-            Assert.IsTrue(whitespaceTerminal.IsMatch('\n'));
+            Assert.IsTrue(whitespaceTerminal.CanApply('\n'));
         }
 
         [TestMethod]
         public void WhitespaceShouldMatchSpaceCharacter()
         {
             var whitespaceTerminal = WhitespaceTerminal.Instance;
-            Assert.IsTrue(whitespaceTerminal.IsMatch(' '));
+            Assert.IsTrue(whitespaceTerminal.CanApply(' '));
         }
 
         [TestMethod]

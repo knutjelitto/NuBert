@@ -139,7 +139,7 @@ namespace Pliant.Ebnf
                     break;
 
                 case EbnfFactorIdentifier identifier:
-                    var nonTerminal = new NonTerminal(GetQualifiedName(identifier.QualifiedIdentifier));
+                    var nonTerminal = NonTerminal.From(GetQualifiedName(identifier.QualifiedIdentifier));
                     currentProduction.AddWithAnd(new NonTerminalModel(nonTerminal));
                     break;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using Pliant.Automata;
-using Pliant.Grammars;
 using Pliant.Terminals;
 
 namespace Pliant.RegularExpressions
@@ -85,9 +84,9 @@ namespace Pliant.RegularExpressions
             return new Nfa(first.Start, second.End);
         }
 
-        private static Terminal CreateTerminalForCharacter(char value, bool isEscaped, bool negate)
+        private static AtomTerminal CreateTerminalForCharacter(char value, bool isEscaped, bool negate)
         {
-            Terminal terminal;
+            AtomTerminal terminal;
             if (!isEscaped)
             {
                 terminal = new CharacterTerminal(value);
@@ -221,7 +220,7 @@ namespace Pliant.RegularExpressions
             // combine characters into a character range terminal
             var start = range.StartCharacter.Value;
             var end = range.EndCharacter.Value;
-            Terminal terminal = new RangeTerminal(start, end);
+            AtomTerminal terminal = new RangeTerminal(start, end);
             var nfaStartState = new NfaState();
             var nfaEndState = new NfaState();
             if (negate)

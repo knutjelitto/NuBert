@@ -70,19 +70,19 @@ namespace Pliant.RegularExpressions
             var notCloseBracket = CreateNotCloseBracketLexerRule();
             var escape = CreateEscapeCharacterLexerRule();
 
-            var regex = new NonTerminal(Regex);
-            var expression = new NonTerminal(Expression);
-            var term = new NonTerminal(Term);
-            var factor = new NonTerminal(Factor);
-            var atom = new NonTerminal(Atom);
-            var iterator = new NonTerminal(Iterator);
-            var set = new NonTerminal(Set);
-            var positiveSet = new NonTerminal(PositiveSet);
-            var negativeSet = new NonTerminal(NegativeSet);
-            var characterClass = new NonTerminal(CharacterClass);
-            var characterRange = new NonTerminal(CharacterRange);
-            var character = new NonTerminal(Character);
-            var characterClassCharacter = new NonTerminal(CharacterClassCharacter);
+            var regex = NonTerminal.From(Regex);
+            var expression = NonTerminal.From(Expression);
+            var term = NonTerminal.From(Term);
+            var factor = NonTerminal.From(Factor);
+            var atom = NonTerminal.From(Atom);
+            var iterator = NonTerminal.From(Iterator);
+            var set = NonTerminal.From(Set);
+            var positiveSet = NonTerminal.From(PositiveSet);
+            var negativeSet = NonTerminal.From(NegativeSet);
+            var characterClass = NonTerminal.From(CharacterClass);
+            var characterRange = NonTerminal.From(CharacterRange);
+            var character = NonTerminal.From(Character);
+            var characterClassCharacter = NonTerminal.From(CharacterClassCharacter);
 
             var caret = new TerminalLexerRule('^');
             var dollar = new TerminalLexerRule('$');
@@ -99,35 +99,35 @@ namespace Pliant.RegularExpressions
 
             var productions = new[]
             {
-                new Production(regex, expression),
-                new Production(regex, caret, expression),
-                new Production(regex, expression, dollar),
-                new Production(regex, caret, expression, dollar),
-                new Production(expression, term),
-                new Production(expression, term, pipe, expression),
-                new Production(term, factor),
-                new Production(term, factor, term),
-                new Production(factor, atom),
-                new Production(factor, atom, iterator),
-                new Production(atom, dot),
-                new Production(atom, character),
-                new Production(atom, openParen, expression, closeParen),
-                new Production(atom, set),
-                new Production(iterator, star),
-                new Production(iterator, plus),
-                new Production(iterator, question),
-                new Production(set, positiveSet),
-                new Production(set, negativeSet),
-                new Production(negativeSet, openBracket, caret, characterClass, closeBracket),
-                new Production(positiveSet, openBracket, characterClass, closeBracket),                
-                new Production(characterClass, characterRange),
-                new Production(characterClass, characterRange, characterClass),
-                new Production(characterRange, characterClassCharacter),
-                new Production(characterRange, characterClassCharacter, minus, characterClassCharacter),
-                new Production(character, notMeta),
-                new Production(character, escape),
-                new Production(characterClassCharacter, notCloseBracket),
-                new Production(characterClassCharacter, escape)
+                Production.From(regex, expression),
+                Production.From(regex, caret, expression),
+                Production.From(regex, expression, dollar),
+                Production.From(regex, caret, expression, dollar),
+                Production.From(expression, term),
+                Production.From(expression, term, pipe, expression),
+                Production.From(term, factor),
+                Production.From(term, factor, term),
+                Production.From(factor, atom),
+                Production.From(factor, atom, iterator),
+                Production.From(atom, dot),
+                Production.From(atom, character),
+                Production.From(atom, openParen, expression, closeParen),
+                Production.From(atom, set),
+                Production.From(iterator, star),
+                Production.From(iterator, plus),
+                Production.From(iterator, question),
+                Production.From(set, positiveSet),
+                Production.From(set, negativeSet),
+                Production.From(negativeSet, openBracket, caret, characterClass, closeBracket),
+                Production.From(positiveSet, openBracket, characterClass, closeBracket),                
+                Production.From(characterClass, characterRange),
+                Production.From(characterClass, characterRange, characterClass),
+                Production.From(characterRange, characterClassCharacter),
+                Production.From(characterRange, characterClassCharacter, minus, characterClassCharacter),
+                Production.From(character, notMeta),
+                Production.From(character, escape),
+                Production.From(characterClassCharacter, notCloseBracket),
+                Production.From(characterClassCharacter, escape)
             };
 
             grammar = new ConcreteGrammar(regex, productions, null, null);

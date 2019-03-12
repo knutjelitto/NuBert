@@ -43,20 +43,20 @@ namespace Pliant.Bnf
 
             var productions = new[]
             {
-                new Production(grammar, rule),
-                new Production(grammar, rule, grammar),
-                new Production(rule, identifier, implements, expression),
-                new Production(expression, list),
-                new Production(expression, list, pipe, expression),
-                new Production(lineEnd, eol),
-                new Production(lineEnd, lineEnd, lineEnd),
-                new Production(list, term),
-                new Production(list, term, list),
-                new Production(term, literal),
-                new Production(term, identifier),
-                new Production(identifier, lessThan, ruleName, greaterThan),
-                new Production(literal, doubleQuote, notDoubleQuote, doubleQuote),
-                new Production(literal, slash, notSingleQuote, slash)
+                Production.From(grammar, rule),
+                Production.From(grammar, rule, grammar),
+                Production.From(rule, identifier, implements, expression),
+                Production.From(expression, list),
+                Production.From(expression, list, pipe, expression),
+                Production.From(lineEnd, eol),
+                Production.From(lineEnd, lineEnd, lineEnd),
+                Production.From(list, term),
+                Production.From(list, term, list),
+                Production.From(term, literal),
+                Production.From(term, identifier),
+                Production.From(identifier, lessThan, ruleName, greaterThan),
+                Production.From(literal, doubleQuote, notDoubleQuote, doubleQuote),
+                Production.From(literal, slash, notSingleQuote, slash)
             };
 
             var ignore = new[]

@@ -1,10 +1,9 @@
 ﻿using System.Text;
 using Pliant.Grammars;
-using Pliant.Utilities;
 
 namespace Pliant.Charts
 {
-    public sealed class DottedRule : ValueEqualityBase<DottedRule>
+    public struct DottedRule
     {
         public DottedRule(Production production, int dot)
         {
@@ -13,24 +12,27 @@ namespace Pliant.Charts
             PostDotSymbol = GetPostDotSymbol(production, dot);
             PreDotSymbol = GetPreDotSymbol(production, dot);
             IsComplete = IsCompleted(production, dot);
+
+            this.hashCode = (Dot, Production).GetHashCode();
         }
 
-        public bool IsComplete { get; }
-
+        public Production Production { get; }
         public int Dot { get; }
+
+        public bool IsComplete { get; }
 
         public Symbol PostDotSymbol { get; }
 
         public Symbol PreDotSymbol { get; }
 
-        public Production Production { get; }
+        private readonly int hashCode;
 
-        protected override bool ThisEquals(DottedRule other)
+        public override bool Equals(object obj)
         {
-            return Production.Equals(other.Production) && Dot.Equals(other.Dot);
+            return obj is DottedRule other && Dot.Equals(other.Dot) && Production.Equals(other.Production);
         }
 
-        protected override object ThisHashCode => (Production, Dot);
+        public override int GetHashCode() => this.hashCode;
 
         public override string ToString()
         {

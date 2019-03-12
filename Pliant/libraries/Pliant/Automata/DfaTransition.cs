@@ -4,13 +4,13 @@ namespace Pliant.Automata
 {
     public sealed class DfaTransition
     {
-        public DfaTransition(Terminal terminal, DfaState target)
+        public DfaTransition(AtomTerminal terminal, DfaState target)
         {
             Target = target;
             Terminal = terminal;
         }
 
         public DfaState Target { get; }
-        public Terminal Terminal { get; }
+        public AtomTerminal Terminal { get; }
     }
 }

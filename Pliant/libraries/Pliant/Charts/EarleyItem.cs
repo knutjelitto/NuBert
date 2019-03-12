@@ -6,7 +6,7 @@ namespace Pliant.Charts
 {
     public abstract class EarleyItem : ValueEqualityBase<EarleyItem>
     {
-        protected EarleyItem(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        protected EarleyItem(DottedRule dottedRule, int origin, IForestNode parseNode)
         {
             DottedRule = dottedRule;
             Origin = origin;

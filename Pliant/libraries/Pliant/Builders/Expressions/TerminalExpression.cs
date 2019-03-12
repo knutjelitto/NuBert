@@ -1,4 +1,5 @@
-﻿using Pliant.LexerRules;
+﻿using Pliant.Grammars;
+using Pliant.LexerRules;
 using Pliant.Terminals;
 
 namespace Pliant.Builders.Expressions
@@ -10,7 +11,7 @@ namespace Pliant.Builders.Expressions
         {
         }
 
-        public static implicit operator TerminalExpression(Terminal terminal)
+        public static implicit operator TerminalExpression(AtomTerminal terminal)
         {
             return new TerminalExpression(new SymbolExpression(new LexerRuleModel(new TerminalLexerRule(terminal))));
         }

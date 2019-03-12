@@ -10,10 +10,10 @@ namespace Pliant.Tests.Unit.Grammars
         [TestMethod]
         public void WordTerminalShouldMatchWordCharacters()
         {
-            Assert.IsTrue(WordTerminal.Instance.IsMatch('a'));
-            Assert.IsTrue(WordTerminal.Instance.IsMatch('0'));
-            Assert.IsTrue(WordTerminal.Instance.IsMatch('M'));
-            Assert.IsTrue(WordTerminal.Instance.IsMatch('_'));
+            Assert.IsTrue(WordTerminal.Instance.CanApply('a'));
+            Assert.IsTrue(WordTerminal.Instance.CanApply('0'));
+            Assert.IsTrue(WordTerminal.Instance.CanApply('M'));
+            Assert.IsTrue(WordTerminal.Instance.CanApply('_'));
         }
     }
 }

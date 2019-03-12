@@ -11,7 +11,7 @@ namespace Pliant.Builders.Expressions
         }
 
         private ProductionExpression(QualifiedName qualifiedName)
-            : this(new NonTerminal(qualifiedName))
+            : this(NonTerminal.From(qualifiedName))
         {
         }
 

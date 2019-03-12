@@ -7,8 +7,6 @@ namespace Pliant.Tokens
 {
     public abstract class Lexeme : IToken
     {
-        protected readonly Input First;
-
         protected Lexeme(LexerRule lexer, int position)
         {
             TokenName = lexer.TokenName;

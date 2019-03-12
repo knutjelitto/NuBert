@@ -3,17 +3,17 @@ using Pliant.Utilities;
 
 namespace Pliant.Terminals
 {
-    public sealed class NegationTerminal : Terminal
+    public sealed class NegationTerminal : AtomTerminal
     {
-        public NegationTerminal(Terminal innerTerminal)
+        public NegationTerminal(AtomTerminal innerTerminal)
         {
             InnerTerminal = innerTerminal;
             this.hashCode = ("!", InnerTerminal).GetHashCode();
         }
 
-        public Terminal InnerTerminal { get; }
+        public AtomTerminal InnerTerminal { get; }
 
-        private static IReadOnlyList<Interval> CreateIntervals(Terminal innerTerminal)
+        private static IReadOnlyList<Interval> CreateIntervals(AtomTerminal innerTerminal)
         {
             var inverseIntervalList = new List<Interval>();
             var intervals = innerTerminal.GetIntervals();
@@ -26,9 +26,9 @@ namespace Pliant.Terminals
             return Interval.Group(inverseIntervalList);
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
-            return !InnerTerminal.IsMatch(character);
+            return !InnerTerminal.CanApply(character);
         }
 
         public override IReadOnlyList<Interval> GetIntervals()

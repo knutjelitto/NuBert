@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Pliant.Collections;
+using Pliant.Grammars;
 using Pliant.Terminals;
 
 namespace Pliant.Automata
@@ -19,7 +20,7 @@ namespace Pliant.Automata
             AddTransition(new EpsilonNfaTransition(target));
         }
 
-        public void AddTransition(Terminal terminal, NfaState target)
+        public void AddTransition(AtomTerminal terminal, NfaState target)
         {
             AddTransition(new TerminalNfaTransition(terminal, target));
         }

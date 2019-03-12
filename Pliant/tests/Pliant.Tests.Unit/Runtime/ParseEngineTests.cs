@@ -855,7 +855,7 @@ namespace Pliant.Tests.Unit.Runtime
 
         private static void AssertNodeProperties(ISymbolForestNode node, string nodeName, int origin, int location)
         {
-            var actualNodeName = (node.Symbol as NonTerminal)?.Value;
+            var actualNodeName = (node.Symbol as NonTerminal)?.QualifiedName.FullName;
             Assert.AreEqual(nodeName, actualNodeName, "Node Name Match Failed.");
             Assert.AreEqual(origin, node.Origin, "Origin Match Failed.");
             Assert.AreEqual(location, node.Location, "Location Match Failed.");

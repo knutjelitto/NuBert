@@ -35,11 +35,11 @@ namespace Pliant.Tests.Unit.Automata
             foreach (var transition in dfa_0.Transitions)
             {
                 var terminal = transition.Terminal;
-                if (terminal.IsMatch('a'))
+                if (terminal.CanApply('a'))
                 {
                     transition_0_01 = transition;
                 }
-                else if (terminal.IsMatch('c'))
+                else if (terminal.CanApply('c'))
                 {
                     transition_0_23 = transition;
                 }
@@ -58,15 +58,15 @@ namespace Pliant.Tests.Unit.Automata
             foreach (var transition in dfa_01.Transitions)
             {
                 var terminal = transition.Terminal;
-                if (terminal.IsMatch('a'))
+                if (terminal.CanApply('a'))
                 {
                     transition_01_01 = transition;
                 }
-                else if (terminal.IsMatch('b'))
+                else if (terminal.CanApply('b'))
                 {
                     transition_01_2 = transition;
                 }
-                else if (terminal.IsMatch('c'))
+                else if (terminal.CanApply('c'))
                 {
                     transition_01_23 = transition;
                 }
@@ -84,11 +84,11 @@ namespace Pliant.Tests.Unit.Automata
             foreach (var transition in dfa_23.Transitions)
             {
                 var terminal = transition.Terminal;
-                if (terminal.IsMatch('a'))
+                if (terminal.CanApply('a'))
                 {
                     transition_23_01 = transition;
                 }
-                else if (terminal.IsMatch('c'))
+                else if (terminal.CanApply('c'))
                 {
                     transition_23_2 = transition;
                 }
@@ -104,7 +104,7 @@ namespace Pliant.Tests.Unit.Automata
             foreach (var transition in dfa_2.Transitions)
             {
                 var terminal = transition.Terminal;
-                if (terminal.IsMatch('a'))
+                if (terminal.CanApply('a'))
                 {
                     transition_2_01 = transition;
                 }

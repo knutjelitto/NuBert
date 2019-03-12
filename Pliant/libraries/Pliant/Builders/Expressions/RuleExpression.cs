@@ -49,7 +49,7 @@ namespace Pliant.Builders.Expressions
             return (Expr) lexerRule;
         }
 
-        public static implicit operator RuleExpression(Terminal baseTerminal)
+        public static implicit operator RuleExpression(AtomTerminal baseTerminal)
         {
             return (Expr) baseTerminal;
         }

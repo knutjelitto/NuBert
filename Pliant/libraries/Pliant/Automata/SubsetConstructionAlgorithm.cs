@@ -24,7 +24,7 @@ namespace Pliant.Automata
             while (processOnceQueue.Count > 0)
             {
                 var nfaClosure = processOnceQueue.Dequeue();
-                var transitions = ObjectPoolExtensions.Allocate(SharedPools.Default<Dictionary<Terminal, HashSet<NfaState>>>());
+                var transitions = ObjectPoolExtensions.Allocate(SharedPools.Default<Dictionary<AtomTerminal, HashSet<NfaState>>>());
 
                 foreach (var state in nfaClosure.Set)
                 {
@@ -57,7 +57,7 @@ namespace Pliant.Automata
                     .Default<HashSet<NfaState>>()
                     .ClearAndFree(nfaClosure.Set);
                 SharedPools
-                    .Default<Dictionary<Terminal, HashSet<NfaState>>>()
+                    .Default<Dictionary<AtomTerminal, HashSet<NfaState>>>()
                     .ClearAndFree(transitions);
             }
 

@@ -11,7 +11,7 @@ namespace Pliant.Tests.Unit.Grammars
         public void CharacterTerminalShouldMatchSingleCharacter()
         {
             var characterTerminal = new CharacterTerminal('c');
-            Assert.IsTrue(characterTerminal.IsMatch('c'));
+            Assert.IsTrue(characterTerminal.CanApply('c'));
         }
 
         [TestMethod]

@@ -8,35 +8,28 @@ namespace Pliant.Grammars
 {
     public sealed class Production : ValueEqualityBase<Production>, IReadOnlyList<Symbol>
     {
-        public Production(NonTerminal leftHandSide, IReadOnlyList<Symbol> rightHandSide)
+        private Production(NonTerminal leftHandSide, Symbol[] rightHandSide)
         {
             LeftHandSide = leftHandSide;
-            RightHandSide = rightHandSide.ToArray();
+            this.rightHandSide = rightHandSide;
         }
 
-        public Production(NonTerminal leftHandSide, params Symbol[] rightHandSide)
-            : this(leftHandSide, (IReadOnlyList<Symbol>)rightHandSide)
-        {
-        }
-
-        public int Count => RightHandSide.Count;
+        public int Count => this.rightHandSide.Length;
 
         public NonTerminal LeftHandSide { get; }
-        public IReadOnlyList<Symbol> RightHandSide { get; }
 
-        public Symbol this[int index] => RightHandSide[index];
+        public Symbol this[int index] => this.rightHandSide[index];
 
-        protected override bool ThisEquals(Production other)
+        protected override object ThisHashCode => (LeftHandSide, HashCode.Compute(this.rightHandSide));
+
+        public static Production From(NonTerminal leftHandSide, params Symbol[] rightHandSide)
         {
-            return LeftHandSide.Equals(other.LeftHandSide) &&
-                   RightHandSide.SequenceEqual(other.RightHandSide);
+            return new Production(leftHandSide, rightHandSide);
         }
-
-        protected override object ThisHashCode => (LeftHandSide, HashCode.Compute(RightHandSide));
 
         public IEnumerator<Symbol> GetEnumerator()
         {
-            return RightHandSide.GetEnumerator();
+            return this.rightHandSide.AsEnumerable().GetEnumerator();
         }
 
         public override string ToString()
@@ -44,7 +37,7 @@ namespace Pliant.Grammars
             var stringBuilder = new StringBuilder();
             stringBuilder.Append($"{LeftHandSide} ->");
 
-            foreach (var symbol in RightHandSide)
+            foreach (var symbol in this.rightHandSide)
             {
                 stringBuilder.Append($" {symbol}");
             }
@@ -52,9 +45,16 @@ namespace Pliant.Grammars
             return stringBuilder.ToString();
         }
 
+        protected override bool ThisEquals(Production other)
+        {
+            return LeftHandSide.Equals(other.LeftHandSide) && this.rightHandSide.SequenceEqual(other.rightHandSide);
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
+
+        private readonly Symbol[] rightHandSide;
     }
 }

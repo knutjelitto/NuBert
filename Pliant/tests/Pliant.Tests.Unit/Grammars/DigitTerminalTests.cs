@@ -10,13 +10,13 @@ namespace Pliant.Tests.Unit
         [TestMethod]
         public void DigitTerminalGivenNumberShouldMatch()
         {
-            Assert.IsTrue(DigitTerminal.Instance.IsMatch('0'));
+            Assert.IsTrue(DigitTerminal.Instance.CanApply('0'));
         }
 
         [TestMethod]
         public void DigitTerminalGivenLetterShouldFailMatch()
         {
-            Assert.IsFalse(DigitTerminal.Instance.IsMatch('a'));
+            Assert.IsFalse(DigitTerminal.Instance.CanApply('a'));
         }
 
         [TestMethod]

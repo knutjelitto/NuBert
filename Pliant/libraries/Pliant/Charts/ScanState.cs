@@ -4,7 +4,7 @@ namespace Pliant.Charts
 {
     public class ScanState : EarleyItem
     {
-        public ScanState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        public ScanState(DottedRule dottedRule, int origin, IForestNode parseNode)
             : base(dottedRule, origin, parseNode)
         {
         }

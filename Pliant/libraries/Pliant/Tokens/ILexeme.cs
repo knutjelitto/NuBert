@@ -6,7 +6,5 @@ namespace Pliant.Tokens
 {
     public interface ILexeme : IToken
     {
-        IReadOnlyList<ITrivia> LeadingTrivia { get; }
-        IReadOnlyList<ITrivia> TrailingTrivia { get; }
     }
 }

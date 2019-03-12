@@ -10,9 +10,9 @@ namespace Pliant.Tests.Unit.Grammars
         public void NegationTerminalShouldNegateAnyTerminal()
         {
             var negationTerminal = new NegationTerminal(AnyTerminal.Instance);
-            Assert.IsFalse(negationTerminal.IsMatch('a'));
-            Assert.IsFalse(negationTerminal.IsMatch(char.MaxValue));
-            Assert.IsFalse(negationTerminal.IsMatch('0'));
+            Assert.IsFalse(negationTerminal.CanApply('a'));
+            Assert.IsFalse(negationTerminal.CanApply(char.MaxValue));
+            Assert.IsFalse(negationTerminal.CanApply('0'));
         }
 
         [TestMethod]

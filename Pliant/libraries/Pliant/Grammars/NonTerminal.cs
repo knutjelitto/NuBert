@@ -2,25 +2,23 @@
 {
     public sealed class NonTerminal : Symbol
     {
-        public NonTerminal(QualifiedName qualifiedName)
+        private NonTerminal(QualifiedName qualifiedName)
         {
             QualifiedName = qualifiedName;
-            this.hashCode = Value.GetHashCode();
+            this.hashCode = QualifiedName.GetHashCode();
+        }
+
+        public static NonTerminal From(QualifiedName qualifiedName)
+        {
+            return new NonTerminal(qualifiedName);
         }
 
         public static NonTerminal From(string name)
         {
-            return new NonTerminal(new QualifiedName(string.Empty, name));
+            return From(new QualifiedName(string.Empty, name));
         }
 
         public QualifiedName QualifiedName { get; }
-
-        public string Value => QualifiedName.FullName;
-
-        public bool Is(string otherFullName)
-        {
-            return Value == otherFullName;
-        }
 
         public bool Is(QualifiedName otherName)
         {
@@ -29,17 +27,12 @@
 
         public bool Is(NonTerminal other)
         {
-            return Is(other.QualifiedName);
-        }
-
-        public bool Is(Production production)
-        {
-            return Is(production.LeftHandSide);
+            return QualifiedName.Equals(other.QualifiedName);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is NonTerminal other && Value.Equals(other.Value);
+            return obj is NonTerminal other && QualifiedName.Equals(other.QualifiedName);
         }
 
         public override int GetHashCode()
@@ -49,7 +42,7 @@
 
         public override string ToString()
         {
-            return Value;
+            return QualifiedName.ToString();
         }
 
         private readonly int hashCode;

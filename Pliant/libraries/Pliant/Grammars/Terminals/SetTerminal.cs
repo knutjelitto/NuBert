@@ -4,7 +4,7 @@ using Pliant.Utilities;
 
 namespace Pliant.Terminals
 {
-    public sealed class SetTerminal : Terminal
+    public sealed class SetTerminal : AtomTerminal
     {
         public SetTerminal(IEnumerable<char> characterSet)
         {
@@ -17,7 +17,7 @@ namespace Pliant.Terminals
             return this.intervals ?? (this.intervals = CreateIntervals(this.characterSet));
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             return this.characterSet.Contains(character);
         }

@@ -390,7 +390,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Terminal
+            AtomTerminal
                 a = new SetTerminal("ab");
             S.Rule = a + (Expr)"b";
 
@@ -404,7 +404,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Terminal
+            AtomTerminal
                 a = new SetTerminal("ab");
             S.Rule = (Expr)"b"+ a;
 
@@ -418,7 +418,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Terminal
+            AtomTerminal
                 a = new SetTerminal("ab");
             S.Rule = a | (Expr)"b";
 
@@ -433,7 +433,7 @@ namespace Pliant.Tests.Unit.Builders.Expressions
         {
             ProductionExpression
                 S = "S";
-            Terminal
+            AtomTerminal
                 a = new SetTerminal("ab");
             S.Rule = (Expr)"b" | a;
 

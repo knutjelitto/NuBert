@@ -24,7 +24,7 @@ namespace Pliant.Automata
         {
             foreach (var transition in Start.Transitions)
             {
-                if (transition.Terminal.IsMatch(c))
+                if (transition.Terminal.CanApply(c))
                 {
                     return true;
                 }

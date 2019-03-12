@@ -5,7 +5,7 @@ namespace Pliant.Charts
 {
     public class PredictionState : EarleyItem
     {
-        public PredictionState(DottedRule dottedRule, int origin, IForestNode parseNode = null)
+        public PredictionState(DottedRule dottedRule, int origin, IForestNode parseNode)
             : base(dottedRule, origin, parseNode)
         {
         }

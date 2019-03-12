@@ -2,7 +2,7 @@
 
 namespace Pliant.Terminals
 {
-    public sealed class RangeTerminal : Terminal
+    public sealed class RangeTerminal : AtomTerminal
     {
         public RangeTerminal(char start, char end)
         {
@@ -28,7 +28,7 @@ namespace Pliant.Terminals
             return this.intervals ?? (this.intervals = new[] {new Interval(Start, End)});
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             return Start <= character && character <= End;
         }

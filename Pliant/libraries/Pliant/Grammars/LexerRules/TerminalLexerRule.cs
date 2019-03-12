@@ -11,32 +11,32 @@ namespace Pliant.LexerRules
         {
         }
 
-        public TerminalLexerRule(Terminal terminal, string tokenTypeId)
+        public TerminalLexerRule(AtomTerminal terminal, string tokenTypeId)
             : this(terminal, new TokenName(tokenTypeId))
         {
         }
 
-        public TerminalLexerRule(Terminal terminal)
+        public TerminalLexerRule(AtomTerminal terminal)
             : this(terminal, terminal.ToString())
         {
         }
 
-        public TerminalLexerRule(Terminal terminal, TokenName tokenName)
+        public TerminalLexerRule(AtomTerminal terminal, TokenName tokenName)
             : base(MakeAutomaton(terminal), tokenName)
         {
             Terminal = terminal;
         }
 
-        private static DfaState MakeAutomaton(Terminal terminal)
+        private static DfaState MakeAutomaton(AtomTerminal terminal)
         {
             return DfaState.Inner().AddTransition(terminal, DfaState.Final());
         }
 
-        public Terminal Terminal { get; }
+        public AtomTerminal Terminal { get; }
 
         public override bool CanApply(char c)
         {
-            return Terminal.IsMatch(c);
+            return Terminal.CanApply(c);
         }
 
 #if false

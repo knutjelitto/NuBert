@@ -2,7 +2,7 @@
 
 namespace Pliant.Terminals
 {
-    public sealed class AsciiLetterTerminal : Terminal
+    public sealed class AsciiLetterTerminal : AtomTerminal
     {
         public static readonly AsciiLetterTerminal Instance = new AsciiLetterTerminal();
 
@@ -25,7 +25,7 @@ namespace Pliant.Terminals
             return Intervals;
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             return 'a' <= character && character <= 'z' || 'A' <= character && character <= 'Z';
         }

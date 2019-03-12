@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Pliant.Grammars;
 
 namespace Pliant.Charts
@@ -13,12 +14,12 @@ namespace Pliant.Charts
 
         public DottedRule Get(Production production, int dot)
         {
-            if (dot >= 0 && this.index.TryGetValue(production, out var rules) && dot < rules.Length)
+            if (dot >= 0 && dot <= production.Count && this.index.TryGetValue(production, out var rules) && dot < rules.Length)
             {
                 return rules[dot];
             }
 
-            return null;
+            throw new ArgumentOutOfRangeException(nameof(dot));
         }
 
         public DottedRule GetNext(DottedRule dottedRule)

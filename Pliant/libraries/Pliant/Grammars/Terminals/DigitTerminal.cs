@@ -2,7 +2,7 @@
 
 namespace Pliant.Terminals
 {
-    public sealed class DigitTerminal : Terminal
+    public sealed class DigitTerminal : AtomTerminal
     {
         public static readonly DigitTerminal Instance = new DigitTerminal();
         public static readonly NegationTerminal NotIt = new NegationTerminal(Instance);
@@ -26,7 +26,7 @@ namespace Pliant.Terminals
             return Intervals;
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             return '0' <= character && character <= '9';
         }

@@ -12,7 +12,7 @@ namespace Pliant.Tests.Unit
         {
             for (var c = char.MinValue; c < char.MaxValue; c++)
             {
-                Assert.IsTrue(AnyTerminal.Instance.IsMatch(c));
+                Assert.IsTrue(AnyTerminal.Instance.CanApply(c));
             }
         }
     }

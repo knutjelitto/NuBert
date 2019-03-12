@@ -11,21 +11,21 @@ namespace Pliant.Tests.Unit
         public void RangeTerminalWhenInputIsLessThanLowerBoundShouldFail()
         {
             var rangeTerminal = new RangeTerminal('a', 'z');
-            Assert.IsFalse(rangeTerminal.IsMatch('0'));
+            Assert.IsFalse(rangeTerminal.CanApply('0'));
         }
 
         [TestMethod]
         public void RangeTerminalWhenInputGreaterThanUpperBoundShouldFail()
         {
             var rangeTerminal = new RangeTerminal('a', 'z');
-            Assert.IsFalse(rangeTerminal.IsMatch('A'));
+            Assert.IsFalse(rangeTerminal.CanApply('A'));
         }
 
         [TestMethod]
         public void RangeTerminalWhenInputBetweenBoundsShouldMatch()
         {
             var rangeTerminal = new RangeTerminal('a', 'z');
-            Assert.IsTrue(rangeTerminal.IsMatch('l'));
+            Assert.IsTrue(rangeTerminal.CanApply('l'));
         }
 
         [TestMethod]

@@ -2,7 +2,7 @@
 
 namespace Pliant.Terminals
 {
-    public class WhitespaceTerminal : Terminal
+    public class WhitespaceTerminal : AtomTerminal
     {
         public static readonly WhitespaceTerminal Instance = new WhitespaceTerminal();
 
@@ -25,7 +25,7 @@ namespace Pliant.Terminals
             return Intervals;
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             return char.IsWhiteSpace(character);
         }

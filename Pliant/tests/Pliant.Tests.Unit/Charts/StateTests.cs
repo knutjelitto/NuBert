@@ -12,10 +12,11 @@ namespace Pliant.Tests.Unit
         {
             var state = new PredictionState(
                 new DottedRule(
-                    new Production(
+                    Production.From(
                         NonTerminal.From("A"), NonTerminal.From("B"), NonTerminal.From("C")),
                     1),
-                0);
+                0,
+                null);
             Assert.AreEqual("A -> B\u25CFC\t\t(0)", state.ToString());
         }
     }

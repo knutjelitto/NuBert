@@ -6,11 +6,11 @@ namespace Pliant.Automata
 {
     public sealed class DfaLexeme : Lexeme
     {
-        public DfaLexeme(DfaLexerRule dfaLexer, int position)
-            : base(dfaLexer, position)
+        public DfaLexeme(DfaLexerRule lexerRule, int position)
+            : base(lexerRule, position)
         {
             this.captureBuilder = ObjectPoolExtensions.Allocate(SharedPools.Default<StringBuilder>());
-            this.currentState = dfaLexer.Start;
+            this.currentState = lexerRule.Start;
         }
 
         public override string Value
@@ -35,7 +35,7 @@ namespace Pliant.Automata
         {
             foreach (var transition in this.currentState.Transitions)
             {
-                if (transition.Terminal.IsMatch(character))
+                if (transition.Terminal.CanApply(character))
                 {
                     if (!IsStringBuilderAllocated())
                     {

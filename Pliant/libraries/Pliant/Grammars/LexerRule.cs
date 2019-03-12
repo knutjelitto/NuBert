@@ -2,7 +2,7 @@
 
 namespace Pliant.Grammars
 {
-    public abstract class LexerRule : Symbol
+    public abstract class LexerRule : Terminal
     {
         protected LexerRule(TokenName tokenName)
         {
@@ -10,8 +10,6 @@ namespace Pliant.Grammars
         }
 
         public TokenName TokenName { get; }
-
-        public abstract bool CanApply(char c);
 
         public abstract Lexeme CreateLexeme(int position);
     }

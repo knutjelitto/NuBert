@@ -46,7 +46,7 @@ namespace Pliant.Tests.Unit.Ebnf
             Assert.IsNotNull(grammar.Start);
             Assert.AreEqual(1, grammar.Productions.Count);
             Assert.AreEqual(1, grammar.Productions[0].Count);
-            Assert.IsTrue(grammar.Productions[0].LeftHandSide.Is("X.Y.Z"));
+            Assert.IsTrue(grammar.Productions[0].LeftHandSide.QualifiedName.Is("X.Y.Z"));
         }
 
         [TestMethod]

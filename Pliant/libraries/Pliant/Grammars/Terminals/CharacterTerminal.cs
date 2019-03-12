@@ -2,7 +2,7 @@
 
 namespace Pliant.Terminals
 {
-    public sealed class CharacterTerminal : Terminal
+    public sealed class CharacterTerminal : AtomTerminal
     {
         public CharacterTerminal(char character)
         {
@@ -26,7 +26,7 @@ namespace Pliant.Terminals
             return this.intervals ?? (this.intervals = new[] {new Interval(Character)});
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             return Character == character;
         }

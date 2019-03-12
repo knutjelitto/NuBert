@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Pliant.Grammars;
 
 namespace Pliant.Terminals
 {
-    public sealed class AnyTerminal : Terminal
+    public sealed class AnyTerminal : AtomTerminal
     {
         public static readonly AnyTerminal Instance = new AnyTerminal();
 
@@ -25,7 +26,7 @@ namespace Pliant.Terminals
             return Interval;
         }
 
-        public override bool IsMatch(char character)
+        public override bool CanApply(char character)
         {
             return true;
         }
