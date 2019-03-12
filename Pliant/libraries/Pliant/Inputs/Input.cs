@@ -3,9 +3,9 @@ using System.Diagnostics;
 
 namespace Pliant.Inputs
 {
-    public class Reader
+    public class Input
     {
-        public Reader(string text)
+        public Input(string text)
         {
             this.text = text;
             Current = new Cursor(this.text);

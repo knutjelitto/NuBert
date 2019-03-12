@@ -2,14 +2,14 @@
 
 namespace Pliant.Inputs
 {
-    public struct Input
+    public struct Cursor
     {
-        public Input(string text)
+        public Cursor(string text)
             : this(text, 0)
         {
         }
 
-        private Input(string text, int index)
+        private Cursor(string text, int index)
         {
             this.text = text;
             this.index = index;
@@ -20,19 +20,19 @@ namespace Pliant.Inputs
         public int Position => this.index;
         public char Value => this.text[this.index];
 
-        public Input Next()
+        public Cursor Next()
         {
-            return new Input(this.text, this.index + 1);
+            return new Cursor(this.text, this.index + 1);
         }
 
-        public string Upto(Input end)
+        public string Upto(Cursor end)
         {
             Debug.Assert(ReferenceEquals(this.text, end.text));
             Debug.Assert(end.index <= this.text.Length);
             return this.text.Substring(this.index, end.index - this.index);
         }
 
-        public static implicit operator char(Input input)
+        public static implicit operator char(Cursor input)
         {
             return input.Value;
         }
