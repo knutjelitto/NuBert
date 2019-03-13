@@ -1,17 +1,22 @@
 ﻿using System;
+using Lingu;
 
 namespace NuBert
 {
-    internal class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        // ReSharper disable once UnusedParameter.Local
+        private static void Main(string[] args)
         {
-            var p = new Program();
+            var checker = new Checker();
 
-            p.AnyKey();
+            checker.Check();
+
+            AnyKey();
         }
 
-        private void AnyKey()
+
+        private static void AnyKey()
         {
             Console.Write("any key ...");
             Console.ReadKey(true);
