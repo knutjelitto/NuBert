@@ -13,6 +13,8 @@ namespace Lingu.Automata
         }
 
         public IEnumerable<NfaTransition> Transitions => this.transitions;
+        public IEnumerable<TerminalNfaTransition> TerminalTransitions => this.transitions.OfType<TerminalNfaTransition>();
+        public IEnumerable<EpsilonNfaTransition> EpsilonTransitions => this.transitions.OfType<EpsilonNfaTransition>();
 
         public void Add(NfaState target)
         {
@@ -33,7 +35,7 @@ namespace Lingu.Automata
             while (once.Count > 0)
             {
                 var state = once.Dequeue();
-                foreach (var transition in state.Transitions.OfType<EpsilonNfaTransition>())
+                foreach (var transition in state.EpsilonTransitions)
                 {
                     once.Enqueue(transition.Target);
                 }

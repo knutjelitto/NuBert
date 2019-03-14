@@ -34,7 +34,7 @@ namespace Pliant.Automata
                         {
                             var terminal = terminalTransition.Terminal;
 
-                            if (!transitions.ContainsKey(terminalTransition.Terminal))
+                            if (!transitions.ContainsKey(terminal))
                             {
                                 transitions[terminal] = ObjectPoolExtensions.Allocate(SharedPools.Default<HashSet<NfaState>>());
                             }

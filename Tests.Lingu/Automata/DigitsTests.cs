@@ -50,7 +50,7 @@ namespace Tests.Lingu.Automata
 
             var nonZeroDigits = new RangeTerminal('1', '9');
             var allDigits = new RangeTerminal('0', '9');
-            var zeroDigit = new SingleTerminal('0');
+            var zeroDigit = new RangeTerminal('0');
 
             start.Add(nonZeroDigits, more);
             start.Add(zeroDigit, end);

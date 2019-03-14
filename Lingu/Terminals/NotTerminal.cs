@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Lingu.Terminals
+﻿namespace Lingu.Terminals
 {
     public class NotTerminal : Terminal
     {
@@ -21,6 +17,21 @@ namespace Lingu.Terminals
         public override bool NotMatch(char character)
         {
             return this.negate.Match(character);
+        }
+
+        public override int CompareTo(object obj)
+        {
+            return CompareTo(obj as NotTerminal);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is NotTerminal other && this.negate.Equals(other.negate);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.negate.GetHashCode();
         }
 
         public override string ToString()

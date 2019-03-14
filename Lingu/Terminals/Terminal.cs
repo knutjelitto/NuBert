@@ -1,6 +1,8 @@
-﻿namespace Lingu.Terminals
+﻿using System;
+
+namespace Lingu.Terminals
 {
-    public abstract class Terminal
+    public abstract class Terminal : IComparable
     {
         public abstract bool Match(char character);
         public abstract bool NotMatch(char character);
@@ -9,5 +11,7 @@
         {
             return new NotTerminal(this);
         }
+
+        public abstract int CompareTo(object obj);
     }
 }

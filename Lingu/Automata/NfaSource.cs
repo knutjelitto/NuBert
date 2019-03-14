@@ -16,7 +16,7 @@ namespace Lingu.Automata
 
         public static Nfa From(char ch)
         {
-            return Single(new SingleTerminal(ch));
+            return Single(new RangeTerminal(ch));
         }
 
         public static Nfa From(char first, char last)

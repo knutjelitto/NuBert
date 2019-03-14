@@ -9,7 +9,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void SingleCreateString()
         {
-            var sut = new SingleTerminal('a');
+            var sut = new RangeTerminal('a');
 
             Assert.AreEqual("'a'", sut.ToString());
         }
@@ -17,7 +17,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void SingleShouldMatch()
         {
-            var sut = new SingleTerminal('a');
+            var sut = new RangeTerminal('a');
 
             Assert.IsTrue(sut.Match('a'));
 
@@ -27,7 +27,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void SingleShouldntMatch()
         {
-            var sut = new SingleTerminal('a');
+            var sut = new RangeTerminal('a');
 
             Assert.IsFalse(sut.Match('b'));
 

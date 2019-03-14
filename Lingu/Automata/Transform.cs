@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Lingu.Terminals;
 using Lingu.Tools;
@@ -21,7 +22,7 @@ namespace Lingu.Automata
 
                 foreach (var state in closure.Set)
                 {
-                    foreach (var transition in state.Transitions.OfType<TerminalNfaTransition>())
+                    foreach (var transition in state.TerminalTransitions)
                     {
                         if (!transitions.TryGetValue(transition.Terminal, out var set))
                         {
@@ -32,6 +33,8 @@ namespace Lingu.Automata
                         set.Add(transition.Target);
                     }
                 }
+
+                CharUnicodeInfo.GetUnicodeCategory('a');
 
                 foreach (var transition in transitions)
                 {
