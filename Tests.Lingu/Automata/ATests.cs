@@ -8,8 +8,19 @@ namespace Tests.Lingu.Automata
     public class ATests
     {
         [TestMethod]
+        public void ThereShouldBeThreeDfaStates()
+        {
+            // a?[ab]
+            var matcher = MakeMatcher();
+
+            Assert.AreEqual(3, matcher.Dfa.StateCount);
+        }
+
+
+        [TestMethod]
         public void CheckLength1()
         {
+            // a?[ab]
             var matcher = MakeMatcher();
 
             Assert.IsTrue(matcher.FullMatch("a"));
@@ -19,6 +30,7 @@ namespace Tests.Lingu.Automata
         [TestMethod]
         public void CheckLength2()
         {
+            // a?[ab]
             var matcher = MakeMatcher();
 
             Assert.IsTrue(matcher.FullMatch("aa"));
@@ -37,8 +49,8 @@ namespace Tests.Lingu.Automata
             var last = new NfaState();
             var end = new NfaState();
 
-            var a1 = new RangeTerminal('a');
-            var a2 = new RangeTerminal('a', 'b');
+            var a1 = Terminal.From('a');
+            var a2 = Terminal.From('a', 'b');
 
             first.Add(a1, last);
             first.Add(last);

@@ -5,31 +5,29 @@ namespace Lingu.Automata
 {
     public class DfaState
     {
-        private DfaState(int StateId, bool isFinal)
+        private DfaState(bool isFinal)
         {
-            this.StateId = StateId;
             IsFinal = isFinal;
             this.transitions = new List<DfaTransition>();
         }
 
-        public int StateId { get; }
         public bool IsFinal { get; }
 
         public IReadOnlyCollection<DfaTransition> Transitions => this.transitions;
 
-        public static DfaState Make(int stateNo, bool isFinal)
+        public static DfaState Make(bool isFinal)
         {
-            return new DfaState(stateNo, isFinal);
+            return new DfaState(isFinal);
         }
 
-        public static DfaState Inner(int stateNo)
+        public static DfaState Inner()
         {
-            return Make(stateNo, false);
+            return Make(false);
         }
 
-        public static DfaState Final(int stateNo)
+        public static DfaState Final()
         {
-            return Make(stateNo, true);
+            return Make(true);
         }
 
         private void Add(DfaTransition transition)
@@ -44,7 +42,7 @@ namespace Lingu.Automata
 
         public override string ToString()
         {
-            return StateId.ToString();
+            return $"({IsFinal},({string.Join(",", this.transitions)}))";
         }
 
         private readonly List<DfaTransition> transitions;

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 
 namespace Lingu.Tools
 {
@@ -27,16 +26,23 @@ namespace Lingu.Tools
             return Min <= value && value <= Max;
         }
 
+        public bool Overlaps(IntegerRange other)
+        {
+            return Contains(other.Min) || Contains(other.Max);
+        }
+
+        public int Count => Max - Min + 1;
+
         public IEnumerator<int> GetEnumerator() => Enumerable.Range(Min, Max - Min + 1).GetEnumerator();
 
         public override string ToString()
         {
             if (Min == Max)
             {
-                return $"{(int) Min}";
+                return $"{Min}";
             }
 
-            return $"{(int) Min}-{(int) Max}";
+            return $"{Min}-{Max}";
         }
 
         public static bool TryParse(string str, out IntegerRange range)
@@ -85,7 +91,7 @@ namespace Lingu.Tools
 
         public override bool Equals(object obj)
         {
-            return obj is IntegerRange other && (Min == other.Min && Max == other.Max);
+            return obj is IntegerRange other && Min == other.Min && Max == other.Max;
         }
 
         public override int GetHashCode() => (Min, Max).GetHashCode();

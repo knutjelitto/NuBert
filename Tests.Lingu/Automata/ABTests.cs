@@ -9,22 +9,18 @@ namespace Tests.Lingu.Automata
     public class ABTests
     {
         [TestMethod]
-        public void CheckLength1()
+        public void ThereShouldBeFourDfaStates()
         {
-            var matcher = MakeABMatcher();
+            // [ab]?[abc][ab]?
+            var matcher = MakeMatcher();
 
-            Assert.Inconclusive();
-
-            foreach (var lexeme in AllThatMustMatch(1))
-            {
-                Assert.IsTrue(matcher.FullMatch(lexeme), $"can't match '{lexeme}'");
-            }
+            Assert.AreEqual(4, matcher.Dfa.StateCount);
         }
 
         [TestMethod]
         public void CheckLength2()
         {
-            var matcher = MakeABMatcher();
+            var matcher = MakeMatcher();
 
             foreach (var lexeme in AllThatMustMatch(2))
             {
@@ -35,7 +31,7 @@ namespace Tests.Lingu.Automata
         [TestMethod]
         public void CheckLength3()
         {
-            var matcher = MakeABMatcher();
+            var matcher = MakeMatcher();
 
             foreach (var lexeme in AllThatMustMatch(3))
             {
@@ -77,7 +73,7 @@ namespace Tests.Lingu.Automata
             }
         }
 
-        private static DfaMatcher MakeABMatcher()
+        private static DfaMatcher MakeMatcher()
         {
             // [ab]?[abc][ab]?
             var first = new NfaState();
@@ -85,8 +81,8 @@ namespace Tests.Lingu.Automata
             var last = new NfaState();
             var end = new NfaState();
 
-            var ab = new RangeTerminal('a', 'b');
-            var ac = new RangeTerminal('a', 'c');
+            var ab = Terminal.From('a', 'b');
+            var ac = Terminal.From('a', 'c');
 
             first.Add(ab, center);
             first.Add(center);

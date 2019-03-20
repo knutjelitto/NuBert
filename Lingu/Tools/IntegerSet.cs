@@ -1,23 +1,33 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Lingu.Tools
 {
-    public class IntegerSet : IEnumerable<int>
+    public class IntegerSet
     {
         public IntegerSet()
+            : this(Enumerable.Empty<IntegerRange>())
         {
-            this.ranges = new List<IntegerRange>();
+        }
+
+        public IntegerSet(params (int min, int max)[] ranges)
+            : this(ranges.Select(p => new IntegerRange(p.min, p.max)))
+        {
         }
 
         private IntegerSet(IEnumerable<IntegerRange> ranges)
         {
-            this.ranges = new List<IntegerRange>(ranges);
+            this.ranges = new List<IntegerRange>();
+            foreach (var range in ranges)
+            {
+                Add(range);
+            }
         }
 
         public int RangeCount => this.ranges.Count;
+
+        public int Cardinality => this.ranges.Sum(range => range.Count);
 
         public static IntegerSet Parse(string str)
         {
@@ -65,12 +75,149 @@ namespace Lingu.Tools
             return false;
         }
 
+        public int Min => this.ranges.First().Min;
+
+        public int Max => this.ranges.Last().Max;
+
         public void Add(int value)
         {
             Add(new IntegerRange(value));
         }
 
-        public void Add(IntegerRange add)
+        public void Add(params (int min, int max)[] rangesToAdd)
+        {
+            Add(rangesToAdd.Select(range => new IntegerRange(range.min, range.max)));
+        }
+
+        public void Add(IntegerSet other)
+        {
+            Add(other.ranges);
+        }
+
+        public IntegerSet Clone()
+        {
+            return new IntegerSet(this.ranges);
+        }
+
+        public bool Contains(int value)
+        {
+            return Find(value, out var _);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is IntegerSet other && this.ranges.SequenceEqual(other.ranges);
+        }
+
+        public IntegerSet ExceptWith(IntegerSet other)
+        {
+            var set = Clone();
+            set.Sub(other.ranges);
+            return set;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.ranges.SequenceHash();
+        }
+
+        public IEnumerable<IntegerRange> GetRanges()
+        {
+            return this.ranges;
+        }
+
+        public IEnumerable<int> GetValues()
+        {
+            return this.ranges.SelectMany(range => range);
+        }
+
+        public bool IsProperSubsetOf(IntegerSet other)
+        {
+            return IsSubsetOf(other) && !Equals(other);
+        }
+
+        public bool IsProperSupersetOf(IntegerSet other)
+        {
+            return IsSupersetOf(other) && !Equals(other);
+        }
+
+        public bool IsSubsetOf(IntegerSet other)
+        {
+            foreach (var range in this.ranges)
+            {
+                if (!other.Contains(range))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool IsSupersetOf(IntegerSet other)
+        {
+            return other.IsSubsetOf(this);
+        }
+
+        public bool Overlaps(IntegerSet other)
+        {
+            var t = 0;
+            var o = 0;
+
+            while (t < this.ranges.Count && o < other.ranges.Count)
+            {
+                while (t < this.ranges.Count && o < other.ranges.Count && this.ranges[t].Max < other.ranges[o].Min)
+                {
+                    t += 1;
+                }
+
+                while (t < this.ranges.Count && o < other.ranges.Count && other.ranges[o].Max < this.ranges[t].Min)
+                {
+                    o += 1;
+                }
+
+                if (t < this.ranges.Count && o < other.ranges.Count && other.ranges[o].Overlaps(this.ranges[t]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void Sub(int value)
+        {
+            Sub(new IntegerRange(value));
+        }
+
+        public void Sub(params (int min, int max)[] rangesToSub)
+        {
+            Sub(rangesToSub.Select(range => new IntegerRange(range.min, range.max)));
+        }
+
+        public IntegerSet Substract(IntegerSet other)
+        {
+            return Clone().Sub(other.ranges);
+        }
+
+        public override string ToString()
+        {
+            return $"[{string.Join(",", this.ranges)}]";
+        }
+
+        public IntegerSet UnionWith(IntegerSet other)
+        {
+            var set = Clone();
+            set.Add(other.ranges);
+            return set;
+        }
+
+        public string FmtCSharp()
+        {
+            return "";
+        }
+
+        private void Add(IntegerRange add)
         {
             var i = 0;
             while (i < this.ranges.Count)
@@ -107,152 +254,12 @@ namespace Lingu.Tools
             }
         }
 
-        public IntegerSet Clone()
-        {
-            return new IntegerSet(this.ranges);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is IntegerSet other && this.ranges.SequenceEqual(other.ranges);
-        }
-
-        public IEnumerator<int> GetEnumerator()
-        {
-            return this.ranges.SelectMany(range => range).GetEnumerator();
-        }
-
-        public override int GetHashCode()
-        {
-            return this.ranges.SequenceHash();
-        }
-
-        public bool IsProperSubsetOf(IntegerSet other)
-        {
-            return IsSubsetOf(other) && !Equals(other);
-        }
-
-        public bool IsProperSupersetOf(IntegerSet other)
-        {
-            return IsSupersetOf(other) && !Equals(other);
-        }
-
-        public bool IsSubsetOf(IntegerSet other)
-        {
-            foreach (var range in this.ranges)
-            {
-                if (!other.Contains(range))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public bool IsSupersetOf(IntegerSet other)
-        {
-            return other.IsSubsetOf(this);
-        }
-
-        public void Sub(IntegerRange sub)
-        {
-            var i = 0;
-
-            while (i < this.ranges.Count)
-            {
-                var range = this.ranges[i];
-
-                if (sub.Max < range.Min)
-                {
-                    i += 1;
-                    continue;
-                }
-
-                if (range.Max < sub.Min)
-                {
-                    break;
-                }
-
-                if (sub.Min <= range.Min)
-                {
-                    // cover from below
-                    if (sub.Max >= range.Max)
-                    {
-                        // full cover
-                        this.ranges.RemoveAt(i);
-                    }
-                    else
-                    {
-                        this.ranges[i] = new IntegerRange(sub.Max + 1, range.Max);
-                        i += 1;
-                    }
-
-                    continue;
-                }
-
-                if (range.Max <= sub.Max)
-                {
-                    // cover from above
-                    if (range.Min >= sub.Min)
-                    {
-                        // full cover
-                        this.ranges.RemoveAt(i);
-                    }
-                    else
-                    {
-                        this.ranges[i] = new IntegerRange(range.Min, sub.Min - 1);
-                    }
-                    continue;
-                }
-
-                // inner
-                // sub.Min > range.Min && range.Max > sub.Max
-                this.ranges.Insert(i, new IntegerRange(range.Min, sub.Min - 1));
-                this.ranges[i + 1] = new IntegerRange(sub.Max + 1, range.Max);
-                // done
-                break;
-            }
-        }
-
-        public override string ToString()
-        {
-            return $"[{string.Join(",", this.ranges)}]";
-        }
-
-        public IntegerSet UnionWith(IntegerSet other)
-        {
-            var set = Clone();
-            set.Add(other.ranges);
-            return set;
-        }
-
-        public IntegerSet ExceptWith(IntegerSet other)
-        {
-            var set = Clone();
-            set.Sub(other.ranges);
-            return set;
-        }
-
         private void Add(IEnumerable<IntegerRange> rangesToAdd)
         {
             foreach (var range in rangesToAdd)
             {
                 Add(range);
             }
-        }
-
-        private void Sub(IEnumerable<IntegerRange> rangesToSub)
-        {
-            foreach (var range in rangesToSub)
-            {
-                Sub(range);
-            }
-        }
-
-        private bool Contains(int value)
-        {
-            return Find(value, out var _);
         }
 
         private bool Contains(IntegerRange range)
@@ -287,9 +294,75 @@ namespace Lingu.Tools
             return Find(0, this.ranges.Count - 1, out range);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        private void Sub(IntegerRange sub)
         {
-            return GetEnumerator();
+            var i = 0;
+
+            while (i < this.ranges.Count)
+            {
+                var range = this.ranges[i];
+
+                if (sub.Max < range.Min)
+                {
+                    i += 1;
+                    continue;
+                }
+
+                if (range.Max < sub.Min)
+                {
+                    i += 1;
+                    continue;
+                }
+
+                if (sub.Min <= range.Min)
+                {
+                    // cover from below
+                    if (sub.Max >= range.Max)
+                    {
+                        // full cover
+                        this.ranges.RemoveAt(i);
+                    }
+                    else
+                    {
+                        this.ranges[i] = new IntegerRange(sub.Max + 1, range.Max);
+                        i += 1;
+                    }
+                    continue;
+                }
+
+                if (range.Max <= sub.Max)
+                {
+                    // cover from above
+                    if (range.Min >= sub.Min)
+                    {
+                        // full cover
+                        this.ranges.RemoveAt(i);
+                    }
+                    else
+                    {
+                        this.ranges[i] = new IntegerRange(range.Min, sub.Min - 1);
+                        i += 1;
+                    }
+                    continue;
+                }
+
+                // inner
+                // sub.Min > range.Min && range.Max > sub.Max
+                this.ranges.Insert(i, new IntegerRange(range.Min, sub.Min - 1));
+                this.ranges[i + 1] = new IntegerRange(sub.Max + 1, range.Max);
+                // done
+                break;
+            }
+        }
+
+        private IntegerSet Sub(IEnumerable<IntegerRange> rangesToSub)
+        {
+            foreach (var range in rangesToSub)
+            {
+                Sub(range);
+            }
+
+            return this;
         }
 
         private readonly List<IntegerRange> ranges;

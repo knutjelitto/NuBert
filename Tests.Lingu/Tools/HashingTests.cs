@@ -1,4 +1,3 @@
-using System;
 using Lingu.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

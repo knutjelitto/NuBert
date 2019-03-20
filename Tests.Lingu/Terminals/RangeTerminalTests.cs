@@ -9,7 +9,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void RangeCreateString()
         {
-            var sut = new RangeTerminal('u', 'w');
+            var sut = Terminal.From('u', 'w');
 
             Assert.AreEqual("'u'-'w'", sut.ToString());
         }
@@ -17,7 +17,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void RangeShouldMatch()
         {
-            var sut = new RangeTerminal('u', 'w');
+            var sut = Terminal.From('u', 'w');
 
             Assert.IsTrue(sut.Match('u'));
             Assert.IsTrue(sut.Match('v'));
@@ -31,7 +31,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void RangeShouldntMatch()
         {
-            var sut = new RangeTerminal('u', 'w');
+            var sut = Terminal.From('u', 'w');
 
             Assert.IsFalse(sut.Match('a'));
             Assert.IsFalse(sut.Match('z'));

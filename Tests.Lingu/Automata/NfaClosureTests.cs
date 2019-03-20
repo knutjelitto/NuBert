@@ -12,13 +12,12 @@ namespace Tests.Lingu.Automata
         {
             var state = new NfaState();
 
-            var sut = new NfaClosure(0, Enumerable.Empty<NfaState>(), state);
+            var sut = new NfaClosure(Enumerable.Empty<NfaState>(), state);
 
             Assert.IsNotNull(sut);
             Assert.IsNotNull(sut.Set);
             Assert.AreEqual(0, sut.Set.Count);
             Assert.IsNotNull(sut.State);
-            Assert.AreEqual(0, sut.State.StateId);
             Assert.AreEqual(false, sut.State.IsFinal);
         }
 
@@ -27,13 +26,12 @@ namespace Tests.Lingu.Automata
         {
             var state = new NfaState();
 
-            var sut = new NfaClosure(0, Enumerable.Repeat(state, 1), state);
+            var sut = new NfaClosure(Enumerable.Repeat(state, 1), state);
 
             Assert.IsNotNull(sut);
             Assert.IsNotNull(sut.Set);
             Assert.AreEqual(1, sut.Set.Count);
             Assert.IsNotNull(sut.State);
-            Assert.AreEqual(0, sut.State.StateId);
             Assert.AreEqual(true, sut.State.IsFinal);
         }
 
@@ -43,13 +41,12 @@ namespace Tests.Lingu.Automata
             var state1 = new NfaState();
             var state2 = new NfaState();
 
-            var sut = new NfaClosure(0, new [] { state1, state2 }, state1);
+            var sut = new NfaClosure(new [] { state1, state2 }, state1);
 
             Assert.IsNotNull(sut);
             Assert.IsNotNull(sut.Set);
             Assert.AreEqual(2, sut.Set.Count);
             Assert.IsNotNull(sut.State);
-            Assert.AreEqual(0, sut.State.StateId);
             Assert.AreEqual(true, sut.State.IsFinal);
         }
 
@@ -60,8 +57,8 @@ namespace Tests.Lingu.Automata
             var state1 = new NfaState();
             var state2 = new NfaState();
 
-            var sut1 = new NfaClosure(0, new[] { state1, state2 }, state1);
-            var sut2 = new NfaClosure(0, new[] { state2, state1 }, state1);
+            var sut1 = new NfaClosure(new[] { state1, state2 }, state1);
+            var sut2 = new NfaClosure(new[] { state2, state1 }, state1);
 
             Assert.IsTrue(sut1.Equals(sut2));
             Assert.AreEqual(sut1.GetHashCode(), sut1.GetHashCode());

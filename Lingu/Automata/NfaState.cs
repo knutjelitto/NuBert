@@ -12,7 +12,6 @@ namespace Lingu.Automata
             this.transitions = new List<NfaTransition>();
         }
 
-        public IEnumerable<NfaTransition> Transitions => this.transitions;
         public IEnumerable<TerminalNfaTransition> TerminalTransitions => this.transitions.OfType<TerminalNfaTransition>();
         public IEnumerable<EpsilonNfaTransition> EpsilonTransitions => this.transitions.OfType<EpsilonNfaTransition>();
 
@@ -24,6 +23,11 @@ namespace Lingu.Automata
         public void Add(Terminal terminal, NfaState target)
         {
             Add(new TerminalNfaTransition(terminal, target));
+        }
+
+        private void Add(NfaTransition transition)
+        {
+            this.transitions.Add(transition);
         }
 
         public IEnumerable<NfaState> Closure()
@@ -42,11 +46,6 @@ namespace Lingu.Automata
             }
 
             return once.Seen;
-        }
-
-        private void Add(NfaTransition transition)
-        {
-            this.transitions.Add(transition);
         }
 
         private readonly List<NfaTransition> transitions;

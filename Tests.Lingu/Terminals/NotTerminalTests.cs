@@ -9,7 +9,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void NotSingleCreateString()
         {
-            var sut = new RangeTerminal('a').Not();
+            var sut = Terminal.From('a').Not();
 
             Assert.AreEqual("!('a')", sut.ToString());
         }
@@ -17,7 +17,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void NotSingleShouldMatch()
         {
-            var sut = new RangeTerminal('a').Not();
+            var sut = Terminal.From('a').Not();
 
             Assert.IsFalse(sut.Match('a'));
 
@@ -27,7 +27,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void NotSingleShouldntMatch()
         {
-            var sut = new RangeTerminal('a').Not();
+            var sut = Terminal.From('a').Not();
 
             Assert.IsTrue(sut.Match('b'));
 
@@ -37,7 +37,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void NotRangeCreateString()
         {
-            var sut = new RangeTerminal('u', 'w').Not();
+            var sut = Terminal.From('u', 'w').Not();
 
             Assert.AreEqual("!('u'-'w')", sut.ToString());
         }
@@ -45,7 +45,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void NotRangeShouldMatch()
         {
-            var sut = new RangeTerminal('u', 'w').Not();
+            var sut = Terminal.From('u', 'w').Not();
 
             Assert.IsFalse(sut.Match('u'));
             Assert.IsFalse(sut.Match('v'));
@@ -59,7 +59,7 @@ namespace Tests.Lingu.Terminals
         [TestMethod]
         public void NotRangeShouldntMatch()
         {
-            var sut = new RangeTerminal('u', 'w').Not();
+            var sut = Terminal.From('u', 'w').Not();
 
             Assert.IsTrue(sut.Match('a'));
             Assert.IsTrue(sut.Match('z'));

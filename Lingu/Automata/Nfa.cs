@@ -1,4 +1,7 @@
-﻿namespace Lingu.Automata
+﻿using System.Collections.Generic;
+using Lingu.Tools;
+
+namespace Lingu.Automata
 {
     public class Nfa
     {
@@ -8,35 +11,60 @@
             End = end;
         }
 
-        public NfaState End { get; private set; }
+        public NfaState End { get; }
         public NfaState Start { get; }
 
-        public void Append(Nfa other)
+        public Dfa ToDfa()
         {
-            End.Add(other.Start);
-            End = other.End;
+            var once = new UniqueQueue<NfaClosure>();
+            var start = new NfaClosure(Start, End);
+            once.Enqueue(start);
+
+            while (once.Count > 0)
+            {
+                var closure = once.Dequeue();
+                var transitions = closure.UnambiguateTransitions();
+
+                foreach (var transition in transitions)
+                {
+                    var terminal = transition.Key;
+                    var targets = transition.Value;
+                    var targetClosure = new NfaClosure(targets, End);
+                    once.Enqueue(targetClosure, out targetClosure);
+                    var target = targetClosure.State;
+
+                    closure.State.Add(terminal, target);
+                }
+            }
+
+            return new Dfa(start.State);
         }
 
-        public void Alternate(Nfa other)
+        public Nfa Clone()
         {
-            Start.Add(other.Start);
-            other.End.Add(End);
+            var map = new Dictionary<NfaState, NfaState>();
+
+            return new Nfa(Map(Start, map), Map(End, map));
         }
 
-        public void Optional()
+        private NfaState Map(NfaState state, Dictionary<NfaState, NfaState> map)
         {
-            Start.Add(End);
-        }
+            if (!map.TryGetValue(state, out var mapped))
+            {
+                mapped = new NfaState();
+                map.Add(state, mapped);
 
-        public void Plus()
-        {
-            End.Add(Start);
-        }
+                foreach (var transition in state.TerminalTransitions)
+                {
+                    mapped.Add(transition.Terminal, Map(transition.Target, map));
+                }
+                foreach (var transition in state.EpsilonTransitions)
+                {
+                    mapped.Add(Map(transition.Target, map));
+                }
+            }
 
-        public void Star()
-        {
-            Start.Add(End);
-            End.Add(Start);
+            return mapped;
         }
     }
 }

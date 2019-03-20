@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using Lingu.Automata;
 using Lingu.Tools;
 
 namespace Lingu
@@ -9,37 +10,15 @@ namespace Lingu
     {
         public void Check()
         {
-            GenerateUnicodeCategories(false);
-        }
+            // [0]|[1-9][0-9]*
+            var zero = NfaBuilder.From('0');
+            var nonZero = NfaBuilder.From('1', '9');
+            var all = NfaBuilder.From('0', '9');
 
-        public void GenerateUnicodeCategories(bool write)
-        {
-            var sets = new IntegerSet[30];
+            var nfa = zero.Or(nonZero.Concat(all.Star()));
+            var dfa = nfa.ToDfa();
 
-            for (var i = 0; i < 30; ++i)
-            {
-                sets[i] = new IntegerSet();
-            }
-            
-            for (int ch = char.MinValue; ch <= char.MaxValue; ++ch)
-            {
-                var category = (int)CharUnicodeInfo.GetUnicodeCategory((char) ch);
-                Debug.Assert(category < 30);
-                sets[category].Add(ch);
-            }
-
-            for (var i = 0; i < 30; ++i)
-            {
-                if (write)
-                {
-                    Console.WriteLine(
-                        $"static {nameof(IntegerSet)} {(UnicodeCategory) i} = {nameof(IntegerSet)}.Parse(\"{sets[i]}\");");
-                }
-                else
-                {
-                    Console.WriteLine($"{(UnicodeCategory) i} = {sets[i].RangeCount} ranges");
-                }
-    }
+            dfa.Dump(Console.Out);
         }
     }
 }
