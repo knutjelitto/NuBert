@@ -13,7 +13,7 @@ namespace Tests.Lingu.Automata
             // [0]|[1-9][0-9]*
             var matcher = MakeMatcher();
 
-            Assert.AreEqual(3, matcher.Dfa.StateCount);
+            Assert.AreEqual(3, new DfaPlumber(matcher.Dfa).StateCount);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace Tests.Lingu.Automata
             Assert.IsFalse(matcher.FullMatch("1 "));
         }
 
-        private static DfaMatcher MakeMatcher2()
+        private static DfaMatcher MakeMatcher()
         {
             // [0]|[1-9][0-9]*
             var zero = NfaBuilder.From('0');
@@ -58,28 +58,8 @@ namespace Tests.Lingu.Automata
             var all = NfaBuilder.From('0', '9');
 
             var nfa = zero.Or(nonZero.Concat(all.Star()));
-            return new DfaMatcher(nfa.ToDfa());
-        }
-
-        private static DfaMatcher MakeMatcher()
-        {
-            // [0]|[1-9][0-9]*
-            var start = new NfaState();
-            var more = new NfaState();
-            var end = new NfaState();
-
-            var nonZeroDigits = Terminal.From('1', '9');
-            var allDigits = Terminal.From('0', '9');
-            var zeroDigit = Terminal.From('0');
-
-            start.Add(nonZeroDigits, more);
-            start.Add(zeroDigit, end);
-            more.Add(allDigits, more);
-            more.Add(end);
-
-            var nfa = new Nfa(start, end);
-
-            return new DfaMatcher(nfa.Clone().Clone().ToDfa());
+            var dfa = nfa.ToDfa().Minimize();
+            return new DfaMatcher(dfa);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Tests.Lingu.Automata
             // a?b?c?
             var matcher = MakeMatcher();
 
-            Assert.AreEqual(4, matcher.Dfa.StateCount);
+            Assert.AreEqual(4, new DfaPlumber(matcher.Dfa).StateCount);
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace Tests.Lingu.Automata
                     .Concat(NfaBuilder.From('b').Optional())
                     .Concat(NfaBuilder.From('c').Optional());
 
-            return new DfaMatcher(nfa.ToDfa());
+            return new DfaMatcher(nfa.ToDfa().Minimize());
         }
     }
 }

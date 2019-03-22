@@ -13,7 +13,7 @@ namespace Tests.Lingu.Automata
             // a?[ab]
             var matcher = MakeMatcher();
 
-            Assert.AreEqual(3, matcher.Dfa.StateCount);
+            Assert.AreEqual(3, new DfaPlumber(matcher.Dfa).StateCount);
         }
 
 
@@ -23,8 +23,8 @@ namespace Tests.Lingu.Automata
             // a?[ab]
             var matcher = MakeMatcher();
 
-            Assert.IsTrue(matcher.FullMatch("a"));
-            Assert.IsTrue(matcher.FullMatch("b"));
+            Assert.IsTrue(matcher.FullMatch("a"), "should match 'a'");
+            Assert.IsTrue(matcher.FullMatch("b"), "should match 'b'");
         }
 
         [TestMethod]
@@ -40,6 +40,12 @@ namespace Tests.Lingu.Automata
         [TestMethod]
         public void CheckMisMatches()
         {
+            // a?[ab]
+            var matcher = MakeMatcher();
+
+            Assert.IsFalse(matcher.FullMatch(""));
+            Assert.IsFalse(matcher.FullMatch("aaa"));
+            Assert.IsFalse(matcher.FullMatch("abc"));
         }
 
         private static DfaMatcher MakeMatcher()
@@ -58,7 +64,7 @@ namespace Tests.Lingu.Automata
 
             var nfa = new Nfa(first, end);
 
-            return new DfaMatcher(nfa.ToDfa());
+            return new DfaMatcher(nfa.ToDfa().Minimize());
         }
     }
 }

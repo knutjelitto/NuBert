@@ -11,7 +11,7 @@ namespace Tests.Lingu.Terminals
         {
             var sut = Terminal.From('a').Not();
 
-            Assert.AreEqual("!('a')", sut.ToString());
+            Assert.AreEqual("!([97])", sut.ToString());
         }
 
         [TestMethod]
@@ -39,7 +39,7 @@ namespace Tests.Lingu.Terminals
         {
             var sut = Terminal.From('u', 'w').Not();
 
-            Assert.AreEqual("!('u'-'w')", sut.ToString());
+            Assert.AreEqual("!([117-119])", sut.ToString());
         }
 
         [TestMethod]

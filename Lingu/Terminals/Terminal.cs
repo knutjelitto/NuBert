@@ -6,30 +6,21 @@ namespace Lingu.Terminals
 {
     public class Terminal
     {
-        private readonly bool not;
-        private readonly IntegerSet set;
-
-        public bool Match(char character)
-        {
-            return this.set.Contains(character);
-        }
-
-        public bool NotMatch(char character)
-        {
-            return !this.set.Contains(character);
-        }
-
         private Terminal(char first, char last)
             : this(false, new IntegerSet((first, last)))
         {
-            this.set = new IntegerSet((first, last));
+            Set = new IntegerSet((first, last));
         }
 
         private Terminal(bool not, IntegerSet set)
         {
             this.not = not;
-            this.set = set;
+            Set = set;
         }
+
+        public bool IsEmpty => Set.IsEmpty;
+
+        public IntegerSet Set { get; }
 
         public static Terminal From(char single)
         {
@@ -42,29 +33,43 @@ namespace Lingu.Terminals
             return new Terminal(first, last);
         }
 
-        public Terminal Not()
+        public static Terminal From(IntegerSet set)
         {
-            return new Terminal(!this.not, Invert(this.set));
-        }
-
-        public Terminal ExceptWith(Terminal other)
-        {
-            return new Terminal(false, this.set.ExceptWith(other.set));
-        }
-
-        public bool Overlaps(Terminal other)
-        {
-            return this.set.Overlaps(other.set);
+            return new Terminal(false, set);
         }
 
         public bool AlmostEquals(Terminal other)
         {
-            return this.set.Equals(other.set);
+            return Set.Equals(other.Set);
         }
 
-        private static IntegerSet Invert(IntegerSet set)
+        public override bool Equals(object obj)
         {
-            return UnicodeSets.Any.Substract(set);
+            return obj is Terminal other && Set.Equals(other.Set);
+        }
+
+        public override int GetHashCode()
+        {
+            return Set.GetHashCode();
+        }
+        public bool Match(char character)
+        {
+            return Set.Contains(character);
+        }
+
+        public Terminal Not()
+        {
+            return new Terminal(!this.not, Invert(Set));
+        }
+
+        public bool NotMatch(char character)
+        {
+            return !Set.Contains(character);
+        }
+
+        public bool Overlaps(Terminal other)
+        {
+            return Set.Overlaps(other.Set);
         }
 
         public override string ToString()
@@ -74,13 +79,14 @@ namespace Lingu.Terminals
             if (this.not)
             {
                 builder.Append("!(");
-                to = Invert(this.set);
+                to = Invert(Set);
             }
             else
             {
-                to = this.set;
+                to = Set;
             }
 
+#if false
             foreach (var range in to.GetRanges())
             {
                 builder.Append(
@@ -88,6 +94,9 @@ namespace Lingu.Terminals
                         ? $"'{(char) range.Min}'"
                         : $"'{(char) range.Min}'-'{(char) range.Max}'");
             }
+#else
+            builder.Append(to);
+#endif
 
             if (this.not)
             {
@@ -96,5 +105,17 @@ namespace Lingu.Terminals
 
             return builder.ToString();
         }
+
+        public Terminal UnionWith(Terminal other)
+        {
+            return new Terminal(false, Set.UnionWith(other.Set));
+        }
+
+        private static IntegerSet Invert(IntegerSet set)
+        {
+            return UnicodeSets.Any.Substract(set);
+        }
+
+        private readonly bool not;
     }
 }

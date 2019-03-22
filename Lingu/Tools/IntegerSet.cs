@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Lingu.Tools
 {
-    public class IntegerSet
+    public class IntegerSet : IEnumerable<int>
     {
         public IntegerSet()
             : this(Enumerable.Empty<IntegerRange>())
@@ -16,7 +17,12 @@ namespace Lingu.Tools
         {
         }
 
-        private IntegerSet(IEnumerable<IntegerRange> ranges)
+        public IntegerSet(IEnumerable<IntegerSet> set)
+            : this(set.SelectMany(s => s.ranges))
+        {
+        }
+
+        public IntegerSet(IEnumerable<IntegerRange> ranges)
         {
             this.ranges = new List<IntegerRange>();
             foreach (var range in ranges)
@@ -25,9 +31,15 @@ namespace Lingu.Tools
             }
         }
 
-        public int RangeCount => this.ranges.Count;
-
         public int Cardinality => this.ranges.Sum(range => range.Count);
+
+        public bool IsEmpty => this.ranges.Count == 0;
+
+        public int Max => this.ranges.Last().Max;
+
+        public int Min => this.ranges.First().Min;
+
+        public int RangeCount => this.ranges.Count;
 
         public static IntegerSet Parse(string str)
         {
@@ -75,10 +87,6 @@ namespace Lingu.Tools
             return false;
         }
 
-        public int Min => this.ranges.First().Min;
-
-        public int Max => this.ranges.Last().Max;
-
         public void Add(int value)
         {
             Add(new IntegerRange(value));
@@ -114,6 +122,22 @@ namespace Lingu.Tools
             var set = Clone();
             set.Sub(other.ranges);
             return set;
+        }
+
+        public string FmtCSharp()
+        {
+            return "";
+        }
+
+        public IEnumerator<int> GetEnumerator()
+        {
+            foreach (var range in this.ranges)
+            {
+                foreach (var value in range)
+                {
+                    yield return value;
+                }
+            }
         }
 
         public override int GetHashCode()
@@ -212,9 +236,14 @@ namespace Lingu.Tools
             return set;
         }
 
-        public string FmtCSharp()
+        public static IntegerSet operator +(IntegerSet set1, IntegerSet set2)
         {
-            return "";
+            return set2.UnionWith(set2);
+        }
+
+        public static IntegerSet operator /(IntegerSet set1, IntegerSet set2)
+        {
+            return set1.ExceptWith(set2);
         }
 
         private void Add(IntegerRange add)
@@ -292,6 +321,11 @@ namespace Lingu.Tools
             }
 
             return Find(0, this.ranges.Count - 1, out range);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         private void Sub(IntegerRange sub)

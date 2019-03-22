@@ -14,7 +14,7 @@ namespace Tests.Lingu.Automata
             // [ab]?[abc][ab]?
             var matcher = MakeMatcher();
 
-            Assert.AreEqual(4, matcher.Dfa.StateCount);
+            Assert.AreEqual(4, new DfaPlumber(matcher.Dfa).StateCount);
         }
 
         [TestMethod]
@@ -92,7 +92,7 @@ namespace Tests.Lingu.Automata
 
             var nfa = new Nfa(first, end);
 
-            return new DfaMatcher(nfa.ToDfa());
+            return new DfaMatcher(nfa.ToDfa().Minimize());
         }
     }
 }

@@ -20,10 +20,10 @@ namespace Tests.Lingu.Automata
 
             var nfa = new Nfa(state1, state3);
 
-            var dfa = nfa.ToDfa();
+            var dfa = nfa.ToDfa().Minimize();
 
             Assert.IsNotNull(dfa);
-            Assert.AreEqual(3, dfa.StateCount);
+            Assert.AreEqual(3, new DfaPlumber(dfa).StateCount);
         }
     }
 }

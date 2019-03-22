@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Lingu.Automata
 {
@@ -13,44 +12,38 @@ namespace Lingu.Automata
 
         public DfaState Start { get; }
 
-        public int StateCount => VisitAll().Count;
+        public Dfa Minimize()
+        {
+            return new DfaMinimizer(this).Minimize();
+        }
 
         public void Dump(TextWriter writer)
         {
-            var nums = VisitAll();
-
-            var states = nums.OrderBy(p => p.Value);
-
-            foreach (var pair in states)
-            {
-                var finA = pair.Key.IsFinal ? "(" : ".";
-                var finB = pair.Key.IsFinal ? ")" : ".";
-                writer.WriteLine($"{finA}{pair.Value}{finB}:");
-                foreach (var transition in pair.Key.Transitions)
-                {
-                    writer.WriteLine($"  {nums[transition.Target]} <= {transition.Terminal}");
-                }
-            }
+            new DfaPlumber(this).Dump(writer);
         }
 
-        private Dictionary<DfaState, int> VisitAll()
+        public Dfa Clone()
         {
-            var set = new Dictionary<DfaState, int>();
-            Visit(set, Start);
-            return set;
-        }
+            var map = new Dictionary<DfaState, DfaState>();
 
-        private void Visit(Dictionary<DfaState, int> already, DfaState state)
-        {
-            if (!already.TryGetValue(state, out var _))
+            DfaState Map(DfaState state)
             {
-                already.Add(state, already.Count + 1);
-
-                foreach (var transition in state.Transitions)
+                if (!map.TryGetValue(state, out var mapped))
                 {
-                    Visit(already, transition.Target);
+                    mapped = new DfaState(state.IsFinal);
+                    map.Add(state, mapped);
+
+                    foreach (var transition in state.Transitions)
+                    {
+                        mapped.Add(transition.Terminal, Map(transition.Target));
+                    }
                 }
+
+                return mapped;
             }
+
+            return new Dfa(Map(Start));
         }
+
     }
 }

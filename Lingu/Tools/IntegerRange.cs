@@ -28,7 +28,7 @@ namespace Lingu.Tools
 
         public bool Overlaps(IntegerRange other)
         {
-            return Contains(other.Min) || Contains(other.Max);
+            return Contains(other.Min) || Contains(other.Max) || other.Contains(Min) || other.Contains(Max);
         }
 
         public int Count => Max - Min + 1;

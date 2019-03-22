@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Lingu.Terminals;
 using Lingu.Tools;
 
 namespace Lingu.Automata
@@ -35,44 +35,68 @@ namespace Lingu.Automata
             this.hashCode = Set.AddedHash();
         }
 
-        public Dictionary<Terminal, HashSet<NfaState>> UnambiguateTransitions()
+        public Dictionary<IntegerSet, HashSet<NfaState>> UnambiguateTransitions()
         {
-            var transitions = new Dictionary<Terminal, HashSet<NfaState>>();
+            var transitions = new Dictionary<IntegerSet, HashSet<NfaState>>();
+
+            void Handle(IntegerSet terminal, NfaState target)
+            {
+                HandleMore(terminal, Enumerable.Repeat(target, 1));
+            }
+
+            void HandleMore(IntegerSet added, IEnumerable<NfaState> targets)
+            {
+                var already = transitions.Keys.FirstOrDefault(t => t.Overlaps(added));
+
+                if (already == null)
+                {
+                    transitions.Add(added, new HashSet<NfaState>(targets));
+                    return;
+                }
+
+                if (already.Equals(added))
+                {
+                    transitions[already].AddRange(targets);
+                
+                    return;
+                }
+
+                var alreadyTransitions = transitions[already];
+
+                var newAlread = already / added;
+                var newAdded = added / already;
+                var intersection = (already + added) / (newAlread + newAdded);
+
+                if (!newAlread.IsEmpty)
+                {
+                    transitions.Remove(already);
+                    HandleMore(newAlread, alreadyTransitions);
+                }
+                if (!intersection.IsEmpty)
+                {
+                    HandleMore(intersection, alreadyTransitions.Concat(targets));
+                }
+                if (!newAdded.IsEmpty)
+                {
+                    HandleMore(newAdded, targets);
+                }
+            }
 
             foreach (var state in Set)
             {
                 foreach (var transition in state.TerminalTransitions)
                 {
-                    var newTerminal = transition.Terminal;
-
-                    while (true)
-                    {
-                        var already = transitions.Keys.FirstOrDefault(terminal => terminal.Overlaps(newTerminal));
-                        if (already != null)
-                        {
-                            transitions[already].Add(transition.Target);
-
-                            if (already.AlmostEquals(transition.Terminal))
-                            {
-                                break;
-                            }
-
-                            newTerminal = transition.Terminal.ExceptWith(already);
-                        }
-                        else
-                        {
-                            transitions.Add(newTerminal, new HashSet<NfaState> { transition.Target });
-                            break;
-                        }
-                    }
+                    Handle(transition.Terminal.Set, transition.Target);
                 }
             }
 
+#if DEBUG
+            EnsureDistinct(transitions);
+#endif
+
+
             return transitions;
         }
-
-        public IEnumerable<TerminalNfaTransition> TerminalTransitions =>
-            Set.SelectMany(state => state.TerminalTransitions);
 
         public HashSet<NfaState> Set { get; }
 
@@ -84,6 +108,25 @@ namespace Lingu.Automata
         }
 
         public override int GetHashCode() => this.hashCode;
+
+        private void EnsureDistinct(Dictionary<IntegerSet, HashSet<NfaState>> transitions)
+        {
+            var terminals = transitions.Keys.ToList();
+            var i = 0;
+            while (i < terminals.Count)
+            {
+                var j = i + 1;
+                while (j < terminals.Count)
+                {
+                    if (terminals[i].Overlaps(terminals[j]))
+                    {
+                        throw new Exception($"terminal set {terminals[i]} and {terminals[j]} overlap");
+                    }
+                    j += 1;
+                }
+                i += 1;
+            }
+        }
 
         private readonly int hashCode;
     }

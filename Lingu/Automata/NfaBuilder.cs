@@ -14,6 +14,12 @@ namespace Lingu.Automata
             return new Nfa(start, end);
         }
 
+        public static Nfa Any()
+        {
+            return Single(Terminal.From(UnicodeSets.Any));
+        }
+
+
         public static Nfa From(char ch)
         {
             return Single(Terminal.From(ch));
@@ -43,21 +49,29 @@ namespace Lingu.Automata
             return clone;
         }
 
+
+        public static Nfa Plus(this Nfa nfa)
+        {
+            var clone = nfa.Clone();
+
+            clone.End.Add(clone.Start);
+
+            return clone;
+        }
+
         public static Nfa Or(this Nfa nfa, Nfa other)
         {
             var first = nfa.Clone();
             var second = other.Clone();
-            var newStart = new NfaState();
             var newEnd = new NfaState();
 
-            newStart.Add(first.Start);
-            newStart.Add(second.Start);
+            first.Start.Add(second.Start);
 
             first.End.Add(newEnd);
             second.End.Add(newEnd);
 
 
-            return new Nfa(newStart, newEnd);
+            return new Nfa(first.Start, newEnd);
         }
 
         public static Nfa Concat(this Nfa nfa, Nfa concat)

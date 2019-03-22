@@ -5,7 +5,7 @@ namespace Lingu.Automata
 {
     public class DfaState
     {
-        private DfaState(bool isFinal)
+        public DfaState(bool isFinal)
         {
             IsFinal = isFinal;
             this.transitions = new List<DfaTransition>();
@@ -13,7 +13,7 @@ namespace Lingu.Automata
 
         public bool IsFinal { get; }
 
-        public IReadOnlyCollection<DfaTransition> Transitions => this.transitions;
+        public List<DfaTransition> Transitions => this.transitions;
 
         public static DfaState Make(bool isFinal)
         {

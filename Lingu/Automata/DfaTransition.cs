@@ -11,6 +11,11 @@ namespace Lingu.Automata
         }
 
         public Terminal Terminal { get; }
-        public DfaState Target { get; }
+        public DfaState Target { get; private set; }
+
+        public void Retarget(DfaState newTarget)
+        {
+            Target = newTarget;
+        }
     }
 }

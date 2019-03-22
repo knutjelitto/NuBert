@@ -15,6 +15,8 @@ namespace Lingu.Automata
         public IEnumerable<TerminalNfaTransition> TerminalTransitions => this.transitions.OfType<TerminalNfaTransition>();
         public IEnumerable<EpsilonNfaTransition> EpsilonTransitions => this.transitions.OfType<EpsilonNfaTransition>();
 
+        public IEnumerable<NfaTransition> Transitions => TerminalTransitions.Cast<NfaTransition>().Concat(EpsilonTransitions);
+
         public void Add(NfaState target)
         {
             Add(new EpsilonNfaTransition(target));

@@ -11,7 +11,7 @@ namespace Tests.Lingu.Terminals
         {
             var sut = Terminal.From('a');
 
-            Assert.AreEqual("'a'", sut.ToString());
+            Assert.AreEqual("[97]", sut.ToString());
         }
 
         [TestMethod]
