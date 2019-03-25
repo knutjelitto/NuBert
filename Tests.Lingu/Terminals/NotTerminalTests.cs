@@ -20,8 +20,6 @@ namespace Tests.Lingu.Terminals
             var sut = Terminal.From('a').Not();
 
             Assert.IsFalse(sut.Match('a'));
-
-            Assert.IsTrue(sut.NotMatch('a'));
         }
 
         [TestMethod]
@@ -30,8 +28,6 @@ namespace Tests.Lingu.Terminals
             var sut = Terminal.From('a').Not();
 
             Assert.IsTrue(sut.Match('b'));
-
-            Assert.IsFalse(sut.NotMatch('b'));
         }
 
         [TestMethod]
@@ -50,10 +46,6 @@ namespace Tests.Lingu.Terminals
             Assert.IsFalse(sut.Match('u'));
             Assert.IsFalse(sut.Match('v'));
             Assert.IsFalse(sut.Match('w'));
-
-            Assert.IsTrue(sut.NotMatch('u'));
-            Assert.IsTrue(sut.NotMatch('v'));
-            Assert.IsTrue(sut.NotMatch('w'));
         }
 
         [TestMethod]
@@ -63,9 +55,6 @@ namespace Tests.Lingu.Terminals
 
             Assert.IsTrue(sut.Match('a'));
             Assert.IsTrue(sut.Match('z'));
-
-            Assert.IsFalse(sut.NotMatch('a'));
-            Assert.IsFalse(sut.NotMatch('z'));
         }
     }
 }

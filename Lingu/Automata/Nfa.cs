@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Lingu.Automata
 {
@@ -16,6 +18,16 @@ namespace Lingu.Automata
         public Dfa ToDfa()
         {
             return DfaConverter.Convert(this);
+        }
+
+        public void Dump()
+        {
+            Dump(Console.Out);
+        }
+
+        public void Dump(TextWriter writer)
+        {
+            new NfaPlumber(this).Dump(writer);
         }
 
         public Nfa Clone()

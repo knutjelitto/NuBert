@@ -18,8 +18,6 @@ namespace Lingu.Terminals
             Set = set;
         }
 
-        public bool IsEmpty => Set.IsEmpty;
-
         public IntegerSet Set { get; }
 
         public static Terminal From(char single)
@@ -38,11 +36,6 @@ namespace Lingu.Terminals
             return new Terminal(false, set);
         }
 
-        public bool AlmostEquals(Terminal other)
-        {
-            return Set.Equals(other.Set);
-        }
-
         public override bool Equals(object obj)
         {
             return obj is Terminal other && Set.Equals(other.Set);
@@ -52,6 +45,7 @@ namespace Lingu.Terminals
         {
             return Set.GetHashCode();
         }
+
         public bool Match(char character)
         {
             return Set.Contains(character);
@@ -60,16 +54,6 @@ namespace Lingu.Terminals
         public Terminal Not()
         {
             return new Terminal(!this.not, Invert(Set));
-        }
-
-        public bool NotMatch(char character)
-        {
-            return !Set.Contains(character);
-        }
-
-        public bool Overlaps(Terminal other)
-        {
-            return Set.Overlaps(other.Set);
         }
 
         public override string ToString()
@@ -86,17 +70,7 @@ namespace Lingu.Terminals
                 to = Set;
             }
 
-#if false
-            foreach (var range in to.GetRanges())
-            {
-                builder.Append(
-                    range.Count == 1
-                        ? $"'{(char) range.Min}'"
-                        : $"'{(char) range.Min}'-'{(char) range.Max}'");
-            }
-#else
             builder.Append(to);
-#endif
 
             if (this.not)
             {
@@ -104,11 +78,6 @@ namespace Lingu.Terminals
             }
 
             return builder.ToString();
-        }
-
-        public Terminal UnionWith(Terminal other)
-        {
-            return new Terminal(false, Set.UnionWith(other.Set));
         }
 
         private static IntegerSet Invert(IntegerSet set)

@@ -7,7 +7,7 @@ namespace Lingu
     {
         public void Check()
         {
-            Check1();
+            Check5();
         }
 
         private void Check1()
@@ -38,7 +38,7 @@ namespace Lingu
             var x2 = dotStar.Concat(digits).Concat(dotStar).Concat(dotPlus).Concat(dotStar);
             var nfa = x1.Or(x2);
 
-            new NfaPlumber(nfa).Dump(Console.Out);
+            nfa.Dump();
 
             var dfa = nfa.ToDfa().Minimize();
 
@@ -60,7 +60,7 @@ namespace Lingu
             var x2 = dotStar.Concat(digits).Concat(dotPlus);
             var nfa = x1.Or(x2);
 
-            new NfaPlumber(nfa).Dump(Console.Out);
+            nfa.Dump();
 
             var dfa = nfa.ToDfa();
             Console.WriteLine("---------------");
@@ -82,7 +82,7 @@ namespace Lingu
             var x2 = dotStar.Concat(digits2).Concat(dotPlus);
             var nfa = x1.Or(x2);
 
-            new NfaPlumber(nfa).Dump(Console.Out);
+            nfa.Dump();
 
             var dfa = nfa.ToDfa();
             Console.WriteLine("---------------");
@@ -98,9 +98,9 @@ namespace Lingu
             var b = NfaBuilder.From('b');
             var c = NfaBuilder.From('c');
 
-            var nfa = a.Plus().Concat(b.Plus()).Concat(c.Plus()).Plus().Or(a.Concat(b).Concat(c));
+            var nfa = (a.Plus + b.Plus + c.Plus).Plus | (a + b + c);
 
-            new NfaPlumber(nfa).Dump(Console.Out);
+            nfa.Dump();
 
             var dfa = nfa.ToDfa();
             Console.WriteLine("---------------");

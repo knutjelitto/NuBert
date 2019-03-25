@@ -33,7 +33,7 @@ namespace Lingu.Automata
                 }
                 foreach (var transition in pair.Key.EpsilonTransitions)
                 {
-                    writer.WriteLine($"  {this.states[transition.Target]} <= [epsilon]");
+                    writer.WriteLine($"  {this.states[transition.Target]} <= -epsilon-");
                 }
             }
         }

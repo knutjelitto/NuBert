@@ -12,19 +12,19 @@ namespace Lingu.Automata
             this.transitions = new List<NfaTransition>();
         }
 
-        public IEnumerable<TerminalNfaTransition> TerminalTransitions => this.transitions.OfType<TerminalNfaTransition>();
-        public IEnumerable<EpsilonNfaTransition> EpsilonTransitions => this.transitions.OfType<EpsilonNfaTransition>();
+        public IEnumerable<NfaTransition> TerminalTransitions => this.transitions.OfType<NfaTransition>().Where(t => !t.Terminal.Set.IsEmpty);
+        public IEnumerable<NfaTransition> EpsilonTransitions => this.transitions.OfType<NfaTransition>().Where(t => t.Terminal.Set.IsEmpty);
 
         public IEnumerable<NfaTransition> Transitions => TerminalTransitions.Cast<NfaTransition>().Concat(EpsilonTransitions);
 
         public void Add(NfaState target)
         {
-            Add(new EpsilonNfaTransition(target));
+            Add(new NfaTransition(Terminal.From(IntegerSet.Empty), target));
         }
 
         public void Add(Terminal terminal, NfaState target)
         {
-            Add(new TerminalNfaTransition(terminal, target));
+            Add(new NfaTransition(terminal, target));
         }
 
         private void Add(NfaTransition transition)

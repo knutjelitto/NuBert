@@ -20,8 +20,6 @@ namespace Tests.Lingu.Terminals
             var sut = Terminal.From('a');
 
             Assert.IsTrue(sut.Match('a'));
-
-            Assert.IsFalse(sut.NotMatch('a'));
         }
 
         [TestMethod]
@@ -30,8 +28,6 @@ namespace Tests.Lingu.Terminals
             var sut = Terminal.From('a');
 
             Assert.IsFalse(sut.Match('b'));
-
-            Assert.IsTrue(sut.NotMatch('b'));
         }
     }
 }

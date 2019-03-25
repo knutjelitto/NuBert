@@ -1,12 +1,16 @@
-﻿namespace Lingu.Automata
+﻿using Lingu.Terminals;
+
+namespace Lingu.Automata
 {
-    public abstract class NfaTransition
+    public class NfaTransition
     {
-        protected NfaTransition(NfaState target)
+        public NfaTransition(Terminal terminal, NfaState target)
         {
+            Terminal = terminal;
             Target = target;
         }
 
+        public Terminal Terminal { get; }
         public NfaState Target { get; }
     }
 }

@@ -7,6 +7,8 @@ namespace Lingu.Tools
 {
     public class IntegerSet : IEnumerable<int>
     {
+        public static readonly IntegerSet Empty = new IntegerSet();
+
         public IntegerSet()
             : this(Enumerable.Empty<IntegerRange>())
         {
