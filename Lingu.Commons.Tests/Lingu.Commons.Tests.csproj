@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -13,13 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lingu\Lingu.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Atoms\" />
-    <Folder Include="Automata\" />
-    <Folder Include="Tools\" />
+    <ProjectReference Include="..\Lingu.Commons\Lingu.Commons.csproj" />
   </ItemGroup>
 
 </Project>

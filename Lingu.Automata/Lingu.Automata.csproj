@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lingu.Automata\Lingu.Automata.csproj" />
     <ProjectReference Include="..\Lingu.Commons\Lingu.Commons.csproj" />
   </ItemGroup>
 
