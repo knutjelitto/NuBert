@@ -41,14 +41,19 @@ namespace Lingu.Builders
             return new ChainExpr(chain) { (TerminalExpr)@char };
         }
 
-        public static ChainExpr operator +(char ch, ChainExpr chain)
+        public static ChainExpr operator +(char @char, ChainExpr chain)
         {
-            return new ChainExpr(Enumerable.Repeat((TerminalExpr)(DfaProvision)ch, 1).Concat(chain));
+            return new ChainExpr(Enumerable.Repeat(TerminalExpr.From((DfaProvision)@char), 1).Concat(chain));
         }
 
         public static BodyExpr operator |(NonterminalExpr rule, ChainExpr chain)
         {
             return new BodyExpr { rule, chain };
+        }
+
+        public static BodyExpr operator |(TerminalExpr terminal, ChainExpr chain)
+        {
+            return new BodyExpr { terminal, chain };
         }
 
         public static BodyExpr operator |(ChainExpr chain, NonterminalExpr rule)

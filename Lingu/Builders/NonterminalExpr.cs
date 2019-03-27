@@ -34,5 +34,10 @@
         {
             return new ChainExpr { rule, (TerminalExpr)@char };
         }
+
+        public static ChainExpr operator +(NonterminalExpr nonterminal, TerminalExpr terminal)
+        {
+            return new ChainExpr { nonterminal, terminal };
+        }
     }
 }

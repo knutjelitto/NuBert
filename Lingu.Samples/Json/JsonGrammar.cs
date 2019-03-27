@@ -50,7 +50,9 @@ namespace Lingu.Samples.Json
             var sign = (Nfa)'+' | '-';
             var dot = (Nfa)'.';
 
-            return DfaProvision.From("number", sign.Opt + digit.Star + dot.Opt + digit.Plus);
+            var number = sign.Opt + digit.Star + dot.Opt + digit.Plus;
+
+            return TerminalExpr.From(DfaProvision.From("number", number));
         }
 
         private static TerminalExpr StringTerminal()
@@ -60,7 +62,9 @@ namespace Lingu.Samples.Json
             var quotation = (Nfa) '"';
             var notQuotation = (Nfa) ((Atom) '"').Not();
 
-            return DfaProvision.From("string", quotation + notQuotation.Star + quotation);
+            var @string = quotation + notQuotation.Star + quotation;
+
+            return TerminalExpr.From(DfaProvision.From("string", @string));
         }
     }
 }

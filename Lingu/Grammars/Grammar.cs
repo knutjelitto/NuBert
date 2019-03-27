@@ -14,21 +14,36 @@ namespace Lingu.Grammars
         }
 
         public Nonterminal Start { get; }
-        public List<Rule> Rules { get; }
         public Terminal Whitespace { get; } = null;
         public List<Nonterminal> Nonterminals { get; }
         public List<Terminal> Terminals { get; }
         public List<Production> Productions { get; }
 
+        public IEnumerable<Production> ProductionsFor(Nonterminal nonterminal)
+        {
+            return Productions.Where(production => production.Head.Equals(nonterminal));
+        }
+
+        public IEnumerable<Production> ProductionsForStart()
+        {
+            return ProductionsFor(Start);
+        }
+
         private static IEnumerable<Symbol> AllUsedSymbols(IEnumerable<Production> productions)
         {
             foreach (var production in productions)
             {
-                foreach (var symbol in production.Body)
+                foreach (var symbol in production)
                 {
                     yield return symbol;
                 }
             }
+        }
+
+        public bool IsTransitiveNullable(Nonterminal nonTerminal)
+        {
+            return false;
+            //throw new System.NotImplementedException();
         }
     }
 }

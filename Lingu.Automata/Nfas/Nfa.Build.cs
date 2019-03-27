@@ -40,9 +40,9 @@
 
         public static Nfa Any => NfaBuilder.Dot;
 
-        public static explicit operator Nfa((char, char) pair)
+        public static explicit operator Nfa((char min, char max) pair)
         {
-            return NfaBuilder.From(pair.Item1, pair.Item2);
+            return NfaBuilder.From(pair.min, pair.max);
         }
 
         public static explicit operator Nfa(char ch)

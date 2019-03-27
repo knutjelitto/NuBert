@@ -2,7 +2,7 @@
 
 namespace Lingu.Automata
 {
-    public static class DfaConverter
+    public static class NfaConverter
     {
         public static Dfa ToDfa(this Nfa nfa)
         {

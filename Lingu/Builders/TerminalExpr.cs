@@ -4,13 +4,18 @@ namespace Lingu.Builders
 {
     public class TerminalExpr : SymbolExpr
     {
-        public TerminalExpr(Provision provision)
+        private TerminalExpr(Provision provision)
             : base(provision.Name)
         {
             Provision = provision;
         }
 
         public Provision Provision { get; }
+
+        public static TerminalExpr From(Provision provision)
+        {
+            return new TerminalExpr(provision);
+        }
 
         public static implicit operator TerminalExpr(char @char)
         {
@@ -20,11 +25,6 @@ namespace Lingu.Builders
         public static implicit operator TerminalExpr(string chars)
         {
             return new TerminalExpr((DfaProvision)chars);
-        }
-
-        public static implicit operator TerminalExpr(DfaProvision provision)
-        {
-            return new TerminalExpr(provision);
         }
     }
 }
