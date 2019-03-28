@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Lingu.Grammars
+﻿namespace Lingu.Grammars
 {
     public class Nonterminal : Symbol
     {

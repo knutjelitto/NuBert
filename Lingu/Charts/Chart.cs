@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace Lingu.Charts
 {
@@ -25,35 +23,36 @@ namespace Lingu.Charts
             return GetEnumerator();
         }
 
-        public EarleySet this[int index] => this.sets[index];
+        public EarleySet this[int index]
+        {
+            get
+            {
+                EarleySet earleySet;
+                if (index < this.sets.Count)
+                {
+                    earleySet = this.sets[index];
+                }
+                else
+                {
+                    Debug.Assert(index == this.sets.Count);
+                    earleySet = new EarleySet();
+                    this.sets.Add(earleySet);
+                }
+
+                return earleySet;
+            }
+        }
 
         public EarleySet Current => this.sets[this.sets.Count - 1];
 
         public bool Contains(int location, DottedRule dottedRule, int origin)
         {
-            return GetEarleySet(location).Contains(dottedRule, origin);
+            return this[location].Contains(dottedRule, origin);
         }
 
-        public bool Add(int location, EarleyItem state)
+        public bool Add(int location, EarleyItem item)
         {
-            return state.Add(GetEarleySet(location));
-        }
-
-        private EarleySet GetEarleySet(int location)
-        {
-            EarleySet earleySet;
-            if (location < this.sets.Count)
-            {
-                earleySet = this.sets[location];
-            }
-            else
-            {
-                Debug.Assert(location == this.sets.Count);
-                earleySet = new EarleySet();
-                this.sets.Add(earleySet);
-            }
-
-            return earleySet;
+            return item.AddTo(this[location]);
         }
 
         private readonly List<EarleySet> sets;

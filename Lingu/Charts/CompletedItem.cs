@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 
 namespace Lingu.Charts
 {
@@ -13,7 +10,7 @@ namespace Lingu.Charts
             Debug.Assert(dotted.Dot == dotted.Count);
         }
 
-        public override bool Add(EarleySet set)
+        public override bool AddTo(EarleySet set)
         {
             return set.Add(this);
         }

@@ -7,21 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuBert", "NuBert\NuBert.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu", "Lingu\Lingu.csproj", "{EF17C1E6-17B7-4CBE-AEB6-75375A28095F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Lingu", "Tests.Lingu\Tests.Lingu.csproj", "{F72ECF74-B0D8-477C-AA45-C9B735EAB088}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Samples", "Lingu.Samples\Lingu.Samples.csproj", "{BB5EE5D4-EA09-4330-AFFB-08842C64B0C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Automata", "Lingu.Automata\Lingu.Automata.csproj", "{21C106FD-D506-4D1A-8680-1864D47EFB1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Automata", "Lingu.Automata\Lingu.Automata.csproj", "{21C106FD-D506-4D1A-8680-1864D47EFB1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Commons", "Lingu.Commons\Lingu.Commons.csproj", "{6EA085B5-EA05-41D2-A143-F76665CDC1E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Commons", "Lingu.Commons\Lingu.Commons.csproj", "{6EA085B5-EA05-41D2-A143-F76665CDC1E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Automata.Tests", "Lingu.Automata.Tests\Lingu.Automata.Tests.csproj", "{CB88A32F-5776-4BD3-80AE-0593172F7234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Automata.Tests", "Lingu.Automata.Tests\Lingu.Automata.Tests.csproj", "{CB88A32F-5776-4BD3-80AE-0593172F7234}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{ADD28E87-7F13-458A-9EE7-B8FAF9032C95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Commons.Tests", "Lingu.Commons.Tests\Lingu.Commons.Tests.csproj", "{9118F2AE-F68E-4D5C-AAF0-4D2B80EDD554}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Commons.Tests", "Lingu.Commons.Tests\Lingu.Commons.Tests.csproj", "{9118F2AE-F68E-4D5C-AAF0-4D2B80EDD554}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Grammars.Tests", "Lingu.Grammars.Tests\Lingu.Grammars.Tests.csproj", "{08DC89EC-2910-42C5-B225-FF82C870A7EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Grammars.Tests", "Lingu.Grammars.Tests\Lingu.Grammars.Tests.csproj", "{08DC89EC-2910-42C5-B225-FF82C870A7EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +35,6 @@ Global
 		{EF17C1E6-17B7-4CBE-AEB6-75375A28095F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF17C1E6-17B7-4CBE-AEB6-75375A28095F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF17C1E6-17B7-4CBE-AEB6-75375A28095F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F72ECF74-B0D8-477C-AA45-C9B735EAB088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F72ECF74-B0D8-477C-AA45-C9B735EAB088}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F72ECF74-B0D8-477C-AA45-C9B735EAB088}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F72ECF74-B0D8-477C-AA45-C9B735EAB088}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB5EE5D4-EA09-4330-AFFB-08842C64B0C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB5EE5D4-EA09-4330-AFFB-08842C64B0C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB5EE5D4-EA09-4330-AFFB-08842C64B0C1}.Release|Any CPU.ActiveCfg = Release|Any CPU

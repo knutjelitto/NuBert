@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using Lingu.Grammars;
 
 namespace Lingu.Charts
@@ -14,15 +11,14 @@ namespace Lingu.Charts
             Debug.Assert(dotted.PostDot is Nonterminal);
         }
 
-        public override bool Add(EarleySet set)
+        public override bool AddTo(EarleySet set)
         {
             return set.Add(this);
         }
 
-        public bool IsSource(Nonterminal searchSymbol)
+        public bool IsSource(Nonterminal nonterminal)
         {
-            return !Dotted.IsComplete && Dotted.PostDot.Equals(searchSymbol);
+            return !Dotted.IsComplete && Dotted.PostDot.Equals(nonterminal);
         }
-
     }
 }

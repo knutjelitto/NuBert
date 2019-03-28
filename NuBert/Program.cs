@@ -1,5 +1,5 @@
 ﻿using System;
-using Lingu;
+using System.Text;
 
 namespace NuBert
 {
@@ -8,6 +8,8 @@ namespace NuBert
         // ReSharper disable once UnusedParameter.Local
         private static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.Unicode;
+
             var checker = new Checker();
 
             checker.Check();

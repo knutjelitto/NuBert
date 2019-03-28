@@ -1,16 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Lingu.Grammars;
 
 namespace Lingu.Charts
 {
     public class DottedRule : IReadOnlyList<Symbol>
     {
-        public DottedRule(Production production, int dot)
+        private readonly DottedRuleFactory factory;
+
+        public DottedRule(DottedRuleFactory factory, Production production, int dot)
         {
+            this.factory = factory;
             Production = production;
             Dot = dot;
         }
+
+        public DottedRule Next => this.factory.Get(Production, Dot + 1);
 
         public int Dot { get; }
         public Production Production { get; }
@@ -43,5 +49,29 @@ namespace Lingu.Charts
         public int Count => Production.Count;
 
         public Symbol this[int index] => Production[index];
+
+        public override string ToString()
+        {
+            const string dot = "\u25CF";
+
+            var builder = new StringBuilder();
+
+            builder.Append($"{Production.Head} ->");
+
+            for (var p = 0; p < Production.Count; p++)
+            {
+                builder.AppendFormat(
+                    "{0}{1}",
+                    p == Dot ? dot : " ",
+                    Production[p]);
+            }
+
+            if (Dot == Production.Count)
+            {
+                builder.Append(dot);
+            }
+
+            return builder.ToString();
+        }
     }
 }

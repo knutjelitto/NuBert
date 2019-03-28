@@ -15,6 +15,11 @@ namespace Lingu.Charts
 
         public Nonterminal Head => Dotted.Production.Head;
 
-        public abstract bool Add(EarleySet set);
+        public abstract bool AddTo(EarleySet set);
+
+        public override string ToString()
+        {
+            return $"[{Origin}] {Dotted}";
+        }
     }
 }

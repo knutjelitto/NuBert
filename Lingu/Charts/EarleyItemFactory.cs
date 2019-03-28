@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Lingu.Grammars;
+﻿using Lingu.Grammars;
 
 namespace Lingu.Charts
 {
@@ -41,7 +38,7 @@ namespace Lingu.Charts
                 return null;
             }
 
-            var dottedRule = DottedRules.GetNext(state.Dotted);
+            var dottedRule = state.Dotted.Next;
 
             return NewState(dottedRule, state.Origin);
         }

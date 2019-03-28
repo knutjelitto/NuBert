@@ -1,5 +1,4 @@
 ﻿using System;
-using Lingu.Automata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Lingu.Automata.Tests
@@ -41,7 +40,7 @@ namespace Lingu.Automata.Tests
         public void EmptyStringShouldThrow()
         {
             // "abc"
-            var matcher = MakeMatcher("");
+            MakeMatcher("");
         }
 
         private static DfaMatcher MakeMatcher(string sequence)

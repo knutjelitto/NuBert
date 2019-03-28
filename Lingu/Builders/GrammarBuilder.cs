@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Lingu.Grammars;
 
 namespace Lingu.Builders
 {
     public class GrammarBuilder
     {
-        public List<Production> Productions { get; } = new List<Production>();
         public Dictionary<NonterminalExpr, Nonterminal> Nonterminals { get; } = new Dictionary<NonterminalExpr, Nonterminal>();
+        public List<Production> Productions { get; } = new List<Production>();
         public Dictionary<TerminalExpr, Terminal> Terminals { get; } = new Dictionary<TerminalExpr, Terminal>();
+
+        public Grammar From(NonterminalExpr startSymbol)
+        {
+            return new Grammar(Map(startSymbol), Productions);
+        }
 
         private Terminal Map(TerminalExpr terminal)
         {
@@ -16,7 +20,6 @@ namespace Lingu.Builders
             {
                 mapped = new Terminal(terminal.Provision);
                 Terminals.Add(terminal, mapped);
-
             }
 
             return mapped;
@@ -51,11 +54,6 @@ namespace Lingu.Builders
             }
 
             return mapped;
-        }
-
-        public Grammar From(NonterminalExpr startSymbol)
-        {
-            return new Grammar(Map(startSymbol), Productions);
         }
     }
 }

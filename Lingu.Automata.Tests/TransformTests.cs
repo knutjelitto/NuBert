@@ -1,4 +1,3 @@
-using Lingu.Automata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Lingu.Automata.Tests

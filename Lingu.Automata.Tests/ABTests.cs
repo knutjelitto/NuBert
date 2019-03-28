@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Lingu.Automata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Lingu.Automata.Tests

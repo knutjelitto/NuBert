@@ -14,7 +14,7 @@ namespace Lingu.Charts
                 this.index.Add(production, rules);
                 for (var dot = 0; dot <= production.Count; dot++)
                 {
-                    rules[dot] = new DottedRule(production, dot);
+                    rules[dot] = new DottedRule(this, production, dot);
                 }
             }
         }
@@ -27,11 +27,6 @@ namespace Lingu.Charts
             }
 
             throw new ArgumentOutOfRangeException(nameof(dot));
-        }
-
-        public DottedRule GetNext(DottedRule dottedRule)
-        {
-            return Get(dottedRule.Production, dottedRule.Dot + 1);
         }
 
         private readonly Dictionary<Production, DottedRule[]> index = new Dictionary<Production, DottedRule[]>();

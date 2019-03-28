@@ -1,5 +1,8 @@
 ﻿using System;
 using Lingu.Automata;
+using Lingu.Builders;
+using Lingu.Charts;
+using Lingu.Grammars;
 
 namespace NuBert
 {
@@ -7,7 +10,7 @@ namespace NuBert
     {
         public void Check()
         {
-            Check6();
+            Check7();
         }
 
         private void Check1()
@@ -107,6 +110,11 @@ namespace NuBert
             dfa = dfa.Minimize();
             Console.WriteLine("---------------");
             dfa.Dump(Console.Out);
+        }
+
+        private void Check7()
+        {
+            new EngineChecker().Check();
         }
     }
 }

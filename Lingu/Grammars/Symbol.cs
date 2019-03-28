@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Lingu.Grammars
+﻿namespace Lingu.Grammars
 {
     public abstract class Symbol
     {

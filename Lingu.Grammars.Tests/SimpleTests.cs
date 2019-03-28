@@ -12,15 +12,15 @@ namespace Lingu.Grammars.Tests
         {
             var engine = MakeEngine();
 
-            Assert.AreEqual(3, engine.Grammar.Productions.Count);
+            Assert.AreEqual(4, engine.Grammar.Productions.Count);
         }
 
         [TestMethod]
-        public void ShouldParseNothing()
+        public void ShouldntParseNothing()
         {
             var engine = MakeEngine();
 
-            Assert.IsTrue(engine.IsAccepted);
+            Assert.IsFalse(engine.IsAccepted);
         }
 
         [TestMethod]
@@ -50,25 +50,36 @@ namespace Lingu.Grammars.Tests
 
 
         [TestMethod]
-        public void ShouldntParseCACA()
+        public void ShouldntParseInitialC()
         {
             var engine = MakeEngine();
 
-            engine.Pulse(Token.Comma);
-            engine.Pulse(Token.A);
-            engine.Pulse(Token.Comma);
-            engine.Pulse(Token.A);
+            var ok = engine.Pulse(Token.Comma);
 
-            Assert.IsFalse(engine.IsAccepted);
+            Assert.IsFalse(ok);
+        }
+
+        [TestMethod]
+        public void ShouldParseInitialA()
+        {
+            var engine = MakeEngine();
+
+            var ok = engine.Pulse(Token.A);
+
+            Assert.IsTrue(ok);
         }
 
         private Engine MakeEngine()
         {
-            NonterminalExpr list = "list";
+            NonterminalExpr argument = "argument";
+            NonterminalExpr argumentList = "argument-list";
+            NonterminalExpr atom = "atom";
 
-            list.Body = 'a' | (list + ',' + 'a') | ChainExpr.Epsilon;
+            argument.Body = atom;
+            argumentList.Body = argument | (argumentList + ',' + argument);
+            atom.Body = 'a';
 
-            var grammar = new GrammarBuilder().From(list);
+            var grammar = new GrammarBuilder().From(argumentList);
 
             var engine = new Engine(grammar);
 

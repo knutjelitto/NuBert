@@ -14,6 +14,11 @@ namespace Lingu.Builders
         {
         }
 
+        public static implicit operator BodyExpr(char @char)
+        {
+            return (ChainExpr) @char;
+        }
+
         public static implicit operator BodyExpr(ChainExpr chain)
         {
             return new BodyExpr { chain };

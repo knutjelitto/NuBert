@@ -11,7 +11,7 @@ namespace Lingu.Charts
             Debug.Assert(dotted.PostDot is Terminal);
         }
 
-        public override bool Add(EarleySet set)
+        public override bool AddTo(EarleySet set)
         {
             return set.Add(this);
         }
