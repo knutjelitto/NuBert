@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Lingu.Commons;
 
-namespace Lingu.Commons
+namespace Lingu.Automata
 {
     public class IntegerSet : IEnumerable<int>
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace NuBert
+namespace Lingu.Check
 {
     internal static class Program
     {
@@ -10,9 +10,7 @@ namespace NuBert
         {
             Console.OutputEncoding = Encoding.Unicode;
 
-            var checker = new Checker();
-
-            checker.Check();
+            new Checker().Check();
 
             AnyKey();
         }

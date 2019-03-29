@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Lingu.Charts
+namespace Lingu.Earley
 {
     public class EarleyItemList<T> : IReadOnlyList<T>
         where T : EarleyItem

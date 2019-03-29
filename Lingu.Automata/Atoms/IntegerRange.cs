@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Lingu.Commons
+namespace Lingu.Automata
 {
     public struct IntegerRange : IEnumerable<int>
     {

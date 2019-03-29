@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Lingu.Commons.Tests
+namespace Lingu.Automata.Tests
 {
     [TestClass]
     public class IntegerSetTests

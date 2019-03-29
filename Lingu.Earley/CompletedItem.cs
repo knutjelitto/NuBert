@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Lingu.Charts
+namespace Lingu.Earley
 {
     public class CompletedItem : EarleyItem
     {

@@ -1,5 +1,5 @@
-﻿using Lingu.Builders;
-using Lingu.Charts;
+﻿using Lingu.Earley;
+using Lingu.Grammars.Build;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Lingu.Grammars.Tests
@@ -71,9 +71,9 @@ namespace Lingu.Grammars.Tests
 
         private Engine MakeEngine()
         {
-            NonterminalExpr argument = "argument";
-            NonterminalExpr argumentList = "argument-list";
-            NonterminalExpr atom = "atom";
+            RuleExpr argument = "argument";
+            RuleExpr argumentList = "argument-list";
+            RuleExpr atom = "atom";
 
             argument.Body = atom;
             argumentList.Body = argument | (argumentList + ',' + argument);

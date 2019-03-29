@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Lingu.Grammars;
 
-namespace Lingu.Charts
+namespace Lingu.Earley
 {
     public class TerminalItem : EarleyItem
     {

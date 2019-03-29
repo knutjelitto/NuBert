@@ -13,7 +13,7 @@ namespace Lingu.Grammars.Tests
 
             Assert.AreEqual(17, grammar.Productions.Count);
             Assert.AreEqual(11, grammar.Terminals.Count);
-            Assert.AreEqual(7, grammar.Nonterminals.Count);
+            Assert.AreEqual(7, grammar.Rules.Count);
         }
     }
 }

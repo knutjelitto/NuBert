@@ -1,6 +1,6 @@
 ﻿using Lingu.Automata;
-using Lingu.Builders;
 using Lingu.Grammars;
+using Lingu.Grammars.Build;
 
 namespace Lingu.Samples.Json
 {
@@ -14,13 +14,13 @@ namespace Lingu.Samples.Json
     {
         public static Grammar Create()
         {
-            NonterminalExpr Json = "Json";
-            NonterminalExpr Object = "Object";
-            NonterminalExpr Pair = "Pair";
-            NonterminalExpr PairRepeat = "PairRepeat";
-            NonterminalExpr Array = "Array";
-            NonterminalExpr Value = "Value";
-            NonterminalExpr ValueRepeat = "ValueRepeat";
+            RuleExpr Json = "Json";
+            RuleExpr Object = "Object";
+            RuleExpr Pair = "Pair";
+            RuleExpr PairRepeat = "PairRepeat";
+            RuleExpr Array = "Array";
+            RuleExpr Value = "Value";
+            RuleExpr ValueRepeat = "ValueRepeat";
 
             var number = NumberTerminal();
             var @string = StringTerminal();

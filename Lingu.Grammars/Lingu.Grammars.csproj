@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Lingu.Automata\Lingu.Automata.csproj" />
-    <ProjectReference Include="..\Lingu.Grammars\Lingu.Grammars.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Lingu.Charts
+namespace Lingu.Earley
 {
     public class Chart : IReadOnlyList<EarleySet>
     {

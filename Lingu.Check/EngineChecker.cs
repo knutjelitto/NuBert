@@ -1,8 +1,10 @@
-﻿using Lingu.Builders;
-using Lingu.Charts;
+﻿using System;
+using Lingu.Automata;
+using Lingu.Earley;
 using Lingu.Grammars;
+using Lingu.Grammars.Build;
 
-namespace NuBert
+namespace Lingu.Check
 {
     public class EngineChecker
     {
@@ -14,12 +16,12 @@ namespace NuBert
 
         private void Check1()
         {
-            NonterminalExpr argument = "argument";
-            NonterminalExpr argumentList = "argument-list";
-            NonterminalExpr atom = "atom";
+            RuleExpr argument = "argument";
+            RuleExpr argumentList = "argument-list";
+            RuleExpr atom = "atom";
 
-            TerminalExpr name = 'n';
-            TerminalExpr number = '1';
+            var name = TerminalExpr.From(DfaProvision.From("name", 'n'));
+            var number = TerminalExpr.From(DfaProvision.From("number", '1'));
 
             argument.Body = atom;
             argumentList.Body = argument | (argumentList + ',' + argument);
@@ -37,26 +39,28 @@ namespace NuBert
 
         private class Token : IToken
         {
-            private Token(string name)
+            private Token(string name, char value)
             {
                 this.name = name;
+                this.value = value;
             }
 
             public bool IsFrom(Terminal terminal)
             {
-                return terminal.Name == this.name;
+                return this.name == terminal.Name;
             }
 
             public override string ToString()
             {
-                return $"'{this.name}'";
+                return $"'{this.value}'";
             }
 
             private readonly string name;
+            private readonly char value;
 
-            public static Token Name => new Token("n");
-            public static Token Number => new Token("1");
-            public static Token Comma => new Token(",");
+            public static Token Name => new Token("name", 'a');
+            public static Token Number => new Token("number", '1');
+            public static Token Comma => new Token(",", ',');
         }
 
     }

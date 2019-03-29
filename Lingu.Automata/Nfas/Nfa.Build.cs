@@ -45,7 +45,7 @@
             return NfaBuilder.From(pair.min, pair.max);
         }
 
-        public static explicit operator Nfa(char ch)
+        public static implicit operator Nfa(char ch)
         {
             return NfaBuilder.From(ch);
         }

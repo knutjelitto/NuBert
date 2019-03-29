@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Lingu.Grammars;
 
-namespace Lingu.Charts
+namespace Lingu.Earley
 {
     public class DottedRule : IReadOnlyList<Symbol>
     {

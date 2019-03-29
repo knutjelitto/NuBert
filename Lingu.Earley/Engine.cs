@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Lingu.Grammars;
 
-namespace Lingu.Charts
+namespace Lingu.Earley
 {
     public class Engine
     {

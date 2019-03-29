@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Lingu.Grammars;
 
-namespace Lingu.Charts
+namespace Lingu.Earley
 {
     public class EarleySet
     {

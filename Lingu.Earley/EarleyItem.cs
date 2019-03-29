@@ -1,6 +1,6 @@
 ﻿using Lingu.Grammars;
 
-namespace Lingu.Charts
+namespace Lingu.Earley
 {
     public abstract class EarleyItem
     {

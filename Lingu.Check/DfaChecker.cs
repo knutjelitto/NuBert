@@ -1,24 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Lingu.Automata;
-using Lingu.Builders;
-using Lingu.Charts;
-using Lingu.Grammars;
 
-namespace NuBert
+namespace Lingu.Check
 {
-    public class Checker
+    public class DfaChecker
     {
         public void Check()
         {
-            Check7();
+            Check1();
         }
 
         private void Check1()
         {
             // [0]|[1-9][0-9]*
-            var zero = (Nfa) '0';
-            var nonZero = (Nfa) ('1', '9');
-            var digit = (Nfa) ('0', '9');
+            var zero = (Nfa)'0';
+            var nonZero = (Nfa)('1', '9');
+            var digit = (Nfa)('0', '9');
 
             var nfa = zero | (nonZero + digit.Star);
 
@@ -82,9 +81,9 @@ namespace NuBert
 
         private void Check5()
         {
-            var a = (Nfa) 'a';
-            var b = (Nfa) 'b';
-            var c = (Nfa) 'c';
+            var a = (Nfa)'a';
+            var b = (Nfa)'b';
+            var c = (Nfa)'c';
 
             var nfa = (a.Plus + b.Plus + c.Plus).Plus | (a + b + c);
 
@@ -100,7 +99,7 @@ namespace NuBert
 
         private void Check6()
         {
-            var nfa = (Nfa) "abc";
+            var nfa = (Nfa)"abc";
 
             nfa.Dump();
 
@@ -110,11 +109,6 @@ namespace NuBert
             dfa = dfa.Minimize();
             Console.WriteLine("---------------");
             dfa.Dump(Console.Out);
-        }
-
-        private void Check7()
-        {
-            new EngineChecker().Check();
         }
     }
 }
