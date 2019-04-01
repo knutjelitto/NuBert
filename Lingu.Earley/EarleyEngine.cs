@@ -6,28 +6,32 @@ using Lingu.Grammars;
 
 namespace Lingu.Earley
 {
-    public class Engine
+    //
+    // http://loup-vaillant.fr/tutorials/earley-parsing/
+    //
+
+    public class EarleyEngine
     {
         private const string startName = "strt";
         private const string predName = "pred";
         private const string compName = "comp";
         private const string scanName = "scan";
 
-        private void Log(string name, int origin, EarleyItem item)
+        private void Log(string name, int origin, EarleyState item)
         {
             Console.WriteLine($"{name}: [{origin}] {item}");
         }
 
-        private void LogScan(int origin, EarleyItem item, IToken token)
+        private void LogScan(int origin, EarleyState item, IToken token)
         {
             Console.WriteLine($"{scanName}: [{origin}] {item} {token}");
         }
 
-        public Engine(Grammar grammar)
+        public EarleyEngine(Grammar grammar)
         {
             Grammar = grammar;
             DottedRules = new DottedRuleFactory(Grammar.Productions);
-            EarleyItems = new EarleyItemFactory(DottedRules);
+            EarleyItems = new EarleyStateFactory(DottedRules);
             Location = 0;
             Chart = new Chart();
 
@@ -38,12 +42,12 @@ namespace Lingu.Earley
 
         public DottedRuleFactory DottedRules { get; }
 
-        public EarleyItemFactory EarleyItems { get; }
+        public EarleyStateFactory EarleyItems { get; }
 
         public Grammar Grammar { get; }
 
         public bool IsAccepted =>
-            Chart.Current.Completions.Any(completion => completion.Origin == 0 && completion.Head.Equals(Grammar.Start));
+            Chart.Current.CompletionStates.Any(completion => completion.Origin == 0 && completion.Head.Equals(Grammar.Start));
 
         public int Location { get; private set; }
 
@@ -64,26 +68,26 @@ namespace Lingu.Earley
             return Recognize();
         }
 
-        private void Complete(CompletedItem completed, int location)
+        private void Complete(CompletedState completed, int location)
         {
             EarleyComplete(completed, location);
         }
 
-        private void EarleyComplete(CompletedItem completed, int location)
+        private void EarleyComplete(CompletedState completed, int location)
         {
             var originSet = Chart[completed.Origin];
 
             // Predictions may grow
             var p = 0;
-            for (; p < originSet.Nonterminals.Count; ++p)
+            for (; p < originSet.NonterminalStates.Count; ++p)
             {
-                var nonterminal = originSet.Nonterminals[p];
+                var nonterminal = originSet.NonterminalStates[p];
                 if (!nonterminal.IsSource(completed.Head))
                 {
                     continue;
                 }
 
-                var dottedRule = nonterminal.Dotted.Next;
+                var dottedRule = nonterminal.DottedRule.Next;
                 var origin = nonterminal.Origin;
 
                 if (Chart.Contains(location, dottedRule, origin))
@@ -115,9 +119,9 @@ namespace Lingu.Earley
             ReductionPass(Location);
         }
 
-        private void Predict(NonterminalItem evidence, int location)
+        private void Predict(NonterminalState evidence, int location)
         {
-            var nonTerminal = evidence.Dotted.PostDot as Nonterminal;
+            var nonTerminal = evidence.DottedRule.PostDot as Nonterminal;
             Debug.Assert(nonTerminal != null);
             var productionsForNonterminal = Grammar.ProductionsFor(nonTerminal);
 
@@ -126,16 +130,15 @@ namespace Lingu.Earley
                 PredictProduction(location, production);
             }
 
-            var isNullable = Grammar.IsTransitiveNullable(nonTerminal);
-            if (isNullable)
+            if (nonTerminal.IsNullable)
             {
                 PredictAycockHorspool(evidence, location);
             }
         }
 
-        private void PredictAycockHorspool(NonterminalItem evidence, int location)
+        private void PredictAycockHorspool(NonterminalState evidence, int location)
         {
-            var dottedRule = evidence.Dotted.Next;
+            var dottedRule = evidence.DottedRule.Next;
 
             if (Chart.Contains(location, dottedRule, evidence.Origin))
             {
@@ -192,15 +195,15 @@ namespace Lingu.Earley
             while (resume)
             {
                 // is there a new completion?
-                if (c < earleySet.Completions.Count)
+                if (c < earleySet.CompletionStates.Count)
                 {
-                    var completion = earleySet.Completions[c++];
+                    var completion = earleySet.CompletionStates[c++];
                     Complete(completion, location);
                 }
                 // is there a new prediction?
-                else if (p < earleySet.Nonterminals.Count)
+                else if (p < earleySet.NonterminalStates.Count)
                 {
-                    var evidence = earleySet.Nonterminals[p++];
+                    var evidence = earleySet.NonterminalStates[p++];
                     Predict(evidence, location);
                 }
                 else
@@ -210,13 +213,13 @@ namespace Lingu.Earley
             }
         }
 
-        private void Scan(TerminalItem terminal, int location, IToken token)
+        private void Scan(TerminalState terminal, int location, IToken token)
         {
-            var currentSymbol = terminal.Dotted.PostDot as Terminal;
+            var currentSymbol = terminal.DottedRule.PostDot as Terminal;
 
             if (token.IsFrom(currentSymbol))
             {
-                var dottedRule = terminal.Dotted.Next;
+                var dottedRule = terminal.DottedRule.Next;
                 if (Chart.Contains(location + 1, dottedRule, terminal.Origin))
                 {
                     return;
@@ -235,7 +238,7 @@ namespace Lingu.Earley
         {
             var earleySet = Chart[location];
 
-            foreach (var terminalItem in earleySet.Terminals)
+            foreach (var terminalItem in earleySet.TerminalStates)
             {
                 Scan(terminalItem, location, token);
             }

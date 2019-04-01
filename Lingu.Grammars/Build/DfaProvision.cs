@@ -27,5 +27,10 @@ namespace Lingu.Grammars.Build
         {
             return From(chars, (Nfa)chars);
         }
+
+        public override Lexer MakeLexer(int offset)
+        {
+            return new DfaLexer(this, offset);
+        }
     }
 }

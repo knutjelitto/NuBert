@@ -51,6 +51,11 @@ namespace Lingu.Grammars.Build
             return new BodyExpr { rule, chain };
         }
 
+        public static BodyExpr operator |(ChainExpr chain1, ChainExpr chain2)
+        {
+            return new BodyExpr { chain1, chain2 };
+        }
+
         public static BodyExpr operator |(TerminalExpr terminal, ChainExpr chain)
         {
             return new BodyExpr { terminal, chain };

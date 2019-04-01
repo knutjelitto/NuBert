@@ -10,29 +10,26 @@ namespace Lingu.Grammars
             Start = start;
             Symbols = AllSymbols(start).ToList();
 
-            Rules = new HashSet<Nonterminal>(Symbols.OfType<Nonterminal>()).ToList();
+            Nonterminals = new HashSet<Nonterminal>(Symbols.OfType<Nonterminal>()).ToList();
             Terminals = new HashSet<Terminal>(Symbols.OfType<Terminal>()).ToList();
-            Productions = MakeProductions(Rules).ToList();
+            Productions = MakeProductions(Nonterminals).ToList();
+            Whitespace = new List<Terminal>();
+
+            MakeIsNullable();
         }
 
         public Nonterminal Start { get; }
 
-        public Terminal Whitespace { get; } = null;
-        public List<Nonterminal> Rules { get; }
+        public List<Terminal> Whitespace { get; }
+        public List<Nonterminal> Nonterminals { get; }
+        public List<Terminal> Terminals { get; }
 
         public List<Symbol> Symbols { get; }
-        public List<Terminal> Terminals { get; }
         public List<Production> Productions { get; }
 
         private IEnumerable<Production> MakeProductions(IEnumerable<Nonterminal> rules)
         {
-            foreach (var rule in rules)
-            {
-                foreach (var chain in rule.Body)
-                {
-                    yield return new Production(rule, chain);
-                }
-            }
+            return rules.SelectMany(rule => rule.Body);
         }
 
         public IEnumerable<Production> ProductionsFor(Nonterminal nonterminal)
@@ -77,10 +74,34 @@ namespace Lingu.Grammars
             return already;
         }
 
-        public bool IsTransitiveNullable(Nonterminal nonTerminal)
+        private void MakeIsNullable()
         {
-            return false;
-            //throw new System.NotImplementedException();
+            var nullables = new HashSet<Symbol>();
+            var loop = true;
+
+            while (loop)
+            {
+                loop = false;
+                foreach (var rule in Nonterminals.Where(rule => !nullables.Contains(rule)))
+                {
+                    foreach (var production in rule.Body)
+                    {
+                        var count = production.Count(symbol => !nullables.Contains(symbol));
+
+                        if (count == 0)
+                        {
+                            loop = nullables.Add(production.Head);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            foreach (var nullable in nullables)
+            {
+                nullable.IsNullable = true;
+            }
+
         }
     }
 }

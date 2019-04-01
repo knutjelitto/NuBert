@@ -50,7 +50,7 @@ namespace Lingu.Earley
             return this[location].Contains(dottedRule, origin);
         }
 
-        public bool Add(int location, EarleyItem item)
+        public bool Add(int location, EarleyState item)
         {
             return item.AddTo(this[location]);
         }

@@ -4,12 +4,17 @@
     {
         public void Check()
         {
-            Check1();
+            Check2();
         }
 
         private void Check1()
         {
             new EngineChecker().Check();
+        }
+
+        private void Check2()
+        {
+            new ExprChecker().Check();
         }
     }
 }

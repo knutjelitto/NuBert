@@ -5,7 +5,7 @@ namespace Lingu.Grammars
 {
     public class Production : IReadOnlyList<Symbol>
     {
-        public Production(Nonterminal head, Chain body)
+        public Production(Nonterminal head, List<Symbol> body)
         {
             Head = head;
             Body = body;
@@ -15,7 +15,7 @@ namespace Lingu.Grammars
 
         public Nonterminal Head { get; }
 
-        private Chain Body { get; }
+        private List<Symbol> Body { get; }
 
         public Symbol this[int index] => Body[index];
 
@@ -26,7 +26,7 @@ namespace Lingu.Grammars
 
         public override string ToString()
         {
-            return $"{Head} -> {string.Join(" ", Body)}";
+            return $"{Head} <- {string.Join(" ", Body)}";
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -29,7 +29,7 @@ namespace Lingu.Check
 
             var grammar = new GrammarBuilder().From(argumentList);
 
-            var engine = new Engine(grammar);
+            var engine = new EarleyEngine(grammar);
 
             engine.Pulse(Token.Name);
             engine.Pulse(Token.Comma);

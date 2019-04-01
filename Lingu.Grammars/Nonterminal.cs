@@ -1,4 +1,6 @@
-﻿namespace Lingu.Grammars
+﻿using System.Collections.Generic;
+
+namespace Lingu.Grammars
 {
     public class Nonterminal : Symbol
     {
@@ -7,8 +9,8 @@
         {
         }
 
-        public Nonterminal Head => this;
+        public List<Production> Body { get; set; }
 
-        public Body Body { get; set; }
+        public Nonterminal Head => this;
     }
 }

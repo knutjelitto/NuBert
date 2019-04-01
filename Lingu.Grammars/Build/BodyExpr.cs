@@ -24,6 +24,11 @@ namespace Lingu.Grammars.Build
             return new BodyExpr { chain };
         }
 
+        public static implicit operator BodyExpr(TerminalExpr terminal)
+        {
+            return new BodyExpr { terminal };
+        }
+
         public static BodyExpr operator |(BodyExpr body, ChainExpr chain)
         {
             Debug.Assert(chain != null);

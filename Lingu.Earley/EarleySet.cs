@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Lingu.Grammars;
 
 namespace Lingu.Earley
@@ -7,30 +8,32 @@ namespace Lingu.Earley
     {
         public EarleySet()
         {
-            this.completions = new EarleyItemList<CompletedItem>();
-            this.nonterminals = new EarleyItemList<NonterminalItem>();
-            this.terminals = new EarleyItemList<TerminalItem>();
+            this.completionStates = new EarleyStateList<CompletedState>();
+            this.nonterminalStates = new EarleyStateList<NonterminalState>();
+            this.terminalStates = new EarleyStateList<TerminalState>();
         }
 
-        public IReadOnlyList<CompletedItem> Completions => this.completions;
+        public IReadOnlyList<CompletedState> CompletionStates => this.completionStates;
 
-        public IReadOnlyList<NonterminalItem> Nonterminals => this.nonterminals;
+        public IReadOnlyList<NonterminalState> NonterminalStates => this.nonterminalStates;
 
-        public IReadOnlyList<TerminalItem> Terminals => this.terminals;
+        public IReadOnlyList<TerminalState> TerminalStates => this.terminalStates;
 
-        public bool Add(CompletedItem item)
+        public IEnumerable<Terminal> Terminals => TerminalStates.Select(state => state.DottedRule.PostDot).Cast<Terminal>();
+
+        public bool Add(CompletedState item)
         {
-            return this.completions.Add(item);
+            return this.completionStates.Add(item);
         }
 
-        public bool Add(NonterminalItem item)
+        public bool Add(NonterminalState state)
         {
-            return this.nonterminals.Add(item);
+            return this.nonterminalStates.Add(state);
         }
 
-        public bool Add(TerminalItem item)
+        public bool Add(TerminalState item)
         {
-            return this.terminals.Add(item);
+            return this.terminalStates.Add(item);
         }
 
         public bool Contains(DottedRule dottedRule, int origin)
@@ -48,21 +51,21 @@ namespace Lingu.Earley
 
         private bool CompletionsContains(DottedRule rule, int origin)
         {
-            return this.completions.Contains(rule, origin);
+            return this.completionStates.Contains(rule, origin);
         }
 
         private bool NonterminalsContains(DottedRule rule, int origin)
         {
-            return this.nonterminals.Contains(rule, origin);
+            return this.nonterminalStates.Contains(rule, origin);
         }
 
         private bool TerminalsContains(DottedRule rule, int origin)
         {
-            return this.terminals.Contains(rule, origin);
+            return this.terminalStates.Contains(rule, origin);
         }
 
-        private readonly EarleyItemList<CompletedItem> completions;
-        private readonly EarleyItemList<NonterminalItem> nonterminals;
-        private readonly EarleyItemList<TerminalItem> terminals;
+        private readonly EarleyStateList<CompletedState> completionStates;
+        private readonly EarleyStateList<NonterminalState> nonterminalStates;
+        private readonly EarleyStateList<TerminalState> terminalStates;
     }
 }

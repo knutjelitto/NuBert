@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Charts\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Lingu.Grammars\Lingu.Grammars.csproj" />
   </ItemGroup>
 

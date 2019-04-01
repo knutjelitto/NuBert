@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Lingu.Grammars;
 
 namespace Lingu.Grammars.Build
 {
@@ -32,7 +31,7 @@ namespace Lingu.Grammars.Build
             {
                 mapped = new Nonterminal(rule.Name);
                 Rules.Add(rule, mapped);
-                mapped.Body = Map(rule.Body);
+                mapped.Body = Map(mapped, rule.Body);
             }
 
             return mapped;
@@ -51,14 +50,14 @@ namespace Lingu.Grammars.Build
             }
         }
 
-        private Body Map(BodyExpr body)
+        private List<Production> Map(Nonterminal rule, BodyExpr body)
         {
-            return new Body(body.Select(Map));
+            return body.Select(chain => Map(rule, chain)).ToList();
         }
 
-        private Chain Map(ChainExpr chain)
+        private Production Map(Nonterminal rule, ChainExpr chain)
         {
-            return new Chain(chain.Select(Map));
+            return new Production(rule, chain.Select(Map).ToList());
         }
     }
 }
