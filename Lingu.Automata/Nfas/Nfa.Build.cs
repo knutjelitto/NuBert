@@ -50,7 +50,7 @@
             return NfaBuilder.From(ch);
         }
 
-        public static explicit operator Nfa(string sequence)
+        public static implicit operator Nfa(string sequence)
         {
             return NfaBuilder.From(sequence);
         }

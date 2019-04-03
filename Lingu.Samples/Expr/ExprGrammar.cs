@@ -14,7 +14,6 @@ namespace Lingu.Samples.Expr
             RuleExpr Product = "Product";
             RuleExpr Factor = "Factor";
             RuleExpr Primary = "Primary";
-            RuleExpr SignOpt = "SignOpt";
             RuleExpr Number = "Number";
 
             Expr.Body = Sum;
@@ -29,9 +28,7 @@ namespace Lingu.Samples.Expr
                 (Product + '/' + Factor) |
                 Factor;
 
-            Factor.Body = SignOpt + Primary;
-
-            SignOpt.Body = SignOpt | ChainExpr.Epsilon;
+            Factor.Body = Primary;
 
             Primary.Body =
                 ('(' + Sum + ')') |

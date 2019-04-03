@@ -10,7 +10,6 @@ namespace Lingu.Earley
         {
             this.input = input;
             this.offset = 0;
-            this.matches = new HashSet<int>();
             Engine = engine;
         }
 
@@ -22,36 +21,52 @@ namespace Lingu.Earley
 
         public bool Next()
         {
-            if (this.lexers == null)
+            if (this.offset >= this.input.Length)
             {
-                this.lexers = (from terminal in Chart.Current.Terminals
-                               select terminal.MakeLexer(this.offset)).ToList();
-                this.matches.Clear();
+                return false;
             }
 
-            var more = false;
+            var matched = Match(this.input[this.offset], CurrentLexers());
 
-            for (var i = 0; i < this.lexers.Count; i++)
+            this.offset += 1;
+            while (this.offset < this.input.Length)
             {
-                var lexer = this.lexers[i];
-                if (lexer.Match(this.input[this.offset]))
+                var newMatched = Match(this.input[this.offset], matched).ToList();
+                if (newMatched.Count == 0)
                 {
-                    this.matches.Add(i);
-                    more = true;
+                    break;
                 }
-                else
+                matched = newMatched;
+                this.offset += 1;
+            }
+
+            var tokens = matched.Where(lexer => lexer.IsFinal).Select(lexer => lexer.MakeToken(this.input));
+
+            return Engine.Pulse(tokens);
+        }
+
+        private IEnumerable<Lexer> CurrentLexers()
+        {
+            return Chart.Current.Terminals.Select(terminal => terminal.MakeLexer(this.offset));
+        }
+
+        private List<Lexer> Match(char @char, IEnumerable<Lexer> lexers)
+        {
+            IEnumerable<Lexer> match()
+            {
+                foreach (var lexer in lexers)
                 {
-                    
+                    if (lexer.Match(@char))
+                    {
+                        yield return lexer;
+                    }
                 }
             }
 
-            return false;
+            return match().ToList();
         }
 
         private readonly string input;
-
-        private List<Lexer> lexers;
-        private HashSet<int> matches;
-        private readonly int offset;
+        private int offset;
     }
 }

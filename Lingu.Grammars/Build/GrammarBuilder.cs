@@ -14,12 +14,12 @@ namespace Lingu.Grammars.Build
             return new Grammar(Map(startSymbol));
         }
 
-        private Terminal Map(TerminalExpr terminal)
+        private Terminal Map(TerminalExpr terminalExpr)
         {
-            if (!Terminals.TryGetValue(terminal, out var mapped))
+            if (!Terminals.TryGetValue(terminalExpr, out var mapped))
             {
-                mapped = new Terminal(terminal.Provision);
-                Terminals.Add(terminal, mapped);
+                mapped = terminalExpr.Provision.Terminal;
+                Terminals.Add(terminalExpr, mapped);
             }
 
             return mapped;

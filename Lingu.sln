@@ -17,13 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Commons.Tests", "Ling
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Grammars.Tests", "Lingu.Grammars.Tests\Lingu.Grammars.Tests.csproj", "{08DC89EC-2910-42C5-B225-FF82C870A7EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Earley", "Lingu.Earley\Lingu.Earley.csproj", "{6CD7C036-B31E-4FE3-96D9-93E74FE2798B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Earley", "Lingu.Earley\Lingu.Earley.csproj", "{6CD7C036-B31E-4FE3-96D9-93E74FE2798B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Check", "Lingu.Check\Lingu.Check.csproj", "{DF181E97-0375-47D9-A2B8-7EF30E914AB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Check", "Lingu.Check\Lingu.Check.csproj", "{DF181E97-0375-47D9-A2B8-7EF30E914AB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Earley.Tests", "Lingu.Earley.Tests\Lingu.Earley.Tests.csproj", "{9D5BAAEB-6D05-4412-8E0D-D7648441E3DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Earley.Tests", "Lingu.Earley.Tests\Lingu.Earley.Tests.csproj", "{9D5BAAEB-6D05-4412-8E0D-D7648441E3DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Grammars", "Lingu.Grammars\Lingu.Grammars.csproj", "{CCAD20FD-D61C-4EE4-970E-E6E11D6116E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lingu.Grammars", "Lingu.Grammars\Lingu.Grammars.csproj", "{CCAD20FD-D61C-4EE4-970E-E6E11D6116E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lingu.Simple", "Lingu.Simple\Lingu.Simple.csproj", "{BD961571-3A47-4103-BC5E-89C384299430}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{CCAD20FD-D61C-4EE4-970E-E6E11D6116E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCAD20FD-D61C-4EE4-970E-E6E11D6116E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCAD20FD-D61C-4EE4-970E-E6E11D6116E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD961571-3A47-4103-BC5E-89C384299430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD961571-3A47-4103-BC5E-89C384299430}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD961571-3A47-4103-BC5E-89C384299430}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD961571-3A47-4103-BC5E-89C384299430}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

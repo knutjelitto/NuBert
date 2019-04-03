@@ -12,21 +12,6 @@ namespace Lingu.Earley
 
     public class EarleyEngine
     {
-        private const string startName = "strt";
-        private const string predName = "pred";
-        private const string compName = "comp";
-        private const string scanName = "scan";
-
-        private void Log(string name, int origin, EarleyState item)
-        {
-            Console.WriteLine($"{name}: [{origin}] {item}");
-        }
-
-        private void LogScan(int origin, EarleyState item, IToken token)
-        {
-            Console.WriteLine($"{scanName}: [{origin}] {item} {token}");
-        }
-
         public EarleyEngine(Grammar grammar)
         {
             Grammar = grammar;
@@ -40,37 +25,37 @@ namespace Lingu.Earley
 
         public Chart Chart { get; }
 
-        public DottedRuleFactory DottedRules { get; }
-
-        public EarleyStateFactory EarleyItems { get; }
-
         public Grammar Grammar { get; }
 
         public bool IsAccepted =>
             Chart.Current.CompletionStates.Any(completion => completion.Origin == 0 && completion.Head.Equals(Grammar.Start));
 
-        public int Location { get; private set; }
+        private DottedRuleFactory DottedRules { get; }
+
+        private EarleyStateFactory EarleyItems { get; }
+
+        private int Location { get; set; }
 
         public bool Pulse(IToken token)
         {
-            ScanPass(Location, token);
+            ScanPass(token);
 
             return Recognize();
         }
 
-        public bool Pulse(IReadOnlyList<IToken> tokens)
+        public bool Pulse(IEnumerable<IToken> tokens)
         {
             foreach (var token in tokens)
             {
-                ScanPass(Location, token);
+                ScanPass(token);
             }
 
             return Recognize();
         }
 
-        private void Complete(CompletedState completed, int location)
+        private void Complete(CompletedState completed)
         {
-            EarleyComplete(completed, location);
+            EarleyComplete(completed, Location);
         }
 
         private void EarleyComplete(CompletedState completed, int location)
@@ -116,10 +101,20 @@ namespace Lingu.Earley
                 }
             }
 
-            ReductionPass(Location);
+            ReductionPass();
         }
 
-        private void Predict(NonterminalState evidence, int location)
+        private void Log(string name, int origin, EarleyState item)
+        {
+            Console.WriteLine($"{name}: [{origin}] {item}");
+        }
+
+        private void LogScan(int origin, EarleyState item, IToken token)
+        {
+            Console.WriteLine($"{scanName}: [{origin}] {item} {token}");
+        }
+
+        private void Predict(NonterminalState evidence)
         {
             var nonTerminal = evidence.DottedRule.PostDot as Nonterminal;
             Debug.Assert(nonTerminal != null);
@@ -127,12 +122,12 @@ namespace Lingu.Earley
 
             foreach (var production in productionsForNonterminal)
             {
-                PredictProduction(location, production);
+                PredictProduction(Location, production);
             }
 
             if (nonTerminal.IsNullable)
             {
-                PredictAycockHorspool(evidence, location);
+                PredictAycockHorspool(evidence, Location);
             }
         }
 
@@ -179,14 +174,14 @@ namespace Lingu.Earley
             }
 
             Location++;
-            ReductionPass(Location);
+            ReductionPass();
 
             return true;
         }
 
-        private void ReductionPass(int location)
+        private void ReductionPass()
         {
-            var earleySet = Chart[location];
+            var earleySet = Chart[Location];
             var resume = true;
 
             var p = 0;
@@ -198,13 +193,13 @@ namespace Lingu.Earley
                 if (c < earleySet.CompletionStates.Count)
                 {
                     var completion = earleySet.CompletionStates[c++];
-                    Complete(completion, location);
+                    Complete(completion);
                 }
                 // is there a new prediction?
                 else if (p < earleySet.NonterminalStates.Count)
                 {
                     var evidence = earleySet.NonterminalStates[p++];
-                    Predict(evidence, location);
+                    Predict(evidence);
                 }
                 else
                 {
@@ -213,35 +208,40 @@ namespace Lingu.Earley
             }
         }
 
-        private void Scan(TerminalState terminal, int location, IToken token)
+        private void Scan(TerminalState terminal, IToken token)
         {
             var currentSymbol = terminal.DottedRule.PostDot as Terminal;
 
             if (token.IsFrom(currentSymbol))
             {
                 var dottedRule = terminal.DottedRule.Next;
-                if (Chart.Contains(location + 1, dottedRule, terminal.Origin))
+                if (Chart.Contains(Location + 1, dottedRule, terminal.Origin))
                 {
                     return;
                 }
 
                 var nextState = EarleyItems.NewState(dottedRule, terminal.Origin);
 
-                if (Chart.Add(location + 1, nextState))
+                if (Chart.Add(Location + 1, nextState))
                 {
-                    LogScan(location + 1, nextState, token);
+                    LogScan(Location + 1, nextState, token);
                 }
             }
         }
 
-        private void ScanPass(int location, IToken token)
+        private void ScanPass(IToken token)
         {
-            var earleySet = Chart[location];
+            var earleySet = Chart[Location];
 
             foreach (var terminalItem in earleySet.TerminalStates)
             {
-                Scan(terminalItem, location, token);
+                Scan(terminalItem, token);
             }
         }
+
+        private const string startName = "strt";
+        private const string predName = "pred";
+        private const string compName = "comp";
+        private const string scanName = "scan";
     }
 }

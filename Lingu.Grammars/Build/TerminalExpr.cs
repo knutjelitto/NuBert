@@ -1,4 +1,5 @@
-﻿using Lingu.Grammars;
+﻿using Lingu.Automata;
+using Lingu.Grammars;
 
 namespace Lingu.Grammars.Build
 {
@@ -17,14 +18,19 @@ namespace Lingu.Grammars.Build
             return new TerminalExpr(provision);
         }
 
+        public static ChainExpr operator +(TerminalExpr terminal1, TerminalExpr terminal2)
+        {
+            return new ChainExpr {terminal1, terminal2};
+        }
+
         public static implicit operator TerminalExpr(char @char)
         {
-            return new TerminalExpr((DfaProvision)@char);
+            return new TerminalExpr(DfaProvision.From(@char.ToString(), @char));
         }
 
         public static implicit operator TerminalExpr(string chars)
         {
-            return new TerminalExpr((DfaProvision)chars);
+            return new TerminalExpr(DfaProvision.From(chars, chars));
         }
     }
 }

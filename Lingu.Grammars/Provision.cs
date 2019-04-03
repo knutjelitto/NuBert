@@ -9,6 +9,8 @@
 
         public string Name { get; }
 
+        public abstract Terminal Terminal { get; }
+
         public abstract Lexer MakeLexer(int offset);
     }
 }

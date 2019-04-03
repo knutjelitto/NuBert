@@ -4,7 +4,7 @@
     {
         public void Check()
         {
-            Check2();
+            Check3();
         }
 
         private void Check1()
@@ -15,6 +15,11 @@
         private void Check2()
         {
             new ExprChecker().Check();
+        }
+
+        private void Check3()
+        {
+            new AmbiChecker().Check();
         }
     }
 }

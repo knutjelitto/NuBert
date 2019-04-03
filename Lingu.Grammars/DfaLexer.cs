@@ -5,8 +5,8 @@ namespace Lingu.Grammars
 {
     public class DfaLexer : Lexer
     {
-        public DfaLexer(DfaProvision provision, int offset)
-            : base(provision)
+        public DfaLexer(Terminal terminal, int offset)
+            : base(terminal)
         {
             Offset = offset;
             Length = 0;
@@ -36,5 +36,10 @@ namespace Lingu.Grammars
         }
 
         public override bool IsFinal => Current.IsFinal;
+
+        public override string Finish(string input)
+        {
+            return input.Substring(Offset, Length);
+        }
     }
 }
