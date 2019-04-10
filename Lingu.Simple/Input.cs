@@ -19,6 +19,11 @@
 
         public char Value => this.text[this.offset];
 
+        public string UpTo(Input next)
+        {
+            return this.text.Substring(this.offset, next.offset - this.offset);
+        }
+
         public static implicit operator bool(Input input) => input.Valid;
 
         public static implicit operator char(Input input) => input.Value;
