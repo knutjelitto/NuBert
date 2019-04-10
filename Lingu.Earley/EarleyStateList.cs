@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Lingu.Earley
 {
-    public class EarleyItemList<T> : IReadOnlyList<T>
-        where T : EarleyItem
+    public class EarleyStateList<T> : IReadOnlyList<T>
+        where T : EarleyState
     {
         public int Count => this.list.Count;
 
@@ -12,7 +12,7 @@ namespace Lingu.Earley
 
         public bool Add(T state)
         {
-            if (this.lookup.TryGetValue(state.Dotted, out var origins))
+            if (this.lookup.TryGetValue(state.DottedRule, out var origins))
             {
                 if (origins.TryGetValue(state.Origin, out var _))
                 {
@@ -22,7 +22,7 @@ namespace Lingu.Earley
             else
             {
                 origins = new Dictionary<int, int>();
-                this.lookup.Add(state.Dotted, origins);
+                this.lookup.Add(state.DottedRule, origins);
             }
 
             origins.Add(state.Origin, this.list.Count);

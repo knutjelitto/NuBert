@@ -1,0 +1,11 @@
+﻿expr = sum;
+
+sum = [sum ('+'|'-')] product;
+
+product = [product ('*'|'/')] factor;
+
+factor = primary;
+
+primary = '(' sum ')' | number;
+
+number = ('0' .. '9')+;

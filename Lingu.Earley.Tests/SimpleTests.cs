@@ -69,19 +69,23 @@ namespace Lingu.Grammars.Tests
             Assert.IsTrue(ok);
         }
 
-        private Engine MakeEngine()
+        private EarleyEngine MakeEngine()
         {
             RuleExpr argument = "argument";
             RuleExpr argumentList = "argument-list";
             RuleExpr atom = "atom";
 
-            argument.Body = atom;
-            argumentList.Body = argument | (argumentList + ',' + argument);
-            atom.Body = 'a';
+            argument.Body =
+                atom;
+            argumentList.Body = 
+                argument | 
+                (argumentList + ',' + argument);
+            atom.Body = 
+                'a';
 
             var grammar = new GrammarBuilder().From(argumentList);
 
-            var engine = new Engine(grammar);
+            var engine = new EarleyEngine(grammar);
 
             return engine;
         }

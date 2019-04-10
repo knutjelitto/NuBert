@@ -1,6 +1,4 @@
-﻿using System;
-using Lingu.Automata;
-using Lingu.Earley;
+﻿using Lingu.Earley;
 using Lingu.Grammars;
 using Lingu.Grammars.Build;
 
@@ -29,17 +27,17 @@ namespace Lingu.Check
 
             var grammar = new GrammarBuilder().From(argumentList);
 
-            var engine = new Engine(grammar);
+            var engine = new EarleyEngine(grammar);
 
-            engine.Pulse(Token.Name);
-            engine.Pulse(Token.Comma);
-            engine.Pulse(Token.Number);
+            engine.Pulse(XToken.Name);
+            engine.Pulse(XToken.Comma);
+            engine.Pulse(XToken.Number);
         }
 
 
-        private class Token : IToken
+        private class XToken : IToken
         {
-            private Token(string name, char value)
+            private XToken(string name, char value)
             {
                 this.name = name;
                 this.value = value;
@@ -58,9 +56,9 @@ namespace Lingu.Check
             private readonly string name;
             private readonly char value;
 
-            public static Token Name => new Token("name", 'a');
-            public static Token Number => new Token("number", '1');
-            public static Token Comma => new Token(",", ',');
+            public static XToken Name => new XToken("name", 'a');
+            public static XToken Number => new XToken("number", '1');
+            public static XToken Comma => new XToken(",", ',');
         }
 
     }

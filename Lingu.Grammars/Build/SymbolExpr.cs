@@ -32,12 +32,12 @@
 
         public static ChainExpr operator +(SymbolExpr terminal, char @char)
         {
-            return new ChainExpr { terminal, TerminalExpr.From((DfaProvision)@char) };
+            return new ChainExpr { terminal, TerminalExpr.From(DfaProvision.From(@char.ToString(), @char)) };
         }
 
         public static ChainExpr operator +(SymbolExpr terminal, string chars)
         {
-            return new ChainExpr { terminal, TerminalExpr.From((DfaProvision)chars) };
+            return new ChainExpr { terminal, TerminalExpr.From(DfaProvision.From(chars, chars)) };
         }
     }
 }

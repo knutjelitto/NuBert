@@ -3,12 +3,12 @@ using Lingu.Grammars;
 
 namespace Lingu.Earley
 {
-    public class TerminalItem : EarleyItem
+    public class TerminalState : EarleyState
     {
-        public TerminalItem(DottedRule dotted, int origin)
-            : base(dotted, origin)
+        public TerminalState(DottedRule dottedRule, int origin)
+            : base(dottedRule, origin)
         {
-            Debug.Assert(dotted.PostDot is Terminal);
+            Debug.Assert(dottedRule.PostDot is Terminal);
         }
 
         public override bool AddTo(EarleySet set)

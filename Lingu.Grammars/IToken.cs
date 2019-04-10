@@ -1,6 +1,4 @@
-﻿using Lingu.Grammars;
-
-namespace Lingu.Earley
+﻿namespace Lingu.Grammars
 {
     public interface IToken
     {
