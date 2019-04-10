@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Charts\" />
+    <Compile Remove="Charts\**" />
+    <EmbeddedResource Remove="Charts\**" />
+    <None Remove="Charts\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,29 +7,9 @@
             return NfaBuilder.Concat(n1, n2);
         }
 
-        public static Nfa operator +(Nfa nfa, (char, char) pair)
-        {
-            return nfa + (Nfa) pair;
-        }
-
-        public static Nfa operator +((char, char) pair, Nfa nfa)
-        {
-            return (Nfa)pair + nfa;
-        }
-
         public static Nfa operator |(Nfa n1, Nfa n2)
         {
             return NfaBuilder.Or(n1, n2);
-        }
-
-        public static Nfa operator |(char ch, Nfa nfa)
-        {
-            return (Nfa)ch | nfa;
-        }
-
-        public static Nfa operator |(Nfa nfa, char ch)
-        {
-            return nfa | (Nfa) ch;
         }
 
         public Nfa Plus => NfaBuilder.Plus(this);
@@ -40,14 +20,14 @@
 
         public static Nfa Any => NfaBuilder.Dot;
 
-        public static explicit operator Nfa((char min, char max) pair)
+        public static implicit operator Nfa((char first, char last) range)
         {
-            return NfaBuilder.From(pair.min, pair.max);
+            return NfaBuilder.From(range.first, range.last);
         }
 
-        public static implicit operator Nfa(char ch)
+        public static implicit operator Nfa(char @char)
         {
-            return NfaBuilder.From(ch);
+            return NfaBuilder.From(@char);
         }
 
         public static explicit operator Nfa(string sequence)
@@ -73,7 +53,6 @@
             }
 
             public static Nfa Dot => Single(Atom.From(UnicodeSets.Any));
-
 
             public static Nfa From(char ch)
             {

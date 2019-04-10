@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using Lingu.Commons;
 
 namespace Lingu.Automata
 {
@@ -73,6 +72,5 @@ namespace Lingu.Automata
         {
             return new Atom(ch, ch);
         }
-
     }
 }
